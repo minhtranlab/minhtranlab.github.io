@@ -10,6 +10,7 @@ No student names, no photos of people, no private or personal material belongs h
 - `index.html` is the home page. It builds its list from `tools.json`.
 - `tools/` holds interactive tools. Each one is a single self-contained HTML file.
 - `pdfs/` holds PDF notes.
+- Short links to apps hosted elsewhere live in their own top-level folder, for example `sat-vocab/index.html`, which forwards to the app.
 - To add something: put the file in the right folder and add one entry to `tools.json`.
 - Published files are never renamed or moved, so links stay working.
 
