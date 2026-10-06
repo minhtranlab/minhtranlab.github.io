@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAT Vocab Practice</title>
+<meta name="description" content="Adaptive SAT Words in Context vocabulary practice.">
+<style>
+:root{--bg:#faf8f4;--ink:#26323a;--muted:#6b7780;--accent:#2f6f73}
+@media (prefers-color-scheme:dark){:root{--bg:#171c1f;--ink:#e8ecee;--muted:#9aa6ad;--accent:#7cc4c0}}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--ink);
+  font:17px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;text-align:center;padding:20px}
+h1{margin:0 0 6px;font-size:1.8rem}
+p{color:var(--muted);margin:0 0 22px}
+a.btn{display:inline-block;padding:14px 26px;border-radius:12px;background:var(--accent);color:#fff;text-decoration:none;font-weight:600}
+@media (prefers-color-scheme:dark){a.btn{color:#10201f}}
+</style>
+</head>
+<body>
+<main>
+  <h1>SAT Vocab Practice</h1>
+  <p>Opening the app&hellip; if nothing happens, tap the button.</p>
+  <!-- TO CHANGE WHERE THIS LINK GOES: edit the address in the href below. Nothing else needs to change. -->
+  <a class="btn" id="go" href="https://script.google.com/macros/s/AKfycbzvAe3t89VshIT4Ejihu8J9dUPliwLVEYVYxAYvCbj4T1-ync8BH3NNXS2JyRCCtMZt/exec">Open the app</a>
+</main>
+<script>location.replace(document.getElementById('go').href);</script>
+</body>
+</html>
