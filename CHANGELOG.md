@@ -1,4 +1,5 @@
 # Changelog
 
 ## 2026-10-06
-- Site created: empty home page, search and filters, ready for the first items.
+- Added "3 Boxes · ABC 123" (kids game, letters and numbers): `tools/three-boxes.html`
+- Site created and published: home page, search and filters.

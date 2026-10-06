@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "title": "3 Boxes · ABC 123",
+    "level": ["Kids & Games"],
+    "topic": ["Letters & numbers"],
+    "description": "A shuffle-and-find game for young children to learn letters and numbers. Vietnamese and English voices.",
+    "path": "tools/three-boxes.html",
+    "type": "tool",
+    "date": "2026-10-06"
+  }
+]
