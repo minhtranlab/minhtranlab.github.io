@@ -1,5 +1,14 @@
 [
   {
+    "title": "SAT Vocab Practice",
+    "level": ["High School"],
+    "topic": ["SAT", "Vocabulary"],
+    "description": "Adaptive Words in Context vocabulary practice for the SAT. Opens the app.",
+    "path": "sat-vocab/",
+    "type": "tool",
+    "date": "2026-10-06"
+  },
+  {
     "title": "3 Boxes · ABC 123",
     "level": ["Kids & Games"],
     "topic": ["Letters & numbers"],
