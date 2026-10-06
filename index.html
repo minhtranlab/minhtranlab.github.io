@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minhtranlab</title>
+<meta name="description" content="A personal shelf of interactive tools, PDFs and games.">
+<style>
+:root{--bg:#faf8f4;--card:#fff;--ink:#26323a;--muted:#6b7780;--line:#e6e1d8;--accent:#2f6f73;--accent-soft:#e3f0ef}
+@media (prefers-color-scheme:dark){:root{--bg:#171c1f;--card:#20272b;--ink:#e8ecee;--muted:#9aa6ad;--line:#2f383d;--accent:#7cc4c0;--accent-soft:#233a3b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
+main{max-width:860px;margin:0 auto;padding:40px 20px 64px}
+h1{font-size:2rem;margin:0 0 4px;letter-spacing:-.01em}
+.tag{color:var(--muted);margin:0 0 28px}
+#search{width:100%;font:inherit;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);-webkit-appearance:none}
+#search:focus{outline:2px solid var(--accent);outline-offset:1px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.row:empty{display:none}
+button.pill{font:inherit;font-size:.92rem;padding:8px 14px;min-height:40px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button.pill[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+@media (prefers-color-scheme:dark){button.pill[aria-pressed="true"]{color:#10201f}}
+.chips button.pill{font-size:.85rem;min-height:34px;padding:5px 12px;background:transparent}
+.chips button.pill[aria-pressed="true"]{background:var(--accent-soft);color:var(--ink);border-color:var(--accent)}
+#count{color:var(--muted);font-size:.9rem;margin:22px 0 10px}
+#list{display:grid;gap:12px}
+a.card{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:inherit;text-decoration:none}
+a.card:active,a.card:hover{border-color:var(--accent)}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.title{font-weight:600;font-size:1.05rem}
+.badge{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);border:1px solid var(--accent);border-radius:6px;padding:1px 7px;white-space:nowrap}
+.desc{color:var(--muted);margin:4px 0 8px;font-size:.95rem}
+.meta{font-size:.82rem;color:var(--muted)}
+.empty{padding:36px 20px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px}
+footer{margin-top:48px;color:var(--muted);font-size:.82rem}
+</style>
+</head>
+<body>
+<main>
+  <h1>Minhtranlab</h1>
+  <p class="tag">A personal shelf of useful things I make. Free to use.</p>
+  <input id="search" type="search" placeholder="Search" aria-label="Search" autocomplete="off">
+  <div id="levels" class="row" role="group" aria-label="Filter by level"></div>
+  <div id="topics" class="row chips" role="group" aria-label="Filter by topic"></div>
+  <p id="count" aria-live="polite"></p>
+  <div id="list"></div>
+  <footer>Everything on this site is public. No tracking, no logins.</footer>
+</main>
+<script>
+(function () {
+  var ORDER = ["Primary", "Secondary", "High School", "University"];
+  var items = [], level = "All", topic = null, q = "";
+  var $ = function (id) { return document.getElementById(id); };
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function arr(v) { return Array.isArray(v) ? v : (v ? [v] : []); }
+  function uniq(list) { return list.filter(function (x, i) { return list.indexOf(x) === i; }); }
+
+  function pill(label, pressed, onClick) {
+    var b = el("button", "pill", label);
+    b.type = "button";
+    b.setAttribute("aria-pressed", pressed ? "true" : "false");
+    b.addEventListener("click", onClick);
+    return b;
+  }
+
+  function levelNames() {
+    var all = uniq([].concat.apply([], items.map(function (i) { return arr(i.level); })));
+    var known = ORDER.filter(function (l) { return all.indexOf(l) > -1; });
+    var other = all.filter(function (l) { return ORDER.indexOf(l) < 0; }).sort();
+    return known.concat(other);
+  }
+
+  function matchesLevel(i) { return level === "All" || arr(i.level).indexOf(level) > -1; }
+
+  function render() {
+    var lv = $("levels"), tp = $("topics");
+    lv.textContent = ""; tp.textContent = "";
+    var names = levelNames();
+    if (names.length) {
+      lv.appendChild(pill("All", level === "All", function () { level = "All"; topic = null; render(); }));
+      names.forEach(function (n) {
+        lv.appendChild(pill(n, level === n, function () { level = n; topic = null; render(); }));
+      });
+    }
+    var topicNames = uniq([].concat.apply([], items.filter(matchesLevel).map(function (i) { return arr(i.topic); }))).sort();
+    if (topicNames.length > 1) {
+      topicNames.forEach(function (t) {
+        tp.appendChild(pill(t, topic === t, function () { topic = (topic === t) ? null : t; render(); }));
+      });
+    }
+
+    var needle = q.trim().toLowerCase();
+    var shown = items.filter(function (i) {
+      if (!matchesLevel(i)) return false;
+      if (topic && arr(i.topic).indexOf(topic) < 0) return false;
+      if (!needle) return true;
+      var hay = [i.title, i.description].concat(arr(i.level), arr(i.topic)).join(" ").toLowerCase();
+      return hay.indexOf(needle) > -1;
+    }).sort(function (a, b) { return String(b.date || "").localeCompare(String(a.date || "")); });
+
+    var list = $("list"); list.textContent = "";
+    if (!items.length) {
+      list.appendChild(el("div", "empty", "Nothing here yet. Check back soon."));
+      $("count").textContent = "";
+      return;
+    }
+    $("count").textContent = shown.length + (shown.length === 1 ? " item" : " items");
+    if (!shown.length) { list.appendChild(el("div", "empty", "No matches. Try a different word or filter.")); return; }
+
+    shown.forEach(function (i) {
+      var a = el("a", "card");
+      a.href = i.path;
+      var top = el("div", "top");
+      top.appendChild(el("span", "title", i.title || i.path));
+      top.appendChild(el("span", "badge", i.type === "pdf" ? "PDF" : "Tool"));
+      a.appendChild(top);
+      if (i.description) a.appendChild(el("div", "desc", i.description));
+      var bits = arr(i.level).concat(arr(i.topic));
+      if (i.date) {
+        var d = new Date(i.date + "T00:00:00");
+        if (!isNaN(d)) bits.push(d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }));
+      }
+      if (bits.length) a.appendChild(el("div", "meta", bits.join(" · ")));
+      list.appendChild(a);
+    });
+  }
+
+  $("search").addEventListener("input", function (e) { q = e.target.value; render(); });
+
+  fetch("tools.json", { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (data) { items = Array.isArray(data) ? data : (data.items || []); render(); })
+    .catch(function () {
+      $("list").appendChild(el("div", "empty", "Could not load the list. If you opened this file directly from a folder, view it on the website instead."));
+    });
+})();
+</script>
+</body>
+</html>
