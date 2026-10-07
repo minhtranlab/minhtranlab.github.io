@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<!--
+  FEED-THE-MONSTER ("Cho thú ăn") v1.2 (2026-10-06) — one self-contained file, no dependencies, nothing to build.
+  FOR WHOEVER UPLOADS THIS TO GITHUB:
+  1. Put this file, unchanged, at tools/feed-the-monster.html (same folder as tools/three-boxes.html).
+     If that file already exists (v1.x), REPLACE it. If it does not exist yet, ADD it and do step 2.
+  2. Only when adding for the first time: register it the same way three-boxes is registered. If tools.json has one entry per game,
+     add a matching entry (title "Cho thú ăn · Feed the Monster", file tools/feed-the-monster.html, description "Counting 1-9 for ages 4-5, Vietnamese/English");
+     if index.html or README.md lists the games, add a matching line. Copy the existing three-boxes entry's format exactly.
+     When replacing, touch nothing else (bump a version field in tools.json only if one exists for this game: 1.2 / 2026-10-06).
+  3. Commit message: "feed-the-monster v1.2: no repeated creature or food within a round".
+-->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#DCEBF2">
+<title>Cho thú ăn · Feed the Monster</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%BB%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bw:min(27vw,33vh);          /* box width */
+  --step:calc(var(--bw)*1.17);  /* distance between slots */
+  --ground:11vh;
+  /* theme variables (overwritten by applyTheme) */
+  --bg1:#DCEBF2;--bg2:#E8F2EF;--bg3:#F7F1E3;--g1:#A8D5BA;--g2:#8CC4A0;--cloud:#fff;--ink:#2F3E5C;
+  --play:#5DB38A;--playD:#3F9170;--acc:#6FA8DC;--accD:#4F8BC2;--star:#F2C94C;--starS:#D9A21B;--starOff:rgba(255,255,255,.7);
+  --end1:#FFF6DC;--end2:#F6E2A9;--sel:#EBC14F;--selBg:#FFF7DC;--glow:rgba(255,226,140,.85);--card:#fff;
+  --t1:#E08272;--t2:#6FA8DC;--t3:#E3B63F;--t4:#5DB38A;--t5:#9A7BC4;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;touch-action:manipulation;
+  font-family:"Arial Rounded MT Bold","Nunito","Baloo 2",ui-rounded,system-ui,-apple-system,sans-serif;color:var(--ink)}
+body{background:linear-gradient(var(--bg1) 0%,var(--bg2) 55%,var(--bg3) 100%)}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+
+/* ---------- screens ---------- */
+.screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.screen.active{display:flex}
+.cloud{position:absolute;height:6vh;width:18vh;background:var(--cloud);border-radius:6vh;opacity:.85;animation:drift linear infinite}
+.cloud::before,.cloud::after{content:"";position:absolute;background:var(--cloud);border-radius:50%}
+.cloud::before{width:7vh;height:7vh;left:2vh;top:-3.5vh}
+.cloud::after{width:9vh;height:9vh;left:7vh;top:-5vh}
+@keyframes drift{from{transform:translateX(-30vh)}to{transform:translateX(130vw)}}
+.ground{position:absolute;left:-10%;right:-10%;bottom:-6vh;height:calc(var(--ground) + 6vh);
+  background:linear-gradient(var(--g1),var(--g2));border-radius:50% 50% 0 0/40% 40% 0 0;z-index:1}
+
+/* ---------- start screen ---------- */
+#screen-start{gap:2.5vh;padding-top:6vh}
+.title{font-size:min(11vh,14vw);letter-spacing:.02em;display:flex;gap:2vw;line-height:1;margin:0;z-index:2}
+.title span:nth-child(1){color:var(--t1)}.title span:nth-child(2){color:var(--t2)}.title span:nth-child(3){color:var(--t3)}
+.title span:nth-child(4){color:var(--t4)}.title span:nth-child(5){color:var(--t5)}
+.langs{display:flex;gap:3vw;z-index:2}
+.lang{display:flex;align-items:center;gap:1.4vw;background:#fff;border:.8vh solid transparent;border-radius:6vh;
+  padding:1.2vh 3vw;font-size:max(3.4vh,22px);box-shadow:0 .8vh 0 rgba(0,0,0,.1);transition:transform .15s}
+.lang .flag{font-size:max(6vh,36px);line-height:1}
+.lang.sel{border-color:var(--sel);background:var(--selBg);transform:scale(1.1)}
+.play{width:min(22vh,36vw);height:min(22vh,36vw);border-radius:50%;background:var(--play);z-index:2;
+  box-shadow:0 1.2vh 0 var(--playD),0 2vh 3vh rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;transition:transform .1s,box-shadow .1s;animation:pulse 1.8s ease-in-out infinite}
+.play:active{transform:translateY(1vh);box-shadow:0 .2vh 0 var(--playD)}
+.play svg{width:55%;height:55%}
+#screen-start .play{width:min(19vh,32vw);height:min(19vh,32vw)}
+@keyframes pulse{0%,100%{scale:1}50%{scale:1.06}}
+/* ---------- start deco ---------- */
+.deco{--dc:min(17vw,17vh);display:flex;gap:2.5vw;align-items:flex-end;z-index:2;height:calc(var(--dc)*1.55)}
+.dcard{width:var(--dc);height:calc(var(--dc)*1.55);background:#fff;border-radius:calc(var(--dc)*.25);box-shadow:0 .8vh 0 rgba(0,0,0,.1);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4vh;animation:bob 1.8s ease-in-out infinite}
+.dcard:nth-child(2){animation-delay:.3s}.dcard:nth-child(3){animation-delay:.6s}
+.dcard .cr{font-size:calc(var(--dc)*.62);line-height:1}
+.dcard .fd{font-size:calc(var(--dc)*.22);line-height:1.1;text-align:center;white-space:nowrap}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.8vh)}}
+
+/* ---------- game screen ---------- */
+#screen-game{display:none}
+#screen-game.active{display:block}
+#progress{position:absolute;top:2.2vh;left:50%;transform:translateX(-50%);display:flex;gap:1vh;z-index:5}
+#progress svg{width:max(4.4vh,24px);height:max(4.4vh,24px);fill:var(--starOff);stroke:var(--starS);stroke-width:9;stroke-opacity:.35;stroke-linejoin:round}
+#progress svg.done{fill:var(--star);stroke-opacity:1;animation:starpop .6s cubic-bezier(.3,1.8,.5,1)}
+@keyframes starpop{0%{transform:scale(.2) rotate(-90deg)}100%{transform:scale(1) rotate(0)}}
+#stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:5vw;padding:9vh 4vw 13vh;z-index:2;
+  --fs:min(12vh,8.6vw);transition:opacity .3s}
+#stage.fade{opacity:0}
+#left{display:flex;flex-direction:column;align-items:center;gap:1.5vh}
+#right{position:relative;display:flex;flex-direction:column;align-items:center;gap:3vh;transition:opacity .4s}
+#right.out{opacity:0}
+#right.reset,#right.reset *{transition:none!important}
+#tray,#choices{transition:opacity .4s}
+#right.done #tray,#right.done #choices{opacity:0}
+#result{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5vh;opacity:0;pointer-events:none;transition:opacity .4s}
+#right.done #result{opacity:1}
+#result .rnum{font-size:min(20vh,16vw);line-height:1;font-weight:700}
+#result .rfood{display:flex;flex-wrap:wrap;justify-content:center;max-width:calc(var(--fs)*5.2)}
+#result .rfood span{font-size:calc(var(--fs)*.72);line-height:1.1;animation:back .45s cubic-bezier(.3,1.6,.5,1) both}
+#numBadge{width:min(15vh,12vw);height:min(15vh,12vw);border-radius:50%;background:var(--card);box-shadow:0 1vh 2.5vh rgba(0,0,0,.2);
+  display:flex;align-items:center;justify-content:center;font-size:min(10vh,8vw);line-height:1}
+#numBadge span,#runCount span,.choice span{display:block;transform:translateY(.04em)}
+#stage.nobadge #numBadge{display:none}
+#creatureWrap{position:relative}
+#creature{font-size:min(34vh,24vw);line-height:1;transform-origin:50% 90%}
+#creature span{display:block;animation:idle 2.2s ease-in-out infinite}
+@keyframes idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.6vh)}}
+#runCount{position:absolute;right:-8%;top:-6%;width:min(13vh,10vw);height:min(13vh,10vw);border-radius:50%;background:var(--card);
+  box-shadow:0 .8vh 2vh rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;font-size:min(9vh,7vw);line-height:1;opacity:0;pointer-events:none}
+#tray{display:grid;grid-template-columns:repeat(5,var(--fs));gap:1.4vh;padding:2vh;background:rgba(255,255,255,.5);border-radius:4vh}
+.food{width:var(--fs);height:var(--fs);font-size:calc(var(--fs)*.74);line-height:1;display:flex;align-items:center;justify-content:center;
+  border-radius:50%;background:rgba(255,255,255,.55);touch-action:manipulation;cursor:pointer}
+.food span{display:block}
+.food:active{transform:scale(.9)}
+.food.gone{pointer-events:none}
+.food.gone span{visibility:hidden}
+.food.still{pointer-events:none}
+.food.hl{animation:hl .6s ease;background:var(--selBg)}
+@keyframes hl{0%,100%{transform:scale(1)}40%{transform:scale(1.3) rotate(-8deg)}}
+.food.wob{animation:wob .5s ease}
+@keyframes wob{0%,100%{transform:rotate(0)}25%{transform:rotate(-14deg)}75%{transform:rotate(14deg)}}
+.food.pop{animation:back .45s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes back{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
+#choices{display:flex;gap:3vw;min-height:min(16vh,12vw)}
+.choice{--cw:min(16vh,12vw);width:var(--cw);height:var(--cw);border-radius:calc(var(--cw)*.28);background:#fff;border:.9vh solid var(--c);
+  box-shadow:0 .9vh 0 var(--cd);font-size:calc(var(--cw)*.58);line-height:1;display:flex;align-items:center;justify-content:center;touch-action:manipulation;
+  animation:back .5s cubic-bezier(.3,1.6,.5,1) both}
+.choice:active{transform:translateY(.6vh);box-shadow:0 .2vh 0 var(--cd)}
+.choice.no{opacity:.28;pointer-events:none}
+.choice.right{background:var(--selBg);animation:hl .6s ease}
+#repeatBtn{position:absolute;right:3vw;bottom:2vh;width:max(9vh,64px);height:max(9vh,64px);border-radius:50%;background:var(--acc);z-index:6;
+  box-shadow:0 .8vh 0 var(--accD);display:none;align-items:center;justify-content:center}
+#repeatBtn.on{display:flex}
+#repeatBtn:active{transform:translateY(.6vh);box-shadow:0 .2vh 0 var(--accD)}
+#repeatBtn svg{width:58%;height:58%}
+#caption{position:fixed;left:50%;bottom:1.5vh;transform:translateX(-50%);z-index:7;max-width:60vw;text-align:center;
+  background:rgba(255,255,255,.85);border-radius:12px;padding:4px 12px;font:14px system-ui,sans-serif;color:#555;display:none;pointer-events:none}
+@media (max-aspect-ratio:1/1){
+  #stage{flex-direction:column;gap:2vh;padding:9vh 4vw 14vh;--fs:min(9vh,15vw)}
+  #left{flex-direction:row;gap:3vw}
+  #creature{font-size:min(22vh,36vw)}
+  #numBadge{width:min(11vh,20vw);height:min(11vh,20vw);font-size:min(7.5vh,13vw)}
+  .choice{--cw:min(13vh,22vw)}
+}
+
+/* ---------- pause ---------- */
+#pauseBtn{position:absolute;left:3vw;top:2vh;width:max(7vh,48px);height:max(7vh,48px);border-radius:50%;background:var(--acc);
+  box-shadow:0 .6vh 0 var(--accD);z-index:8;display:flex;align-items:center;justify-content:center}
+#pauseBtn:active{transform:translateY(.5vh);box-shadow:0 .1vh 0 var(--accD)}
+#pauseBtn svg{width:50%;height:50%}
+#pauseLayer{position:fixed;inset:0;z-index:45;display:none;flex-direction:column;align-items:flex-start;justify-content:center;gap:2vh;
+  padding-left:3vw;background:rgba(255,255,255,.12)}
+#pauseLayer.on{display:flex}
+#pauseLayer .play{animation:none;width:min(15vh,22vw);height:min(15vh,22vw)}
+#pauseLayer .homeBtn{width:min(10vh,15vw);height:min(10vh,15vw)}
+.pauseHint{max-width:min(14vw,170px);background:rgba(255,255,255,.92);padding:8px 12px;border-radius:14px;font:600 14px/1.35 system-ui,sans-serif;color:#444}
+
+/* ---------- reward animation layer ---------- */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:35;overflow:hidden}
+.fxc{position:absolute;left:0;top:0;display:flex;align-items:center;justify-content:center;line-height:1;will-change:transform;z-index:3}
+.fxBubble{z-index:2;background:var(--card);border-radius:50%;box-shadow:0 0 0 .8vh rgba(255,255,255,.7),0 0 4vh 1.2vh var(--glow)}
+.fxBubble span{display:block;transform:translateY(.04em)}
+.fxBeam{z-index:1;background:linear-gradient(rgba(255,247,170,.9),rgba(255,247,170,.15));clip-path:polygon(35% 0,65% 0,100% 100%,0 100%)}
+
+/* ---------- end screen ---------- */
+#screen-end{gap:2.5vh;background:radial-gradient(circle at 50% 40%,var(--end1),var(--end2) 75%)}
+#screen-end .mascot{width:min(36vh,60vw);height:min(36vh,60vw);animation:hop 1.1s ease-in-out infinite;z-index:2}
+.mascot .st{fill:var(--star);stroke:var(--starS)}
+@keyframes hop{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-4vh) rotate(4deg)}}
+#endStars{display:flex;gap:1vh;z-index:2}
+#endStars svg{width:max(5vh,28px);height:max(5vh,28px);fill:var(--star);stroke:var(--starS);stroke-width:9;stroke-linejoin:round}
+.endBtns{display:flex;gap:4vw;align-items:center;z-index:2}
+.endBtns .play{animation:none}
+.homeBtn{width:min(12vh,20vw);height:min(12vh,20vw);border-radius:50%;background:var(--acc);box-shadow:0 .8vh 0 var(--accD);display:flex;align-items:center;justify-content:center}
+.homeBtn:active{transform:translateY(.6vh);box-shadow:0 .2vh 0 var(--accD)}
+.homeBtn svg{width:55%;height:55%}
+.endLabel{font-size:max(2.6vh,16px);margin-top:-1vh;z-index:2;opacity:.7}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:40;width:100%;height:100%}
+
+/* ---------- warnings ---------- */
+#voiceWarn{position:fixed;z-index:30;background:#fff3cd;color:#664d03;border:2px solid #ffda6a;border-radius:12px;padding:8px 12px;
+  font:14px/1.4 system-ui,sans-serif;display:none;pointer-events:none}
+#voiceWarn.top{left:50%;top:6px;transform:translateX(-50%);width:min(94vw,820px);text-align:center}
+#voiceWarn.corner{left:8px;bottom:8px;max-width:min(34vw,360px);font-size:13px}
+
+/* ---------- hidden gear ---------- */
+#gear{position:fixed;top:4px;right:4px;width:46px;height:46px;z-index:60;opacity:.16;display:flex;align-items:center;justify-content:center;touch-action:none}
+#gear svg{width:26px;height:26px}
+#gear .ring{position:absolute;inset:0;width:100%;height:100%;opacity:0}
+#gear.holding .ring{opacity:1}
+#gear.holding .ring circle{animation:hold 2s linear forwards}
+#gear.holding{opacity:.6}
+@keyframes hold{from{stroke-dashoffset:126}to{stroke-dashoffset:0}}
+
+/* ---------- parent panel ---------- */
+#panel{position:fixed;inset:0;background:rgba(20,24,40,.6);z-index:70;display:none;align-items:center;justify-content:center}
+#panel.open{display:flex}
+#panel .card{background:#fff;border-radius:18px;padding:20px 22px;width:min(780px,94vw);max-height:92vh;overflow:auto;
+  font:15px/1.45 system-ui,-apple-system,sans-serif;color:#222;-webkit-user-select:text;user-select:text}
+#panel h2{margin:0 0 8px;font-size:21px}
+#panel h3{margin:16px 0 6px;font-size:15px;color:#555;text-transform:uppercase;letter-spacing:.04em}
+.modeOpt{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border:2px solid #e3e6ee;border-radius:12px;margin-bottom:6px;cursor:pointer}
+.modeOpt.sel{border-color:#3fa9ff;background:#eef7ff}
+.modeOpt input{margin-top:4px;width:18px;height:18px}
+.modeOpt small{display:block;color:#666}
+.themes{display:flex;gap:8px;flex-wrap:wrap}
+.themeOpt{border:3px solid #e3e6ee;border-radius:12px;padding:8px 12px;text-align:center;background:#fff;font:600 14px system-ui,sans-serif;min-width:130px}
+.themeOpt.sel{border-color:#3fa9ff;background:#eef7ff}
+.themeOpt .sw{display:flex;gap:4px;justify-content:center;margin-bottom:5px}
+.themeOpt .sw i{width:24px;height:24px;border-radius:7px;display:block}
+.setrow{display:flex;gap:12px;align-items:center;margin:7px 0;flex-wrap:wrap}
+.setrow label{min-width:170px;color:#444}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{padding:8px 14px;border-radius:10px;background:#eceff5;font:600 15px system-ui,sans-serif;border:2px solid transparent}
+.seg button.sel{background:#e4f1ff;border-color:#3fa9ff}
+.vstat{color:#555;font-size:14px}
+#voiceInfo select{font:15px system-ui,sans-serif;padding:7px;border-radius:8px;max-width:60vw}
+.legend{margin:0 0 8px;color:#555}
+.legend b{padding:1px 8px;border-radius:8px;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(66px,1fr));gap:7px;margin-bottom:8px}
+.chip{border:3px solid #ccc;background:#eee;color:#999;border-radius:12px;padding:5px 0 4px;text-align:center;font-family:"Arial Rounded MT Bold",ui-rounded,system-ui,sans-serif}
+.chip .g{display:block;font-size:26px;line-height:1.1}
+.chip .s{display:block;font:600 11px system-ui,sans-serif}
+.chip.known{background:#d8f5df;border-color:#2dc653;color:#146c2e}
+.chip.new{background:#ffe8c2;border-color:#ff9f1c;color:#8a4b00}
+.k{background:#d8f5df;color:#146c2e}.n{background:#ffe8c2;color:#8a4b00}.o{background:#eee;color:#777}
+#voiceInfo div{margin:2px 0}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;justify-content:flex-end}
+.pbtn{padding:10px 16px;border-radius:12px;background:#eceff5;font:600 15px system-ui,sans-serif}
+.pbtn.primary{background:#2dc653;color:#fff}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- START -->
+  <section id="screen-start" class="screen active">
+    <div class="cloud" style="top:8vh;animation-duration:70s"></div>
+    <div class="cloud" style="top:22vh;animation-duration:95s;animation-delay:-40s"></div>
+    <h1 class="title"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></h1>
+    <div class="deco" id="deco"></div>
+    <div class="langs" id="langs"></div>
+    <button class="play" id="playBtn" aria-label="Play"><svg viewBox="0 0 100 100"><path d="M30 14 L88 50 L30 86 Z" fill="#fff" stroke="#fff" stroke-width="10" stroke-linejoin="round"/></svg></button>
+    <div class="ground"></div>
+  </section>
+
+  <!-- GAME -->
+  <section id="screen-game" class="screen">
+    <div class="cloud" style="top:12vh;animation-duration:80s"></div>
+    <div class="cloud" style="top:30vh;animation-duration:110s;animation-delay:-60s"></div>
+    <button id="pauseBtn" aria-label="Pause"><svg viewBox="0 0 100 100"><rect x="26" y="20" width="16" height="60" rx="4" fill="#fff"/><rect x="58" y="20" width="16" height="60" rx="4" fill="#fff"/></svg></button>
+    <div id="progress"></div>
+    <div class="ground"></div>
+    <div id="stage">
+      <div id="left">
+        <div id="numBadge"><span></span></div>
+        <div id="creatureWrap"><div id="creature"><span></span></div><div id="runCount"><span></span></div></div>
+      </div>
+      <div id="right">
+        <div id="tray"></div>
+        <div id="choices"></div>
+        <div id="result"></div>
+      </div>
+    </div>
+    <button id="repeatBtn" aria-label="Repeat"><svg viewBox="0 0 100 100"><path d="M18 38h16l22-18v60L34 62H18z" fill="#fff"/><path d="M68 34a22 22 0 0 1 0 32M78 22a38 38 0 0 1 0 56" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"/></svg></button>
+  </section>
+
+  <!-- END -->
+  <section id="screen-end" class="screen">
+    <svg class="mascot" viewBox="0 0 200 200"><path class="st" d="M100 10 L124 70 L190 76 L140 118 L156 184 L100 148 L44 184 L60 118 L10 76 L76 70 Z" stroke-width="8" stroke-linejoin="round"/>
+      <circle cx="82" cy="100" r="8" fill="#4a3000"/><circle cx="118" cy="100" r="8" fill="#4a3000"/>
+      <circle cx="70" cy="116" r="8" fill="#ff8fa3" opacity=".7"/><circle cx="130" cy="116" r="8" fill="#ff8fa3" opacity=".7"/>
+      <path d="M82 120 Q100 142 118 120" fill="none" stroke="#4a3000" stroke-width="7" stroke-linecap="round"/></svg>
+    <div id="endStars"></div>
+    <div class="endBtns">
+      <button class="play" id="againBtn" aria-label="Play again"><svg viewBox="0 0 100 100"><path d="M78 52a28 28 0 1 1-9-21" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round"/><path d="M80 10v32H48z" fill="#fff" stroke="#fff" stroke-width="4" stroke-linejoin="round"/></svg></button>
+      <button class="homeBtn" id="homeBtn2" aria-label="Home"><svg viewBox="0 0 100 100"><path d="M12 50 L50 16 L88 50 M22 46v38h20V62h16v22h20V46" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+    <div class="endLabel" id="endLabel"></div>
+  </section>
+</div>
+
+<div id="pauseLayer">
+  <button class="play" id="resumeBtn" aria-label="Resume"><svg viewBox="0 0 100 100"><path d="M30 14 L88 50 L30 86 Z" fill="#fff" stroke="#fff" stroke-width="10" stroke-linejoin="round"/></svg></button>
+  <button class="homeBtn" id="pauseHome" aria-label="Home"><svg viewBox="0 0 100 100"><path d="M12 50 L50 16 L88 50 M22 46v38h20V62h16v22h20V46" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="pauseHint" id="pauseHint"></div>
+</div>
+<div id="fx"></div>
+<div id="voiceWarn"></div>
+<div id="caption"></div>
+<canvas id="confetti"></canvas>
+
+<!-- hidden gear: press and hold 2s -->
+<div id="gear" aria-hidden="true">
+  <svg viewBox="0 0 24 24" fill="#2b2d42"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2-1.6a.5.5 0 0 0 .1-.6l-1.9-3.3a.5.5 0 0 0-.6-.2l-2.4 1a7.4 7.4 0 0 0-1.7-1l-.4-2.5a.5.5 0 0 0-.5-.4h-3.8a.5.5 0 0 0-.5.4l-.4 2.5a7.4 7.4 0 0 0-1.7 1l-2.4-1a.5.5 0 0 0-.6.2L2.6 8.8a.5.5 0 0 0 .1.6l2 1.6a7.6 7.6 0 0 0 0 2l-2 1.6a.5.5 0 0 0-.1.6l1.9 3.3c.1.2.4.3.6.2l2.4-1c.5.4 1.1.7 1.7 1l.4 2.5c0 .2.2.4.5.4h3.8c.3 0 .5-.2.5-.4l.4-2.5c.6-.3 1.2-.6 1.7-1l2.4 1c.2.1.5 0 .6-.2l1.9-3.3a.5.5 0 0 0-.1-.6zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>
+  <svg class="ring" viewBox="0 0 46 46"><circle cx="23" cy="23" r="20" fill="none" stroke="#3fa9ff" stroke-width="3" stroke-dasharray="126" stroke-dashoffset="126" transform="rotate(-90 23 23)"/></svg>
+</div>
+
+<!-- parent panel -->
+<div id="panel"><div class="card">
+  <h2>⚙ Phụ huynh · Parent</h2>
+  <h3>Kiểu chơi · Play style</h3>
+  <div id="styleList"></div>
+  <h3>Chọn số · Which numbers</h3>
+  <div id="modeList"></div>
+  <h3>Màu sắc · Colours</h3>
+  <div class="themes" id="themeList"></div>
+  <h3>Độ dài · Length</h3>
+  <div id="diffList"></div>
+  <h3>Các số · Numbers 1–9</h3>
+  <p class="legend">Bấm để đổi · Tap to cycle: <b class="k">✓ đã biết · known</b> → <b class="n">★ mới · new</b> → <b class="o">tắt · off</b></p>
+  <div class="grid" id="gridNum"></div>
+  <h3>Giọng đọc · Voices</h3>
+  <div id="voiceInfo"></div>
+  <div class="row">
+    <button class="pbtn" id="resetBtn">Mặc định · Reset defaults</button>
+    <button class="pbtn" id="panelHome">Màn hình chính · Start screen</button>
+    <button class="pbtn primary" id="closeBtn">Xong · Done</button>
+  </div>
+</div></div>
+
+<script>
+'use strict';
+/* =====================================================================
+   CONFIG — everything editable lives here: creatures, foods, speech strings, themes, defaults
+   ===================================================================== */
+const CONFIG = {
+  storageKey: 'feedMonster.v1',
+
+  game: {
+    turnsOptions: [3, 5, 8, 10],
+    holdMs: 2000                       // press-and-hold time for the parent gear
+  },
+
+  speech: {
+    normal: { rate: 0.85, pitch: 1.1, volume: 1 },
+    soft:   { rate: 0.8,  pitch: 1.0, volume: 0.55 },
+    avoidVoices: /Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox/i
+  },
+
+  /* how a turn is played (parent picks in the panel) */
+  styles: {
+    mix:   { label: 'Trộn (Mix) — mặc định', desc: 'Mỗi vòng đổi kiểu: lượt đầu nhìn & đếm, giữa vòng thú kén ăn, rồi chỉ nghe số, lượt cuối đảo ngược (đếm giúp) · each round changes style: see & count, a picky creature, listen only, and a reverse "how many?" finale (default)' },
+    show:  { label: 'Nhìn & đếm (See & count)',    desc: 'Hiện số to + đọc to. Con bấm đồ ăn, máy đếm theo · big numeral shown + spoken; child taps food, the voice counts along (default)' },
+    hear:  { label: 'Nghe & đếm (Listen & count)', desc: 'Chỉ nói số, không hiện số · number is only spoken, not shown' },
+    picky: { label: 'Thú kén ăn (Picky eater)',    desc: 'Khay có 2 loại đồ ăn, thú chỉ ăn 1 loại (số ≤ 7) · tray has 2 kinds of food, the creature eats only one (numbers up to 7)' },
+    count: { label: 'Đếm giúp (Count for me)',     desc: 'Thú đã có đồ ăn, máy đếm to, con chọn số đúng (hoặc gõ phím số) · food is shown and counted aloud, child picks the right digit (or presses a number key)' }
+  },
+
+  /* which numbers are asked */
+  modes: {
+    on:   { label: 'Ôn (On)',     desc: 'Chỉ số đã biết · only known numbers' },
+    tron: { label: 'Trộn (Tron)', desc: 'Trộn số đã biết và số mới · mix of known and new numbers (default)' },
+    moi:  { label: 'Mới (Moi)',   desc: 'Chỉ số mới · only new numbers' }
+  },
+
+  defaults: {
+    style: 'mix', mode: 'tron', theme: 'soft', turns: 5,
+    known: ['1','2','3','4','5'],
+    new:   ['6','7','8','9']
+  },
+
+  /* ---- colour themes (parent picks in the panel) ---- */
+  themes: {
+    soft: {
+      label: 'Soft sky · Dịu',
+      vars: { '--bg1':'#DCEBF2','--bg2':'#E8F2EF','--bg3':'#F7F1E3','--g1':'#A8D5BA','--g2':'#8CC4A0','--cloud':'#ffffff','--ink':'#2F3E5C',
+        '--play':'#5DB38A','--playD':'#3F9170','--acc':'#6FA8DC','--accD':'#4F8BC2','--star':'#F2C94C','--starS':'#D9A21B','--starOff':'rgba(255,255,255,.7)',
+        '--end1':'#FFF6DC','--end2':'#F6E2A9','--sel':'#EBC14F','--selBg':'#FFF7DC','--glow':'rgba(255,226,140,.85)','--card':'#ffffff',
+        '--t1':'#E08272','--t2':'#6FA8DC','--t3':'#E3B63F','--t4':'#5DB38A','--t5':'#9A7BC4' },
+      boxes: [ { c:'#F2917F', cd:'#D9735F', cl:'#FBD9D2' }, { c:'#6FA8DC', cd:'#4F8BC2', cl:'#D6E7F6' }, { c:'#EBC14F', cd:'#CFA32E', cl:'#F8E8B3' } ],
+      glyphs: ['#C2503F','#A8620F','#2F8F83','#3F6FB5','#7A4FB0','#B83F7A','#3E8A4F'],
+      confetti: ['#F2917F','#6FA8DC','#EBC14F','#5DB38A','#B79AE0','#F6B8C4','#ffffff']
+    },
+    warm: {
+      label: 'Warm paper · Giấy ấm',
+      vars: { '--bg1':'#FBF5E9','--bg2':'#F8EEDB','--bg3':'#F1E3C8','--g1':'#C9D9B5','--g2':'#B2C79A','--cloud':'#FFFDF7','--ink':'#3A3A3A',
+        '--play':'#7FA777','--playD':'#628A5B','--acc':'#7FA5C9','--accD':'#5F88AE','--star':'#EBC14F','--starS':'#C99A2A','--starOff':'rgba(255,255,255,.7)',
+        '--end1':'#FBF0D9','--end2':'#F0DCB0','--sel':'#D98B6C','--selBg':'#FDF1E8','--glow':'rgba(235,193,79,.7)','--card':'#ffffff',
+        '--t1':'#D98B6C','--t2':'#7FA5C9','--t3':'#E0B04A','--t4':'#8DB596','--t5':'#A58BB8' },
+      boxes: [ { c:'#D98B6C', cd:'#BC6E50', cl:'#F5D7C9' }, { c:'#8DB596', cd:'#6F9A79', cl:'#DCEBDD' }, { c:'#7FA5C9', cd:'#5F88AE', cl:'#D7E4F0' } ],
+      glyphs: ['#A6472F','#8A5A12','#3D7A5A','#3B5F8A','#6A4A8C','#9A3E63','#4A7A3A'],
+      confetti: ['#D98B6C','#8DB596','#7FA5C9','#EBC14F','#C9A0B8','#F5D7C9','#ffffff']
+    },
+    bright: {
+      label: 'Bright · Tươi (bản đầu)',
+      vars: { '--bg1':'#9ee3ff','--bg2':'#d9f6ff','--bg3':'#fff3c4','--g1':'#8be28f','--g2':'#5cc973','--cloud':'#ffffff','--ink':'#2b2d42',
+        '--play':'#2dc653','--playD':'#1f9d3f','--acc':'#3fa9ff','--accD':'#2582cc','--star':'#ffd23f','--starS':'#f4a100','--starOff':'rgba(255,255,255,.75)',
+        '--end1':'#fff6c9','--end2':'#ffe08a','--sel':'#ffb703','--selBg':'#fff8dc','--glow':'rgba(255,214,64,.9)','--card':'#ffffff',
+        '--t1':'#ff5d73','--t2':'#3fa9ff','--t3':'#ffb703','--t4':'#2dc653','--t5':'#8338ec' },
+      boxes: [ { c:'#ff5d73', cd:'#e63a55', cl:'#ffd1d8' }, { c:'#3fa9ff', cd:'#2582cc', cl:'#cfe9ff' }, { c:'#ffc233', cd:'#e5a000', cl:'#fff0bf' } ],
+      glyphs: ['#e63946','#f77f00','#2a9d8f','#3a86ff','#8338ec','#ff006e','#2b9348'],
+      confetti: ['#ff5d73','#3fa9ff','#ffc233','#2dc653','#8338ec','#ff8fa3','#ffffff']
+    }
+  },
+  /* ---- languages: speech language, voices, and ALL spoken sentences ----
+     placeholders: {creature} {Creature} {phrase} (e.g. "ba quả táo" / "three apples") {food} (plural noun) {n} */
+  lang: {
+    vi: {
+      enabled: true, label: 'Tiếng Việt', flag: '🇻🇳', speechLang: 'vi-VN',
+      preferredVoices: ['Linh', 'Google Tiếng Việt'],
+      say: {
+        start: 'Chơi nào!',
+        hungry: 'Ôi, {creature} đói quá! Cho {creature} {phrase} nhé!',
+        hungryPicky: 'Ôi, {creature} đói quá! {Creature} chỉ ăn {food} thôi. Cho {creature} {phrase} nhé!',
+        pickyNo: '{Creature} không ăn {badfood} đâu!',
+        done: 'Đủ {phrase} rồi! {Creature} no rồi!',
+        countIntro: 'Mình đếm nhé!',
+        askCount: 'Có mấy {food}?',
+        praise: ['Đúng rồi!', 'Giỏi quá!', 'Hoan hô!', 'Tuyệt vời!'],
+        retry: ['Thử lại nhé!', 'Con thử số khác nhé!'],
+        roundEnd: 'Hoan hô! Con giỏi quá!'
+      },
+      ui: {
+        noVoice: '⚠ Máy chưa có giọng đọc tiếng Việt nên game sẽ im lặng (chữ hiện ở cuối màn hình để ba/mẹ đọc). Cài giọng Linh: Cài đặt hệ thống → Trợ năng → Nội dung được đọc → Giọng nói hệ thống → Quản lý giọng nói → Tiếng Việt, rồi tải lại trang. Hoặc giữ biểu tượng bánh răng 2 giây để chọn giọng khác.',
+        noVoiceShort: '⚠ Chưa có giọng tiếng Việt — game đang im lặng.',
+        paused: 'Tạm dừng — bấm Space hoặc nút ▶ để tiếp tục',
+        playAgain: 'Chơi lại', home: 'Màn hình chính'
+      }
+    },
+    en: {
+      enabled: true, label: 'English', flag: '🇺🇸', speechLang: 'en-US',
+      preferredVoices: ['Samantha', 'Google US English', 'Ava', 'Allison', 'Nicky'],
+      say: {
+        start: "Let's play!",
+        hungry: 'Oh, the {creature} is hungry! Feed the {creature} {phrase}!',
+        hungryPicky: 'Oh, the {creature} is hungry! The {creature} only eats {food}. Feed the {creature} {phrase}!',
+        pickyNo: "The {creature} doesn't eat {badfood}!",
+        done: "That's {phrase}! The {creature} is full!",
+        countIntro: "Let's count!",
+        askCount: 'How many {food} are there?',
+        praise: ['Yes!', 'Great job!', 'You did it!', 'Hooray!'],
+        retry: ['Try again!', 'Oops, try another number!'],
+        roundEnd: 'Hooray! You did it!'
+      },
+      ui: {
+        noVoice: '⚠ No English voice found, so the game will stay silent (text shows at the bottom for a parent to read). Add one: System Settings → Accessibility → Spoken Content → System Voice → Manage Voices, then reload. Or hold the gear 2 s to pick another voice.',
+        noVoiceShort: '⚠ No English voice — the game is silent.',
+        paused: 'Paused — press Space or ▶ to resume',
+        playAgain: 'Play again', home: 'Start screen'
+      }
+    },
+    zh: {   // slot kept for later — fill in creatures/foods/items zh names and flip enabled to true
+      enabled: false, label: '中文', flag: '🇨🇳', speechLang: 'zh-CN',
+      preferredVoices: ['Tingting', 'Ting-Ting', 'Meijia'],
+      say: { start: '', hungry: '', hungryPicky: '', pickyNo: '', done: '', countIntro: '', askCount: '', praise: [], retry: [], roundEnd: '' },
+      ui: { noVoice: '', noVoiceShort: '', paused: '', playAgain: '', home: '' }
+    }
+  },
+
+  /* ---- foods: vi = classifier + noun (said after the number); en = [singular, plural] ---- */
+  foods: {
+    apple:  { e: '🍎', vi: 'quả táo',        en: ['apple', 'apples'] },
+    banana: { e: '🍌', vi: 'quả chuối',      en: ['banana', 'bananas'] },
+    straw:  { e: '🍓', vi: 'quả dâu',        en: ['strawberry', 'strawberries'] },
+    peach:  { e: '🍑', vi: 'quả đào',        en: ['peach', 'peaches'] },
+    pear:   { e: '🍐', vi: 'quả lê',         en: ['pear', 'pears'] },
+    mango:  { e: '🥭', vi: 'quả xoài',       en: ['mango', 'mangoes'] },
+    coco:   { e: '🥥', vi: 'quả dừa',        en: ['coconut', 'coconuts'] },
+    melon:  { e: '🍉', vi: 'miếng dưa hấu',  en: ['watermelon slice', 'watermelon slices'] },
+    carrot: { e: '🥕', vi: 'củ cà rốt',      en: ['carrot', 'carrots'] },
+    brocc:  { e: '🥦', vi: 'bông cải xanh',  en: ['broccoli', 'broccoli'] },
+    mush:   { e: '🍄', vi: 'cây nấm',        en: ['mushroom', 'mushrooms'] },
+    cookie: { e: '🍪', vi: 'cái bánh quy',   en: ['cookie', 'cookies'] },
+    honey:  { e: '🍯', vi: 'hũ mật ong',     en: ['pot of honey', 'pots of honey'] },
+    peanut: { e: '🥜', vi: 'hạt đậu phộng',  en: ['peanut', 'peanuts'] },
+    fish:   { e: '🐟', vi: 'con cá',         en: ['fish', 'fish'] },
+    shrimp: { e: '🦐', vi: 'con tôm',        en: ['shrimp', 'shrimp'] },
+    crab:   { e: '🦀', vi: 'con cua',        en: ['crab', 'crabs'] },
+    meat:   { e: '🍖', vi: 'miếng thịt',     en: ['piece of meat', 'pieces of meat'] },
+    drum:   { e: '🍗', vi: 'cái đùi gà',     en: ['drumstick', 'drumsticks'] },
+    bone:   { e: '🦴', vi: 'khúc xương',     en: ['bone', 'bones'] },
+    fly:    { e: '🪰', vi: 'con ruồi',       en: ['fly', 'flies'] },
+    bug:    { e: '🐛', vi: 'con sâu',        en: ['caterpillar', 'caterpillars'] }
+  },
+
+  /* ---- creatures (emoji that this device cannot draw are skipped automatically) ---- */
+  creatures: [
+    { e: '🐻', vi: 'gấu',        en: 'bear',     foods: ['honey', 'apple', 'fish'] },
+    { e: '🐰', vi: 'thỏ',        en: 'bunny',    foods: ['carrot', 'apple', 'brocc'] },
+    { e: '🐸', vi: 'ếch',        en: 'frog',     foods: ['fly', 'bug'] },
+    { e: '🐷', vi: 'heo',        en: 'piggy',    foods: ['apple', 'peach', 'cookie'] },
+    { e: '🦖', vi: 'khủng long', en: 'dino',     foods: ['brocc', 'straw', 'meat'] },
+    { e: '🐘', vi: 'voi',        en: 'elephant', foods: ['banana', 'peanut', 'apple'] },
+    { e: '🦁', vi: 'sư tử',      en: 'lion',     foods: ['meat', 'drum'] },
+    { e: '🐶', vi: 'cún',        en: 'puppy',    foods: ['bone', 'meat'] },
+    { e: '🐱', vi: 'mèo',        en: 'kitty',    foods: ['fish', 'shrimp'] },
+    { e: '🐵', vi: 'khỉ',        en: 'monkey',   foods: ['banana', 'coco', 'mango'] },
+    { e: '🦔', vi: 'nhím',       en: 'hedgehog', foods: ['apple', 'mush', 'bug'] },
+    { e: '🦦', vi: 'rái cá',     en: 'otter',    foods: ['fish', 'crab'] },
+    { e: '🦭', vi: 'hải cẩu',    en: 'seal',     foods: ['fish', 'shrimp'] },
+    { e: '🦛', vi: 'hà mã',      en: 'hippo',    foods: ['melon', 'pear', 'banana'] },
+    { e: '🐼', vi: 'gấu trúc',   en: 'panda',    foods: ['apple', 'straw', 'cookie'] }
+  ],
+
+  /* ---- numbers 1-9 (said aloud). 0 left out on purpose: you cannot feed a monster zero. ---- */
+  items: [
+    { id:'1', glyph:'1', vi:{name:'một'},  en:{name:'one'},   zh:{name:''} },
+    { id:'2', glyph:'2', vi:{name:'hai'},  en:{name:'two'},   zh:{name:''} },
+    { id:'3', glyph:'3', vi:{name:'ba'},   en:{name:'three'}, zh:{name:''} },
+    { id:'4', glyph:'4', vi:{name:'bốn'},  en:{name:'four'},  zh:{name:''} },
+    { id:'5', glyph:'5', vi:{name:'năm'},  en:{name:'five'},  zh:{name:''} },
+    { id:'6', glyph:'6', vi:{name:'sáu'},  en:{name:'six'},   zh:{name:''} },
+    { id:'7', glyph:'7', vi:{name:'bảy'},  en:{name:'seven'}, zh:{name:''} },
+    { id:'8', glyph:'8', vi:{name:'tám'},  en:{name:'eight'}, zh:{name:''} },
+    { id:'9', glyph:'9', vi:{name:'chín'}, en:{name:'nine'},  zh:{name:''} }
+  ]
+};
+
+
+const $ = s => document.querySelector(s);
+/* Pausable clock: every wait() and every running animation freezes while paused */
+const Clock = {
+  paused: false, waiters: new Set(), gates: [], anims: [],
+  arm(w) { w.start = performance.now(); w.t = setTimeout(() => { Clock.waiters.delete(w); w.res(); }, Math.max(0, w.rem)); },
+  gate() { return this.paused ? new Promise(r => this.gates.push(r)) : Promise.resolve(); },
+  set(p) {
+    if (p === this.paused) return;
+    this.paused = p;
+    if (p) {
+      this.waiters.forEach(w => { clearTimeout(w.t); w.rem -= performance.now() - w.start; });
+      this.anims = document.getAnimations().filter(a => a.playState === 'running');
+      this.anims.forEach(a => { try { a.pause(); } catch (e) {} });
+      Speech.pause(); Confetti.setPaused(true);
+    } else {
+      this.waiters.forEach(w => this.arm(w));
+      this.anims.forEach(a => { try { a.play(); } catch (e) {} }); this.anims = [];
+      Speech.resume(); Confetti.setPaused(false);
+      const g = this.gates; this.gates = []; g.forEach(r => r());
+    }
+  }
+};
+function wait(ms) {
+  return new Promise(res => { const w = { rem: ms, res, t: 0, start: 0 }; Clock.waiters.add(w); if (!Clock.paused) Clock.arm(w); });
+}
+const rand = n => Math.floor(Math.random() * n);
+const pickOne = a => a[rand(a.length)];
+const shuffled = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = rand(i + 1); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const ABORT = { aborted: true };
+const ITEM = Object.fromEntries(CONFIG.items.map((it, i) => [it.id, Object.assign({ index: i }, it)]));
+let THEME = CONFIG.themes[CONFIG.defaults.theme];
+const colorOf = id => THEME.glyphs[ITEM[id].index % THEME.glyphs.length];
+const fmt = (tpl, vars) => tpl.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
+const STAR_SVG = '<svg viewBox="0 0 200 200"><path d="M100 14 L124 72 L188 78 L139 119 L154 182 L100 148 L46 182 L61 119 L12 78 L76 72 Z" stroke-linejoin="round"/></svg>';
+/* Hook for later features (Google Sheet logging, etc.) */
+const Logger = {
+  log(type, data) { /* future: POST to Google Sheet. Events: round_start, turn_start, wrong, correct, round_end */ }
+};
+
+/* =====================================================================
+   Settings (localStorage)
+   ===================================================================== */
+function defaultSettings() {
+  const D = CONFIG.defaults, items = {};
+  CONFIG.items.forEach(it => items[it.id] = 'off');
+  D.known.forEach(id => { if (id in items) items[id] = 'known'; });
+  D.new.forEach(id => { if (id in items) items[id] = 'new'; });
+  return { style: D.style, mode: D.mode, theme: D.theme, turns: D.turns, voices: {}, items };
+}
+function loadSettings() {
+  const d = defaultSettings();
+  try {
+    const o = JSON.parse(localStorage.getItem(CONFIG.storageKey) || 'null');
+    if (o && typeof o === 'object') {
+      if (CONFIG.styles[o.style]) d.style = o.style;
+      if (CONFIG.modes[o.mode]) d.mode = o.mode;
+      if (CONFIG.themes[o.theme]) d.theme = o.theme;
+      if (CONFIG.game.turnsOptions.includes(o.turns)) d.turns = o.turns;
+      if (o.voices && typeof o.voices === 'object') for (const k in CONFIG.lang) if (typeof o.voices[k] === 'string') d.voices[k] = o.voices[k];
+      if (o.items) for (const id in d.items) if (['known', 'new', 'off'].includes(o.items[id])) d.items[id] = o.items[id];
+    }
+  } catch (e) {}
+  return d;
+}
+function saveSettings() { try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(SET)); } catch (e) {} }
+let SET = loadSettings();
+
+/* ---------- theme ---------- */
+function applyTheme(key) {
+  THEME = CONFIG.themes[key] || CONFIG.themes[CONFIG.defaults.theme];
+  const root = document.documentElement;
+  Object.entries(THEME.vars).forEach(([k, v]) => root.style.setProperty(k, v));
+  document.querySelector('meta[name=theme-color]').setAttribute('content', THEME.vars['--bg1']);
+  document.querySelectorAll('.choice').forEach((el, k) => { const b = THEME.boxes[k % 3]; el.style.setProperty('--c', b.c); el.style.setProperty('--cd', b.cd); });
+}
+
+/* ---------- emoji support check: skip emoji this device cannot draw (shows as an empty box) ---------- */
+const EmojiOK = (() => {
+  try {
+    const cv = document.createElement('canvas'); cv.width = cv.height = 48;
+    const x = cv.getContext('2d', { willReadFrequently: true });
+    const sig = ch => {
+      x.clearRect(0, 0, 48, 48); x.font = '32px sans-serif'; x.textBaseline = 'top'; x.fillText(ch, 2, 2);
+      const d = x.getImageData(0, 0, 48, 48).data; let h = 0, c = 0;
+      for (let i = 0; i < d.length; i += 4) if (d[i + 3]) { c++; h = (h * 31 + d[i] + d[i + 1] * 7 + d[i + 2] * 13 + d[i + 3] * 3) | 0; }
+      return c + ':' + h;
+    };
+    const bad = new Set([sig('\u{1FAFF}'), sig('\u{1FAFE}'), sig('\u{1FAFD}')]);
+    return ch => { const s = sig(ch); return !s.startsWith('0:') && !bad.has(s); };
+  } catch (e) { return () => true; }
+})();
+
+/* =====================================================================
+   Speech
+   ===================================================================== */
+const Speech = {
+  voices: [], ready: false, lastCancel: 0, keep: new Set(),
+  supported: 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window,
+  init() {
+    if (!this.supported) { this.ready = true; return; }
+    const load = () => { this.voices = speechSynthesis.getVoices() || []; updateWarnings(); };
+    load();
+    speechSynthesis.addEventListener && speechSynthesis.addEventListener('voiceschanged', load);
+    setTimeout(() => { load(); this.ready = true; updateWarnings(); }, 1500);
+  },
+  find(key) {
+    const L = CONFIG.lang[key]; if (!L || !this.supported) return null;
+    const chosen = SET.voices && SET.voices[key];                 // parent's explicit choice wins
+    if (chosen) { const v = this.voices.find(x => x.name === chosen); if (v) return v; }
+    const want = L.speechLang.toLowerCase(), prefix = want.split('-')[0];
+    const norm = v => (v.lang || '').replace('_', '-').toLowerCase();
+    let c = this.voices.filter(v => norm(v) === want);
+    if (!c.length) c = this.voices.filter(v => norm(v).split('-')[0] === prefix);
+    const good = c.filter(v => !CONFIG.speech.avoidVoices.test(v.name));
+    if (good.length) c = good;
+    for (const n of L.preferredVoices) { const v = c.find(x => x.name.includes(n)); if (v) return v; }
+    return c[0] || null;
+  },
+  hasVoice(key) { return !!this.find(key); },
+  stop() {
+    if (!this.supported) return;
+    this.lastCancel = performance.now();
+    speechSynthesis.cancel();
+  },
+  pause() { if (this.supported) try { speechSynthesis.pause(); } catch (e) {} },
+  resume() { if (this.supported) try { speechSynthesis.resume(); } catch (e) {} },
+  say(text, style = 'normal', key = S.lang) {
+    showCaption(text, key);
+    if (!text) return Promise.resolve();
+    const v = this.supported ? this.find(key) : null;
+    // No voice for this language: stay silent. (Falling back to the default voice reads Vietnamese with an English accent.)
+    if (!v) return wait(1200 + text.length * 50);
+    const L = CONFIG.lang[key], P = CONFIG.speech[style];
+    return new Promise(resolve => {
+      const u = new SpeechSynthesisUtterance(text);
+      try { u.voice = v; } catch (e) {}
+      u.lang = v.lang || L.speechLang;
+      u.rate = P.rate; u.pitch = P.pitch; u.volume = P.volume;
+      let done = false;
+      const finish = () => { if (done) return; done = true; this.keep.delete(u); resolve(); };
+      u.onend = finish; u.onerror = finish;
+      this.keep.add(u);                                  // avoid garbage-collected utterances (Chrome quirk)
+      wait(2500 + text.length * 160).then(finish);       // safety net if no 'end' event arrives
+      const delay = Math.max(0, 90 - (performance.now() - this.lastCancel));
+      setTimeout(() => { if (!done) { try { speechSynthesis.speak(u); } catch (e) { finish(); } } }, delay);
+    });
+  }
+};
+function showCaption(text, key = S.lang) {
+  const el = $('#caption');
+  if (S.screen === 'game' && text && Speech.ready && !Speech.hasVoice(key)) { el.textContent = text; el.style.display = 'block'; }
+  else el.style.display = 'none';
+}
+function updateWarnings() {
+  const el = $('#voiceWarn'), L = CONFIG.lang[S.lang];
+  const decided = Speech.voices.length > 0 || Speech.ready;
+  const missing = decided && (S.screen === 'start' || S.screen === 'game') && !Speech.hasVoice(S.lang);
+  el.className = S.screen === 'game' ? 'corner' : 'top';
+  el.textContent = missing ? (S.screen === 'game' ? L.ui.noVoiceShort : L.ui.noVoice) : '';
+  el.style.display = missing ? 'block' : 'none';
+  if (!missing) $('#caption').style.display = 'none';
+  if ($('#panel').classList.contains('open')) renderVoiceInfo();
+}
+
+/* =====================================================================
+   Sound effects (tiny WebAudio, no files)
+   ===================================================================== */
+const Sfx = {
+  ctx: null,
+  unlock() {
+    try { this.ctx = this.ctx || new (window.AudioContext || window.webkitAudioContext)(); if (this.ctx.state === 'suspended') this.ctx.resume(); } catch (e) {}
+  },
+  tone(f, t0, dur, type = 'sine', gain = 0.12, f2) {
+    if (!this.ctx) return;
+    const c = this.ctx, o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, c.currentTime + t0);
+    if (f2) o.frequency.exponentialRampToValueAtTime(f2, c.currentTime + t0 + dur);
+    g.gain.setValueAtTime(0.0001, c.currentTime + t0);
+    g.gain.exponentialRampToValueAtTime(gain, c.currentTime + t0 + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + t0 + dur);
+    o.connect(g).connect(c.destination); o.start(c.currentTime + t0); o.stop(c.currentTime + t0 + dur + 0.05);
+  },
+  pop()  { this.tone(420, 0, .12, 'sine', .14, 760); },
+  open() { this.tone(520, 0, .14, 'triangle', .1, 880); },
+  tick() { this.tone(300, 0, .05, 'sine', .05); },
+  drop() { this.tone(700, 0, .18, 'sine', .08, 300); },
+  win()  { [523, 659, 784, 1047].forEach((f, i) => this.tone(f, i * .11, .28, 'triangle', .12)); },
+  fanfare() { [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => this.tone(f, i * .14, .3, 'triangle', .12)); },
+  // reward sounds
+  thud()  { this.tone(120, 0, .2, 'sine', .2, 50); },
+  chomp() { [0, .16, .32].forEach(t => this.tone(220, t, .09, 'square', .05, 110)); },
+  boing() { this.tone(260, 0, .25, 'sine', .14, 700); },
+  whoosh(){ this.tone(200, 0, .7, 'triangle', .08, 1200); },
+  whirr() { this.tone(300, 0, .8, 'sawtooth', .04, 900); },
+  munch() { this.tone(190, 0, .07, 'square', .05, 110); this.tone(150, .09, .07, 'square', .05, 90); },
+  sparkle(){ [1319, 1568, 1760, 2093].forEach((f, i) => this.tone(f, i * .06, .15, 'sine', .06)); }
+};
+
+/* =====================================================================
+   Confetti
+   ===================================================================== */
+const Confetti = (() => {
+  const cv = $('#confetti'), ctx = cv.getContext('2d');
+  let parts = [], raf = 0, W = 0, H = 0, dpr = 1, paused = false;
+  function resize() {
+    dpr = window.devicePixelRatio || 1; W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  addEventListener('resize', resize); resize();
+  const col = () => pickOne(THEME.confetti);
+  function burst(x, y, n = 90, power = 1) {
+    for (let i = 0; i < n; i++) {
+      const a = Math.random() * Math.PI * 2, s = (4 + Math.random() * 9) * power;
+      parts.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 6 * power, rot: Math.random() * 6, vr: (Math.random() - .5) * .4,
+        w: 7 + Math.random() * 9, h: 5 + Math.random() * 7, c: col(), round: Math.random() < .3 });
+    }
+    if (!raf) raf = requestAnimationFrame(loop);
+  }
+  function rain(ms) {
+    const end = performance.now() + ms;
+    const t = setInterval(() => {
+      if (performance.now() > end) return clearInterval(t);
+      for (let i = 0; i < 6; i++) parts.push({ x: Math.random() * W, y: -10, vx: (Math.random() - .5) * 3, vy: 2 + Math.random() * 3, rot: Math.random() * 6,
+        vr: (Math.random() - .5) * .3, w: 7 + Math.random() * 9, h: 5 + Math.random() * 7, c: col(), round: Math.random() < .3 });
+      if (!raf) raf = requestAnimationFrame(loop);
+    }, 120);
+  }
+  function setPaused(b) { paused = b; if (!b && parts.length && !raf) raf = requestAnimationFrame(loop); }
+  function loop() {
+    if (paused) { raf = 0; return; }
+    ctx.clearRect(0, 0, W, H);
+    parts = parts.filter(p => p.y < H + 30);
+    for (const p of parts) {
+      p.vy += 0.28; p.vx *= 0.992; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.fillStyle = p.c;
+      if (p.round) { ctx.beginPath(); ctx.arc(0, 0, p.h * .6, 0, 7); ctx.fill(); } else ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    }
+    raf = parts.length ? requestAnimationFrame(loop) : 0;
+    if (!parts.length) ctx.clearRect(0, 0, W, H);
+  }
+  return { burst, rain, setPaused };
+})();
+
+/* =====================================================================
+   Reward animations — one per correct answer, 5 different kinds.
+   Emoji actors are chosen so they look right facing any direction.
+   ===================================================================== */
+function fxMake(html, w, h = w, cls = '') {
+  const el = document.createElement('div');
+  el.className = 'fxc ' + cls; el.innerHTML = html;
+  el.style.width = w + 'px'; el.style.height = h + 'px'; el.style.fontSize = (Math.min(w, h) * 0.8) + 'px';
+  el._w = w; el._h = h; el._st = { cx: -999, cy: -999, s: 1, r: 0, o: 1 };
+  $('#fx').appendChild(el); fxPlace(el, {});
+  return el;
+}
+function fxTf(el, s) { return `translate(${s.cx - el._w / 2}px,${s.cy - el._h / 2}px) rotate(${s.r}deg) scale(${s.s})`; }
+function fxPlace(el, to) {
+  const s = el._st = Object.assign({}, el._st, to);
+  el.style.transform = fxTf(el, s); el.style.opacity = s.o;
+}
+async function fxGo(el, to, ms, easing = 'ease-in-out') {
+  const s = Object.assign({}, el._st, to);
+  const a = el.animate([{ transform: fxTf(el, el._st), opacity: el._st.o }, { transform: fxTf(el, s), opacity: s.o }],
+    { duration: ms, easing, fill: 'forwards' });
+  try { await a.finished; } catch (e) {}
+  fxPlace(el, to); try { a.cancel(); } catch (e) {}
+}
+function fxBubble(rect, glyph, color) {
+  const size = rect.width, el = fxMake(`<span>${glyph}</span>`, size, size, 'fxBubble');
+  el.style.fontSize = (size * .667) + 'px'; el.style.color = color;
+  fxPlace(el, { cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2 });
+  return el;
+}
+function fxSparks(cx, cy, n = 9, dist = 150) {
+  Sfx.sparkle();
+  const icons = ['✨', '⭐', '✨', '💫'], ps = [];
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2 + Math.random() * .5, d = dist * (.7 + Math.random() * .6);
+    const e = fxMake(pickOne(icons), 44); fxPlace(e, { cx, cy, s: .3, o: 1 });
+    ps.push(fxGo(e, { cx: cx + Math.cos(a) * d, cy: cy + Math.sin(a) * d, s: 1.1, o: 0, r: Math.random() * 90 }, 750, 'ease-out'));
+  }
+  return Promise.all(ps);
+}
+
+
+/* =====================================================================
+   Exit animations — after a creature is full it does one of five things and leaves to the right;
+   the next creature hops in from the left.  Only the creature's own emoji is used (plus little effects).
+   ===================================================================== */
+const hPx = f => innerHeight * f;
+function A(el, frames, opts) {
+  const a = el.animate(frames, Object.assign({ fill: 'forwards', easing: 'ease-in-out' }, opts));
+  return a.finished.catch(() => {});
+}
+function bounceAway(el, steps, ms, hgt, rot, from = 0) {          // many small hops to the right, off screen
+  const D = innerWidth * .95 - from, fr = [];
+  for (let k = 0; k <= steps; k++) {
+    const odd = k % 2 === 1;
+    fr.push({ transform: `translate(${from + D * k / steps}px,${odd ? -hgt : 0}px) rotate(${odd ? rot : -rot}deg)`, offset: k / steps });
+  }
+  fr[steps].transform = `translate(${from + D}px,0) rotate(0)`;
+  return A(el, fr, { duration: ms, easing: 'linear' });
+}
+function leaveStage() { $('#right').classList.add('out'); }
+const EXITS = [
+  async function burp(el, T) {            // belly puffs up, burps a bubble, waddles off
+    Sfx.boing();
+    await T(A(el, [{ transform: 'scale(1)' }, { transform: 'scale(1.2,1.1)' }], { duration: 450, easing: 'ease-out' }));
+    const m = mouthPoint(), b = fxMake('🫧', 110); fxPlace(b, { cx: m.x + 40, cy: m.y, s: .4, o: 1 });
+    Sfx.pop(); fxGo(b, { cx: m.x + 60, cy: m.y - hPx(.3), s: 1.3, o: 0 }, 1300, 'ease-out');
+    await T(A(el, [{ transform: 'scale(1.2,1.1)' }, { transform: 'scale(.95,1.04)', offset: .4 }, { transform: 'scale(1)' }], { duration: 600 }));
+    await T(wait(500));
+    leaveStage(); Sfx.tick();
+    await T(bounceAway(el, 8, 1600, hPx(.025), 5));
+  },
+  async function hopflip(el, T) {         // two hops, then a flip with sparkles, then hops away
+    for (let k = 0; k < 2; k++) {
+      Sfx.boing();
+      await T(A(el, [{ transform: 'translateY(0)' }, { transform: `translateY(${-hPx(.09)}px)`, offset: .5 }, { transform: 'translateY(0)' }], { duration: 450, easing: 'ease-out' }));
+    }
+    Sfx.boing();
+    await T(A(el, [{ transform: 'translateY(0) rotate(0)' }, { transform: `translateY(${-hPx(.16)}px) rotate(180deg)`, offset: .5 }, { transform: 'translateY(0) rotate(360deg)' }], { duration: 750 }));
+    const m = mouthPoint(); fxSparks(m.x, m.y, 9, 170);
+    await T(wait(400));
+    leaveStage(); Sfx.whoosh();
+    await T(bounceAway(el, 4, 1400, hPx(.12), 0));
+  },
+  async function roll(el, T) {            // squishes down, then rolls away like a ball
+    await T(A(el, [{ transform: 'scale(1)' }, { transform: 'scale(1.15,.85)' }], { duration: 350, easing: 'ease-out' }));
+    leaveStage(); Sfx.whoosh();
+    await T(A(el, [{ transform: 'translateX(0) rotate(0) scale(1.15,.85)' }, { transform: `translateX(${innerWidth * .95}px) rotate(900deg) scale(1)` }], { duration: 1500, easing: 'ease-in' }));
+  },
+  async function sleepy(el, T) {          // yawns, dozes (💤), wakes up and tiptoes away
+    const m = mouthPoint();
+    await T(A(el, [{ transform: 'rotate(0) translateY(0)' }, { transform: `rotate(9deg) translateY(${hPx(.02)}px)` }], { duration: 700 }));
+    for (let k = 0; k < 3; k++) {
+      const z = fxMake('💤', 70); fxPlace(z, { cx: m.x + 60 + k * 30, cy: m.y - hPx(.12), s: .5, o: 1 });
+      fxGo(z, { cx: m.x + 110 + k * 40, cy: m.y - hPx(.34), s: 1.1, o: 0 }, 1500, 'ease-out');
+      Sfx.tone(330 - k * 40, 0, .25, 'sine', .05, 260 - k * 40);
+      await T(wait(550));
+    }
+    await T(A(el, [{ transform: `rotate(9deg) translateY(${hPx(.02)}px)` }, { transform: `rotate(-5deg) scale(1.06)`, offset: .5 }, { transform: 'rotate(0) scale(1)' }], { duration: 600, easing: 'ease-out' }));
+    Sfx.boing();
+    leaveStage();
+    await T(bounceAway(el, 12, 2600, hPx(.012), 3));
+  },
+  async function hearts(el, T) {          // heart shower, wiggle, then dashes off in a puff
+    const m = mouthPoint();
+    Sfx.sparkle();
+    for (let k = 0; k < 6; k++) {
+      const h = fxMake(k % 2 ? '💕' : '💖', 64); fxPlace(h, { cx: m.x + (k - 2.5) * 55, cy: m.y - hPx(.05), s: .4, o: 1 });
+      fxGo(h, { cx: m.x + (k - 2.5) * 80, cy: m.y - hPx(.38) - (k % 3) * 20, s: 1.15, o: 0 }, 1300, 'ease-out');
+    }
+    await T(A(el, [{ transform: 'rotate(0)' }, { transform: 'rotate(-8deg)', offset: .25 }, { transform: 'rotate(8deg)', offset: .75 }, { transform: 'rotate(0)' }], { duration: 500, iterations: 2 }));
+    const p = fxMake('💨', 100); fxPlace(p, { cx: m.x - 20, cy: m.y + 30, s: .6, o: 1 }); fxGo(p, { cx: m.x - 120, s: 1.4, o: 0 }, 700, 'ease-out');
+    leaveStage(); Sfx.whoosh();
+    await T(A(el, [{ transform: 'translateX(0) scale(1)' }, { transform: 'translateX(-4vw) scale(.95,1.05)', offset: .2 }, { transform: `translateX(${innerWidth}px) scale(1)` }], { duration: 900, easing: 'ease-in' }));
+  }
+];
+
+/* result card: the numeral and that many foods, shown while the creature celebrates */
+function showResult(turn) {
+  const r = $('#result'); r.innerHTML = '';
+  const num = document.createElement('div'); num.className = 'rnum'; num.textContent = turn.n; num.style.color = colorOf(String(turn.n));
+  const row = document.createElement('div'); row.className = 'rfood';
+  for (let i = 0; i < turn.n; i++) { const s = document.createElement('span'); s.textContent = turn.food.e; s.style.animationDelay = (150 + i * 90) + 'ms'; row.appendChild(s); }
+  r.append(num, row);
+  $('#right').classList.add('done');
+}
+
+/* =====================================================================
+   Creatures / round builder
+   ===================================================================== */
+let CREATURES = [];
+function initCreatures() {
+  const ok = CONFIG.creatures.map(c => Object.assign({}, c, { foodList: c.foods.map(k => CONFIG.foods[k]).filter(f => EmojiOK(f.e)) }))
+    .filter(c => EmojiOK(c.e) && c.foodList.length);
+  CREATURES = ok.length >= 4 ? ok : CONFIG.creatures.map(c => Object.assign({}, c, { foodList: c.foods.map(k => CONFIG.foods[k]) }));
+}
+function kindFor(i, T) {                     // which kind of turn: depends on the chosen style
+  if (SET.style !== 'mix') return SET.style;
+  if (i === T - 1) return 'count';            // finale: reverse "how many?"
+  if (i === T - 2) return 'hear';             // listen only, numeral hidden
+  if (T >= 5 && i === Math.floor((T - 1) / 2)) return 'picky';
+  return 'show';
+}
+/* cast for a round: every turn gets a different creature AND a different food (randomised backtracking) */
+function pickCast(T) {
+  const cast = [], usedC = new Set(), usedF = new Set();
+  const go = i => {
+    if (i === T) return true;
+    for (const c of shuffled(CREATURES.filter(x => !usedC.has(x)))) {
+      for (const f of shuffled(c.foodList.filter(x => !usedF.has(x)))) {
+        usedC.add(c); usedF.add(f); cast.push({ c, f });
+        if (go(i + 1)) return true;
+        cast.pop(); usedC.delete(c); usedF.delete(f);
+      }
+    }
+    return false;
+  };
+  if (go(0)) return cast;
+  // fallback (fewer creatures/foods than turns): no repeats back-to-back
+  const out = []; let pc = null;
+  for (let i = 0; i < T; i++) { let c, g = 0; do { c = pickOne(CREATURES); } while (c === pc && ++g < 20); pc = c; out.push({ c, f: pickOne(c.foodList) }); }
+  return out;
+}
+function buildRound() {
+  const ids = CONFIG.items.map(i => i.id);
+  const known = ids.filter(k => SET.items[k] === 'known'), nu = ids.filter(k => SET.items[k] === 'new');
+  const all = known.concat(nu).length ? known.concat(nu) : ids;
+  const allFoods = [...new Set(CREATURES.flatMap(c => c.foodList))];
+  const turns = [], cast = pickCast(SET.turns), usedFoods = new Set(cast.map(x => x.f));
+  let prevN = null;
+  for (let i = 0; i < SET.turns; i++) {
+    const kind = kindFor(i, SET.turns);
+    const ok = x => kind !== 'picky' || +x <= 7;          // picky tray holds 7 favourites + 3 others
+    let n, guard = 0;
+    do {
+      if (SET.mode === 'on') n = pickOne(known.length ? known : all);
+      else if (SET.mode === 'moi') n = pickOne(nu.length ? nu : all);
+      else n = (known.length && nu.length) ? pickOne(Math.random() < .5 ? nu : known) : pickOne(all);
+    } while ((!ok(n) || (n === prevN && all.length > 1)) && ++guard < 40);
+    let k = kind;
+    if (!ok(n)) { n = pickOne(ids.filter(ok)); }
+    prevN = n;
+    const c = cast[i].c, food = cast[i].f;
+    let others = allFoods.filter(f => !usedFoods.has(f) && !c.foodList.includes(f));   // the "wrong" food is also one not used elsewhere this round
+    if (!others.length) others = allFoods.filter(f => f !== food && !c.foodList.includes(f));
+    if (!others.length) others = allFoods.filter(f => f !== food);
+    turns.push({ n: +n, kind: k, creature: c, food, bad: pickOne(others) });
+  }
+  return turns;
+}
+
+/* =====================================================================
+   Game state + helpers
+   ===================================================================== */
+const S = { lang: 'vi', screen: 'start', token: 0, accepting: false, answer: null, feed: null, turn: null, round: [], rewardOrder: [0, 1, 2, 3, 4] };
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const sayCfg = () => CONFIG.lang[S.lang].say;
+const numName = n => ITEM[String(n)][S.lang].name;
+function phrase(food, n) { return S.lang === 'vi' ? `${numName(n)} ${food.vi}` : `${numName(n)} ${n === 1 ? food.en[0] : food.en[1]}`; }
+function tvars(t) {
+  const nm = t.creature[S.lang];
+  return { creature: nm, Creature: cap(nm), phrase: phrase(t.food, t.n), food: S.lang === 'vi' ? t.food.vi : t.food.en[1], badfood: S.lang === 'vi' ? t.bad.vi : t.bad.en[1], n: numName(t.n) };
+}
+const hungryText = t => fmt(t.kind === 'picky' ? sayCfg().hungryPicky : sayCfg().hungry, tvars(t));
+const askCountText = t => fmt(sayCfg().askCount, tvars(t));
+function setRepeat(on) { $('#repeatBtn').classList.toggle('on', on); }
+
+function mouthPoint() {
+  const r = $('#creature').getBoundingClientRect();
+  return { x: r.left + r.width / 2, y: r.top + r.height * .62, top: r.top };
+}
+function chomp() {
+  Sfx.munch();
+  $('#creature').animate([{ transform: 'scale(1)' }, { transform: 'scale(1.14,.88)', offset: .35 }, { transform: 'scale(.96,1.06)', offset: .7 }, { transform: 'scale(1)' }],
+    { duration: 380, easing: 'ease-out' });
+}
+function cheer() {
+  Sfx.boing();
+  $('#creature').animate([
+    { transform: 'translateY(0) rotate(0)' }, { transform: 'translateY(-4vh) rotate(-7deg)', offset: .25 },
+    { transform: 'translateY(0) rotate(0)', offset: .5 }, { transform: 'translateY(-4vh) rotate(7deg)', offset: .75 }, { transform: 'translateY(0) rotate(0)' }
+  ], { duration: 1000, iterations: 2, easing: 'ease-in-out' });
+}
+function showRun(n) {
+  const r = $('#runCount'); r.firstElementChild.textContent = n; r.style.color = colorOf(String(n)); r.style.opacity = 1;
+  r.animate([{ transform: 'scale(.4)' }, { transform: 'scale(1.25)', offset: .6 }, { transform: 'scale(1)' }], { duration: 380, easing: 'ease-out' });
+}
+async function flyFood(emoji, rect) {
+  const el = fxMake(emoji, rect.width);
+  fxPlace(el, { cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2 });
+  const m = mouthPoint(), midX = (rect.left + rect.width / 2 + m.x) / 2, midY = Math.min(rect.top, m.top) - rect.width * .3;
+  await fxGo(el, { cx: midX, cy: midY, s: 1.15 }, 230, 'ease-out');
+  await fxGo(el, { cx: m.x, cy: m.y, s: .3, o: .3 }, 200, 'ease-in');
+  el.remove();
+}
+
+/* ---------- turn pieces ---------- */
+function buildTray(turn) {
+  const tray = $('#tray'); tray.innerHTML = '';
+  let cells;                                   // each cell: 'fav' | 'bad' | '' (empty)
+  if (turn.kind === 'count') cells = Array.from({ length: 10 }, (_, i) => i < turn.n ? 'fav' : '');
+  else if (turn.kind === 'picky') cells = shuffled(Array.from({ length: 10 }, (_, i) => i < 7 ? 'fav' : 'bad'));
+  else cells = Array(10).fill('fav');
+  cells.forEach(k => {
+    const c = document.createElement('div');
+    c.className = 'food' + (k ? '' : ' gone') + (turn.kind === 'count' ? ' still' : '');
+    c.dataset.k = k;
+    c.innerHTML = '<span>' + (k === 'bad' ? turn.bad.e : turn.food.e) + '</span>';
+    tray.appendChild(c);
+  });
+}
+function buildChoices(turn) {
+  const box = $('#choices'); box.innerHTML = '';
+  let ds = [turn.n - 2, turn.n - 1, turn.n + 1, turn.n + 2].filter(x => x >= 1 && x <= 9);
+  ds = shuffled(ds).slice(0, 2);
+  shuffled([turn.n, ...ds]).forEach((n, k) => {
+    const b = document.createElement('button'), bc = THEME.boxes[k % 3];
+    b.className = 'choice'; b.dataset.n = n; b.style.setProperty('--c', bc.c); b.style.setProperty('--cd', bc.cd);
+    b.style.animationDelay = (k * 120) + 'ms';
+    b.innerHTML = '<span>' + n + '</span>'; b.firstElementChild.style.color = colorOf(String(n));
+    b.addEventListener('pointerdown', e => { e.preventDefault(); onAnswer(n); });
+    box.appendChild(b);
+  });
+}
+async function prepareTurn(turn) {
+  const st = $('#stage'), right = $('#right'), cr = $('#creature'), nb = $('#numBadge');
+  $('#fx').innerHTML = '';
+  cr.getAnimations().forEach(a => a.cancel()); cr.style.visibility = 'hidden'; nb.style.visibility = 'hidden';
+  st.classList.toggle('nobadge', !(turn.kind === 'show' || turn.kind === 'picky'));
+  $('#creature span').textContent = turn.creature.e;
+  nb.firstElementChild.textContent = turn.n; nb.style.color = colorOf(String(turn.n));
+  const rc = $('#runCount'); rc.style.opacity = 0; rc.firstElementChild.textContent = '';
+  right.classList.add('reset', 'out'); right.classList.remove('done');
+  buildTray(turn); $('#choices').innerHTML = ''; $('#result').innerHTML = '';
+  void right.offsetWidth; right.classList.remove('reset');
+  await wait(200);
+  // the creature hops in from the left
+  cr.style.visibility = 'visible'; nb.style.visibility = 'visible'; Sfx.boing();
+  const X = -innerWidth * .6, up = -hPx(.05);
+  const hop = (f, y) => ({ transform: `translate(${X * f}px,${y}px)` });
+  cr.animate([Object.assign(hop(1, 0), { offset: 0 }), Object.assign(hop(.7, up), { offset: .22 }), Object.assign(hop(.55, 0), { offset: .4 }),
+    Object.assign(hop(.3, up), { offset: .62 }), Object.assign(hop(.12, 0), { offset: .8 }), Object.assign(hop(.03, up * .5), { offset: .92 }), Object.assign(hop(0, 0), { offset: 1 })],
+    { duration: 1100, easing: 'ease-out' });
+  await wait(1150);
+  right.classList.remove('out');
+  await wait(350);
+}
+
+/* ---------- play styles ---------- */
+async function feedPhase(turn, T) {          // styles "show" and "hear": child taps food, voice counts along
+  const F = S.feed = { need: turn.n, got: 0, busy: false, resolve: null };
+  if (turn.kind === 'show' || turn.kind === 'picky') {
+    const nb = $('#numBadge'); Sfx.pop();
+    nb.animate([{ transform: 'scale(0)' }, { transform: 'scale(1.2)', offset: .6 }, { transform: 'scale(1)' }], { duration: 600, easing: 'ease-out' });
+    nb.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }], { duration: 800, delay: 650, iterations: 2, easing: 'ease-in-out' });
+  }
+  Speech.say(hungryText(turn));              // not awaited: the child may start feeding right away
+  setRepeat(true);
+  await T(new Promise(res => { F.resolve = res; }));
+  S.feed = null;
+}
+async function onFoodTap(cell) {
+  const F = S.feed;
+  if (!F || F.busy || S.screen !== 'game' || Clock.paused || cell.classList.contains('gone')) return;
+  Sfx.unlock(); F.busy = true;
+  const tk = S.token;
+  if (cell.dataset.k === 'bad') {                // picky eater: gentle "no thanks", nothing is lost
+    cell.classList.remove('wob'); void cell.offsetWidth; cell.classList.add('wob'); Sfx.tick();
+    $('#creature').animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-6deg)', offset: .25 }, { transform: 'rotate(6deg)', offset: .5 }, { transform: 'rotate(-4deg)', offset: .75 }, { transform: 'rotate(0)' }], { duration: 600 });
+    Speech.stop();
+    await Speech.say(fmt(sayCfg().pickyNo, tvars(S.turn)), 'soft');
+    if (tk === S.token) F.busy = false;
+    return;
+  }
+  const n = ++F.got, rect = cell.getBoundingClientRect(), emoji = S.turn.food.e;
+  cell.classList.add('gone');
+  Speech.stop();
+  const saying = Speech.say(numName(n));
+  await flyFood(emoji, rect);
+  if (tk !== S.token) return;
+  chomp(); showRun(n);
+  await saying;
+  if (tk !== S.token) return;
+  if (n >= F.need) F.resolve(); else F.busy = false;
+}
+function onAnswer(n) {
+  if (S.screen !== 'game' || Clock.paused || !S.accepting || !S.answer) return;
+  Sfx.unlock(); S.accepting = false;
+  const r = S.answer; S.answer = null; r(n);
+}
+async function countPhase(turn, T) {          // style "count": food is shown and counted aloud, child picks the digit
+  await T(Speech.say(sayCfg().countIntro)); await T(wait(150));
+  const cells = [...$('#tray').children];
+  for (let k = 0; k < turn.n; k++) {
+    const c = cells[k]; c.classList.add('hl'); Sfx.tick();
+    await T(Speech.say(numName(k + 1))); await T(wait(120));
+  }
+  await T(wait(250));
+  buildChoices(turn);
+  Speech.say(askCountText(turn));
+  setRepeat(true);
+  while (true) {
+    const n = await T(new Promise(res => { S.answer = res; S.accepting = true; }));
+    Speech.stop();
+    const el = $('#choices').querySelector(`[data-n="${n}"]`);
+    if (n === turn.n) { if (el) el.classList.add('right'); Logger.log('correct', { n: turn.n }); break; }
+    Logger.log('wrong', { n: turn.n, tapped: n });
+    if (el) el.classList.add('no');
+    await T(Speech.say(pickOne(sayCfg().retry), 'soft'));
+    await T(wait(150));
+  }
+  setRepeat(false);
+  // the creature eats everything
+  const left = [...$('#tray').children].filter(c => !c.classList.contains('gone'));
+  const flights = left.map((c, k) => wait(k * 130).then(() => { const r = c.getBoundingClientRect(); c.classList.add('gone'); Sfx.pop(); return flyFood(turn.food.e, r).then(chomp); }));
+  await T(Promise.all(flights));
+}
+
+async function playTurn(turn, i, T) {
+  S.turn = turn; S.feed = null; S.answer = null; S.accepting = false; setRepeat(false);
+  Logger.log('turn_start', { turn: i + 1, n: turn.n, kind: turn.kind, creature: turn.creature.en, food: turn.food.en[0] });
+  await T(prepareTurn(turn));
+  if (turn.kind === 'count') await countPhase(turn, T); else await feedPhase(turn, T);
+  setRepeat(false);
+
+  // celebration: creature is full, star, praise + numeral with its foods, then the creature does its exit
+  Logger.log('turn_done', { turn: i + 1 });
+  Sfx.win(); cheer();
+  const mp = mouthPoint(); Confetti.burst(mp.x, mp.top + 40, 70);
+  const stars = $('#progress').children; if (stars[i]) stars[i].classList.add('done');
+  $('#runCount').style.opacity = 0;
+  showResult(turn);
+  await T(Speech.say(pickOne(sayCfg().praise) + ' ' + fmt(sayCfg().done, tvars(turn))));
+  await T(wait(400));
+  await T(EXITS[S.rewardOrder[i % S.rewardOrder.length]]($('#creature'), T));
+  $('#creature').style.visibility = 'hidden'; $('#numBadge').style.visibility = 'hidden';
+  await T(wait(150));
+}
+
+function buildProgress(n) { $('#progress').innerHTML = STAR_SVG.repeat(n); }
+async function runRound() {
+  const token = ++S.token;
+  S.round = buildRound();
+  S.rewardOrder = shuffled([0, 1, 2, 3, 4]);
+  buildProgress(S.round.length);
+  showScreen('game');
+  const T = async p => { const r = await p; if (token !== S.token) throw ABORT; await Clock.gate(); if (token !== S.token) throw ABORT; return r; };
+  Logger.log('round_start', { lang: S.lang, mode: SET.mode, style: SET.style });
+  try {
+    await T(wait(200));
+    for (let i = 0; i < S.round.length; i++) await playTurn(S.round[i], i, T);
+    await finishRound(T);
+  } catch (e) { if (e !== ABORT && !(e && e.name === 'AbortError')) console.error(e); }
+}
+async function finishRound(T) {
+  Logger.log('round_end', {});
+  setRepeat(false);
+  $('#endStars').innerHTML = STAR_SVG.repeat(S.round.length);
+  $('#endLabel').textContent = CONFIG.lang[S.lang].ui.playAgain + ' · ' + CONFIG.lang[S.lang].ui.home;
+  showScreen('end');
+  Sfx.fanfare();
+  Confetti.burst(innerWidth / 2, innerHeight * .4, 140, 1.3);
+  Confetti.rain(3500);
+  await T(Speech.say(CONFIG.lang[S.lang].say.roundEnd));
+}
+
+/* =====================================================================
+   Screens
+   ===================================================================== */
+function showScreen(name) {
+  S.screen = name;
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + name));
+  if (name !== 'game') { setRepeat(false); $('#pauseLayer').classList.remove('on'); }
+  updateWarnings();
+}
+function togglePause() {
+  if (S.screen !== 'game' || $('#panel').classList.contains('open')) return;
+  const p = !Clock.paused;
+  $('#pauseHint').textContent = CONFIG.lang[S.lang].ui.paused;
+  $('#pauseLayer').classList.toggle('on', p);
+  Clock.set(p);
+}
+function abortRun() {
+  if (Clock.paused) { Clock.set(false); $('#pauseLayer').classList.remove('on'); }
+  S.token++; S.accepting = false; S.answer = null; S.feed = null;
+  Speech.stop();
+  $('#fx').innerHTML = '';
+  $('#creature').getAnimations().forEach(a => a.cancel());
+  $('#creature').style.visibility = 'visible'; $('#numBadge').style.visibility = 'visible'; $('#right').classList.remove('out', 'done', 'reset');
+}
+function goHome() { abortRun(); showScreen('start'); }
+function startGame() {
+  Sfx.unlock();
+  Speech.say(CONFIG.lang[S.lang].say.start);       // speak inside the click so browsers allow speech from here on
+  document.documentElement.lang = S.lang;
+  runRound();
+}
+
+function buildStart() {
+  const langs = $('#langs');
+  Object.entries(CONFIG.lang).filter(([, L]) => L.enabled).forEach(([key, L]) => {
+    const b = document.createElement('button');
+    b.className = 'lang' + (key === S.lang ? ' sel' : ''); b.dataset.lang = key;
+    b.innerHTML = `<span class="flag">${L.flag}</span><span>${L.label}</span>`;
+    b.addEventListener('click', () => {
+      S.lang = key; document.querySelectorAll('.lang').forEach(x => x.classList.toggle('sel', x === b));
+      Sfx.unlock(); updateWarnings();
+    });
+    langs.appendChild(b);
+  });
+  const deco = $('#deco');
+  [['🐻', '🍎🍎'], ['🐰', '🥕🥕🥕'], ['🦖', '🍓']].forEach(([cr, fd]) => {
+    const pick = (s, test) => [...s].every(ch => test(ch));
+    const el = document.createElement('div'); el.className = 'dcard';
+    el.innerHTML = `<div class="cr">${EmojiOK(cr) ? cr : '🐻'}</div><div class="fd">${pick(fd, EmojiOK) ? fd : '🍎'}</div>`;
+    deco.appendChild(el);
+  });
+  $('#playBtn').addEventListener('click', startGame);
+  $('#againBtn').addEventListener('click', () => { Confetti.burst(innerWidth / 2, innerHeight * .6, 40); startGame(); });
+  $('#homeBtn2').addEventListener('click', goHome);
+  $('#pauseBtn').addEventListener('click', e => { e.currentTarget.blur(); togglePause(); });
+  $('#resumeBtn').addEventListener('click', e => { e.currentTarget.blur(); togglePause(); });
+  $('#pauseHome').addEventListener('click', goHome);
+  $('#repeatBtn').addEventListener('click', () => {
+    if (!S.turn || S.screen !== 'game' || Clock.paused || (S.feed && S.feed.busy)) return;
+    Speech.stop(); Speech.say(S.turn.kind === 'count' ? askCountText(S.turn) : hungryText(S.turn));
+  });
+  $('#tray').addEventListener('pointerdown', e => { const c = e.target.closest('.food'); if (c) { e.preventDefault(); onFoodTap(c); } });
+  addEventListener('keydown', e => {                       // number keys answer the "how many?" question
+    if (!/^[1-9]$/.test(e.key) || e.repeat || Clock.paused || $('#panel').classList.contains('open')) return;
+    onAnswer(+e.key);
+  });
+}
+
+/* =====================================================================
+   Parent panel (press & hold the hidden gear for 2 s)
+   ===================================================================== */
+function segRow(parent, label, options, key, after) {
+  const row = document.createElement('div'); row.className = 'setrow';
+  row.innerHTML = `<label>${label}</label><div class="seg"></div>`;
+  const seg = row.querySelector('.seg');
+  options.forEach(o => {
+    const b = document.createElement('button'); b.textContent = o.label;
+    b.className = SET[key] === o.v ? 'sel' : '';
+    b.addEventListener('click', () => {
+      SET[key] = o.v; saveSettings();
+      seg.querySelectorAll('button').forEach(x => x.classList.toggle('sel', x === b));
+      after && after();
+    });
+    seg.appendChild(b);
+  });
+  parent.appendChild(row);
+}
+function radioList(host, map, key) {
+  host.innerHTML = '';
+  Object.entries(map).forEach(([k, m]) => {
+    const lab = document.createElement('label');
+    lab.className = 'modeOpt' + (SET[key] === k ? ' sel' : '');
+    lab.innerHTML = `<input type="radio" name="${key}" value="${k}" ${SET[key] === k ? 'checked' : ''}><span><b>${m.label}</b><small>${m.desc}</small></span>`;
+    lab.querySelector('input').addEventListener('change', () => { SET[key] = k; saveSettings(); Panel.render(); });
+    host.appendChild(lab);
+  });
+}
+const Panel = {
+  wasPlaying: false,
+  open() {
+    this.wasPlaying = S.screen === 'game';
+    if (this.wasPlaying) abortRun();
+    this.render(); $('#panel').classList.add('open'); renderVoiceInfo();
+  },
+  close() {
+    $('#panel').classList.remove('open');
+    if (this.wasPlaying) { this.wasPlaying = false; runRound(); }   // new round with the new settings
+  },
+  render() {
+    radioList($('#styleList'), CONFIG.styles, 'style');
+    radioList($('#modeList'), CONFIG.modes, 'mode');
+    const tl = $('#themeList'); tl.innerHTML = '';
+    Object.entries(CONFIG.themes).forEach(([key, t]) => {
+      const b = document.createElement('button');
+      b.className = 'themeOpt' + (SET.theme === key ? ' sel' : '');
+      b.innerHTML = `<div class="sw">${t.boxes.map(x => `<i style="background:${x.c}"></i>`).join('')}<i style="background:${t.vars['--bg1']};border:1px solid #ccc"></i></div>${t.label}`;
+      b.addEventListener('click', () => { SET.theme = key; saveSettings(); applyTheme(key); this.render(); });
+      tl.appendChild(b);
+    });
+    const dl = $('#diffList'); dl.innerHTML = '';
+    segRow(dl, 'Số lượt / Turns per round', CONFIG.game.turnsOptions.map(n => ({ v: n, label: String(n) })), 'turns');
+    const label = { known: '✓ known', new: '★ new', off: 'off' }, order = ['known', 'new', 'off'], grid = $('#gridNum');
+    grid.innerHTML = '';
+    CONFIG.items.forEach(it => {
+      const b = document.createElement('button');
+      const paint = () => { b.className = 'chip ' + SET.items[it.id]; b.innerHTML = `<span class="g">${it.glyph}</span><span class="s">${label[SET.items[it.id]]}</span>`; };
+      paint();
+      b.addEventListener('click', () => { SET.items[it.id] = order[(order.indexOf(SET.items[it.id]) + 1) % 3]; saveSettings(); paint(); });
+      grid.appendChild(b);
+    });
+  }
+};
+function renderVoiceInfo() {
+  const box = $('#voiceInfo'); box.innerHTML = '';
+  if (!Speech.supported) { box.textContent = '✗ speechSynthesis not supported in this browser.'; return; }
+  const norm = v => (v.lang || '').replace('_', '-').toLowerCase();
+  Object.entries(CONFIG.lang).filter(([, L]) => L.enabled).forEach(([key, L]) => {
+    const prefix = L.speechLang.split('-')[0].toLowerCase();
+    const match = Speech.voices.filter(v => norm(v).split('-')[0] === prefix), other = Speech.voices.filter(v => !match.includes(v));
+    const opt = v => `<option value="${v.name.replace(/"/g, '&quot;')}">${v.name} (${v.lang})</option>`;
+    const row = document.createElement('div'); row.className = 'setrow';
+    row.innerHTML = `<label>${L.label} (${L.speechLang})</label>
+      <select><option value="">Tự động · Auto</option>
+        <optgroup label="Đúng ngôn ngữ · matching language">${match.map(opt).join('')}</optgroup>
+        <optgroup label="Giọng khác · other (có thể đọc sai)">${other.map(opt).join('')}</optgroup></select>
+      <button class="pbtn">▶ Thử · Test</button><span class="vstat"></span>`;
+    const sel = row.querySelector('select'), stat = row.querySelector('.vstat');
+    sel.value = SET.voices[key] || '';
+    if (sel.value !== (SET.voices[key] || '')) sel.value = '';
+    const status = () => { const v = Speech.find(key); stat.textContent = v ? `✓ ${v.name}` : '✗ chưa có giọng · no voice — game im lặng / silent'; };
+    status();
+    sel.addEventListener('change', () => { if (sel.value) SET.voices[key] = sel.value; else delete SET.voices[key]; saveSettings(); status(); });
+    row.querySelector('button').addEventListener('click', () => { Sfx.unlock(); Speech.stop(); Speech.say(L.say.start, 'normal', key); });
+    box.appendChild(row);
+  });
+}
+function initGear() {
+  const gear = $('#gear'); let timer = 0;
+  const cancel = () => { clearTimeout(timer); timer = 0; gear.classList.remove('holding'); };
+  gear.addEventListener('pointerdown', e => {
+    e.preventDefault(); cancel(); gear.classList.add('holding');
+    timer = setTimeout(() => { cancel(); Panel.open(); }, CONFIG.game.holdMs);
+  });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => gear.addEventListener(ev, cancel));
+  gear.addEventListener('contextmenu', e => e.preventDefault());
+  $('#closeBtn').addEventListener('click', () => Panel.close());
+  $('#panelHome').addEventListener('click', () => { Panel.wasPlaying = false; $('#panel').classList.remove('open'); goHome(); });
+  $('#resetBtn').addEventListener('click', () => { SET = defaultSettings(); saveSettings(); applyTheme(SET.theme); Panel.render(); });
+  addEventListener('keydown', e => {
+    if (e.key === 'Escape' && $('#panel').classList.contains('open')) Panel.close();
+    if ((e.code === 'Space' || e.key === ' ') && !$('#panel').classList.contains('open')) { e.preventDefault(); if (!e.repeat) togglePause(); }
+  });
+  addEventListener('keyup', e => { if (e.code === 'Space') e.preventDefault(); });
+}
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+/* =====================================================================
+   Boot
+   ===================================================================== */
+initCreatures();
+buildStart();
+initGear();
+applyTheme(SET.theme);
+Speech.init();
+updateWarnings();
+</script>
+</body>
+</html>
