@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-10-07
+- Added "Cho thú ăn · Feed the Monster" (counting game for ages 4-5, v1.2): `tools/feed-the-monster.html`
+
 ## 2026-10-06
 - Added "SAT Vocab Practice" with a short link, `sat-vocab/`, that forwards to the Google Apps Script app. Listed under High School.
 - Updated "3 Boxes · ABC 123" to v3.0 (same address, `tools/three-boxes.html`): pause button and Space key, voice picker in the parent panel, tidier home screen, target box colour changes every turn.
