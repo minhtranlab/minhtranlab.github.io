@@ -1,20 +1,5 @@
 [
-  {
-    "title": "SAT Vocab Practice",
-    "level": ["High School"],
-    "topic": ["SAT", "Vocabulary"],
-    "description": "Adaptive Words in Context vocabulary practice for the SAT. Opens the app.",
-    "path": "sat-vocab/",
-    "type": "tool",
-    "date": "2026-10-06"
-  },
-  {
-    "title": "3 Boxes · ABC 123",
-    "level": ["Kids & Games"],
-    "topic": ["Letters & numbers"],
-    "description": "A shuffle-and-find game for young children to learn letters and numbers. Vietnamese and English voices.",
-    "path": "tools/three-boxes.html",
-    "type": "tool",
-    "date": "2026-10-06"
-  }
+  {"title":"Cho thú ăn · Feed the Monster","level":["Kids & Games"],"topic":["Counting"],"description":"A counting game for ages 4–5: feed each animal the right number of treats, 1 to 9. Vietnamese and English voices.","path":"tools/feed-the-monster.html","type":"tool","date":"2026-10-07"},
+  {"title":"SAT Vocab Practice","level":["High School"],"topic":["SAT","Vocabulary"],"description":"Adaptive Words in Context vocabulary practice for the SAT. Opens the app.","path":"sat-vocab/","type":"tool","date":"2026-10-06"},
+  {"title":"3 Boxes · ABC 123","level":["Kids & Games"],"topic":["Letters & numbers"],"description":"A shuffle-and-find game for young children to learn letters and numbers. Vietnamese and English voices.","path":"tools/three-boxes.html","type":"tool","date":"2026-10-06"}
 ]
