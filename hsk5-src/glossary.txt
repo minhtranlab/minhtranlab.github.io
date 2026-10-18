@@ -1,0 +1,770 @@
+一|một|nhất
+二|hai|nhị
+三|ba|tam
+五|năm|ngũ
+十|mười|thập
+点|giờ (đồng hồ); điểm|điểm
+他|anh ấy, ông ấy
+她|cô ấy, bà ấy
+我|tôi
+你|bạn, cậu
+们|(hậu tố số nhiều: 我们, 评委们)|môn
+我们|chúng tôi, chúng ta
+你们|các bạn, các cậu
+他们|họ
+位|vị (lượng từ lịch sự cho người)|vị
+家|nhà|gia
+的|(trợ từ: của, bổ nghĩa)
+了|(trợ từ: đã, rồi)
+是|là|thị
+不|không|bất
+不是|không phải
+没|không, chưa (phủ định quá khứ)
+没有|không có; chưa
+有|có|hữu
+很|rất
+太|quá
+好|tốt; (trước tính từ) thật là|hảo
+真|thật|chân
+真的|thật sao? thật á?
+吗|(trợ từ nghi vấn)
+呢|(trợ từ: còn… thì sao)
+吧|(trợ từ gợi ý, đồng ý)
+啊|(trợ từ cảm thán)
+啦|(trợ từ cảm thán, = 了+啊)||s
+哈哈|haha||s
+哇|wow, ôi|||s
+对|đúng; đối với; (lượng từ) cặp|đối
+别|đừng
+怕|sợ
+加油|cố lên
+可是|nhưng
+可惜|đáng tiếc
+在|ở; đang|tại
+今天|hôm nay
+昨天|hôm qua
+明天|ngày mai
+晚上|buổi tối
+以后|sau này, sau khi
+天|ngày|thiên
+夫妻|vợ chồng|phu thê||s
+爸爸|bố
+妈妈|mẹ
+爷爷|ông nội
+奶奶|bà nội
+结婚|kết hôn|kết hôn
+年|năm|niên
+朋友|bạn bè|bằng hữu
+公司|công ty|công ti
+老师|thầy cô giáo|lão sư
+觉得|cảm thấy, thấy rằng
+认识|quen biết|nhận thức
+请问|xin hỏi|thỉnh vấn
+谢谢|cảm ơn
+问|hỏi|vấn
+问题|câu hỏi; vấn đề|vấn đề
+说|nói|thuyết
+写|viết|tả
+听|nghe|thính
+看|xem; nhìn|khán
+听懂|nghe hiểu
+听清楚|nghe rõ
+清楚|rõ ràng|thanh sở
+懂|hiểu|đổng
+来|đến; (đi cùng động từ) lại|lai
+出|ra; (说出 = nói ra)|xuất
+要|muốn; sẽ; phải|yếu
+得|phải (děi); (说得 = nói đến mức) de|đắc|py:děi
+应该|nên, phải|ưng cai
+当|làm, đóng vai|đương
+打开|mở ra, bật lên
+打|đánh; (打分 = chấm điểm)|đả
+分|điểm; phút; chia|phân
+把|(giới từ: đem… ra làm gì)
+和|và; với|hòa
+也|cũng|dã
+都|đều|đô|py:dōu
+还|còn; vẫn|hoàn|py:hái
+还是|vẫn là; hay là
+就|liền, sẽ
+才|mới, chỉ mới|tài
+又|lại (lần nữa, đã xảy ra)|hựu
+再|lại (lần nữa, sẽ xảy ra)|tái
+先|trước|tiên
+快|nhanh|khoái
+一下|một chút (làm thử)|nhất hạ
+一起|cùng nhau|nhất khởi
+放|đặt, để|phóng
+这|này|giá
+那|kia, đó
+这么|như thế này, thế này
+什么|cái gì
+怎么|thế nào; sao lại (hỏi lý do)
+怎么办|làm sao đây
+办|làm, xử lý|biện
+怎样|thế nào|chẩm dạng
+为什么|tại sao
+因为|bởi vì|nhân vi
+所以|cho nên
+谁|ai|thùy
+最|nhất|tối
+最近|dạo này, gần đây|tối cận
+比|so với; hơn|tỉ
+比较|khá, tương đối; so sánh|tỉ giảo
+比赛|cuộc thi, trận đấu|tỉ tái
+明显|rõ ràng|minh hiển
+红色|màu đỏ
+白色|màu trắng
+新|mới|tân
+旧|cũ|cựu
+照片|bức ảnh|chiếu phiến
+喜欢|thích|hỉ hoan
+面条|mì
+米饭|cơm
+饭|cơm, bữa ăn|phạn
+吃|ăn|cật
+做|làm|tố
+想|muốn; nghĩ|tưởng
+练习|luyện tập|luyện tập
+名字|tên|danh tự
+叫|gọi; tên là|khiếu
+报名|đăng ký tham gia|báo danh
+声音|âm thanh|thanh âm
+只有|chỉ có
+只是|chỉ là
+图|hình ảnh, tranh|đồ
+电视|ti vi|điện thị
+视|nhìn|thị|s
+话|lời nói|thoại
+电话|điện thoại|điện thoại
+睡觉|đi ngủ|thụy giác
+紧张|căng thẳng|khẩn trương
+笑|cười|tiếu
+像|giống|tượng
+好像|hình như; giống như
+聊天|trò chuyện, tán gẫu
+开始|bắt đầu|khai thủy
+分钟|phút|phân chung
+下|dưới; tiếp theo; xuống|hạ
+上|trên; lên|thượng
+电影|phim|điện ảnh
+被|bị|bị
+原来|thì ra, hóa ra|nguyên lai
+奇怪|lạ, kỳ quặc|kỳ quái
+会|sẽ; có thể|hội
+第|thứ (số thứ tự)|đệ
+一样|giống nhau; như nhau|nhất dạng
+一共|tổng cộng|nhất cộng
+法院|tòa án|pháp viện|s
+法官|thẩm phán|pháp quan|s
+观众|khán giả|quan chúng|s
+感恩|biết ơn|cảm ân|s
+周围|xung quanh|chu vi|s
+细节|chi tiết (từ của bài sau)|tế tiết|t
+评委老师|(cách thí sinh gọi giám khảo trên TV)||s
+评审委员|ủy viên chấm xét (dạng đầy đủ của 评委)|bình thẩm ủy viên|s
+秀|khoe, trình diễn (tiếng lóng mạng)|tú|s
+秀恩爱|khoe tình cảm đôi (tiếng lóng mạng)||s
+决赛|trận chung kết|quyết tái|s
+电视台|đài truyền hình|điện thị đài|s
+糟|hỏng, tệ (糟了 = chết rồi)|tao|s
+后面|phía sau|hậu diện
+刚才|vừa nãy|cương tài
+教|dạy|giáo
+习惯|thói quen|tập quán
+其实|thật ra|kỳ thực
+这样|như vậy|giá dạng
+张|(lượng từ cho tờ, tấm)|trương
+两|hai|lưỡng
+句|câu, lời|cú
+个|(lượng từ chung)|cá
+人|người|nhân
+见|thấy, gặp|kiến
+现在|bây giờ|hiện tại
+到|đến|đáo
+冷|lạnh|lãnh
+错|sai|thố
+小|nhỏ|tiểu
+老|già; (tiền tố thân mật: 老张)|lão
+大|to|đại
+图|hình ảnh, tranh|đồ
+有些|có chút
+对吗|đúng không
+入|vào|nhập|s
+围|vòng, vây|vi|s
+评|chấm, nhận xét|bình|s
+委|ủy viên, giao phó|ủy|s
+恩|ơn nghĩa|ân|s
+爱|yêu|ái
+如|như|như|s
+何|gì, sao|hà|s
+电|điện|điện
+台|đài, bục|đài
+拼|ghép (nút bật pinyin)||s
+周姐|chị Chu (sếp của bạn)||n
+小林|Tiểu Lâm (bạn, thực tập sinh)||n
+老张|lão Trương (người dẫn chương trình)||n
+小雨|Tiểu Vũ (bạn Trung Quốc của bạn)||n
+大伟|Đại Vĩ (bạn đi thi cùng 小雨)||n
+雨|mưa; (tên 小雨)|vũ|n
+电台|đài phát thanh; chương trình trên đài|điện đài|t
+恩爱|(vợ chồng) thắm thiết, ân ái|ân ái|t|py:ēn'ài
+入围|lọt vào vòng trong (danh sách cuối)|nhập vi|t
+评委|giám khảo, ban giám khảo|bình ủy|t
+对比|đặt cạnh nhau để so; sự tương phản|đối tỉ|t
+如何|như thế nào (văn viết, phát thanh)|như hà|t
+身体|cơ thể, sức khỏe|thân thể
+找|tìm|trảo
+每天|mỗi ngày|mỗi thiên
+知道|biết|tri đạo
+赢|thắng|doanh
+输|thua|thâu
+帮|giúp|bang
+忘|quên|vong
+次|lần|thứ
+用|dùng|dụng
+给|cho; (viết) cho ai|cấp
+黑色|màu đen
+说得|nói (đến mức…); 得 là trợ từ bổ ngữ||py:shuō de
+一定|nhất định, chắc chắn|nhất định
+一直|suốt, luôn luôn|nhất trực
+七|bảy|thất
+丈夫|chồng|trượng phu
+东西|đồ, đồ vật|đông tây
+严重|nghiêm trọng|nghiêm trọng
+中间|ở giữa|trung gian
+久|lâu|cửu
+书|sách|thư
+买|mua|mãi
+事|việc, chuyện|sự
+事故|tai nạn, sự cố|sự cố|s
+交通|giao thông|giao thông
+亮|sáng|lượng
+亲|thân (rất thân)|thân
+从|từ|tùng
+从来|từ trước đến nay|tòng lai
+但|nhưng|đãn
+但是|nhưng|đãn thị
+例|ví dụ|lệ
+例子|ví dụ|lệ tử
+子|(hậu tố danh từ)|tử
+全|toàn, cả|toàn
+公|công, chung|công
+公物|của công|công vật|s
+关心|quan tâm|quan tâm
+关系|quan hệ|quan hệ
+别人|người khác|biệt nhân
+加|thêm|gia
+加油|cố lên|gia du
+动|động, cử động|động
+医生|bác sĩ|y sinh
+卖|bán|mại
+厉害|giỏi, ghê gớm|lệ hại
+原因|nguyên nhân|nguyên nhân
+原谅|tha thứ|nguyên lượng
+去|đi|khứ
+去年|năm ngoái|khứ niên
+发|gửi, phát|phát
+另|khác|lánh
+可以|có thể|khả dĩ
+同|cùng|đồng
+名|tên|danh
+后|sau|hậu
+后来|sau đó, về sau|hậu lai
+吵|cãi, ồn ào|sảo|t
+吵架|cãi nhau|sảo giá|t
+呀|(trợ từ cảm thán)||s
+告诉|nói cho biết|cáo tố
+哎|ôi, ấy (cảm thán)||s
+哪|nào|nã
+哭|khóc|khốc
+嗯|ừm||s
+地|(trợ từ nối trạng ngữ: 简单地…); đất|địa
+地方|nơi, chỗ|địa phương
+坏|hỏng, xấu|hoại
+多|nhiều|đa
+大家|mọi người|đại gia
+天气|thời tiết|thiên khí
+太太|bà, vợ (cách gọi lịch sự)|thái thái|s
+夸|khen|khoa|s
+奖|giải thưởng|tưởng
+夸奖|khen ngợi|khoa tưởng|s
+女|nữ|nữ
+好吃|ngon|hảo cật
+妻子|vợ|thê tử
+婚|hôn|hôn
+嫉妒|ghen tị|tật đố|s
+字|chữ|tự
+学|học|học
+学习|học tập|học tập
+学校|trường học|học hiệu
+学生|học sinh|học sinh
+孩子|đứa trẻ, con|hài tử
+它|nó (vật)
+对不起|xin lỗi|đối bất khởi
+小心|cẩn thận|tiểu tâm
+小时|giờ (khoảng thời gian)|tiểu thời
+工作|công việc; làm việc|công tác
+已经|đã (rồi)|dĩ kinh
+布|vải|bố|s
+常|thường|thường
+常常|thường xuyên|thường thường
+幸福|hạnh phúc|hạnh phúc
+广播|phát thanh|quảng bá
+开|mở|khai
+形成|hình thành, tạo nên|hình thành|s
+忙|bận|mang
+怎么样|thế nào|chẩm dạng
+怨|oán, hờn|oán|s
+总是|luôn luôn|tổng thị
+意思|ý nghĩa|ý tư
+意见|ý kiến|ý kiến
+感冒|cảm cúm|cảm mạo
+感动|cảm động|cảm động
+手机|điện thoại di động|thủ cơ
+打|đánh; gọi (điện)|đả
+电话|điện thoại|điện thoại
+打开|mở ra|đả khai
+护|che chở, bảo vệ|hộ|s
+保护|bảo vệ|bảo hộ
+抱|ôm|bão
+拆|tháo, tách ra|sách|s
+换|đổi|hoán
+提|nâng; nhắc đến|đề
+擦|lau|sát
+故事|câu chuyện|cố sự
+整|nguyên, cả|chỉnh
+新闻|tin tức|tân văn
+旅游|du lịch|lữ du
+早|sớm|tảo
+早上|buổi sáng|tảo thượng
+更|hơn, càng|cánh
+最后|cuối cùng|tối hậu
+最好|tốt nhất|tối hảo
+木|gỗ|mộc|s
+树木|cây cối|thụ mộc|s
+花草|hoa cỏ|hoa thảo
+杀|giết|sát|s
+条|(lượng từ: con đường, v.v.)|điều
+架|giá (đồ); (吵架 = cãi nhau)|giá|s
+树|cây|thụ
+水|nước|thủy
+氵|bộ thủy (nước)||s
+法|pháp, cách|pháp
+消息|tin, tin nhắn|tiêu tức
+满|đầy|mãn
+满意|hài lòng|mãn ý
+火|lửa|hỏa
+热|nóng|nhiệt
+照顾|chăm sóc|chiếu cố
+物|vật|vật
+环境|môi trường|hoàn cảnh
+生气|giận|sinh khí
+生病|bị bệnh|sinh bệnh
+电脑|máy tính|điện não
+男|nam|nam
+留|ở lại, giữ lại|lưu
+疒|bộ bệnh (chỉ bệnh tật)||s
+病|bệnh|bệnh
+痪|(liệt; trong 瘫痪)||s
+瘫|(liệt; trong 瘫痪)|than|s
+瘫痪|bị liệt; (nghĩa bóng) tê liệt||t
+离婚|ly hôn|ly hôn|t
+自杀|tự sát|tự sát|t
+抱怨|phàn nàn, than phiền|bão oán|t
+爱护|yêu quý và giữ gìn, chăm lo|ái hộ|t
+白|trắng|bạch
+相信|tin tưởng|tương tín
+相|tương, nhau|tương
+着|(trợ từ: đang…)|trước
+睡|ngủ|thụy
+票|vé|phiếu
+离|rời, cách|ly
+离开|rời đi|ly khai
+站|đứng; trạm|trạm
+第一|thứ nhất|đệ nhất
+等|chờ|đẳng
+答|đáp|đáp
+简单|đơn giản|giản đơn
+算|tính; coi như|toán
+累|mệt|lụy
+练|luyện|luyện
+结|kết|kết
+继续|tiếp tục|kế tục
+网|mạng|võng
+老婆|vợ (thân mật)|lão bà|t
+老板|ông chủ, sếp|lão bản|s
+聊|trò chuyện|liêu
+能|có thể|năng
+自|tự|tự
+自己|bản thân|tự kỷ
+自然|tự nhiên|tự nhiên
+花|hoa; tiêu (tiền)|hoa
+草|cỏ|thảo
+菜|rau; món ăn|thái
+表|biểu|biểu
+表演|biểu diễn|biểu diễn
+解决|giải quyết|giải quyết
+讨厌|ghét|thảo yếm
+让|để, cho|nhượng
+记者|nhà báo, phóng viên|ký giả
+讲|kể, nói|giảng
+词|từ|từ
+该|nên, cần|cai
+详细|chi tiết, tỉ mỉ|tường tế
+语法|ngữ pháp|ngữ pháp
+说话|nói chuyện|thuyết thoại
+请|mời; xin|thỉnh
+读|đọc|độc
+课|bài học, tiết học|khóa
+走|đi bộ, đi|tẩu
+起|dậy, lên|khởi
+起来|đứng lên, dậy|khởi lai
+跑步|chạy bộ|bào bộ
+跟|với, cùng
+路|đường|lộ
+身|thân, người|thân
+车|xe|xa
+辞职|xin nghỉ việc|từ chức|s
+过|đã từng; qua|quá
+进|vào|tiến
+部分|phần, bộ phận|bộ phận
+里|trong|lý
+重|nặng|trọng
+重要|quan trọng|trọng yếu
+长|dài; lớn|trường
+难|khó|nan
+难过|buồn|nan quá
+需要|cần|nhu yếu
+面|mặt; mì|diện
+高兴|vui|cao hứng
+黑|đen|hắc
+鼓励|động viên|cổ lệ
+非常|rất, vô cùng|phi thường
+人|người|nhân
+个|(lượng từ chung)|cá
+接|nối; đón|tiếp
+直|thẳng|trực
+直接|trực tiếp|trực tiếp
+果|quả|quả
+苹果|quả táo|bình quả
+轮|vòng, lượt (thi)|luân|t
+九|chín|cửu
+六|sáu|lục
+前|trước; phía trước|tiền
+喂|a lô, alô (khi nghe điện thoại)|
+坐|ngồi|tọa
+秘密|bí mật|bí mật|s
+日子|ngày, ngày tháng|nhật tử
+李|họ Lý|lý|n
+王|họ Vương|vương|n
+跑|chạy|bào
+陪|ở bên cạnh, đi cùng|bồi
+吵过架|từng cãi nhau|s
+休息|nghỉ ngơi|hưu tức
+几|mấy; vài|kỷ
+响|kêu, reo|hưởng
+真正|thật sự|chân chính
+然后|sau đó|nhiên hậu
+亻|bộ nhân đứng (người)|nhân|s
+包|bao, bọc|bao|s
+友|bạn|hữu
+口|miệng|khẩu
+可|có thể; được|khả
+囗|bộ vi (khung bao quanh)|vi|s
+因|nguyên do; vì|nhân
+夗|nằm cong, trằn trọc|uyển|s
+奂|(phần chỉ âm huàn)|hoán|s
+奈|làm sao (无可奈何)|nại|s
+寸|tấc; (bộ tay nhỏ)|thốn|s
+平|bằng phẳng, công bằng|bình
+心|tim, lòng|tâm
+愛|yêu (chữ phồn thể của 爱)|ái|s
+户|cửa, nhà (hộ)|hộ|s
+扌|bộ thủ (tay)|thủ|s
+无|không (chữ giản thể của 無)|vô|s
+昏|chạng vạng, hoàng hôn|hôn|s
+爫|bàn tay (phần trên chữ 爱)|trảo|s
+申|(phần trong chữ 电, hình tia chớp)|thân|s
+禾|cây lúa|hòa|s
+舞|múa, nhảy|vũ
+讠|bộ ngôn (lời nói)|ngôn|s
+阳|ánh nắng, dương|dương
+韦|(phần chỉ âm wéi)|vi|s
+医生|bác sĩ|y sinh
+医院|bệnh viện|y viện
+多少|bao nhiêu|đa thiểu
+终于|cuối cùng, rốt cuộc|chung vu
+选|chọn|tuyển
+努力|cố gắng, nỗ lực|nỗ lực
+为|vì, cho|vi
+并且|và, hơn nữa|tịnh thả
+感动|cảm động; xúc động|cảm động
+感人|làm người ta cảm động|cảm nhân|s
+可能性|khả năng, xác suất|khả năng tính|s
+几年如一日|nhiều năm như một ngày (thành ngữ)|s
+日|ngày|nhật
+知|biết|tri
+他俩|hai người họ|s
+少|ít|thiểu
+住|ở, sống (ở một nơi)|trú
+什么|cái gì
+以前|trước đây|dĩ tiền
+音乐|âm nhạc|âm nhạc
+价格|giá cả|giá cách
+时候|lúc, khi|thời hậu
+哪儿|ở đâu
+参加|tham gia|tham gia
+唱|hát|xướng
+四十|bốn mươi|tứ thập
+城市|thành phố|thành thị
+安静|yên tĩnh|an tĩnh
+手机|điện thoại di động|thủ cơ
+手|tay|thủ
+拉|kéo, nắm|lạp
+结束|kết thúc|kết thúc
+班|lớp|ban
+生|sinh; bị (bệnh)|sinh
+雪|tuyết|tuyết
+大雪|tuyết lớn|đại tuyết
+那么|như vậy, thế
+随后|sau đó|tùy hậu
+进来|đi vào, vào đây|tiến lai
+第二|thứ hai|đệ nhị
+十几年|hơn mười năm|thập kỷ niên
+生活|cuộc sống; đời sống|sinh hoạt
+中|trong, giữa|trung
+任何|bất cứ, bất kỳ|nhiệm hà
+红脸|đỏ mặt; nổi nóng, to tiếng|hồng kiểm
+相亲相爱|thương yêu gần gũi nhau|tương thân tương ái
+点头|gật đầu|điểm đầu
+轮到|đến lượt|luân đáo|s
+却|nhưng lại, thế mà|khước
+不见|không thấy|bất kiến
+走出来|đi ra|tẩu xuất lai
+究竟|rốt cuộc, thực chất|cứu cánh
+只见|chỉ thấy|chỉ kiến|py:zhǐ jiàn
+仍然|vẫn, vẫn còn|nhưng nhiên
+门口|cửa ra vào, ngoài cửa|môn khẩu
+男人|đàn ông; người đàn ông|nam nhân
+女人|phụ nữ; người phụ nữ|nữ nhân
+上前|tiến lên phía trước|thượng tiền
+喊醒|gọi cho tỉnh dậy|hảm tỉnh|s
+男的|người đàn ông|nam đích
+女的|người phụ nữ|nữ đích
+伸出|chìa ra, thò ra|thân xuất|s
+小声|nhỏ tiếng, khẽ|tiểu thanh
+动作|động tác, cử động|động tác
+拿出|lấy ra|nã xuất
+左手|tay trái|tả thủ
+写下|viết xuống, ghi lại|tả hạ
+一行|một dòng, một hàng|nhất hàng|py:yì háng
+递给|đưa cho|đệ cấp|s
+右肩|vai phải|hữu kiên|s
+纸条|mảnh giấy, tờ giấy nhỏ|chỉ điều
+别出声|đừng lên tiếng|biệt xuất thanh
+出声|lên tiếng, phát ra tiếng|xuất thanh
+昨晚|tối qua|tạc vãn
+提起|cầm lên, nhấc lên|đề khởi
+续写|viết tiếp|tục tả
+夫妻俩|hai vợ chồng|phu thê lưỡng
+吃惊|kinh ngạc, giật mình|ngật kinh
+影响|ảnh hưởng, làm phiền|ảnh hưởng
+放弃|từ bỏ, bỏ cuộc|phóng khí
+机会|cơ hội|cơ hội
+而是|mà là|nhi thị
+一段|một đoạn, một quãng|nhất đoạn
+一会儿|một lúc, một lát|nhất hội nhi
+不好意思|ngại, ngượng|bất hảo ý tư
+后半夜|nửa đêm sau, gần sáng|hậu bán dạ|s
+赶|đuổi, xua; vội|cản
+一楼|tầng một|nhất lâu
+结果|kết quả|kết quả
+增加|tăng thêm, thêm|tăng gia
+奖项|hạng mục giải thưởng|tưởng hạng|s
+评为|bình chọn là|bình vi|py:píng wéi
+婚姻|hôn nhân|hôn nhân|t
+相敬如宾|vợ chồng kính trọng nhau như khách quý|tương kính như tân|t
+暗暗|thầm, ngấm ngầm|ám ám|t
+不耐烦|sốt ruột, bực mình|bất nại phiền|t
+靠|dựa, tựa|kháo|t
+肩膀|bờ vai, vai|kiên bảng|t
+喊|kêu, gọi|hảm|t
+伸|duỗi, chìa|thân|t
+手指|ngón tay|thủ chỉ|t
+歪歪扭扭|xiêu vẹo, nguệch ngoạc|oai oai nữu nữu|t
+递|đưa, chuyển|đệ|t
+脑袋|đầu|não đại|t
+女士|bà (cách gọi lịch sự với phụ nữ)|nữ sĩ|t
+叙述|thuật lại|tự thuật|t
+居然|lại có thể (bất ngờ)|cư nhiên|t
+催|thúc giục|thôi|t
+等待|đợi, chờ|đẳng đãi|t
+蚊子|con muỗi|văn tử|t
+半夜|nửa đêm|bán dạ|t
+叮|đốt, chích|đinh|t
+项|hạng mục, mục (lượng từ)|hạng|t
+患难与共|hoạn nạn có nhau|hoạn nạn dữ cộng|t
+丁|(phần chỉ âm trong 叮)|đinh|s
+与|và, cùng (giản thể của 與)|dữ
+丑|xấu; (phần chỉ âm trong 扭)|xú|s
+串|xâu, chuỗi|xuyến|s
+仑|(phần chỉ âm trong 轮)|luân|s
+代|đời; thay thế; (phần chỉ âm trong 袋)|đại|s
+任务|nhiệm vụ|nhiệm vụ
+任|(trong 任务, 任何)|nhiệm
+受伤|bị thương|thụ thương
+俩|hai (người)|lưỡng
+这儿|ở đây|giá nhi
+兴奋|phấn khích, hào hứng|hưng phấn
+决定|quyết định|quyết định
+计划|kế hoạch|kế hoạch
+调查|điều tra, khảo sát|điều tra|py:diào chá
+研究|nghiên cứu|nghiên cứu
+项目|hạng mục, dự án|hạng mục|s
+运动|vận động, thể thao|vận động
+技术|kỹ thuật|kỹ thuật
+完全|hoàn toàn|hoàn toàn
+客气|khách sáo, lịch sự|khách khí
+座位|chỗ ngồi|tòa vị
+飞机|máy bay|phi cơ
+夏天|mùa hè|hạ thiên
+椅子|cái ghế|ỷ tử
+桌子|cái bàn|trác tử
+洗碗|rửa bát|tẩy oản
+钢琴|đàn piano|cương cầm
+弹|đánh, gảy, chơi (đàn)|đàn|py:tán
+拍|vỗ|phách|s
+摇头|lắc đầu|dao đầu|s
+摇|lắc, lay|dao|s
+摸|sờ, xoa|mô|s
+笔|bút|bút
+纸|giấy|chỉ
+脚|bàn chân|cước
+脸|mặt|kiểm
+腿|đùi, chân|thối
+耳边|bên tai|nhĩ biên
+路边|ven đường|lộ biên
+考上|thi đỗ|khảo thượng
+同意|đồng ý|đồng ý
+明年|sang năm, năm sau|minh niên
+经过|diễn biến; đi qua|kinh quá
+特别|đặc biệt, rất|đặc biệt
+碰到|gặp, đụng phải|bính đáo|s
+漂亮|đẹp|phiêu lượng
+父母|cha mẹ|phụ mẫu
+好朋友|bạn tốt|hảo bằng hữu
+患难|hoạn nạn, khó khăn|hoạn nạn|s
+叮嘱|dặn dò|đinh chúc|s
+嘴边|bên miệng, môi|chủy biên
+嘴|miệng|chủy
+夏|mùa hè|hạ
+奋|(兴奋)|phấn
+痒|ngứa|dương|s
+窗|cửa sổ|song
+靠窗|sát cửa sổ|kháo song|s
+靠海|sát biển|kháo hải|s
+靠着|tựa vào|kháo trước|s|py:kào zhe
+睡着|ngủ thiếp đi|thụy trước|py:shuì zháo
+长得|mọc, trông|trưởng đắc|py:zhǎng de
+等得|đợi đến mức|đẳng đắc|py:děng de
+只|(lượng từ cho con vật: 一只蚊子)|chỉ|py:zhī
+将|đem, đưa (将…评为…)|tương|py:jiāng
+号|số, ngày|hiệu|py:hào
+头|đầu|đầu
+声|tiếng, âm thanh|thanh
+回家|về nhà|hồi gia
+完|xong, hết|hoàn
+时间|thời gian|thời gian
+杯|cốc, ly|bôi
+根|(lượng từ cho vật dài mảnh); gốc rễ|căn
+楼下|dưới lầu|lâu hạ
+吵死了|ồn chết đi được|sảo tử liễu|s
+死|chết; (nhấn mạnh) kinh khủng|tử
+客|khách|khách
+座|chỗ ngồi|tòa
+题|đề bài, câu hỏi|đề
+马上|ngay lập tức|mã thượng
+医院门口|cổng bệnh viện|y viện môn khẩu
+感情|tình cảm|cảm tình
+事情|sự việc, chuyện|sự tình
+部|bộ, phần; (lượng từ cho phim)|bộ
+这部|bộ này|giá bộ
+伤|thương, vết thương|thương
+共|cùng, chung|cộng
+半|một nửa|bán
+叙|kể, trình bày theo thứ tự|tự|s
+古|cổ, xưa|cổ|s
+告|báo, nói cho biết|cáo
+咸|(phần chỉ âm trong 喊); tất cả|hàm
+嗡|(tiếng muỗi vo ve)|ông|s
+士|sĩ; người có học|sĩ
+夜|đêm|dạ|s
+姻|hôn nhân; nhà chồng|nhân|s
+婆|bà|bà|s
+宀|bộ miên (mái nhà)|miên|s
+宾|khách|tân
+寺|chùa; (phần chỉ âm)|tự|s
+尸|(hình người ngồi)|thi|s
+居|ở, cư trú|cư
+崔|(phần chỉ âm trong 催)|thôi|s
+工|công, việc làm|công
+弟|em trai|đệ
+彳|bộ xích (bước đi)|xích|s
+待|đợi; đối đãi|đãi|s
+患|hoạn, lo lắng, tai họa|hoạn|s
+扭|vặn, xoay|nữu|s
+拿|cầm, lấy|nã
+指|ngón tay; chỉ|chỉ
+支|(lượng từ cho bút); chi|chi
+攵|bộ phộc (tay cầm roi)|phộc|s
+敬|kính, tôn trọng|kính|s
+文|văn, chữ|văn
+旁|bên cạnh|bàng
+旨|(phần chỉ âm trong 指)|chỉ|s
+晚|muộn; tối|vãn
+暗|tối, ngầm|ám|s
+月|trăng; (bộ nhục: thịt, cơ thể)|nguyệt
+术|thuật|thuật
+正|ngay, đúng|chính
+歪|nghiêng, xiêu vẹo|oai|s
+波|sóng|ba|s
+烦|phiền, bực|phiền
+然|như thế; đúng vậy|nhiên
+田|ruộng|điền|s
+目|mắt|mục
+竹|tre|trúc|s
+纟|bộ mịch (sợi tơ)|mịch|s
+红|đỏ|hồng
+细|nhỏ, mảnh|tế
+而|mà, còn, và|nhi
+耐|chịu đựng|nại
+肩|vai|kiên|s
+脑|não, đầu|não
+膀|vai; bắp tay|bảng|s
+與|cùng, và (phồn thể của 与)|dữ|s
+节|đốt; tiết, đoạn|tiết
+虫|côn trùng|trùng|s
+蚊|muỗi|văn|s
+衣|áo|y
+袋|túi|đại
+貝|vỏ sò, tiền xưa (phồn thể của 贝)|bối|s
+賓|khách (phồn thể của 宾)|tân|s
+辶|bộ sước (đi, chuyển động)|sước|s
+述|kể, thuật|thuật|s
+醒|tỉnh, thức dậy|tỉnh
+非|không; sai|phi
+音|âm thanh|âm
+页|trang; đầu|hiệt
+飞|bay|phi
+儿|(hậu tố “-r”, như 一点儿); con|nhi
+右|bên phải|hữu
+外|bên ngoài|ngoại
+本|quyển (lượng từ sách); gốc|bản
+汉|(người) Hán; 汉语: tiếng Hán|hán
+清|rõ, trong|thanh
+百|trăm|bách
+考|thi|khảo
+认|nhận, biết|nhận
+试|thử, thi|thí
+语|lời, tiếng|ngữ

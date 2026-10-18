@@ -1,0 +1,35 @@
+/* ===== common styles ===== */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;touch-action:manipulation}
+.w{cursor:pointer;border-radius:4px;padding:0 1px;transition:background .15s}
+.w:active{background:rgba(255,200,0,.35)}
+.w ruby{ruby-position:over}
+.w rt{display:none;font-size:.42em;font-weight:400;letter-spacing:0;opacity:.8;font-family:-apple-system,system-ui,sans-serif}
+body.py .w rt{display:ruby-text}
+.w.t{border-bottom:2px solid currentColor;border-bottom-color:var(--tw,#f2b24a)}
+.w.unk{outline:2px dashed red}
+.sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,120%);width:min(560px,100%);background:#fff;color:#1b1b1f;border-radius:20px 20px 0 0;padding:16px 20px 26px;box-shadow:0 -10px 40px rgba(0,0,0,.3);z-index:50;transition:transform .22s cubic-bezier(.2,.8,.3,1);font-family:-apple-system,system-ui,sans-serif}
+.sheet:not(.open){box-shadow:none;visibility:hidden}
+.sheet.open{transform:translate(-50%,0)}
+.sh-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sh-hz{font:600 34px/1.1 "PingFang SC","Songti SC",serif}
+.sh-py{font-size:19px;color:#555}
+.sh-snd{margin-left:auto;font-size:22px;width:44px;height:44px;border-radius:50%;background:#eee}
+.sh-vi{font-size:19px;margin-top:6px;line-height:1.35}
+.sh-hv{margin-top:6px;font-size:15px;color:#7a4b00}
+.chip{display:inline-block;margin-top:10px;font-size:12px;padding:3px 9px;border-radius:99px;background:#eee;color:#444}
+.chip-t{background:#ffe9b0;color:#6b4300}
+.chip-s{background:#e4ecf7;color:#2b4a74}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+button:focus-visible{outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 0 5px #000}
+
+.optrow{display:flex;gap:8px;align-items:stretch}
+.optrow>.opt,.optrow>.tile{flex:1}
+.lens{width:48px;flex:none;border-radius:12px;background:rgba(255,255,255,.12);font-size:18px}
+.opt .w,.cx .w,.tile .w,.slot .w,.chip2 .w,.line .w{pointer-events:none}
+.gl{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid #eee}
+.gl-t{font-size:13px;color:#777;margin-bottom:4px}
+.gl-hz{font:600 22px "PingFang SC","Songti SC",serif;min-width:70px}
+.gl-py{color:#666;font-size:15px;min-width:90px}
+.gl-vi{font-size:16px}

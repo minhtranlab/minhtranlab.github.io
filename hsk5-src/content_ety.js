@@ -1,0 +1,25 @@
+/* ===== Hán Việt + chiết tự (character parts) + a memory hook for each word ===== */
+const ETY = {
+  '电台': { parts: [['电', 'điện', 'Chữ xưa vẽ tia chớp trên trời mưa (雨 + 申). Chớp là “điện” đầu tiên con người nhìn thấy.'], ['台', 'đài', 'Cái nền cao, cái bục. Cũng có trong 舞台 (sân khấu), 阳台 (ban công).']],
+    hook: 'Điện (电) + đài (台) = cái đài chạy bằng điện. Tiếng Việt cũng nói “điện đài”.' },
+  '恩爱': { parts: [['恩', 'ân', '因 (nhân, nguyên do) đặt trên 心 (tim). Cái “nhân” nằm trong tim: nhớ ơn người đã thương mình.'], ['爱', 'ái', 'Bản phồn thể 愛 có chữ 心 ở giữa; bản giản thể 爱 bỏ mất. Mẹo: bàn tay (爫) đưa ra với một người bạn (友).']],
+    hook: 'Ơn (恩) + yêu (爱). Vợ chồng thắm thiết là vừa nhớ ơn nhau vừa thương nhau. Đừng đọc theo nghĩa “ân ái” trong tiếng Việt.' },
+  '入围': { parts: [['入', 'nhập', 'Hình mũi nhọn đi vào bên trong. Phân biệt với 人 (người): 入 như mũi tên chúc vào.'], ['围', 'vi', 'Khung 囗 là bức tường bao quanh, bên trong là phần chỉ âm 韦 (wéi). Vòng vây.']],
+    hook: 'Nhập (入) vào trong bức tường (囗). Bạn đã vào vòng trong, nhưng cổng cuối vẫn còn phía trước.' },
+  '对比': { parts: [['对', 'đối', 'Hai bộ 又 và 寸, cả hai đều là “bàn tay”. Hai bên quay mặt vào nhau: đối diện.'], ['比', 'tỉ', 'Chữ xưa vẽ hai người đứng sát cạnh nhau, nên có nghĩa “so với”. Như “tỉ lệ”, “tỉ số”.']],
+    hook: 'Đứng cạnh nhau (比) và nhìn thẳng vào nhau (对) thì tự nhiên thấy chỗ khác nhau.' },
+  '评委': { parts: [['评', 'bình', '讠 (lời nói) + 平 (bằng phẳng, công bằng): nói sao cho cân. Như “bình luận”, “bình xét”.'], ['委', 'ủy', 'Cây lúa (禾) cúi xuống trên chữ 女, nghĩa gốc là thuận theo, giao phó. Như “ủy viên”, “ủy thác”.']],
+    hook: 'Người được ủy (委) để nói công bằng (评) về bài của bạn.' },
+  '如何': { parts: [['如', 'như', '女 + 口. Nghĩa gốc là “theo, làm theo”, sau thành “giống như”. Mẹo: làm đúng như lời dặn.'], ['何', 'hà', '亻 (người) + 可. Chữ xưa là người gánh đồ, về sau được mượn làm từ hỏi “gì, nào”.']],
+    hook: '“Như hà” = giống cái nào? = thế nào? Bạn đã gặp 何 trong thành ngữ 无可奈何 “vô khả nại hà” (hết cách, không biết làm sao).' },
+  '瘫痪': { parts: [['瘫', 'than', 'Bộ 疒 (bệnh) + phần chỉ âm 难 (nán). Mẹo thêm: 难 là “khó”, nhớ thành “bệnh khó cử động”.'], ['痪', 'hoán', 'Bộ 疒 (bệnh) + phần chỉ âm 奂 (huàn).']],
+    hook: 'Hai chữ đều đứng dưới bộ 疒. Bộ này giống người nằm trên giường bệnh. Thấy 疒 thì đoán “bệnh”.' },
+  '离婚': { parts: [['离', 'ly', 'Rời ra, tách ra. Như “ly biệt”, “ly khai”.'], ['婚', 'hôn', '女 + 昏. Xưa lễ cưới làm lúc chạng vạng (昏, hôn trong “hoàng hôn”), nên chữ cưới mang 昏.']],
+    hook: 'Ly (离) = rời ra, hôn (婚) = cưới. Cưới xưa làm lúc hoàng hôn, nên 婚 và “hoàng hôn” có cùng âm.' },
+  '自杀': { parts: [['自', 'tự', 'Chữ xưa vẽ cái mũi. Người Trung Quốc chỉ vào mũi khi nói “tôi”, nên 自 là “bản thân”.'], ['杀', 'sát', 'Giết. Như “sát thủ”, “sát hại”.']],
+    hook: 'Tự (自) + sát (杀). Giống hệt âm Hán Việt. Từ nặng, bạn chỉ cần nhận ra khi đọc.' },
+  '抱怨': { parts: [['抱', 'bão', '扌 (tay) + 包 (bao bọc, hình thai nhi trong bụng mẹ). Tay bao lấy: ôm.'], ['怨', 'oán', '夗 (nằm cong, trằn trọc) trên 心 (lòng). Lòng trằn trọc không yên là oán.']],
+    hook: 'Ôm (抱) nỗi oán (怨) trong lòng, rồi nói ra thành lời than.' },
+  '爱护': { parts: [['爱', 'ái', 'Yêu. Đã gặp trong 恩爱.'], ['护', 'hộ', '扌 (tay) + 户 (cửa, nhà; “hộ” trong “hộ khẩu”). Mẹo bản giản thể: tay giữ cửa là bảo vệ. Như “bảo hộ”.']],
+    hook: 'Yêu (爱) và canh giữ như giữ cửa nhà (护). Yêu mà còn chăm chút gìn giữ.' }
+};
