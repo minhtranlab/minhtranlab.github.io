@@ -109,7 +109,7 @@ Always run the full test set before pushing, and say honestly what you could not
 
 ## 7. Open items and ideas (none of these is approved yet unless marked)
 
-1. **Chapter 2 ("Bài 2")** — Minh said the content comes later. Needs photos of the book pages from him (as he did for Chapter 1: reading text, vocabulary list, grammar, exercises). Method that worked for Chapter 1: transcribe the book text faithfully → split into units of 1–3 sentences with 2–5 new words → build vocabulary glossary entries + chiết tự/mnemonics + illustrations + question banks → build → test → he plays it for a few days → refine.
+1. **Chapter 2 ("Bài 2")** — Minh said the content comes later. Needs photos of the book pages from him. **Follow the full workflow in §10 and the preferences in §11.**
 2. **Engine is shaped around Chapter 1.** Before adding Chapter 2 generalize: a `CHAPTERS` registry exists only for the locked placeholders on the home path; headings such as "Bài 1 · Những điều nhỏ nhặt trong tình yêu", the toast "Xong cả Bài 1!", `LAST()`, the single final test `t1`, session ids (`1`–`11`), the revision path and the glossary flags all assume one chapter. Content is inlined into `index.html`; with many chapters, split content per chapter and load it lazily like the audio. Audio manifest per chapter would also help. Decide the design, tell Minh in two sentences, then do it.
 3. Optional cleanups he may want: hide "Mở hết các màn" and "Xóa tiến độ" under an "advanced" section (earlier offered, not requested); switch the male voice to Kokoro "E"; a better way to read feedback (currently the `Feedback` tab of the Sheet).
 4. Have Minh confirm the real login works, and that recording, pinyin toggle and flip card behave on his iPad.
@@ -122,3 +122,55 @@ Pilot first, scale later, each stage ends with his approval; mass production onl
 ## 9. If GitHub refuses a push (403 "Claude GitHub App not installed")
 
 Do not work around it. Give Minh these steps: open https://github.com/apps/claude/installations/select_target → choose his account `minhtranlab` → choose the repository `minhtranlab.github.io` (or All repositories) → Install/Save. Then retry the push. If the new Claude account is a different one, he may also need to connect GitHub in that account's settings (Connectors → GitHub). As a last resort he can upload files by hand on github.com (Add file → Upload files).
+
+---
+
+## 10. WORKFLOW FOR A NEW CHAPTER (how Chapter 1 was made — repeat this for Chapter 2, 3, …)
+
+Minh does one thing: he uploads **photos of the book pages** (he did 7 photos for Chapter 1: title + warm-up + reading text, vocabulary list, notes, collocation/comparison tables, exercises). Claude does all the rest. Nothing is invented from the web; the book is the source. Steps:
+
+**Step 0 — Before starting.** Ask Minh for: photos of the chapter (title page with the reading text; the numbered word list; the grammar notes 注释; the 词语搭配 / 词语辨析 tables; optionally the exercises). Tell him which chapter number and that the new chat needs them as attachments. If the photos sit in his Mac folder `~/Desktop/03 - Personal/HSK5/HSK5 Books/<Chapter N>/` and the Mac bridge is linked, stage them from there. Photos on other sites cannot be fetched by the sandbox.
+
+**Step 1 — Transcribe (paper, no code).** Read every photo at 2x zoom and write `Chapter<N>_transcript.md`: header as printed (title, character count such as "662字"), the full reading text split into paragraphs, the numbered word list (the book's own pinyin, part of speech, Vietnamese gloss — never your own gloss in the transcript), the grammar notes with their examples, collocation tables, comparison table, and a "could not read / check" list. Checks that must pass: the character count printed by the book equals the Hanzi+punctuation count of your transcript; every word is in the text or the title; every Vietnamese diacritic checked. Words marked `*` in the book's word list are "beyond the HSK5 syllabus": keep them all (the story needs them) but tag them "story word" (lower exam priority), drill the exam-core words harder. Save the file in the Mac folder, send it to Minh in chat, and write a short report (`ChapterN_Step1_report.md`, no book text) of checks, decisions, open items. Models of the reports (no book text) are in `hsk5-src/docs/Chapter1_Step1_report.md` and `Chapter1_Step2_report.md`.
+
+**Step 2 — Cut into units (paper).** Rules Minh approved: a learn unit = 1–3 consecutive printed sentences with **about 3–5 new words** (never fewer than 2); every word is placed in the unit of its **first appearance** in the text; a grammar note or collocation row is attached to the unit where its headword first appears; long sentences may be split at a comma; a word that appears only in the title goes to the chapter-end review; "support words" (transparent compounds or idioms not decodable, e.g. 几年如一日) get a gloss on screen but are never counted or tested; split verb-objects (离婚, 吵架) are shown in the split form from the text first, then taught as a pattern. Insert a mixed review (m1, m2, …) after **every two** study units, plus a final test. Check by script that the joined chunks equal the transcript exactly and all words are placed once. Output: a table (unit, text chunk, new words, support words, grammar, count). Report the table and decisions to Minh; he usually says "you are the tutor, decide" — so decide and report; he approves the structure, not the Chinese details.
+
+**Step 3 — Vocabulary check.** `hsk5-src/hsk.json` has HSK1–4 word and character lists. Every Chinese word that appears in any sentence or question must be HSK1–4, a taught word of the chapters so far, a support word, or a proper noun in `glossary.txt`. Practice sentences must be built only from known words (this was a hard lesson: cloze quizzes with other unknown words in them were useless to him). New taught/support words go into `glossary.txt` as `word|vi|hanviet|flag` (+ `|py:override` for tricky readings). `build.py` fails with "problems: N" otherwise.
+
+**Step 4 — Write the content files (per chapter; for Chapter 2 prefer new files `content_*_ch2.js` and a chapter registry, see §7.2).** Formats are the best documentation: copy the shape of the Chapter 1 files.
+- `WORDS` (`content_words*.js`): per taught word `{id, ep (unit no.), vi, hv (Hán–Việt), facts:[2–3 short Vietnamese notes with <b> on key point; include traps — e.g. Hán–Việt false friends like 恩爱 vs "ân ái", typical collocation, what comes before/after], ex:[2 new example sentences]}`.
+- `ETY` (`content_ety*.js`): per word `parts:[[char, hán-việt, chiết-tự explanation in Vietnamese], …]` + `hook` = one-line mnemonic in Vietnamese. Minh explicitly wants **etymology + mnemonic for every word**.
+- `LEARN` (`content_learn*.js`): per word `exv` (2 Vietnamese renderings of example sentences) and one `hear` question (Chinese sentence spoken; 3 Vietnamese options differing in one detail; `why` explains which pieces to catch).
+- `BOOK` + `SESSIONS` (`content_story*.js`): `BOOK` = the printed sentences with their Vietnamese (split at a comma if needed). `SESSIONS` = one entry per study unit `{id, title, sub, thumb, words, screens:[…]}` (screen types in §6).
+- `QB` + `MEAN` (`content_bank*.js`): the question bank for revision/mixed review: 2–4 items per word using **new sentences** (not only the book's), types `cz` (cloze), `od` (order the chunks), `ty` (type by pinyin), `hr` (hear and pick).
+- `TESTBANK` (`content_test.js`): true/false and spot-the-mistake items for the chapter-end test.
+- Illustrations: add scene functions to `kit*.js` (SVG: characters, props, scenes such as radio, car, hospital, bed, door…). Hán characters inside art must be HSK1–4 or taught words.
+- Then: `gen_jobs.py` → `synth.py` (audio) → `build.py` ("problems: 0") → all tests → push. Tell Minh the page is live and say what he should try (he plays the first unit or two on his iPad, then comments).
+
+**Step 5 — He plays, comments, you refine.** His feedback arrives as casual messages after he plays on the iPad or from the in-lesson 💬 box (stored in the Sheet's `Feedback` tab if sync works). Fix, rebuild, push, report in a few lines.
+
+## 11. CONTENT AND QUESTION PREFERENCES (what Minh has said he likes and dislikes)
+
+**He wants:**
+- Lessons that **teach with every question**: after a wrong answer there is a short explanation of why that option is wrong (`note` on each wrong option) and a `teach` line on the right one. Wrong choices must be plausible *and* instructive (a near-synonym, a similar-looking word, a word with a wrong collocation), each with a one-line "why not".
+- **Variety** so it never feels like repeating the same action: story beats, word cards with tap-to-reveal extras, picture pick (hear a sentence, choose the right scene), cloze (mc), true/false, spot-the-mistake (`spot`), predict-the-next-line (`predict`), order the chunks (`order`), type with a pinyin keyboard (`type`), hear-and-choose the meaning (`hear`), match, read-aloud/shadow, a closing "album" sticker screen. A study unit is about **11–13 screens**, usually: story beat → word cards (new word with hear/pick) → application (mc/pick/hear/order/type/tf/spot) → next story beat → … → album.
+- **Production tasks** (order words, type by pinyin) in some units, not all. Speaking via shadowing/recording only occasionally.
+- **Grammar mini-lessons** mixed into the unit where the point first appears (e.g. 如何 vs 怎么, 靠, 居然), shown briefly and then used in a question.
+- **New example sentences** (not only the book's) in questions, but made of known words only.
+- The **story = the book's sentences**, shown one sentence per screen with new words glossed where they first appear, then the whole unit shown once to read in one go. Short invented context (a scene, a picture caption) is allowed only to make a word understandable. Illustrations are drawn by Claude in SVG; "lots of illustrations, not screens full of words".
+- **Hán Việt + chiết tự + a Vietnamese mnemonic** for each word; Hán–Việt traps called out.
+- Lean screens: as little as possible visible; extras (pinyin, Hán Việt, example, explanation) on tap; **no Vietnamese translation visible on a question before he answers**; pinyin only via the 拼 toggle; a correct answer shows a green box without "Đúng rồi" text.
+- Vocabulary revision: 3/7/21-day spacing (code uses GAPS=[1,3,7,21]); words he taps for a meaning feed revision; mixed review after every two units; separate revision path.
+- Real recorded-quality audio (Matcha female + Kokoro male), but he will not record himself.
+
+**He dislikes (do not do):**
+- One-word-per-screen drills where every question is "fill in the new word" (called mechanical and dry).
+- Chat-group "reading only" screens with no teaching; sad/boring invented stories that do not follow the book.
+- **Tone drills** (the TTS is not reliable for tone practice).
+- Cloze sentences that contain other unknown words.
+- Mentioning the textbook title or page numbers inside the app (say "sách").
+- Giving away the answer in the prompt, the audio file name, or the tap-a-word sheet.
+- Silly decorations (floating Hán characters on the home page were removed).
+- Being asked to judge Chinese content on paper. He is "not a Chinese tutor": Claude decides, reports afterwards.
+
+**Process preferences:** tell him at each stage what is being tested; pilot first (small slice), his approval before scaling; short replies; if he must do something technical, numbered click-by-click steps.
