@@ -1,23 +1,25 @@
 // Runs Code.gs under Node with a faithful-enough fake of SpreadsheetApp, so client + server can be tested end to end.
 const fs = require('fs'), vm = require('vm'), http = require('http');
 function coerce(v) { if (typeof v === 'string') { if (/^-?\d+(\.\d+)?$/.test(v)) return Number(v); if (/^[=+@]/.test(v)) return '#ERROR!'; if (v.length > 50000) throw new Error('cell too long'); } return v; }
-class Sheet { constructor(n) { this.n = n; this.rows = []; this.frozen = 0; }
+class Sheet { constructor(n) { this.n = n; this.rows = []; this.frozen = 0; this.formulas = {}; this.styles = 0; }
+  clear() { this.rows = []; this.formulas = {}; } setColumnWidth() { } activate() { book.__active = this.n; }
   getLastRow() { return this.rows.length; }
   setFrozenRows() { }
   getRange(r, c, nr = 1, nc = 1) { const sh = this; return {
     setValues(v) { for (let i = 0; i < nr; i++) { const row = sh.rows[r - 1 + i] = sh.rows[r - 1 + i] || []; for (let j = 0; j < nc; j++) row[c - 1 + j] = coerce(v[i][j]); } for (let i = 0; i < sh.rows.length; i++) sh.rows[i] = sh.rows[i] || []; return this; },
     getValues() { const o = []; for (let i = 0; i < nr; i++) { const row = []; for (let j = 0; j < nc; j++) { const x = (sh.rows[r - 1 + i] || [])[c - 1 + j]; row.push(x === undefined ? '' : x); } o.push(row); } return o; },
-    setFontWeight() { return this; } }; } }
-const book = {}; 
+    setFontWeight() { sh.styles++; return this; }, setNumberFormat() { return this; }, setWrap() { return this; }, setVerticalAlignment() { return this; }, setFontSize() { return this; }, setBackground() { return this; },
+    setValue(v) { return this.setValues([[v]]); }, setFormula(f) { sh.formulas[r + ',' + c] = f; return this; } }; } }
+const book = {}; const order = [];
 const ctx = { console, JSON, Date, Number, String, Math,
-  SpreadsheetApp: { getActiveSpreadsheet: () => ({ getSheetByName: n => book[n] || null, insertSheet: n => (book[n] = new Sheet(n)) }) },
+  SpreadsheetApp: { getActiveSpreadsheet: () => ({ getSheetByName: n => book[n] || null, insertSheet: n => { order.push(n); return (book[n] = new Sheet(n)); }, setSpreadsheetTimeZone() { }, moveActiveSheet(pos) { order.splice(order.indexOf(book.__active), 1); order.splice(pos - 1, 0, book.__active); } }) },
   ContentService: { MimeType: { JSON: 'json' }, createTextOutput: t => ({ t, setMimeType() { return this; } }) },
   CacheService: { getScriptCache: () => ({ get: k => cache[k] === undefined ? null : cache[k], put: (k, v) => { cache[k] = v; } }) },
   LockService: { getScriptLock: () => ({ waitLock() { }, releaseLock() { } }) },
   Utilities: { formatDate: (d, tz, f) => d.toISOString().slice(0, 16).replace('T', ' ') } };
 const cache = {};
 vm.createContext(ctx); vm.runInContext(fs.readFileSync(__dirname + '/Code.gs', 'utf8'), ctx);
-module.exports = { ctx, book, cache };
+module.exports = { ctx, book, cache, order };
 if (require.main === module) {
   ctx.setup();
   const codes = book.Students.rows.slice(1).map(r => r[0]); console.log('CODES', codes.join(','));
