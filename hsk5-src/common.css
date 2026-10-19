@@ -6,7 +6,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;touch-
 .w:active{background:rgba(255,200,0,.35)}
 .w ruby{ruby-position:over}
 .w rt{display:none;font-size:.42em;font-weight:400;letter-spacing:0;opacity:.8;font-family:-apple-system,system-ui,sans-serif}
-body.py .w rt{display:ruby-text}
+body.py .w rt,.showpy .w rt{display:ruby-text}
 .w.t{border-bottom:2px solid currentColor;border-bottom-color:var(--tw,#f2b24a)}
 .w.unk{outline:2px dashed red}
 .sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,120%);width:min(560px,100%);background:#fff;color:#1b1b1f;border-radius:20px 20px 0 0;padding:16px 20px 26px;box-shadow:0 -10px 40px rgba(0,0,0,.3);z-index:50;transition:transform .22s cubic-bezier(.2,.8,.3,1);font-family:-apple-system,system-ui,sans-serif}

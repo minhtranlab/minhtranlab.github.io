@@ -79,6 +79,7 @@ Requirements in a fresh sandbox: `python3`, `node`, `ffmpeg`, `pip install pypin
 1. Edit sources in `hsk5-src/`.
 2. `python3 hsk5-src/build.py` → prints vocabulary report and must end with **`problems: 0`**. It validates every Chinese word in the content and the app against `glossary.txt`: a word must be HSK1–4, or a taught/support word in the glossary; anything else is a problem. Decorative Hán characters in illustrations must also be HSK1–4 or taught words.
 3. Tests (from `hsk5-src/tests`): start `python3 serve.py &` (serves `hsk5/` on :8765 with a blank API so tests never touch the real Sheet) and for sync tests `node ../backend/mock_gas.js > /tmp/mock.log &` (fake Apps Script on :8766). Then:
+   - `python3 t_rules.py` — the general UI rules of §12 (reveal block after every question type, no "Đúng!" text, no auto-advance, audio-failure toast, cloze scenes). Must print `RULES OK`.
    - `python3 t_all.py` — plays every session end to end (right and wrong answers), reports missing audio clips. Expected output: all 19 items done, `missing clips 0`, only the harmless Google-Fonts `ERR_TUNNEL_CONNECTION_FAILED` error.
    - `python3 t_new4.py` — feature test (goal modal, recording UI, feedback, retry, resume, reader).
    - `python3 t_py.py` — audits that every Chinese character shown has pinyin when 拼 is on (SVG art text excepted); `python3 t_card.py` does the same for all flip cards. Expected: 0 uncovered.
@@ -168,7 +169,7 @@ Minh does one thing: he uploads **photos of the book pages** (he did 7 photos fo
 - **New example sentences** (not only the book's) in questions, but made of known words only.
 - The **story = the book's sentences**, shown one sentence per screen with new words glossed where they first appear, then the whole unit shown once to read in one go. Short invented context (a scene, a picture caption) is allowed only to make a word understandable. Illustrations are drawn by Claude in SVG; "lots of illustrations, not screens full of words".
 - **Hán Việt + chiết tự + a Vietnamese mnemonic** for each word; Hán–Việt traps called out.
-- Lean screens: as little as possible visible; extras (pinyin, Hán Việt, example, explanation) on tap; **no Vietnamese translation visible on a question before he answers**; pinyin only via the 拼 toggle; a correct answer shows a green box without "Đúng rồi" text.
+- Lean screens: as little as possible visible; extras (pinyin, Hán Việt, example, explanation) on tap; **no Vietnamese translation visible on a question before he answers**; pinyin only via the 拼 toggle; a correct answer shows a green box and **no "Đúng!" / "Đúng rồi" text** (he asked twice; see §12).
 - Vocabulary revision: 3/7/21-day spacing (code uses GAPS=[1,3,7,21]); words he taps for a meaning feed revision; mixed review after every two units; separate revision path.
 - Real recorded-quality audio (Matcha female + Kokoro male), but he will not record himself.
 
@@ -183,3 +184,19 @@ Minh does one thing: he uploads **photos of the book pages** (he did 7 photos fo
 - Being asked to judge Chinese content on paper. He is "not a Chinese tutor": Claude decides, reports afterwards.
 
 **Process preferences:** tell him at each stage what is being tested; pilot first (small slice), his approval before scaling; short replies; if he must do something technical, numbered click-by-click steps.
+
+
+## 12. GENERAL RULES FOR EVERY QUESTION SCREEN (Minh's feedback 2026-10-19 after playing Review/Unit 3 on iPhone — apply to Chapter 2, 3, … and every new question type)
+
+Implemented in code as `answerBlock(pane, zhText, viText)` in `app.src.html`; new question types MUST call it. `tests/t_rules.py` checks it.
+
+1. **After every answer (right, wrong, or revealed) show an answer block**: the full Chinese sentence/word (every word tappable for meaning + sound), the Vietnamese translation, a 🔊 replay button, and a **Pinyin** button (ruby over the characters; it also follows the top 拼 toggle). Never move on without this block.
+2. **Auto-play the answer** (sentence or word) as soon as the learner answers, unless the top 🔊 "Tự đọc to" toggle is off. This is the default for *all* types: order, hear, type, choose, pick, tf, spot, mc.
+3. **Never auto-advance and never skip past a correct answer.** The learner reviews (replay, pinyin, tap words, example) and moves on only with "Tiếp →".
+4. **During the question** pinyin may stay hidden (he wants to think first), but any "Hiện chữ" / text shown before answering also needs its own Pinyin option (ruby when the text is visible, a plain pinyin line when it is not). After answering, pinyin and word taps must always work (the tap handler allows `.w` inside `.reveal`).
+5. **No "Đúng!" / "对！" text on a correct answer**: the green option is enough. Wrong answers keep their short explanation (`note`).
+6. **Illustrations must match the sentence being tested.** Before attaching a scene to a cloze/mc question, check that the picture shows what the *sentence* says (not just the word's teaching picture). The 如何-vs-怎么newsroom picture belongs only on the word card; the cloze "你觉得这个问题该如何解决？" uses `discuss` (two people discussing a problem). If no existing scene fits, draw a new one in `kit2.js` (`SC.name`, plus a `SCENE_LABEL` entry) and render it with `/tmp/shots.py`-style contact sheet before shipping. Scene audit: list every `scene` used by `cz(...)`/`cl(...)`/`mc`/`tf` next to its sentence and read them side by side.
+7. **Audio must not fail silently.** `speak()` plays through WebAudio and falls back to an HTML `<audio>` element built from the same clip bytes; if both fail it shows a Vietnamese toast ("Chưa phát được âm thanh. Kiểm tra gạt chuông im lặng và âm lượng…"). The sound effects share the same AudioContext (two contexts fought each other on iOS). If Minh still reports "no sound", ask: silent switch on? volume? opened as the home-screen app or in Safari? Then check the toast text.
+8. **Scoring is by first attempt**: a wrong tap followed by the right one still counts as wrong for revision (that is deliberate: the word comes back later). The screen says "Chưa đúng…" on the wrong tap; if he asks again, consider showing "Lần đầu chưa đúng nên từ này sẽ được ôn lại" after finishing.
+9. **Cloze/mc and hear sentences must have a recorded clip** (`t_all.py` reports `missing clips 0`); after adding sentences run `tools/synth.py` for the missing ones.
+10. **Standalone (home-screen) mode** has separate storage from Safari: he must log in again, and a new build only appears after swiping the app away and reopening (or removing and re-adding the icon).

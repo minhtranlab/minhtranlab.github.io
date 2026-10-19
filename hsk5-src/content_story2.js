@@ -121,10 +121,10 @@ SESSIONS.push(
     { t: 'story', scene: 'womanWrites', lines: [B(20)] },
     { t: 'spot', w: [], chunks: ['太晚了，', '我们', '的', '走了。'], bad: 2, fix: '得', full: '太晚了，我们得走了。', vi: 'Muộn quá rồi, chúng mình phải đi thôi.',
       teach: '<b>得 (děi) + động từ</b> = phải: 我们得听你们夫妻俩的叙述 (chúng tôi phải nghe). 的 chỉ dùng để nối từ, không có nghĩa “phải”. Khác với 得 (de) trong 写得好.' },
-    cl('how', '最近身体___？', 'Dạo này sức khỏe thế nào?', '最近身体如何？', '如何', [['怎么', '怎么 không đứng cuối câu để hỏi tình trạng. Cuối câu hỏi trạng thái dùng 如何.'], ['什么', '什么 là “cái gì”, không hỏi trạng thái.']],
+    cl('sickFriend', '最近身体___？', 'Dạo này sức khỏe thế nào?', '最近身体如何？', '如何', [['怎么', '怎么 không đứng cuối câu để hỏi tình trạng. Cuối câu hỏi trạng thái dùng 如何.'], ['什么', '什么 là “cái gì”, không hỏi trạng thái.']],
       '<b>如何</b> đứng cuối câu: hỏi tình trạng hoặc xin ý kiến (最近身体如何？/ 明天见面，如何？). Giọng hơi trang trọng.'),
     { t: 'type', w: ['如何'], silent: 1, zh: '明天见面如何', vi: 'Mai gặp nhau, thấy sao?', py: 'míng tiān jiàn miàn rú hé', prompt: 'Gõ bằng bàn phím pinyin: “Mai gặp nhau, thấy sao?” (hỏi ý kiến, cuối câu)' },
-    cl('how', '___，你不认识我了？！', 'Sao, bạn không nhận ra mình nữa à?!', '怎么，你不认识我了？！', '怎么', [['如何', '如何 không đứng đầu câu để tỏ ý ngạc nhiên.'], ['什么', '什么 hỏi “cái gì”, không phải ngạc nhiên kiểu “sao lại thế”.']],
+    cl('shockMeet', '___，你不认识我了？！', 'Sao, bạn không nhận ra mình nữa à?!', '怎么，你不认识我了？！', '怎么', [['如何', '如何 không đứng đầu câu để tỏ ý ngạc nhiên.'], ['什么', '什么 hỏi “cái gì”, không phải ngạc nhiên kiểu “sao lại thế”.']],
       'Đầu câu <b>怎么，…？！</b> = “Sao…?!”, giọng ngạc nhiên. Chỉ 怎么 làm được, 如何 thì không.'),
     { t: 'album', words: ['女士', '叙述'], say: [B(19), B(20)],
       tease: { scene: 'shockJudges', vi: 'các giám khảo rất sốc: người phụ nữ bỏ cả cơ hội. Họ sẽ làm gì?' } }
@@ -174,7 +174,7 @@ SESSIONS.push(
   { id: 11, title: 'Giải thưởng thật sự', sub: '3 từ mới và đọc cả bài', thumb: 'thirdWin', words: ['项', '患难与共', '细节'], screens: [
     { t: 'story', scene: 'awards', lines: [B(27)] },
     { t: 'word', id: '项', scene: 'itemPrize' },
-    cl('itemPrize', '这是一___很重要的工作。', 'Đây là một công việc rất quan trọng.', '这是一项很重要的工作。', '项', [['只', '只 là lượng từ cho con vật (一只蚊子), không dùng cho công việc.'], ['张', '张 là lượng từ cho vật phẳng (一张纸), không dùng cho công việc.']],
+    cl('importantWork', '这是一___很重要的工作。', 'Đây là một công việc rất quan trọng.', '这是一项很重要的工作。', '项', [['只', '只 là lượng từ cho con vật (一只蚊子), không dùng cho công việc.'], ['张', '张 là lượng từ cho vật phẳng (一张纸), không dùng cho công việc.']],
       '<b>一项</b> + 工作 / 任务 / 计划 / 研究 / 调查 / 奖项…: lượng từ cho các hạng mục. 两项奖项 = hai giải thưởng (như trong bài).'),
     { t: 'story', scene: 'prizesOneTwo', lines: [B(28)] },
     { t: 'word', id: '患难与共', scene: 'sameBoat' },

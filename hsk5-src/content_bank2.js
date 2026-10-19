@@ -86,7 +86,7 @@ Object.assign(QB, {
     od(['叙述'], '请你简单地叙述一下经过。', 'Bạn hãy kể sơ lược diễn biến.', ['请你', '简单地', '叙述一下', '经过'])
   ],
   '居然': [
-    cz('居然', 'meetBy', '这么简单的题，你___也不会做？', 'Bài đơn giản thế này, bạn mà cũng không làm được?', '这么简单的题，你居然也不会做？', '居然', [['暗暗', '暗暗 là “thầm”, không diễn tả sự bất ngờ.'], ['一直', '一直 là “luôn”, không diễn tả sự bất ngờ.']], '<b>居然</b> = không ngờ. Thường đi cùng 也 / 还: 居然也不会.'),
+    cz('居然', 'easyTest', '这么简单的题，你___也不会做？', 'Bài đơn giản thế này, bạn mà cũng không làm được?', '这么简单的题，你居然也不会做？', '居然', [['暗暗', '暗暗 là “thầm”, không diễn tả sự bất ngờ.'], ['一直', '一直 là “luôn”, không diễn tả sự bất ngờ.']], '<b>居然</b> = không ngờ. Thường đi cùng 也 / 还: 居然也不会.'),
     od(['居然'], '没想到居然在这儿碰到你！', 'Không ngờ lại gặp bạn ở đây!', ['没想到', '居然', '在这儿', '碰到你']),
     hr('居然', '她居然放弃了这次机会。', ['Cô ấy lại bỏ cả cơ hội lần này.', 'Cô ấy đã nắm lấy cơ hội lần này.', 'Cô ấy đang tìm một cơ hội khác.'], '<b>居然 + 放弃</b>: không ngờ lại bỏ. <b>这次机会</b> = cơ hội lần này.')
   ],
@@ -126,7 +126,7 @@ Object.assign(QB, {
     od(['吵'], '别吵醒孩子。', 'Đừng làm bé thức giấc.', ['别', '吵醒', '孩子'])
   ],
   '项': [
-    cz('项', 'itemPrize', '这是一___很重要的研究。', 'Đây là một nghiên cứu rất quan trọng.', '这是一项很重要的研究。', '项', [['只', '只 là lượng từ cho con vật, không dùng cho nghiên cứu.'], ['张', '张 là lượng từ cho vật phẳng, không dùng cho nghiên cứu.']], '<b>一项</b> + 研究 / 工作 / 计划 / 任务 / 奖项.'),
+    cz('项', 'importantWork', '这是一___很重要的研究。', 'Đây là một nghiên cứu rất quan trọng.', '这是一项很重要的研究。', '项', [['只', '只 là lượng từ cho con vật, không dùng cho nghiên cứu.'], ['张', '张 là lượng từ cho vật phẳng, không dùng cho nghiên cứu.']], '<b>一项</b> + 研究 / 工作 / 计划 / 任务 / 奖项.'),
     od(['项'], '电台增加了两项奖项。', 'Đài phát thanh thêm hai giải thưởng.', ['电台', '增加了', '两项奖项']),
     hr('项', '他得了一项大奖。', ['Anh ấy đoạt một giải thưởng lớn.', 'Anh ấy mua một món quà lớn.', 'Anh ấy nhận một nhiệm vụ lớn.'], '<b>一项大奖</b> = một giải thưởng lớn. <b>得了</b> = đạt được.')
   ],

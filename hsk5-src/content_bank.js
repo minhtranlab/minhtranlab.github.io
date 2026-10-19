@@ -38,7 +38,7 @@ const QB = {
     hr('评委', '评委说：你们的表演太长了。', ['Giám khảo nói: phần trình diễn của các bạn dài quá.', 'Khán giả nói: phần trình diễn của các bạn dài quá.', 'Giám khảo nói: phần trình diễn của các bạn rất ngắn.'], 'Hai thứ cần bắt: <b>评委</b> (giám khảo, không phải khán giả) và <b>太长了</b> (dài quá).')
   ],
   '如何': [
-    cz('如何', 'how', '你觉得这个问题该___解决？', 'Bạn thấy vấn đề này nên giải quyết thế nào?', '你觉得这个问题该如何解决？', '如何', [['什么', '什么 hỏi “cái gì”, không hỏi cách thức.'], ['哪儿', '哪儿 hỏi “ở đâu”.']], '<b>该如何 + động từ</b> = nên làm thế nào. Giọng trang trọng.'),
+    cz('如何', 'discuss', '你觉得这个问题该___解决？', 'Bạn thấy vấn đề này nên giải quyết thế nào?', '你觉得这个问题该如何解决？', '如何', [['什么', '什么 hỏi “cái gì”, không hỏi cách thức.'], ['哪儿', '哪儿 hỏi “ở đâu”.']], '<b>该如何 + động từ</b> = nên làm thế nào. Giọng trang trọng.'),
     cz('如何', 'sickFriend', '你最近身体___？', 'Dạo này sức khỏe bạn thế nào?', '你最近身体如何？', '如何', [['什么', '什么 hỏi “cái gì”, không hỏi tình trạng.'], ['哪个', '哪个 hỏi “cái nào”.']], '<b>如何</b> ở cuối câu = “thế nào?”, hỏi thăm tình trạng.'),
     hr('如何', '最近你的身体如何？', ['Dạo này sức khỏe bạn thế nào?', 'Tại sao dạo này bạn bị ốm?', 'Dạo này bạn ở đâu?'], '<b>如何</b> ở cuối câu = “thế nào?”. Câu thăm hỏi lịch sự, nghe giống người dẫn chương trình.')
   ],
@@ -63,7 +63,7 @@ const QB = {
   ],
   '爱护': [
     cz('爱护', 'sign', '请大家___学校的花草。', 'Mong mọi người giữ gìn hoa cỏ của trường.', '请大家爱护学校的花草。', '爱护', [['抱怨', '抱怨 là than phiền, hoa cỏ đâu có lỗi.'], ['对比', '对比 là so sánh, không hợp.']], 'Biển <b>请爱护花草</b> bạn sẽ gặp ở công viên, trường học.'),
-    cz('爱护', 'garden', '他很___自己的新手机，每天都擦一擦。', 'Anh ấy rất giữ gìn chiếc điện thoại mới, ngày nào cũng lau một chút.', '他很爱护自己的新手机，每天都擦一擦。', '爱护', [['抱怨', '抱怨 là phàn nàn, không đi với chuyện lau chùi.'], ['离婚', '离婚 là ly hôn, không hợp.']], '<b>爱护</b> dùng cho thứ cần được gìn giữ, chăm chút.'),
+    cz('爱护', 'phoneWipe', '他很___自己的新手机，每天都擦一擦。', 'Anh ấy rất giữ gìn chiếc điện thoại mới, ngày nào cũng lau một chút.', '他很爱护自己的新手机，每天都擦一擦。', '爱护', [['抱怨', '抱怨 là phàn nàn, không đi với chuyện lau chùi.'], ['离婚', '离婚 là ly hôn, không hợp.']], '<b>爱护</b> dùng cho thứ cần được gìn giữ, chăm chút.'),
     od(['爱护'], '请大家爱护学校的花草。', 'Mong mọi người giữ gìn hoa cỏ của trường.', ['请大家', '爱护', '学校的', '花草']),
     hr('爱护', '他很爱护花草，每天都给它们水。', ['Anh ấy rất yêu quý hoa cỏ, ngày nào cũng tưới nước cho chúng.', 'Anh ấy rất ghét hoa cỏ.', 'Anh ấy bán hoa cỏ mỗi ngày.'], '<b>每天都</b> = ngày nào cũng. <b>给它们水</b> = cho chúng nước (tưới).')
   ]

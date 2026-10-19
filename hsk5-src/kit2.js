@@ -133,3 +133,25 @@ SC.secretJoy = () => R(0, 0, 400, 300, '#e9eef7') + R(0, 236, 400, 64, '#d8c6a8'
   Ci(262, 56, 34, C.white, `stroke="${C.ink}" stroke-width="2.4"`) + heart(262, 54, 1.6, C.red) + Ci(214, 100, 6, C.white, `stroke="${C.ink}" stroke-width="2"`) + Ci(196, 118, 4, C.white, `stroke="${C.ink}" stroke-width="2"`) +
   person(318, 190, { s: .55, hs: 'bun', hair: C.hairG, shirt: C.plum, m: 'open' }) + person(374, 196, { s: .5, hs: 'short', shirt: C.green, m: 'open', flip: 1 });
 SCENE_LABEL.secretJoy = 'Một người thầm vui trong lòng';
+/* ---- scenes added for the review questions (picture must match the sentence) ---- */
+SC.discuss = () => R(0, 0, 400, 300, '#eaf3f1') + R(0, 236, 400, 64, '#d8c6a8') + R(60, 196, 280, 22, C.brown, 8) + R(90, 216, 14, 50, C.brown) + R(296, 216, 14, 50, C.brown) +
+  person(98, 128, { s: .92, hs: 'short', shirt: C.navy, m: 'open', brows: 'up' }) + person(302, 128, { s: .92, hs: 'pony', shirt: C.butter, m: 'flat', flip: 1, brows: 'worry' }) +
+  R(158, 168, 84, 30, C.white, 4, `stroke="${C.ink}" stroke-width="2.4" transform="rotate(-3 200 183)"`) + Ln(168, 178, 232, 174, C.grey, 3) + Ln(168, 188, 220, 184, C.grey, 3) +
+  Tx(200, 74, '?', 74, C.org) + Tx(150, 52, '?', 34, C.teal) + Tx(252, 56, '?', 30, C.teal) + Ci(200, 108, 0, 'none');
+SC.phoneWipe = () => R(0, 0, 400, 300, '#f6efe2') + R(0, 236, 400, 64, '#e2d3b8') +
+  person(110, 130, { s: .95, hs: 'short', shirt: C.teal, m: 'smile', eyes: 'closed' }) +
+  `<g transform="rotate(-12 250 170)">${R(212, 100, 76, 130, C.ink, 14)}${R(220, 112, 60, 104, '#8fb4ee', 6)}${R(242, 104, 16, 4, '#555', 2)}</g>` +
+  R(196, 150, 70, 40, C.white, 12, `transform="rotate(-18 230 170)" stroke="${C.ink}" stroke-width="2.4"`) + hand(190, 170, 11) +
+  [[300, 112], [326, 150], [284, 80], [330, 90]].map(([x, y]) => Pa(`M${x} ${y - 10} L${x + 3} ${y - 3} L${x + 10} ${y} L${x + 3} ${y + 3} L${x} ${y + 10} L${x - 3} ${y + 3} L${x - 10} ${y} L${x - 3} ${y - 3}Z`, C.butter)).join('') + heart(336, 200, 1.1, C.pink);
+SC.shockMeet = () => R(0, 0, 400, 300, '#eaeefb') + R(0, 240, 400, 60, '#cfe0b8') +
+  person(110, 150, { s: .95, hs: 'quiff', shirt: C.green, m: 'wow', eyes: 'wide', brows: 'up' }) + person(300, 150, { s: .95, hs: 'long', hair: HW2, shirt: C.pink, m: 'smile' }) +
+  bubble(40, 14, 120, 54, '?!', 38, C.white, C.red);
+SC.easyTest = () => R(0, 0, 400, 300, '#f3f1e6') + R(0, 242, 400, 58, '#d8c6a8') +
+  R(56, 40, 150, 190, C.white, 6, `stroke="#b9b09c" stroke-width="3" transform="rotate(-3 130 135)"`) + Tx(130, 100, '1 + 1', 36, C.navy, 'transform="rotate(-3 130 135)"') + Tx(130, 160, '= ?', 38, C.org, 'transform="rotate(-3 130 135)"') +
+  person(304, 140, { s: 1, hs: 'bun', hair: C.hairG, shirt: C.navy, m: 'wow', eyes: 'wide', brows: 'worry' }) + Tx(350, 52, '?', 44, C.red) + Tx(262, 46, '?', 30, C.teal);
+SC.importantWork = () => R(0, 0, 400, 300, '#e9f1fb') + R(0, 232, 400, 68, '#cdb48e') +
+  R(48, 150, 150, 84, C.brown, 8) + R(66, 178, 92, 6, C.cream, 3) + R(66, 194, 70, 6, C.cream, 3) +
+  R(70, 70, 96, 76, C.white, 8, `stroke="${C.ink}" stroke-width="2.6"`) + R(80, 82, 76, 8, C.grey, 3) + R(80, 98, 60, 8, C.grey, 3) + R(80, 114, 68, 8, C.grey, 3) +
+  Pa('M118 38 L124 54 L142 56 L128 66 L132 84 L118 74 L104 84 L108 66 L94 56 L112 54Z', C.butter, `stroke="${C.ink}" stroke-width="2"`) +
+  person(300, 140, { s: 1, hs: 'short', shirt: C.teal, collar: C.white, m: 'smile', gl: 'round' }) + R(232, 192, 130, 46, '#cfd6e2', 6) + R(242, 200, 56, 34, '#8fb4ee', 4);
+Object.assign(SCENE_LABEL, { discuss: 'Hai người đang bàn cách giải quyết một vấn đề', phoneWipe: 'Một người lau chiếc điện thoại mới cho sạch', shockMeet: 'Hai người gặp nhau, một người ngạc nhiên', easyTest: 'Bài toán rất dễ mà người ta vẫn bối rối', importantWork: 'Tài liệu nghiên cứu quan trọng có gắn ngôi sao' });

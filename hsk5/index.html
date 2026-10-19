@@ -22,7 +22,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;touch-
 .w:active{background:rgba(255,200,0,.35)}
 .w ruby{ruby-position:over}
 .w rt{display:none;font-size:.42em;font-weight:400;letter-spacing:0;opacity:.8;font-family:-apple-system,system-ui,sans-serif}
-body.py .w rt{display:ruby-text}
+body.py .w rt,.showpy .w rt{display:ruby-text}
 .w.t{border-bottom:2px solid currentColor;border-bottom-color:var(--tw,#f2b24a)}
 .w.unk{outline:2px dashed red}
 .sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,120%);width:min(560px,100%);background:#fff;color:#1b1b1f;border-radius:20px 20px 0 0;padding:16px 20px 26px;box-shadow:0 -10px 40px rgba(0,0,0,.3);z-index:50;transition:transform .22s cubic-bezier(.2,.8,.3,1);font-family:-apple-system,system-ui,sans-serif}
@@ -144,6 +144,8 @@ button{font-family:inherit}
 .fb{padding:12px 14px;border-radius:14px;font-size:16px;line-height:1.5}
 .fb.bad{background:var(--badbg);color:var(--ink);border:1px solid var(--bad)}.fb.good{background:var(--okbg);color:var(--ink);border:1px solid var(--ok)}
 .fb .rv{font:500 22px/1.6 var(--han)}.fb .rvv{font-size:14px;color:var(--mut)}
+.reveal{padding:12px 14px;border-radius:16px;background:var(--card);border:2px solid var(--line);animation:in .25s both}
+.reveal .rz{font:500 24px/1.9 var(--han);color:var(--ink)}.reveal .rvv2{font-size:15px;color:var(--mut);margin:2px 0 8px}.reveal .lr{margin-top:4px}.reveal .hintw{font-size:12.5px;color:var(--mut)}
 .new{padding:14px 16px;border-radius:16px;background:var(--new);border:1px solid var(--newline);color:var(--ink);font-size:16.5px;line-height:1.55;animation:in .25s both}
 .new .k{font-size:12px;font-weight:700;color:var(--newink);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
 /* album */
@@ -345,7 +347,7 @@ function initSheet() {
   document.body.appendChild(sheetEl);
   document.addEventListener('click', e => {
     const w = e.target.closest('.w');
-    if (w && !e.target.closest('.opt,.cx,.tile,.slot,.chip2,.line,.mw,.bigq,.wh,.sticker,.prompt,.wcf')) { e.stopPropagation(); showSheet(w.dataset.k); return; }
+    if (w && (e.target.closest('.reveal') || !e.target.closest('.opt,.cx,.tile,.slot,.chip2,.line,.mw,.bigq,.wh,.sticker,.prompt,.wcf'))) { e.stopPropagation(); showSheet(w.dataset.k); return; }
     if (sheetEl.classList.contains('open') && !e.target.closest('#sheet')) sheetEl.classList.remove('open');
   }, true);
 }
@@ -370,7 +372,7 @@ function showGloss(text) {
 /* ---- audio: recorded clips (AUD: Han-only key -> data URI), device voice only as fallback ---- */
 const AUD = (typeof AUDIO_DATA !== 'undefined') ? AUDIO_DATA : {};
 const akey = t => (String(t).replace(/<[^>]+>/g, '').match(/[\u4e00-\u9fff]/g) || []).join('');
-let actx2 = null, curSrc = null, curRes = null; const bufCache = new Map(), rawCache = new Map(), inflight = new Map();
+let uaEl = null, uaRes = null, lastWarn = 0, actx2 = null, curSrc = null, curRes = null; const bufCache = new Map(), rawCache = new Map(), inflight = new Map();
 try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { }
 function ac() { if (!actx2) actx2 = new (window.AudioContext || window.webkitAudioContext)(); return actx2; }
 ['pointerdown', 'touchend', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, () => { try { const c = ac(); if (c.state !== 'running') c.resume(); } catch (e) { } }, true));
@@ -392,7 +394,7 @@ let pq = [], pActive = 0;
 function pump() { while (pActive < 4 && pq.length) { const s = pq.shift(); pActive++; srcBytes(s).catch(() => { }).finally(() => { pActive--; pump(); }); } }
 function preload(keys) { keys.forEach(k => { const s = AUD[k]; if (s && !s.startsWith('data:') && !rawCache.has(s) && !inflight.has(s) && !pq.includes(s)) pq.push(s); }); pump(); }
 try { if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => { }); } catch (e) { }
-function stopAudio() { try { if (window.__uA) { window.__uA.pause(); window.__uA = null; } } catch (e) { } try { if (curSrc) { curSrc.onended = null; curSrc.stop(); } } catch (e) { } curSrc = null; if (curRes) { const r = curRes; curRes = null; r(false); } try { speechSynthesis.cancel(); } catch (e) { } }
+function stopAudio() { try { if (window.__uA) { window.__uA.pause(); window.__uA = null; } } catch (e) { } if (uaRes) { const r = uaRes; uaRes = null; r('int'); } try { if (curSrc) { curSrc.onended = null; curSrc.stop(); } } catch (e) { } curSrc = null; if (curRes) { const r = curRes; curRes = null; r(false); } try { speechSynthesis.cancel(); } catch (e) { } }
 let zhVoice = null;
 function loadVoices() { try { const v = speechSynthesis.getVoices(); zhVoice = v.find(x => /zh[-_]CN/i.test(x.lang)) || v.find(x => /^zh/i.test(x.lang)) || null; } catch (e) { zhVoice = null; } }
 try { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; } catch (e) { }
@@ -400,20 +402,34 @@ const hasClip = t => !!AUD[akey(t)];
 function canSpeak() { return Object.keys(AUD).length > 0 || !!zhVoice; }
 window.__plays = [];
 /* speak(text, slow): resolves true when the clip has finished, false if nothing could play */
+
+function audioWarn() { const n = Date.now(); if (n - lastWarn < 6000) return; lastWarn = n; try { if (typeof toast === 'function') toast('Chưa phát được âm thanh. Kiểm tra gạt chuông im lặng và âm lượng, rồi chạm 🔊 lại.'); } catch (e) { } }
+/* fallback player: plain <audio> from the clip bytes (works when WebAudio is suspended/interrupted on iOS) */
+async function playTag(src) {
+  const raw = await srcBytes(src); stopAudio();
+  const url = URL.createObjectURL(new Blob([raw], { type: 'audio/mpeg' }));
+  const a = uaEl || (uaEl = new Audio()); a.src = url; window.__uA = a;
+  return await new Promise(res => { const done = v => { uaRes = null; try { URL.revokeObjectURL(url); } catch (e) { } res(v); }; uaRes = done; a.onended = () => done(true); a.onerror = () => done(false); const p = a.play(); if (p && p.catch) p.catch(() => done(false)); });
+}
+async function playWeb(src) {
+  const c = ac(); if (c.state !== 'running') await Promise.race([c.resume(), sleep(900)]);
+  if (c.state !== 'running') return null;
+  const b = await getBuf(src); stopAudio();
+  const s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); curSrc = s;
+  return await new Promise(res => { curRes = res; s.onended = () => { curRes = null; res(true); }; s.start(); });
+}
+/* speak(text, slow, male): resolves true when the clip has finished, false if nothing could play */
 async function speak(t, slow, male) {
   const k = akey(t); if (!k) return false;
   const src = male ? (AUD[(slow ? 'MS|' : 'M|') + k] || AUD['M|' + k] || AUD[k]) : AUD[k];
   window.__plays.push((male ? 'M' : 'F') + (slow ? 'slow:' : ':') + k);
   if (src) {
-    try {
-      const c = ac(); if (c.state !== 'running') await Promise.race([c.resume(), sleep(400)]);
-      if (c.state !== 'running') return false;
-      const b = await getBuf(src); stopAudio();
-      const s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); curSrc = s;
-      return await new Promise(res => { curRes = res; s.onended = () => { curRes = null; res(true); }; s.start(); });
-    } catch (e) { return false; }
+    let r = null;
+    try { r = await playWeb(src); } catch (e) { r = null; }
+    if (r === null) { try { r = await playTag(src); } catch (e) { r = false; } if (r === 'int') return false; if (!r) audioWarn(); }
+    return !!r;
   }
-  if (!zhVoice) return false;
+  if (!zhVoice) { audioWarn(); return false; }
   try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(plain(t)); u.voice = zhVoice; u.lang = zhVoice.lang; u.rate = slow ? .6 : .85; speechSynthesis.speak(u); return true; } catch (e) { return false; }
 }
 
@@ -422,7 +438,7 @@ let actx, soundOn = true;
 function tone(f, d, t = 'sine', v = .06, at = 0) {
   if (!soundOn) return;
   try {
-    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    actx = ac(); if (actx.state !== 'running') actx.resume();
     const o = actx.createOscillator(), g = actx.createGain();
     o.type = t; o.frequency.value = f; g.gain.value = v;
     g.gain.exponentialRampToValueAtTime(.0001, actx.currentTime + at + d);
@@ -881,10 +897,10 @@ SESSIONS.push(
     { t: 'story', scene: 'womanWrites', lines: [B(20)] },
     { t: 'spot', w: [], chunks: ['太晚了，', '我们', '的', '走了。'], bad: 2, fix: '得', full: '太晚了，我们得走了。', vi: 'Muộn quá rồi, chúng mình phải đi thôi.',
       teach: '<b>得 (děi) + động từ</b> = phải: 我们得听你们夫妻俩的叙述 (chúng tôi phải nghe). 的 chỉ dùng để nối từ, không có nghĩa “phải”. Khác với 得 (de) trong 写得好.' },
-    cl('how', '最近身体___？', 'Dạo này sức khỏe thế nào?', '最近身体如何？', '如何', [['怎么', '怎么 không đứng cuối câu để hỏi tình trạng. Cuối câu hỏi trạng thái dùng 如何.'], ['什么', '什么 là “cái gì”, không hỏi trạng thái.']],
+    cl('sickFriend', '最近身体___？', 'Dạo này sức khỏe thế nào?', '最近身体如何？', '如何', [['怎么', '怎么 không đứng cuối câu để hỏi tình trạng. Cuối câu hỏi trạng thái dùng 如何.'], ['什么', '什么 là “cái gì”, không hỏi trạng thái.']],
       '<b>如何</b> đứng cuối câu: hỏi tình trạng hoặc xin ý kiến (最近身体如何？/ 明天见面，如何？). Giọng hơi trang trọng.'),
     { t: 'type', w: ['如何'], silent: 1, zh: '明天见面如何', vi: 'Mai gặp nhau, thấy sao?', py: 'míng tiān jiàn miàn rú hé', prompt: 'Gõ bằng bàn phím pinyin: “Mai gặp nhau, thấy sao?” (hỏi ý kiến, cuối câu)' },
-    cl('how', '___，你不认识我了？！', 'Sao, bạn không nhận ra mình nữa à?!', '怎么，你不认识我了？！', '怎么', [['如何', '如何 không đứng đầu câu để tỏ ý ngạc nhiên.'], ['什么', '什么 hỏi “cái gì”, không phải ngạc nhiên kiểu “sao lại thế”.']],
+    cl('shockMeet', '___，你不认识我了？！', 'Sao, bạn không nhận ra mình nữa à?!', '怎么，你不认识我了？！', '怎么', [['如何', '如何 không đứng đầu câu để tỏ ý ngạc nhiên.'], ['什么', '什么 hỏi “cái gì”, không phải ngạc nhiên kiểu “sao lại thế”.']],
       'Đầu câu <b>怎么，…？！</b> = “Sao…?!”, giọng ngạc nhiên. Chỉ 怎么 làm được, 如何 thì không.'),
     { t: 'album', words: ['女士', '叙述'], say: [B(19), B(20)],
       tease: { scene: 'shockJudges', vi: 'các giám khảo rất sốc: người phụ nữ bỏ cả cơ hội. Họ sẽ làm gì?' } }
@@ -934,7 +950,7 @@ SESSIONS.push(
   { id: 11, title: 'Giải thưởng thật sự', sub: '3 từ mới và đọc cả bài', thumb: 'thirdWin', words: ['项', '患难与共', '细节'], screens: [
     { t: 'story', scene: 'awards', lines: [B(27)] },
     { t: 'word', id: '项', scene: 'itemPrize' },
-    cl('itemPrize', '这是一___很重要的工作。', 'Đây là một công việc rất quan trọng.', '这是一项很重要的工作。', '项', [['只', '只 là lượng từ cho con vật (一只蚊子), không dùng cho công việc.'], ['张', '张 là lượng từ cho vật phẳng (一张纸), không dùng cho công việc.']],
+    cl('importantWork', '这是一___很重要的工作。', 'Đây là một công việc rất quan trọng.', '这是一项很重要的工作。', '项', [['只', '只 là lượng từ cho con vật (一只蚊子), không dùng cho công việc.'], ['张', '张 là lượng từ cho vật phẳng (一张纸), không dùng cho công việc.']],
       '<b>一项</b> + 工作 / 任务 / 计划 / 研究 / 调查 / 奖项…: lượng từ cho các hạng mục. 两项奖项 = hai giải thưởng (như trong bài).'),
     { t: 'story', scene: 'prizesOneTwo', lines: [B(28)] },
     { t: 'word', id: '患难与共', scene: 'sameBoat' },
@@ -1006,7 +1022,7 @@ const QB = {
     hr('评委', '评委说：你们的表演太长了。', ['Giám khảo nói: phần trình diễn của các bạn dài quá.', 'Khán giả nói: phần trình diễn của các bạn dài quá.', 'Giám khảo nói: phần trình diễn của các bạn rất ngắn.'], 'Hai thứ cần bắt: <b>评委</b> (giám khảo, không phải khán giả) và <b>太长了</b> (dài quá).')
   ],
   '如何': [
-    cz('如何', 'how', '你觉得这个问题该___解决？', 'Bạn thấy vấn đề này nên giải quyết thế nào?', '你觉得这个问题该如何解决？', '如何', [['什么', '什么 hỏi “cái gì”, không hỏi cách thức.'], ['哪儿', '哪儿 hỏi “ở đâu”.']], '<b>该如何 + động từ</b> = nên làm thế nào. Giọng trang trọng.'),
+    cz('如何', 'discuss', '你觉得这个问题该___解决？', 'Bạn thấy vấn đề này nên giải quyết thế nào?', '你觉得这个问题该如何解决？', '如何', [['什么', '什么 hỏi “cái gì”, không hỏi cách thức.'], ['哪儿', '哪儿 hỏi “ở đâu”.']], '<b>该如何 + động từ</b> = nên làm thế nào. Giọng trang trọng.'),
     cz('如何', 'sickFriend', '你最近身体___？', 'Dạo này sức khỏe bạn thế nào?', '你最近身体如何？', '如何', [['什么', '什么 hỏi “cái gì”, không hỏi tình trạng.'], ['哪个', '哪个 hỏi “cái nào”.']], '<b>如何</b> ở cuối câu = “thế nào?”, hỏi thăm tình trạng.'),
     hr('如何', '最近你的身体如何？', ['Dạo này sức khỏe bạn thế nào?', 'Tại sao dạo này bạn bị ốm?', 'Dạo này bạn ở đâu?'], '<b>如何</b> ở cuối câu = “thế nào?”. Câu thăm hỏi lịch sự, nghe giống người dẫn chương trình.')
   ],
@@ -1031,7 +1047,7 @@ const QB = {
   ],
   '爱护': [
     cz('爱护', 'sign', '请大家___学校的花草。', 'Mong mọi người giữ gìn hoa cỏ của trường.', '请大家爱护学校的花草。', '爱护', [['抱怨', '抱怨 là than phiền, hoa cỏ đâu có lỗi.'], ['对比', '对比 là so sánh, không hợp.']], 'Biển <b>请爱护花草</b> bạn sẽ gặp ở công viên, trường học.'),
-    cz('爱护', 'garden', '他很___自己的新手机，每天都擦一擦。', 'Anh ấy rất giữ gìn chiếc điện thoại mới, ngày nào cũng lau một chút.', '他很爱护自己的新手机，每天都擦一擦。', '爱护', [['抱怨', '抱怨 là phàn nàn, không đi với chuyện lau chùi.'], ['离婚', '离婚 là ly hôn, không hợp.']], '<b>爱护</b> dùng cho thứ cần được gìn giữ, chăm chút.'),
+    cz('爱护', 'phoneWipe', '他很___自己的新手机，每天都擦一擦。', 'Anh ấy rất giữ gìn chiếc điện thoại mới, ngày nào cũng lau một chút.', '他很爱护自己的新手机，每天都擦一擦。', '爱护', [['抱怨', '抱怨 là phàn nàn, không đi với chuyện lau chùi.'], ['离婚', '离婚 là ly hôn, không hợp.']], '<b>爱护</b> dùng cho thứ cần được gìn giữ, chăm chút.'),
     od(['爱护'], '请大家爱护学校的花草。', 'Mong mọi người giữ gìn hoa cỏ của trường.', ['请大家', '爱护', '学校的', '花草']),
     hr('爱护', '他很爱护花草，每天都给它们水。', ['Anh ấy rất yêu quý hoa cỏ, ngày nào cũng tưới nước cho chúng.', 'Anh ấy rất ghét hoa cỏ.', 'Anh ấy bán hoa cỏ mỗi ngày.'], '<b>每天都</b> = ngày nào cũng. <b>给它们水</b> = cho chúng nước (tưới).')
   ]
@@ -1125,7 +1141,7 @@ Object.assign(QB, {
     od(['叙述'], '请你简单地叙述一下经过。', 'Bạn hãy kể sơ lược diễn biến.', ['请你', '简单地', '叙述一下', '经过'])
   ],
   '居然': [
-    cz('居然', 'meetBy', '这么简单的题，你___也不会做？', 'Bài đơn giản thế này, bạn mà cũng không làm được?', '这么简单的题，你居然也不会做？', '居然', [['暗暗', '暗暗 là “thầm”, không diễn tả sự bất ngờ.'], ['一直', '一直 là “luôn”, không diễn tả sự bất ngờ.']], '<b>居然</b> = không ngờ. Thường đi cùng 也 / 还: 居然也不会.'),
+    cz('居然', 'easyTest', '这么简单的题，你___也不会做？', 'Bài đơn giản thế này, bạn mà cũng không làm được?', '这么简单的题，你居然也不会做？', '居然', [['暗暗', '暗暗 là “thầm”, không diễn tả sự bất ngờ.'], ['一直', '一直 là “luôn”, không diễn tả sự bất ngờ.']], '<b>居然</b> = không ngờ. Thường đi cùng 也 / 还: 居然也不会.'),
     od(['居然'], '没想到居然在这儿碰到你！', 'Không ngờ lại gặp bạn ở đây!', ['没想到', '居然', '在这儿', '碰到你']),
     hr('居然', '她居然放弃了这次机会。', ['Cô ấy lại bỏ cả cơ hội lần này.', 'Cô ấy đã nắm lấy cơ hội lần này.', 'Cô ấy đang tìm một cơ hội khác.'], '<b>居然 + 放弃</b>: không ngờ lại bỏ. <b>这次机会</b> = cơ hội lần này.')
   ],
@@ -1165,7 +1181,7 @@ Object.assign(QB, {
     od(['吵'], '别吵醒孩子。', 'Đừng làm bé thức giấc.', ['别', '吵醒', '孩子'])
   ],
   '项': [
-    cz('项', 'itemPrize', '这是一___很重要的研究。', 'Đây là một nghiên cứu rất quan trọng.', '这是一项很重要的研究。', '项', [['只', '只 là lượng từ cho con vật, không dùng cho nghiên cứu.'], ['张', '张 là lượng từ cho vật phẳng, không dùng cho nghiên cứu.']], '<b>一项</b> + 研究 / 工作 / 计划 / 任务 / 奖项.'),
+    cz('项', 'importantWork', '这是一___很重要的研究。', 'Đây là một nghiên cứu rất quan trọng.', '这是一项很重要的研究。', '项', [['只', '只 là lượng từ cho con vật, không dùng cho nghiên cứu.'], ['张', '张 là lượng từ cho vật phẳng, không dùng cho nghiên cứu.']], '<b>一项</b> + 研究 / 工作 / 计划 / 任务 / 奖项.'),
     od(['项'], '电台增加了两项奖项。', 'Đài phát thanh thêm hai giải thưởng.', ['电台', '增加了', '两项奖项']),
     hr('项', '他得了一项大奖。', ['Anh ấy đoạt một giải thưởng lớn.', 'Anh ấy mua một món quà lớn.', 'Anh ấy nhận một nhiệm vụ lớn.'], '<b>一项大奖</b> = một giải thưởng lớn. <b>得了</b> = đạt được.')
   ],
@@ -1619,6 +1635,28 @@ SC.secretJoy = () => R(0, 0, 400, 300, '#e9eef7') + R(0, 236, 400, 64, '#d8c6a8'
   Ci(262, 56, 34, C.white, `stroke="${C.ink}" stroke-width="2.4"`) + heart(262, 54, 1.6, C.red) + Ci(214, 100, 6, C.white, `stroke="${C.ink}" stroke-width="2"`) + Ci(196, 118, 4, C.white, `stroke="${C.ink}" stroke-width="2"`) +
   person(318, 190, { s: .55, hs: 'bun', hair: C.hairG, shirt: C.plum, m: 'open' }) + person(374, 196, { s: .5, hs: 'short', shirt: C.green, m: 'open', flip: 1 });
 SCENE_LABEL.secretJoy = 'Một người thầm vui trong lòng';
+/* ---- scenes added for the review questions (picture must match the sentence) ---- */
+SC.discuss = () => R(0, 0, 400, 300, '#eaf3f1') + R(0, 236, 400, 64, '#d8c6a8') + R(60, 196, 280, 22, C.brown, 8) + R(90, 216, 14, 50, C.brown) + R(296, 216, 14, 50, C.brown) +
+  person(98, 128, { s: .92, hs: 'short', shirt: C.navy, m: 'open', brows: 'up' }) + person(302, 128, { s: .92, hs: 'pony', shirt: C.butter, m: 'flat', flip: 1, brows: 'worry' }) +
+  R(158, 168, 84, 30, C.white, 4, `stroke="${C.ink}" stroke-width="2.4" transform="rotate(-3 200 183)"`) + Ln(168, 178, 232, 174, C.grey, 3) + Ln(168, 188, 220, 184, C.grey, 3) +
+  Tx(200, 74, '?', 74, C.org) + Tx(150, 52, '?', 34, C.teal) + Tx(252, 56, '?', 30, C.teal) + Ci(200, 108, 0, 'none');
+SC.phoneWipe = () => R(0, 0, 400, 300, '#f6efe2') + R(0, 236, 400, 64, '#e2d3b8') +
+  person(110, 130, { s: .95, hs: 'short', shirt: C.teal, m: 'smile', eyes: 'closed' }) +
+  `<g transform="rotate(-12 250 170)">${R(212, 100, 76, 130, C.ink, 14)}${R(220, 112, 60, 104, '#8fb4ee', 6)}${R(242, 104, 16, 4, '#555', 2)}</g>` +
+  R(196, 150, 70, 40, C.white, 12, `transform="rotate(-18 230 170)" stroke="${C.ink}" stroke-width="2.4"`) + hand(190, 170, 11) +
+  [[300, 112], [326, 150], [284, 80], [330, 90]].map(([x, y]) => Pa(`M${x} ${y - 10} L${x + 3} ${y - 3} L${x + 10} ${y} L${x + 3} ${y + 3} L${x} ${y + 10} L${x - 3} ${y + 3} L${x - 10} ${y} L${x - 3} ${y - 3}Z`, C.butter)).join('') + heart(336, 200, 1.1, C.pink);
+SC.shockMeet = () => R(0, 0, 400, 300, '#eaeefb') + R(0, 240, 400, 60, '#cfe0b8') +
+  person(110, 150, { s: .95, hs: 'quiff', shirt: C.green, m: 'wow', eyes: 'wide', brows: 'up' }) + person(300, 150, { s: .95, hs: 'long', hair: HW2, shirt: C.pink, m: 'smile' }) +
+  bubble(40, 14, 120, 54, '?!', 38, C.white, C.red);
+SC.easyTest = () => R(0, 0, 400, 300, '#f3f1e6') + R(0, 242, 400, 58, '#d8c6a8') +
+  R(56, 40, 150, 190, C.white, 6, `stroke="#b9b09c" stroke-width="3" transform="rotate(-3 130 135)"`) + Tx(130, 100, '1 + 1', 36, C.navy, 'transform="rotate(-3 130 135)"') + Tx(130, 160, '= ?', 38, C.org, 'transform="rotate(-3 130 135)"') +
+  person(304, 140, { s: 1, hs: 'bun', hair: C.hairG, shirt: C.navy, m: 'wow', eyes: 'wide', brows: 'worry' }) + Tx(350, 52, '?', 44, C.red) + Tx(262, 46, '?', 30, C.teal);
+SC.importantWork = () => R(0, 0, 400, 300, '#e9f1fb') + R(0, 232, 400, 68, '#cdb48e') +
+  R(48, 150, 150, 84, C.brown, 8) + R(66, 178, 92, 6, C.cream, 3) + R(66, 194, 70, 6, C.cream, 3) +
+  R(70, 70, 96, 76, C.white, 8, `stroke="${C.ink}" stroke-width="2.6"`) + R(80, 82, 76, 8, C.grey, 3) + R(80, 98, 60, 8, C.grey, 3) + R(80, 114, 68, 8, C.grey, 3) +
+  Pa('M118 38 L124 54 L142 56 L128 66 L132 84 L118 74 L104 84 L108 66 L94 56 L112 54Z', C.butter, `stroke="${C.ink}" stroke-width="2"`) +
+  person(300, 140, { s: 1, hs: 'short', shirt: C.teal, collar: C.white, m: 'smile', gl: 'round' }) + R(232, 192, 130, 46, '#cfd6e2', 6) + R(242, 200, 56, 34, '#8fb4ee', 4);
+Object.assign(SCENE_LABEL, { discuss: 'Hai người đang bàn cách giải quyết một vấn đề', phoneWipe: 'Một người lau chiếc điện thoại mới cho sạch', shockMeet: 'Hai người gặp nhau, một người ngạc nhiên', easyTest: 'Bài toán rất dễ mà người ta vẫn bối rối', importantWork: 'Tài liệu nghiên cứu quan trọng có gắn ngôi sao' });
 
 </script>
 <script>
@@ -1775,6 +1813,17 @@ const pyHint = (t, cls = '') => `<div class="pyl ${cls}">${pyL(t)}</div>`;   /* 
 /* "Điều mới": every point on its own line */
 const fmtNew = html => String(html).replace(/\s*([①②③④⑤])/g, '\n$1').replace(/\.\s+(<(?!\/)|\S)/g, (m, c) => (c === '<' || /[\u4e00-\u9fff]/.test(c) || c !== c.toLowerCase()) ? '.\n' + c : m).split('\n').map(x => x.trim()).filter(Boolean).map(x => `<div class="np">${x}</div>`).join('');
 function addReplay(pane, t) { const r = h('div', 'lr'), b = h('button', 'sb', '🔊'); b.setAttribute('aria-label', 'Nghe lại'); b.onclick = () => speak(t); r.append(b, h('span', '', 'Nghe lại')); r.lastChild.style.cssText = 'font-size:14px;color:var(--mut)'; pane.appendChild(r); }
+/* answer reveal (rule for every question type): auto-play the answer, 🔊 replay, Pinyin on/off, every word tappable, Vietnamese; the learner moves on only with Tiếp */
+function answerBlock(pane, zhT, viT, o = {}) {
+  const d = h('div', 'reveal'); d.innerHTML = `<div class="rz">${zh(zhT)}</div>${viT ? `<div class="rvv2">${viT}</div>` : ''}<div class="lr"><button class="sb" aria-label="Nghe lại">🔊</button><button class="tr rpy">Pinyin</button><span class="hintw">Chạm vào một từ để xem nghĩa</span></div>`;
+  const sb = $('.sb', d), pb = $('.rpy', d), z = $('.rz', d);
+  sb.onclick = () => speak(zhT, false, !!o.male);
+  pb.onclick = () => { const on = !z.classList.contains('showpy'); z.classList.toggle('showpy', on); pb.textContent = on ? 'Ẩn pinyin' : 'Pinyin'; };
+  if (document.body.classList.contains('py')) { z.classList.add('showpy'); pb.textContent = 'Ẩn pinyin'; }
+  pane.appendChild(d);
+  if (st.auto !== 0) setTimeout(() => speak(zhT, false, !!o.male), o.delay || 250);
+  return d;
+}
 const fbHtml = (rep, note) => (rep ? `<div class="rv">${zh(rep[0])}</div>${pyDiv(rep[0])}<div class="rvv">${rep[1]}</div>` : '') + (note ? `<div style="margin-top:6px">${zh(note)}</div>` : '');
 
 /* ---- activity log: minutes, questions, streak ---- */
@@ -2116,13 +2165,14 @@ function pick(sc, pane, ep, gate) {
   pane.insertAdjacentHTML('beforeend', `<div class="prompt">${zh(sc.prompt)}</div>`);
   const top = h('div', 'lr'); const sb = h('button', 'sb', '🔊'); sb.style.cssText = 'width:60px;height:60px;font-size:26px'; sb.onclick = () => speak(sc.zh);
   const showB = h('button', 'tr', 'Hiện chữ'), pyB = h('button', 'tr', 'Pinyin'), txt = h('div', 'ln', ''), pl = h('div', 'ln', pyHint(sc.zh)); txt.hidden = true; pl.hidden = true; txt.innerHTML = `<div class="zh">${zh(sc.zh)}</div>`;
-  showB.onclick = () => { txt.hidden = !txt.hidden; showB.textContent = txt.hidden ? 'Hiện chữ' : 'Ẩn chữ'; };
-  pyB.onclick = () => { pl.hidden = !pl.hidden; pyB.textContent = pl.hidden ? 'Pinyin' : 'Ẩn pinyin'; };
+  let pyOn = false; const sync = () => { txt.classList.toggle('showpy', !txt.hidden && pyOn); pl.hidden = !(pyOn && txt.hidden); showB.textContent = txt.hidden ? 'Hiện chữ' : 'Ẩn chữ'; pyB.textContent = pyOn ? 'Ẩn pinyin' : 'Pinyin'; };
+  showB.onclick = () => { txt.hidden = !txt.hidden; sync(); };
+  pyB.onclick = () => { pyOn = !pyOn; sync(); };
   top.append(sb, showB, pyB); pane.appendChild(top); pane.appendChild(txt); pane.appendChild(pl);
   const grid = h('div', 'picks'), fb = h('div', ''), btns = [];
   const finish = () => {
     logQ(!wrong); st.res[key] = wrong ? 0 : 1; save(); gate(true);
-    txt.hidden = false; pl.hidden = true; showB.hidden = true; pyB.hidden = true; btns.forEach(b => b.disabled = true);
+    txt.hidden = true; pl.hidden = true; top.hidden = true; btns.forEach(b => b.disabled = true); answerBlock(pane, sc.zh, null);
     pane.appendChild(h('div', 'new', `<div class="k">Điều mới</div><div class="vi" style="color:var(--ink);margin:0 0 6px">${sc.vi}</div>${zh(fmtNew(sc.teach))}`));
     setTimeout(() => $('#next') && $('#next').scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 80);
   };
@@ -2130,7 +2180,7 @@ function pick(sc, pane, ep, gate) {
     const b = h('button', 'pk', art(o.sc)); b.setAttribute('aria-label', SCENE_LABEL[o.sc]); btns.push(b);
     b.onclick = () => {
       if (b.disabled) return;
-      if (o.ok) { sfx.ok(); b.classList.add('good'); fb.className = ''; fb.innerHTML = ''; speak(sc.zh); finish(); }
+      if (o.ok) { sfx.ok(); b.classList.add('good'); fb.className = ''; fb.innerHTML = ''; finish(); }
       else { wrong++; sfx.bad(); b.classList.add('bad', 'shake'); b.disabled = true; setTimeout(() => b.classList.remove('shake'), 400); fb.className = 'fb bad'; fb.innerHTML = zh(o.why); if (wrong >= 2) { btns.forEach((bb, k) => { if (sc.opts[k].ok) bb.classList.add('good'); }); finish(); } }
     };
     grid.appendChild(b);
@@ -2143,20 +2193,20 @@ function pick(sc, pane, ep, gate) {
 function mc(sc, pane, ep, gate) {
   gate(false); let wrong = 0; const key = sid + ':' + SS(sid).i;
   pane.insertAdjacentHTML('beforeend', art(sc.scene, 'sm'));
-  pane.insertAdjacentHTML('beforeend', `<div class="sent" id="mcs">${zh(sc.say[0])}</div><div class="vi" id="mcvi" hidden style="margin-top:-8px"><div class="lr" style="margin-bottom:6px"><button class="sb" id="mcsb" aria-label="Nghe lại">🔊</button></div>${pyDiv(sc.full)}<div>${sc.say[1]}</div></div><div class="prompt">${zh(sc.prompt)}</div>`);
+  pane.insertAdjacentHTML('beforeend', `<div class="sent" id="mcs">${zh(sc.say[0])}</div><div class="vi" id="mcvi" hidden style="margin-top:-8px"><div class="lr" style="margin-bottom:6px"><button class="sb" id="mcsb" aria-label="Nghe lại">🔊</button><button class="tr" id="mcpy">Pinyin</button></div>${pyDiv(sc.full)}<div>${sc.say[1]}</div></div><div class="prompt">${zh(sc.prompt)}</div>`);
   const box = h('div', 'opts'), fb = h('div', ''), btns = [];
   const finish = () => {
     logQ(!wrong); st.res[key] = wrong ? 0 : 1; save(); recordResult(sc); gate(true);
-    $('#mcs').innerHTML = zh(sc.full); $('#mcvi').hidden = false; $('#mcsb').onclick = () => speak(sc.full);
+    $('#mcs').innerHTML = zh(sc.full); $('#mcvi').hidden = false; $('#mcsb').onclick = () => speak(sc.full); $('#mcpy').onclick = e => { const on = !$('#mcs').classList.contains('showpy'); $('#mcs').classList.toggle('showpy', on); e.currentTarget.textContent = on ? 'Ẩn pinyin' : 'Pinyin'; };
     pane.appendChild(h('div', 'new', `<div class="k">Điều mới</div>${zh(fmtNew(sc.teach))}`));
-    if (hasClip(sc.full)) setTimeout(() => speak(sc.full), 200);
+    if (hasClip(sc.full) && st.auto !== 0) setTimeout(() => speak(sc.full), 200);
     setTimeout(() => $('#next') && $('#next').scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 80);
   };
   shuffle(sc.opts).forEach(o => {
     const row = h('div', 'orow'), b = h('button', 'opt', zh(o.t)); b.dataset.ok = o.ok ? 1 : 0; btns.push(b); row.appendChild(b);
     b.onclick = () => {
       if (b.disabled) return;
-      if (o.ok) { sfx.ok(); b.classList.add('good'); btns.forEach(x => x.disabled = true); fb.className = 'fb good'; fb.innerHTML = fbHtml(o.reply); finish(); }
+      if (o.ok) { sfx.ok(); b.classList.add('good'); btns.forEach(x => x.disabled = true); fb.className = ''; fb.innerHTML = ''; finish(); }
       else { wrong++; noteMiss(sc.w || []); sfx.bad(); b.classList.add('bad', 'shake'); b.disabled = true; setTimeout(() => b.classList.remove('shake'), 400); fb.className = 'fb bad'; fb.innerHTML = fbHtml(o.reply, o.note); if (wrong >= 2) { btns.forEach(x => { x.disabled = true; if (x.dataset.ok === '1') x.classList.add('good'); }); finish(); } }
     };
     box.appendChild(row);
@@ -2220,11 +2270,12 @@ function hear(sc, pane, ep, gate) {
   pane.insertAdjacentHTML('beforeend', `<div class="prompt">Nghe rồi chọn nghĩa đúng:</div>`);
   const top = h('div', 'lr'), sb = h('button', 'sb', '🔊'); sb.style.cssText = 'width:60px;height:60px;font-size:26px'; sb.onclick = () => speak(sc.s);
   const showB = h('button', 'tr', 'Hiện chữ'), pyB = h('button', 'tr', 'Pinyin'), txt = h('div', 'ln', ''), pl = h('div', 'ln', pyHint(sc.s)); txt.hidden = true; pl.hidden = true; txt.innerHTML = `<div class="zh">${zh(sc.s)}</div>`;
-  showB.onclick = () => { txt.hidden = !txt.hidden; showB.textContent = txt.hidden ? 'Hiện chữ' : 'Ẩn chữ'; };
-  pyB.onclick = () => { pl.hidden = !pl.hidden; pyB.textContent = pl.hidden ? 'Pinyin' : 'Ẩn pinyin'; };
+  let pyOn = false; const sync = () => { txt.classList.toggle('showpy', !txt.hidden && pyOn); pl.hidden = !(pyOn && txt.hidden); showB.textContent = txt.hidden ? 'Hiện chữ' : 'Ẩn chữ'; pyB.textContent = pyOn ? 'Ẩn pinyin' : 'Pinyin'; };
+  showB.onclick = () => { txt.hidden = !txt.hidden; sync(); };
+  pyB.onclick = () => { pyOn = !pyOn; sync(); };
   top.append(sb, showB, pyB); pane.append(top, txt, pl);
   const box = h('div', 'opts'), fb = h('div', ''), btns = [];
-  const done = () => { btns.forEach(x => { x.disabled = true; }); txt.hidden = false; pl.hidden = true; showB.hidden = true; pyB.hidden = true; finishQ(sc, pane, wrong, zh(fmtNew(sc.why))); };
+  const done = () => { btns.forEach(x => { x.disabled = true; }); txt.hidden = true; pl.hidden = true; top.hidden = true; answerBlock(pane, sc.s, sc.opts[0]); finishQ(sc, pane, wrong, zh(fmtNew(sc.why))); };
   shuffle(sc.opts.map((t, i) => ({ t, ok: i === 0 }))).forEach(o => {
     const b = h('button', 'opt vn', o.t); b.dataset.ok = o.ok ? 1 : 0; btns.push(b); box.appendChild(h('div', 'orow')).appendChild(b);
     b.onclick = () => {
@@ -2244,15 +2295,15 @@ function order(sc, pane, ep, gate) {
   const tiles = shuffle(sc.chunks.map((t, i) => ({ t, i }))).map(o => { const b = h('button', 'tile', zh(o.t)); b.dataset.i = o.i; b.dataset.t = o.t; bank.appendChild(b); return b; });
   const target = sc.chunks.join('');
   const back = () => tiles.forEach(b => { b.disabled = false; bank.appendChild(b); });
-  const fin = () => { finishQ(sc, pane, wrong, `${zh(sc.zh)}${pyDiv(sc.zh)}`); addReplay(pane, sc.zh); };
+  const fin = () => { answerBlock(pane, sc.zh, sc.vi); finishQ(sc, pane, wrong, ''); };
   tiles.forEach(b => b.onclick = () => {
     if (locked) return;
     if (b.parentNode === bank) { line.appendChild(b); } else { bank.appendChild(b); return; }
     if (line.children.length === sc.chunks.length) {
       const got = [...line.children].map(x => x.dataset.t).join('');
-      if (got === target) { locked = true; sfx.ok(); line.classList.add('good'); fb.className = ''; fb.innerHTML = ''; speak(sc.zh); fin(); }
+      if (got === target) { locked = true; sfx.ok(); line.classList.add('good'); fb.className = ''; fb.innerHTML = ''; fin(); }
       else { wrong++; noteMiss(sc.w); sfx.bad(); line.classList.add('shake'); setTimeout(() => line.classList.remove('shake'), 400);
-        if (wrong >= 2) { locked = true; sc.chunks.forEach((c, k) => { const t = tiles.find(x => x.dataset.i === String(k)); line.appendChild(t); }); fb.className = 'fb bad'; fb.textContent = 'Thứ tự đúng đã được xếp sẵn. Nghe và đọc theo nhé.'; speak(sc.zh); fin(); }
+        if (wrong >= 2) { locked = true; sc.chunks.forEach((c, k) => { const t = tiles.find(x => x.dataset.i === String(k)); line.appendChild(t); }); fb.className = 'fb bad'; fb.textContent = 'Thứ tự đúng đã được xếp sẵn. Nghe và đọc theo nhé.'; fin(); }
         else { fb.className = 'fb bad'; fb.textContent = 'Chưa đúng. Thử sắp lại nhé: đọc kỹ nghĩa tiếng Việt ở trên.'; setTimeout(back, 450); } }
     }
   });
@@ -2269,7 +2320,7 @@ function type(sc, pane, ep, gate) {
   inp.setAttribute('lang', 'zh'); inp.setAttribute('autocapitalize', 'off'); inp.setAttribute('autocorrect', 'off'); inp.setAttribute('spellcheck', 'false'); inp.placeholder = '…';
   tin.append(inp, ok); pane.append(tin, fb, skip);
   const norm = s => s.replace(/[^\u4e00-\u9fff]/g, ''), target = norm(sc.zh);
-  const finish = (reveal) => { inp.disabled = true; ok.disabled = true; skip.hidden = true; fb.className = 'fb ' + (reveal ? 'bad' : 'good'); fb.innerHTML = `<div class="rv">${zh(sc.zh)}</div><div class="rvv">${sc.vi}</div>`; speak(sc.zh); finishQ(sc, pane, wrong, reveal ? '' : `${zh(sc.zh)}${pyDiv(sc.zh)}<div class="vi" style="margin-top:4px">${sc.vi}</div>`); addReplay(pane, sc.zh); };
+  const finish = (reveal) => { inp.disabled = true; ok.disabled = true; skip.hidden = true; fb.className = reveal ? 'fb bad' : ''; fb.textContent = reveal ? 'Đáp án đúng:' : ''; answerBlock(pane, sc.zh, sc.vi); finishQ(sc, pane, wrong, ''); };
   const check = () => {
     const v = norm(inp.value); if (!v) { fb.className = 'fb bad'; fb.textContent = 'Gõ bằng bàn phím pinyin rồi bấm Kiểm tra.'; return; }
     if (v === target) { sfx.ok(); finish(false); return; }
@@ -2288,7 +2339,7 @@ function choose(sc, pane, ep, gate) {
   pane.appendChild(h('div', 'bigq' + (sc.vn ? ' vn' : ''), sc.vn ? sc.big : zh(sc.big)));
   if (sc.audio) { const sb = h('button', 'sb', '🔊'); sb.style.cssText = 'width:60px;height:60px;font-size:26px;align-self:center'; sb.onclick = () => speak(sc.audio); pane.appendChild(sb); }
   const box = h('div', 'opts'), fb = h('div', ''), btns = [];
-  const done = () => { btns.forEach(x => { x.disabled = true; }); const e = ETY[sc.w[0]]; finishQ(sc, pane, wrong, e ? zh(e.hook) : '', 'Mẹo nhớ'); speak(sc.w[0]); };
+  const done = () => { btns.forEach(x => { x.disabled = true; }); const e = ETY[sc.w[0]]; answerBlock(pane, sc.w[0], MEAN[sc.w[0]]); finishQ(sc, pane, wrong, e ? zh(e.hook) : '', 'Mẹo nhớ'); };
   shuffle(sc.opts).forEach(o => {
     const b = h('button', 'opt' + (sc.optVn ? ' vn' : ''), sc.optVn ? o.t : zh(o.t)); b.dataset.ok = o.ok ? 1 : 0; btns.push(b); box.appendChild(h('div', 'orow')).appendChild(b);
     b.onclick = () => {
@@ -2365,7 +2416,7 @@ function tf(sc, pane, ep, gate) {
   gate(false); let wrong = 0;
   pane.insertAdjacentHTML('beforeend', art(sc.scene, 'sm') + `<div class="prompt">Đúng hay sai, theo câu chuyện?</div><div class="sent">${zh(sc.zh)}</div>`);
   const row = h('div', 'lr'), sb = h('button', 'sb', '🔊'); sb.setAttribute('aria-label', 'Nghe'); sb.onclick = () => speak(sc.zh); row.appendChild(sb); pane.appendChild(row);
-  const vi = h('div', 'vi', pyDiv(sc.zh) + `<div>${sc.vi}</div>`); vi.hidden = true; pane.appendChild(vi);
+  const sentEl = $('.sent', pane);
   const box = h('div', 'opts'), fb = h('div', ''), btns = [];
   [['✓ Đúng', true], ['✗ Sai', false]].forEach(([t, v]) => {
     const b = h('button', 'opt vn', t); b.dataset.ok = v === !!sc.ok ? 1 : 0; btns.push(b); box.appendChild(h('div', 'orow')).appendChild(b);
@@ -2374,7 +2425,7 @@ function tf(sc, pane, ep, gate) {
       if (!good) { wrong++; noteMiss(sc.w || []); sfx.bad(); b.classList.add('bad', 'shake'); } else { sfx.ok(); b.classList.add('good'); }
       btns.forEach(x => { x.disabled = true; if (x.dataset.ok === '1') x.classList.add('good'); });
       fb.className = good ? '' : 'fb bad'; fb.innerHTML = good ? '' : '<b>Chưa đúng.</b>';
-      vi.hidden = false; finishQ(sc, pane, wrong, zh(fmtNew(sc.why))); speak(sc.zh);
+      sentEl.hidden = true; row.hidden = true; answerBlock(pane, sc.zh, sc.vi); finishQ(sc, pane, wrong, zh(fmtNew(sc.why)));
     };
   });
   pane.append(box, fb);
@@ -2386,7 +2437,7 @@ function spot(sc, pane, ep, gate) {
   pane.insertAdjacentHTML('beforeend', `<div class="prompt">Câu này có một chỗ dùng sai. Chạm vào chỗ sai:</div>`);
   const line = h('div', 'olin'), fb = h('div', ''), tiles = []; pane.append(line, fb);
   const reveal = () => { const b = tiles[sc.bad]; b.innerHTML = zh(sc.fix); b.classList.add('good'); b.style.borderColor = 'var(--ok)'; b.style.background = 'var(--okbg)'; tiles.forEach(x => { x.disabled = true; }); locked = true; };
-  const done = (good) => { reveal(); fb.className = 'fb ' + (good ? 'good' : 'bad'); fb.innerHTML = good ? 'Chỗ sai đã được sửa.' : 'Chỗ sai đã được sửa cho bạn.'; finishQ(sc, pane, wrong, `${zh(sc.full)}${pyDiv(sc.full)}<div class="vi" style="margin:4px 0 8px">${sc.vi}</div>${zh(fmtNew(sc.teach))}`); addReplay(pane, sc.full); speak(sc.full); };
+  const done = (good) => { reveal(); fb.className = 'fb ' + (good ? 'good' : 'bad'); fb.innerHTML = good ? 'Chỗ sai đã được sửa.' : 'Chỗ sai đã được sửa cho bạn.'; answerBlock(pane, sc.full, sc.vi); finishQ(sc, pane, wrong, zh(fmtNew(sc.teach))); };
   sc.chunks.forEach((c, i) => {
     const b = h('button', 'tile', zh(c)); b.dataset.t = c; tiles.push(b); line.appendChild(b);
     b.onclick = () => {

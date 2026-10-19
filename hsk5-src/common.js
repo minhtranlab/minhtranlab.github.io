@@ -58,7 +58,7 @@ function initSheet() {
   document.body.appendChild(sheetEl);
   document.addEventListener('click', e => {
     const w = e.target.closest('.w');
-    if (w && !e.target.closest('.opt,.cx,.tile,.slot,.chip2,.line,.mw,.bigq,.wh,.sticker,.prompt,.wcf')) { e.stopPropagation(); showSheet(w.dataset.k); return; }
+    if (w && (e.target.closest('.reveal') || !e.target.closest('.opt,.cx,.tile,.slot,.chip2,.line,.mw,.bigq,.wh,.sticker,.prompt,.wcf'))) { e.stopPropagation(); showSheet(w.dataset.k); return; }
     if (sheetEl.classList.contains('open') && !e.target.closest('#sheet')) sheetEl.classList.remove('open');
   }, true);
 }
@@ -83,7 +83,7 @@ function showGloss(text) {
 /* ---- audio: recorded clips (AUD: Han-only key -> data URI), device voice only as fallback ---- */
 const AUD = (typeof AUDIO_DATA !== 'undefined') ? AUDIO_DATA : {};
 const akey = t => (String(t).replace(/<[^>]+>/g, '').match(/[\u4e00-\u9fff]/g) || []).join('');
-let actx2 = null, curSrc = null, curRes = null; const bufCache = new Map(), rawCache = new Map(), inflight = new Map();
+let uaEl = null, uaRes = null, lastWarn = 0, actx2 = null, curSrc = null, curRes = null; const bufCache = new Map(), rawCache = new Map(), inflight = new Map();
 try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { }
 function ac() { if (!actx2) actx2 = new (window.AudioContext || window.webkitAudioContext)(); return actx2; }
 ['pointerdown', 'touchend', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, () => { try { const c = ac(); if (c.state !== 'running') c.resume(); } catch (e) { } }, true));
@@ -105,7 +105,7 @@ let pq = [], pActive = 0;
 function pump() { while (pActive < 4 && pq.length) { const s = pq.shift(); pActive++; srcBytes(s).catch(() => { }).finally(() => { pActive--; pump(); }); } }
 function preload(keys) { keys.forEach(k => { const s = AUD[k]; if (s && !s.startsWith('data:') && !rawCache.has(s) && !inflight.has(s) && !pq.includes(s)) pq.push(s); }); pump(); }
 try { if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => { }); } catch (e) { }
-function stopAudio() { try { if (window.__uA) { window.__uA.pause(); window.__uA = null; } } catch (e) { } try { if (curSrc) { curSrc.onended = null; curSrc.stop(); } } catch (e) { } curSrc = null; if (curRes) { const r = curRes; curRes = null; r(false); } try { speechSynthesis.cancel(); } catch (e) { } }
+function stopAudio() { try { if (window.__uA) { window.__uA.pause(); window.__uA = null; } } catch (e) { } if (uaRes) { const r = uaRes; uaRes = null; r('int'); } try { if (curSrc) { curSrc.onended = null; curSrc.stop(); } } catch (e) { } curSrc = null; if (curRes) { const r = curRes; curRes = null; r(false); } try { speechSynthesis.cancel(); } catch (e) { } }
 let zhVoice = null;
 function loadVoices() { try { const v = speechSynthesis.getVoices(); zhVoice = v.find(x => /zh[-_]CN/i.test(x.lang)) || v.find(x => /^zh/i.test(x.lang)) || null; } catch (e) { zhVoice = null; } }
 try { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; } catch (e) { }
@@ -113,20 +113,34 @@ const hasClip = t => !!AUD[akey(t)];
 function canSpeak() { return Object.keys(AUD).length > 0 || !!zhVoice; }
 window.__plays = [];
 /* speak(text, slow): resolves true when the clip has finished, false if nothing could play */
+
+function audioWarn() { const n = Date.now(); if (n - lastWarn < 6000) return; lastWarn = n; try { if (typeof toast === 'function') toast('Chưa phát được âm thanh. Kiểm tra gạt chuông im lặng và âm lượng, rồi chạm 🔊 lại.'); } catch (e) { } }
+/* fallback player: plain <audio> from the clip bytes (works when WebAudio is suspended/interrupted on iOS) */
+async function playTag(src) {
+  const raw = await srcBytes(src); stopAudio();
+  const url = URL.createObjectURL(new Blob([raw], { type: 'audio/mpeg' }));
+  const a = uaEl || (uaEl = new Audio()); a.src = url; window.__uA = a;
+  return await new Promise(res => { const done = v => { uaRes = null; try { URL.revokeObjectURL(url); } catch (e) { } res(v); }; uaRes = done; a.onended = () => done(true); a.onerror = () => done(false); const p = a.play(); if (p && p.catch) p.catch(() => done(false)); });
+}
+async function playWeb(src) {
+  const c = ac(); if (c.state !== 'running') await Promise.race([c.resume(), sleep(900)]);
+  if (c.state !== 'running') return null;
+  const b = await getBuf(src); stopAudio();
+  const s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); curSrc = s;
+  return await new Promise(res => { curRes = res; s.onended = () => { curRes = null; res(true); }; s.start(); });
+}
+/* speak(text, slow, male): resolves true when the clip has finished, false if nothing could play */
 async function speak(t, slow, male) {
   const k = akey(t); if (!k) return false;
   const src = male ? (AUD[(slow ? 'MS|' : 'M|') + k] || AUD['M|' + k] || AUD[k]) : AUD[k];
   window.__plays.push((male ? 'M' : 'F') + (slow ? 'slow:' : ':') + k);
   if (src) {
-    try {
-      const c = ac(); if (c.state !== 'running') await Promise.race([c.resume(), sleep(400)]);
-      if (c.state !== 'running') return false;
-      const b = await getBuf(src); stopAudio();
-      const s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); curSrc = s;
-      return await new Promise(res => { curRes = res; s.onended = () => { curRes = null; res(true); }; s.start(); });
-    } catch (e) { return false; }
+    let r = null;
+    try { r = await playWeb(src); } catch (e) { r = null; }
+    if (r === null) { try { r = await playTag(src); } catch (e) { r = false; } if (r === 'int') return false; if (!r) audioWarn(); }
+    return !!r;
   }
-  if (!zhVoice) return false;
+  if (!zhVoice) { audioWarn(); return false; }
   try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(plain(t)); u.voice = zhVoice; u.lang = zhVoice.lang; u.rate = slow ? .6 : .85; speechSynthesis.speak(u); return true; } catch (e) { return false; }
 }
 
@@ -135,7 +149,7 @@ let actx, soundOn = true;
 function tone(f, d, t = 'sine', v = .06, at = 0) {
   if (!soundOn) return;
   try {
-    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    actx = ac(); if (actx.state !== 'running') actx.resume();
     const o = actx.createOscillator(), g = actx.createGain();
     o.type = t; o.frequency.value = f; g.gain.value = v;
     g.gain.exponentialRampToValueAtTime(.0001, actx.currentTime + at + d);
