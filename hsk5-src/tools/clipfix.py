@@ -55,3 +55,74 @@ def cut_middle(x, sr):
     y = x[s * fr:e * fr].copy()
     f = int(sr * .012); y[:f] *= np.linspace(0, 1, f); y[-f:] *= np.linspace(1, 0, f)
     return y, {'depth': (float(k[a]), float(k[b])), 'start': s * fr / sr, 'end': e * fr / sr, 'left': a * fr / sr, 'mid': (b - a) * fr / sr}
+
+
+def pick_interior(x, sr, copies=5):
+    """For one-syllable words: say it `copies` times and pick the interior copy whose length is the median of the interior copies.
+    Pauses = runs of >= 40 ms below -24 dB (smoothed)."""
+    x = np.asarray(x, dtype=np.float32)
+    db, fr = env_db(x, sr)
+    k = np.convolve(db, np.ones(3) / 3, mode='same')
+    low = k < -24
+    runs = []; i = 0
+    while i < len(low):
+        if low[i]:
+            j = i
+            while j < len(low) and low[j]: j += 1
+            if (j - i) * fr / sr >= 0.04 and i > 5: runs.append((i, j))
+            i = j
+        else: i += 1
+    live = np.where(db > -45)[0]
+    if len(live) == 0 or len(runs) < copies - 1: return None, {'why': 'too few pauses', 'runs': len(runs)}
+    runs = [r for r in runs if r[1] < live[-1] - 2][:copies - 1] if len(runs) >= copies - 1 else runs
+    if len(runs) < copies - 1: return None, {'why': 'too few pauses', 'runs': len(runs)}
+    segs = [(runs[i][1], runs[i + 1][0]) for i in range(len(runs) - 1)]          # interior copies
+    lens = [b - a for a, b in segs]
+    if min(lens) < 0.7 * max(lens): return None, {'why': 'uneven copies', 'lens': lens}
+    a, b = segs[len(segs) // 2]
+    core = np.where(db[a:b] > -30)[0]
+    if len(core) == 0: return None, {'why': 'silent copy'}
+    s, e = max(a, a + core[0] - 2), min(b, a + core[-1] + 3)
+    y = x[s * fr:e * fr].copy()
+    f = int(sr * .012); y[:f] *= np.linspace(0, 1, f); y[-f:] *= np.linspace(1, 0, f)
+    return y, {'start': s * fr / sr, 'end': e * fr / sr}
+
+
+def band_trim(x, sr, thr=-14, lead=0.03, tail=0.05):
+    """For a single utterance: the stray hums have almost no energy above 900 Hz, real speech does.
+    Keep from the first to the last frame whose 0.9-5 kHz energy is within `thr` dB of the peak."""
+    x = np.asarray(x, dtype=np.float32)
+    hop, n = int(sr * .01), int(sr * .02)
+    w = np.hanning(n); B = np.fft.rfftfreq(n, 1 / sr); sel = (B >= 900) & (B <= 5000)
+    fr = (len(x) - n) // hop
+    e = np.array([(np.abs(np.fft.rfft(x[i * hop:i * hop + n] * w))[sel] ** 2).sum() for i in range(fr)]) + 1e-12
+    b = 10 * np.log10(e / e.max())
+    sp = np.where(b > thr)[0]
+    if len(sp) == 0: return None, {'why': 'no speech'}
+    s = max(0, int(sp[0] * hop - lead * sr)); t = min(len(x), int((sp[-1] * hop + n) + tail * sr))
+    y = x[s:t].copy()
+    f = int(sr * .012); y[:f] *= np.linspace(0, 1, f); y[-f:] *= np.linspace(1, 0, f)
+    return y, {'start': s / sr, 'end': t / sr}
+
+
+def main_segment(x, sr, thr=-20, minpause=0.03, pad=0.02):
+    """Last resort for a one-syllable word: split at pauses (full-band energy below `thr` dB for >= minpause) and keep the loudest piece."""
+    x = np.asarray(x, dtype=np.float32)
+    fr = int(sr * .01); n = len(x) // fr
+    e = np.sqrt((x[:n * fr].reshape(n, fr) ** 2).mean(1)) + 1e-9
+    db = 20 * np.log10(e / e.max()); k = np.convolve(db, np.ones(3) / 3, mode='same')
+    cuts = []; i = 0
+    while i < n:
+        if k[i] < thr:
+            j = i
+            while j < n and k[j] < thr: j += 1
+            if (j - i) * fr / sr >= minpause: cuts.append((i, j))
+            i = j
+        else: i += 1
+    bounds = [0] + [c for r in cuts for c in r] + [n]
+    pieces = [(bounds[i], bounds[i + 1]) for i in range(0, len(bounds), 2) if bounds[i + 1] > bounds[i]]
+    if not pieces: return None, {'why': 'none'}
+    a, b = max(pieces, key=lambda p: (e[p[0]:p[1]] ** 2).sum())
+    s = max(0, a * fr - int(pad * sr)); t = min(len(x), b * fr + int(pad * sr))
+    y = x[s:t].copy(); f = int(sr * .012); y[:f] *= np.linspace(0, 1, f); y[-f:] *= np.linspace(1, 0, f)
+    return y, {'start': s / sr, 'end': t / sr}

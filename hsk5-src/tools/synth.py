@@ -25,11 +25,20 @@ def mk(kind):
     return sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(vits=sherpa_onnx.OfflineTtsVitsModelConfig(), kokoro=sherpa_onnx.OfflineTtsKokoroModelConfig(model=f'{d}/model.onnx', voices=f'{d}/voices.bin', tokens=f'{d}/tokens.txt', data_dir=f'{d}/espeak-ng-data', dict_dir=f'{d}/dict', lexicon=f'{d}/lexicon-zh.txt,{d}/lexicon-us-en.txt'), num_threads=2), rule_fsts=f'{d}/phone-zh.fst,{d}/date-zh.fst,{d}/number-zh.fst')), 70
 engines = {}; n = 0; t0 = time.time(); failed = []; clean = {}
 def clean_word(tts, sid, han):
-    """Kokoro adds a stray hum before/after short utterances. Say the word 3 times and keep the middle copy."""
+    """Kokoro adds a stray hum before/after short utterances. Multi-syllable words: say the word 3 times and keep the middle copy.
+    Fallbacks (and one-syllable words): trim a single utterance by its 0.9-5 kHz energy (the hums have none)."""
     if han in clean: return clean[han]
-    for t in (f'{han}，{han}，{han}。', f'{han}。{han}。{han}。', f'{han}！{han}！{han}！'):
-        a = tts.generate(t, sid=sid, speed=0.88); y, info = clipfix.cut_middle(np.array(a.samples), a.sample_rate)
-        if y is not None and 0.22 <= len(y) / a.sample_rate / len(han) <= 0.55: clean[han] = (y, a.sample_rate); return clean[han]
+    ok = lambda y, sr: y is not None and 0.22 <= len(y) / sr / len(han) <= 0.55
+    if len(han) >= 2:
+        for t in (f'{han}，{han}，{han}。', f'{han}。{han}。{han}。'):
+            a = tts.generate(t, sid=sid, speed=0.88); y, info = clipfix.cut_middle(np.array(a.samples), a.sample_rate)
+            if ok(y, a.sample_rate): clean[han] = (y, a.sample_rate); return clean[han]
+    a = tts.generate(han + '。' if len(han) < 2 else han, sid=sid, speed=0.88)
+    for thr in (-14, -10, -8):
+        y, info = clipfix.band_trim(np.array(a.samples), a.sample_rate, thr)
+        if y is not None and 0.2 <= len(y) / a.sample_rate <= 0.45 * len(han) + 0.15: clean[han] = (y, a.sample_rate); return clean[han]
+    y, info = clipfix.main_segment(np.array(a.samples), a.sample_rate)
+    if y is not None and 0.2 <= len(y) / a.sample_rate <= 0.45 * len(han) + 0.15: clean[han] = (y, a.sample_rate); return clean[han]
     clean[han] = (None, 24000); return clean[han]
 def stretch(y, sr, f, td):
     sf.write(td + '/p.wav', y, sr)
