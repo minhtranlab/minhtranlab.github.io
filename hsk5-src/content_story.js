@@ -79,7 +79,7 @@ const SESSIONS = [
       teach: '<b>从不 + động từ</b> = chưa bao giờ… (như trong bài: 从不抱怨). <b>也不</b> = “cũng không”.' },
     { t: 'story', scene: 'standUp', lines: [B(7)] },
     { t: 'word', id: '爱护', scene: 'garden' },
-    { t: 'mc', scene: 'standUp', say: ['在丈夫的___和努力下，她终于又站了起来。', 'Nhờ ___ và nỗ lực của chồng, cuối cùng cô đã đứng dậy được.'], full: '在丈夫的爱护和努力下，她终于又站了起来。', prompt: 'Chọn từ điền vào chỗ trống (câu trong bài):', opts: [
+    { t: 'mc', scene: 'standUp', say: ['在丈夫的___和努力下，她终于又站了起来。', 'Nhờ sự yêu thương chăm sóc và nỗ lực của chồng, cuối cùng cô đã đứng dậy được.'], full: '在丈夫的爱护和努力下，她终于又站了起来。', prompt: 'Chọn từ điền vào chỗ trống (câu trong bài):', opts: [
       { t: '爱护', ok: 1, reply: ['对！丈夫的爱护。', 'Đúng! Sự yêu thương che chở của người chồng.'] },
       { t: '抱怨', reply: ['丈夫的抱怨？那她站不起来。', 'Sự phàn nàn của chồng á? Vậy cô đâu đứng dậy được.'], note: '抱怨 là phàn nàn, trái hẳn với ý của cả đoạn.' },
       { t: '对比', reply: ['丈夫的对比？不对。', 'Sự so sánh của chồng? Không hợp.'], note: 'Chỗ này cần nghĩa “yêu thương, chăm lo”.' }],

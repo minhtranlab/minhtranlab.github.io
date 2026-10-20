@@ -21,6 +21,7 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10171e;--card:#1a2530;--ink:#eaf0f4;--mut:#9fb2c1;--acc:#ff8a50;--acc2:#ffb78f;--accsoft:#3a2418;--teal:#57c3cd;--line:#2b3a47;--ok:#6fd9a1;--okbg:#17382a;--bad:#ff9a8a;--badbg:#3d1e1a;--chip:#26343f;--new:#3a3110;--newline:#6b5a1c;--newink:#f3dd93;--tw:#ff8a50;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#10171e;--card:#1a2530;--ink:#eaf0f4;--mut:#9fb2c1;--acc:#ff8a50;--acc2:#ffb78f;--accsoft:#3a2418;--teal:#57c3cd;--line:#2b3a47;--ok:#6fd9a1;--okbg:#17382a;--bad:#ff9a8a;--badbg:#3d1e1a;--chip:#26343f;--new:#3a3110;--newline:#6b5a1c;--newink:#f3dd93;--tw:#ff8a50;color-scheme:dark}
 html,body{height:100%}
+@supports (height:100dvh){body{height:100dvh}}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--body);display:flex;flex-direction:column;overflow:hidden;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 button{font-family:inherit}
 #app{flex:1;min-height:0;display:flex;flex-direction:column;width:100%;max-width:680px;margin:0 auto}
@@ -46,7 +47,7 @@ button{font-family:inherit}
 @keyframes wv{0%,100%{opacity:.25}50%{opacity:1}}
 .rn{animation:rn .8s linear infinite}
 @keyframes rn{from{transform:translate(4px,-14px)}to{transform:translate(-4px,14px)}}
-#stage{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:12px;padding:2px 0 12px;-webkit-overflow-scrolling:touch}
+#stage{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:12px;padding:2px 0 12px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .pane{display:flex;flex-direction:column;gap:12px;animation:in .28s both}
 @keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 /* story lines */
@@ -222,8 +223,19 @@ body.hb{background:linear-gradient(180deg,var(--g1) 0,var(--g2) 45%,var(--g3) 10
 .bar i{display:block;width:100%;max-width:38px;border-radius:8px 8px 3px 3px;background:var(--teal);min-height:4px}
 .bar.today i{background:var(--acc)}.bar em{font-style:normal;font-size:11.5px;margin-bottom:3px;color:var(--ink)}
 /* footer */
-footer{flex:none;padding:8px 0 calc(12px + env(safe-area-inset-bottom,0px))}
-#next{width:100%;min-height:60px;border-radius:18px;background:var(--acc);color:#fff;font:700 19px var(--disp);border:0;letter-spacing:.01em}
+/* "Tiếp →" is a fixed bar: always on screen, above the iOS home indicator; the stage pads its bottom so nothing hides behind it */
+:root{--fh:calc(78px + env(safe-area-inset-bottom,0px))}
+footer{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--bg);border-top:1px solid var(--line);padding:8px max(16px,env(safe-area-inset-left,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-right,0px));box-shadow:0 -6px 16px rgba(0,0,0,.06)}
+body.ins #stage{padding-bottom:calc(var(--fh) + 16px)}
+body.ins .sheet{bottom:var(--fh);border-radius:20px}
+.sheet{padding-bottom:calc(26px + env(safe-area-inset-bottom,0px))}
+body.ins .sheet{padding-bottom:26px}
+.mlist{display:flex;flex-direction:column;gap:2px}
+.mrow{display:grid;grid-template-columns:auto 1fr 46px;gap:10px;align-items:center;padding:4px 0;border-bottom:1px solid var(--line)}.mrow:last-child{border-bottom:0}
+.mrow .mz{font:500 26px/1.8 var(--han)}.mrow .mv{font-size:15px;color:var(--mut)}
+.upd{position:fixed;left:16px;right:16px;margin:0 auto;width:fit-content;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:45;min-height:50px;padding:0 20px;border:0;border-radius:99px;background:var(--teal);color:#fff;font:700 16px var(--body);box-shadow:0 8px 24px rgba(0,0,0,.25);animation:in .3s both}
+body.hasupd #home{padding-bottom:90px}
+#next{display:block;max-width:680px;margin:0 auto;width:100%;min-height:60px;border-radius:18px;background:var(--acc);color:#fff;font:700 19px var(--disp);border:0;letter-spacing:.01em}
 #next[disabled]{background:var(--line);color:var(--mut)}
 button:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
 /* home */
@@ -271,6 +283,28 @@ const wrec = id => st.wl[id] || (st.wl[id] = { t: Date.now(), box: 0, due: Date.
 Object.keys(st.stk).forEach(wrec);           // saves from before the revision path
 let curMiss = new Set(), curLook = new Set();
 function onLook(k) { if (curLook.has(k)) return; curLook.add(k); st.look[k] = (st.look[k] || 0) + 1; save(); }
+/* ===== self-update: build.py stamps APP_V and writes version.json; a new deploy shows a banner at home (never inside a lesson) ===== */
+const APP_V = '__APP_V__';
+const UPD = { last: 0, newV: '', n: 0 };
+function checkUpdate(force) {
+  if (!/^https?:/.test(location.protocol)) return;
+  const now = Date.now(); if (!force && now - UPD.last < 60000) return; UPD.last = now; UPD.n++;
+  fetch('version.json?t=' + now, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => {
+    if (!j || !j.v || j.v === APP_V) return;
+    UPD.newV = String(j.v); if (!inScreen) showUpd();
+  }).catch(() => { });
+}
+function showUpd() {
+  if (!UPD.newV || inScreen || document.querySelector('.upd')) return;
+  const b = h('button', 'upd', 'Có bản mới — bấm để cập nhật');
+  b.onclick = () => {
+    try { tickFlush(); save(); saveAcc(); if (ACC.code && ACC.dirty) syncNow(true); } catch (e) { }
+    b.disabled = true; b.textContent = 'Đang cập nhật…';
+    location.replace('./?v=' + encodeURIComponent(UPD.newV));   /* a new URL, so the browser cannot answer from its HTTP cache */
+  };
+  document.body.appendChild(b); document.body.classList.add('hasupd');
+}
+function hideUpd() { $$('.upd').forEach(e => e.remove()); document.body.classList.remove('hasupd'); }
 const save = () => { try { st.u = Date.now(); localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) { } syncSoon(); };
 /* ===== account: sign in with a student code; progress and feedback are kept in a Google Sheet (optional, off when no API is set) ===== */
 const API = (window.HSK5 && window.HSK5.api) || '';
@@ -417,7 +451,31 @@ function answerBlock(pane, zhT, viT, o = {}) {
   pb.onclick = () => { const on = !z.classList.contains('showpy'); z.classList.toggle('showpy', on); pb.textContent = on ? 'Ẩn pinyin' : 'Pinyin'; };
   if (document.body.classList.contains('py')) { z.classList.add('showpy'); pb.textContent = 'Ẩn pinyin'; }
   pane.appendChild(d);
-  if (st.auto !== 0) setTimeout(() => speak(zhT, false, !!o.male), o.delay || 250);
+  const e0 = EP; if (st.auto !== 0) setTimeout(() => { if (e0 === EP) speak(zhT, false, !!o.male); }, o.delay || 250);
+  showAns(d);
+  return d;
+}
+/* bring the answer block into view inside #stage (the fixed "Tiếp →" bar stays where it is); the explanation below is reached by scrolling */
+function showAns(el) {
+  setTimeout(() => {
+    const s = $('#stage'), f = $('footer'); if (!s || !el.isConnected) return;
+    const r = el.getBoundingClientRect(), top = s.getBoundingClientRect().top + 4, bot = (f ? f.getBoundingClientRect().top : innerHeight) - 8;
+    if (r.bottom > bot) s.scrollTo({ top: s.scrollTop + Math.min(r.bottom - bot, r.top - top), behavior: 'smooth' });
+    else if (r.top < top) s.scrollTo({ top: s.scrollTop + r.top - top, behavior: 'smooth' });
+  }, 90);
+}
+/* match: after the last pair, every word with its meaning, each with its own 🔊; the whole list is read once (auto) */
+function matchBlock(pane, ids) {
+  const d = h('div', 'reveal');
+  d.innerHTML = `<div class="rz mlist">${ids.map(id => `<div class="mrow"><span class="mz">${zh(id)}</span><span class="mv">${MEAN[id] || (W[id] ? W[id].vi : '')}</span><button class="spk" data-k="${id}" aria-label="Nghe">🔊</button></div>`).join('')}</div><div class="lr"><button class="sb" aria-label="Nghe lại cả lượt">🔊</button><button class="tr rpy">Pinyin</button><span class="hintw">Chạm vào một từ để xem nghĩa</span></div>`;
+  const z = $('.rz', d), pb = $('.rpy', d), all = () => { EP++; const e2 = EP; stopAudio(); chain(ids.map(id => ({ zh: id, v: 'f' })), e2); };
+  $$('.spk', d).forEach(b => b.onclick = () => speak(b.dataset.k));
+  $('.sb', d).onclick = all;
+  pb.onclick = () => { const on = !z.classList.contains('showpy'); z.classList.toggle('showpy', on); pb.textContent = on ? 'Ẩn pinyin' : 'Pinyin'; };
+  if (document.body.classList.contains('py')) { z.classList.add('showpy'); pb.textContent = 'Ẩn pinyin'; }
+  pane.appendChild(d);
+  const e0 = EP; if (st.auto !== 0) setTimeout(() => { if (e0 === EP) chain(ids.map(id => ({ zh: id, v: 'f' })), e0); }, 350);
+  showAns(d);
   return d;
 }
 const fbHtml = (rep, note) => (rep ? `<div class="rv">${zh(rep[0])}</div>${pyDiv(rep[0])}<div class="rvv">${rep[1]}</div>` : '') + (note ? `<div style="margin-top:6px">${zh(note)}</div>` : '');
@@ -430,7 +488,7 @@ let tAct = 0, inScreen = false;
 function tickFlush() { if (tAct) { logDay().s += Math.min((Date.now() - tAct) / 1000, 90); } tAct = 0; }
 let retryNow = false;
 function logQ(ok) { if (retryNow) return; const e = logDay(); e.q++; if (ok) e.ok++; }
-document.addEventListener('visibilitychange', () => { if (document.hidden) { tickFlush(); save(); if (ACC.code && ACC.dirty) syncNow(true); } else { if (inScreen) tAct = Date.now(); else pullNow(); } });
+document.addEventListener('visibilitychange', () => { if (document.hidden) { tickFlush(); save(); if (ACC.code && ACC.dirty) syncNow(true); } else { if (inScreen) tAct = Date.now(); else pullNow(); checkUpdate(); } });
 window.addEventListener('pagehide', () => { tickFlush(); save(); if (ACC.code && ACC.dirty) syncNow(true); });
 function stats() {
   const d = st.log.d, keys = Object.keys(d).filter(k => d[k].s >= 20 || d[k].q > 0).sort(), set = new Set(keys);
@@ -448,7 +506,7 @@ const CHAPTERS = [{ n: 1, ready: true }, { n: 2 }, { n: 3 }, { n: 4 }];   // add
 const unlocked = (list, i) => !!st.openAll || i === 0 || SS(list[i].id).done || SS(list[i - 1].id).done;
 function home(tab) {
   if (tab) homeTab = tab;
-  tickFlush(); inScreen = false; save(); document.body.classList.add('hb');
+  tickFlush(); inScreen = false; save(); document.body.classList.add('hb'); document.body.classList.remove('ins');
   EP++; stopAudio(); cur = null; sheetEl.classList.remove('open');
   const got = Object.keys(st.stk).length, total = STUDY().reduce((n, s) => n + s.words.length, 0);
   app.innerHTML = '';
@@ -474,6 +532,7 @@ function home(tab) {
   app.appendChild(el);
   if (API && !ACC.code && !ACC.asked && !document.querySelector('.wcov')) { ACC.asked = 1; saveAcc(); setTimeout(openAcct, 350); }
   if (curNode) requestAnimationFrame(() => { try { curNode.scrollIntoView({ block: 'center' }); } catch (e) { } });
+  showUpd();
 }
 /* ---- the journey: round levels that unlock one after another ---- */
 function pathView(el) {
@@ -692,7 +751,7 @@ function recordResult(sc) {
 }
 function renderScreen() {
   const S = SESSIONS.find(x => x.id === sid), x = SS(sid), sc = S.screens[x.i];
-  tickFlush(); inScreen = true; tAct = Date.now(); document.body.classList.remove('hb');
+  tickFlush(); inScreen = true; tAct = Date.now(); document.body.classList.remove('hb'); document.body.classList.add('ins'); hideUpd();
   const ep = ++EP; stopAudio(); stopRec(); sheetEl.classList.remove('open'); curMiss = new Set(); curLook = new Set(); retryNow = !!sc._retry;
   app.innerHTML = `<div id="top"><button class="tb" id="bHome" aria-label="Về trang chính">✕</button><div id="dots">${S.screens.map((_, k) => `<i class="${k < x.i ? 'd' : k === x.i ? 'c' : ''}"></i>`).join('')}</div><button class="tb ${st.py ? 'on' : ''}" id="bPy" aria-label="Hiện pinyin">拼</button><button class="tb ${st.auto ? 'on' : ''}" id="bAuto" aria-label="Tự đọc to">🔊</button><button class="tb" id="bFb" aria-label="Góp ý">💬</button></div><div id="stage"></div><footer><button id="next">Tiếp →</button></footer>`;
   $('#bHome').onclick = home;
@@ -768,9 +827,8 @@ function pick(sc, pane, ep, gate) {
   const grid = h('div', 'picks'), fb = h('div', ''), btns = [];
   const finish = () => {
     logQ(!wrong); st.res[key] = wrong ? 0 : 1; save(); gate(true);
-    txt.hidden = true; pl.hidden = true; top.hidden = true; btns.forEach(b => b.disabled = true); answerBlock(pane, sc.zh, null);
-    pane.appendChild(h('div', 'new', `<div class="k">Điều mới</div><div class="vi" style="color:var(--ink);margin:0 0 6px">${sc.vi}</div>${zh(fmtNew(sc.teach))}`));
-    setTimeout(() => $('#next') && $('#next').scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 80);
+    txt.hidden = true; pl.hidden = true; top.hidden = true; btns.forEach(b => b.disabled = true); answerBlock(pane, sc.zh, sc.vi || null);
+    if (sc.teach) pane.appendChild(h('div', 'new', `<div class="k">Điều mới</div>${zh(fmtNew(sc.teach))}`));
   };
   sc.opts.forEach(o => {
     const b = h('button', 'pk', art(o.sc)); b.setAttribute('aria-label', SCENE_LABEL[o.sc]); btns.push(b);
@@ -789,14 +847,12 @@ function pick(sc, pane, ep, gate) {
 function mc(sc, pane, ep, gate) {
   gate(false); let wrong = 0; const key = sid + ':' + SS(sid).i;
   pane.insertAdjacentHTML('beforeend', art(sc.scene, 'sm'));
-  pane.insertAdjacentHTML('beforeend', `<div class="sent" id="mcs">${zh(sc.say[0])}</div><div class="vi" id="mcvi" hidden style="margin-top:-8px"><div class="lr" style="margin-bottom:6px"><button class="sb" id="mcsb" aria-label="Nghe lại">🔊</button><button class="tr" id="mcpy">Pinyin</button></div>${pyDiv(sc.full)}<div>${sc.say[1]}</div></div><div class="prompt">${zh(sc.prompt)}</div>`);
+  pane.insertAdjacentHTML('beforeend', `<div class="sent" id="mcs">${zh(sc.say[0])}</div><div class="prompt">${zh(sc.prompt)}</div>`);
   const box = h('div', 'opts'), fb = h('div', ''), btns = [];
   const finish = () => {
     logQ(!wrong); st.res[key] = wrong ? 0 : 1; save(); recordResult(sc); gate(true);
-    $('#mcs').innerHTML = zh(sc.full); $('#mcvi').hidden = false; $('#mcsb').onclick = () => speak(sc.full); $('#mcpy').onclick = e => { const on = !$('#mcs').classList.contains('showpy'); $('#mcs').classList.toggle('showpy', on); e.currentTarget.textContent = on ? 'Ẩn pinyin' : 'Pinyin'; };
-    pane.appendChild(h('div', 'new', `<div class="k">Điều mới</div>${zh(fmtNew(sc.teach))}`));
-    if (hasClip(sc.full) && st.auto !== 0) setTimeout(() => speak(sc.full), 200);
-    setTimeout(() => $('#next') && $('#next').scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 80);
+    $('#mcs').hidden = true; answerBlock(pane, sc.full, sc.say[1]);
+    if (sc.teach) pane.appendChild(h('div', 'new', `<div class="k">Điều mới</div>${zh(fmtNew(sc.teach))}`));
   };
   shuffle(sc.opts).forEach(o => {
     const row = h('div', 'orow'), b = h('button', 'opt', zh(o.t)); b.dataset.ok = o.ok ? 1 : 0; btns.push(b); row.appendChild(b);
@@ -841,7 +897,6 @@ function read(sc, pane, ep, gate) {
 function finishQ(sc, pane, wrong, extra, label) {
   logQ(!wrong); const key = sid + ':' + SS(sid).i; st.res[key] = wrong ? 0 : 1; save(); recordResult(sc); $('#next').disabled = false;
   if (extra) pane.appendChild(h('div', 'new', `<div class="k">${label || 'Điều mới'}</div>${extra}`));
-  setTimeout(() => $('#next') && $('#next').scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 80);
 }
 /* ---- match: tap a word, then tap its meaning ---- */
 function match(sc, pane, ep, gate) {
@@ -856,7 +911,7 @@ function match(sc, pane, ep, gate) {
     if (!selW) { fb.className = 'fb bad'; fb.textContent = 'Chạm một từ ở cột trái trước.'; return; }
     if (b.dataset.id === selW.dataset.id) {
       sfx.ok(); b.classList.add('ok'); selW.classList.remove('sel'); selW.classList.add('ok'); selW = null; fb.className = ''; fb.textContent = ''; left--;
-      if (!left) { fb.className = wrong ? 'fb good' : ''; fb.innerHTML = wrong ? '<b>Xong!</b> Từ nào làm bạn nhầm sẽ hiện lại ở cuối buổi ôn.' : ''; finishQ(sc, pane, wrong); }
+      if (!left) { fb.className = wrong ? 'fb good' : ''; fb.innerHTML = wrong ? 'Từ nào làm bạn nhầm sẽ hiện lại ở cuối buổi ôn.' : ''; matchBlock(pane, sc.w); finishQ(sc, pane, wrong); }
     } else { wrong++; noteMiss([selW.dataset.id]); sfx.bad(); b.classList.add('bad', 'shake'); setTimeout(() => b.classList.remove('bad', 'shake'), 500); }
   });
 }
@@ -1128,5 +1183,6 @@ initSheet();
 setPy(st.py);
 home();
 if (ACC.code) pullNow();
+checkUpdate(true);
 </script>
 </body></html>

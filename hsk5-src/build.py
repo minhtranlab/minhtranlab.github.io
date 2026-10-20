@@ -72,11 +72,17 @@ if __name__ == '__main__':
         audio_js = 'const AUDIO_DATA = ' + json.dumps(audio_obj, ensure_ascii=False) + ';'
         return src.replace('/*COMMON_CSS*/', css).replace('/*DICT_JS*/', dict_js).replace('/*COMMON_JS*/', js).replace('/*CONTENT_JS*/', content).replace('/*AUDIO_JS*/', audio_js).replace('/*CONFIG_TAG*/', config_tag)
     page = assemble(keep)
+    # self-update: the version is a content hash of the page (stable when nothing changed); the app compares it with version.json
+    ver = hashlib.sha1(page.encode()).hexdigest()[:12]
+    assert page.count('__APP_V__') == 1, 'APP_V placeholder must appear exactly once'
+    page = page.replace('__APP_V__', ver)
     open(os.path.join(SITE, 'index.html'), 'w', encoding='utf-8').write(page)
+    open(os.path.join(SITE, 'version.json'), 'w', encoding='utf-8').write(json.dumps({'v': ver}))
+    print('version', ver, '-> hsk5/version.json')
     print('wrote hsk5/index.html: %.2f MB' % (len(page.encode()) / 1e6))
     if '--standalone' in sys.argv:   # single file with every clip embedded (offline use)
         out = sys.argv[sys.argv.index('--standalone') + 1]
         emb = {k: 'data:audio/mpeg;base64,' + base64.b64encode(open(os.path.join(SITE, v), 'rb').read()).decode() for k, v in keep.items()}
-        open(out, 'w', encoding='utf-8').write(assemble(emb, '<script>window.HSK5={api:""};</script>'))
+        open(out, 'w', encoding='utf-8').write(assemble(emb, '<script>window.HSK5={api:""};</script>').replace('__APP_V__', ver))
         print('wrote standalone', out)
     print('problems:', len(unk) + len(bad))
