@@ -707,14 +707,22 @@ function maybeRetry(S, x, sc) {
 let recS = null;
 function stopRec() { if (recS) { try { recS.mr.stop(); } catch (e) { } } }
 function setAS(t) { try { if (navigator.audioSession) navigator.audioSession.type = t; } catch (e) { } }
+/* iOS: common.js runs the page with audioSession 'playback' (sound even with the silent switch on). Asking for the
+   microphone while the session is 'playback' can be refused, so stop playback and switch to 'play-and-record' BEFORE
+   getUserMedia; on failure go back to 'playback'. Every caller sets 'playback' again when it stops the stream. */
+async function openMic() {
+  stopAudio(); setAS('play-and-record');
+  try { return await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch (e) { setAS('playback'); throw e; }
+}
+const micErr = e => String(e && (e.name || e.message) || e);
 async function toggleRec(btn, text, box) {
   if (recS && recS.btn === btn) { stopRec(); return; }
   stopRec();
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { toast('Thiết bị này chưa hỗ trợ thu âm trong trang'); return; }
-  let stream; try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); } catch (e) { toast('Chưa mở được micro. Hãy cho phép micro cho trang này'); return; }
-  stopAudio(); setAS('play-and-record');
+  let stream; try { stream = await openMic(); } catch (e) { window.__micErr = micErr(e); toast('Chưa mở được micro. Hãy cho phép micro cho trang này. Mã lỗi: ' + micErr(e)); return; }
   let mr, tm; const chunks = [];
-  try { mr = new MediaRecorder(stream); } catch (e) { stream.getTracks().forEach(t => t.stop()); toast('Chưa thu âm được trên thiết bị này'); return; }
+  try { mr = new MediaRecorder(stream); } catch (e) { stream.getTracks().forEach(t => t.stop()); setAS('playback'); toast('Chưa thu âm được trên thiết bị này. Mã lỗi: ' + micErr(e)); return; }
   recS = { mr, btn };
   mr.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
   mr.onstop = () => {
@@ -1146,9 +1154,11 @@ function comic(sc, pane, ep, gate) {
       if (!heard && st.auto !== 0) setTimeout(() => { if (box.isConnected && !heard) sample(); }, 350);
     }
     function noMic(err) {
+      const code = micErr(err); window.__comicMicErr = code;
       tapUI('Chưa dùng được micro, nên mình làm cách khác: nghe mẫu, đọc to theo, rồi bấm “Mình đã đọc”.');
-      toast('Không mở được micro. Chuyển sang: nghe mẫu rồi bấm “Mình đã đọc”');
-      window.__comicMicErr = String(err && (err.name || err.message) || err);
+      const ec = h('p', 'cm-err', ''); ec.style.cssText = 'font-size:12px;opacity:.7;margin:0'; ec.textContent = 'Mã lỗi: ' + code + (err && err.message && err.name ? ' (' + err.message + ')' : '');
+      act.appendChild(ec);
+      toast('Không mở được micro (' + code + '). Chuyển sang: nghe mẫu rồi bấm “Mình đã đọc”');
     }
     function micUI() {
       act.innerHTML = `<button class="cm-mic">🎤 Bấm giữ để đọc</button><div class="cm-meter" aria-hidden="true"><i></i></div><p class="cm-note">Giữ nút trong lúc đọc, đọc hết câu rồi thả ra (hoặc chạm một lần để bắt đầu, chạm lần nữa để dừng). App chỉ nghe xem bạn có đọc đủ dài không, không chấm phát âm.</p>`;
@@ -1156,12 +1166,12 @@ function comic(sc, pane, ep, gate) {
       const idle = () => { mic.classList.remove('on', 'loud'); mic.textContent = C.ready[i] ? '🎤 Đọc lại (giữ nút)' : '🎤 Bấm giữ để đọc'; };
       async function start() {
         pending = true; mic.textContent = 'Đang mở micro…'; let stream;
-        try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+        try { stream = await openMic(); }
         catch (err) { pending = false; noMic(err); return; }
         pending = false;
-        if (!box.isConnected) { stream.getTracks().forEach(t => t.stop()); return; }
-        if (!held && !tapMode) { stream.getTracks().forEach(t => t.stop()); idle(); say('Micro đã sẵn sàng. Giờ giữ nút trong lúc đọc nhé.'); return; }
-        stopAudio(); setAS('play-and-record'); meter.style.width = '0';
+        if (!box.isConnected) { stream.getTracks().forEach(t => t.stop()); setAS('playback'); return; }
+        if (!held && !tapMode) { stream.getTracks().forEach(t => t.stop()); setAS('playback'); idle(); say('Micro đã sẵn sàng. Giờ giữ nút trong lúc đọc nhé.'); return; }
+        meter.style.width = '0';
         take = startTake(stream, (rms, v) => { meter.style.width = Math.min(100, v / need * 100) + '%'; mic.classList.toggle('loud', rms > COMIC.thr); });
         C.take = take; mic.classList.add('on'); mic.textContent = tapMode ? '⏹ Chạm để dừng' : '🔴 Đang nghe… đọc xong thì thả ra'; say('');
         maxT = setTimeout(stop, Math.min(30000, (akey(text).length * 0.9 + 6) * 1000));

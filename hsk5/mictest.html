@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Thử micro</title>
+<style>
+:root{--bg:#fff8f0;--fg:#2b2118;--mut:#7a6a5c;--ok:#1f8a4c;--bad:#c0392b;--acc:#f07a2a;--card:#fff;--line:#eadbcc}
+@media (prefers-color-scheme:dark){:root{--bg:#1d1814;--fg:#f3ebe3;--mut:#b5a597;--ok:#4cc07f;--bad:#ff7b6b;--acc:#ff9a52;--card:#2a231d;--line:#43382f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 -apple-system,system-ui,sans-serif;padding:calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom))}
+h1{font-size:22px;margin:0 0 4px}
+p.sub{margin:0 0 16px;color:var(--mut);font-size:14px}
+button{font:inherit;border:0;border-radius:14px;cursor:pointer}
+#go{width:100%;padding:22px;font-size:22px;font-weight:700;background:var(--acc);color:#fff}
+#go:disabled{opacity:.6}
+#copy{width:100%;padding:14px;margin-top:12px;background:var(--card);color:var(--fg);border:1px solid var(--line);font-weight:600}
+#out{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;font:13px/1.5 ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-word;min-height:80px}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+#meterbox{margin-top:12px;display:none}
+#meterbox .lab{font-size:14px;color:var(--mut);margin-bottom:6px}
+#meter{height:22px;border-radius:11px;background:var(--line);overflow:hidden}
+#meter i{display:block;height:100%;width:0;background:var(--ok);transition:width .05s}
+</style>
+</head>
+<body>
+<h1>🎤 Thử micro</h1>
+<p class="sub">Bấm nút dưới đây. Nếu iPhone hỏi quyền micro, chọn “Cho phép”. Khi thanh xanh hiện ra, nói vài câu cho đến khi xong.</p>
+<button id="go">Thử micro</button>
+<div id="meterbox"><div class="lab" id="mlab">Âm lượng (nói thử đi):</div><div id="meter"><i></i></div></div>
+<button id="copy">📋 Sao chép kết quả</button>
+<div id="out">Chưa chạy.</div>
+<script>
+(function () {
+  var out = document.getElementById('out'), go = document.getElementById('go'), cp = document.getElementById('copy');
+  var mbox = document.getElementById('meterbox'), mbar = document.querySelector('#meter i'), mlab = document.getElementById('mlab');
+  var lines = [];
+  function add(t, cls) { lines.push(t); var d = document.createElement('div'); if (cls) d.className = cls; d.textContent = t; out.appendChild(d); }
+  function errTxt(e) { return (e && e.name ? e.name : 'Error') + ': ' + (e && e.message ? e.message : String(e)); }
+  function stopS(s) { try { s.getTracks().forEach(function (t) { t.stop(); }); } catch (e) { } }
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function setAS(t) { try { if (navigator.audioSession) { navigator.audioSession.type = t; return navigator.audioSession.type; } } catch (e) { return 'lỗi: ' + errTxt(e); } return '(không có)'; }
+  function asNow() { try { return navigator.audioSession ? navigator.audioSession.type : '(không có audioSession)'; } catch (e) { return '?'; } }
+
+  function info() {
+    var ua = navigator.userAgent, m = ua.match(/OS (\d+)[_.](\d+)(?:[_.](\d+))?/);
+    add('Thời điểm: ' + new Date().toISOString());
+    add('Trình duyệt: ' + ua);
+    add('iOS: ' + (m ? m[1] + '.' + m[2] + (m[3] ? '.' + m[3] : '') : 'không đọc được'));
+    add('Màn hình chính (standalone): ' + (navigator.standalone === true ? 'CÓ' : navigator.standalone === false ? 'không (đang ở Safari)' : 'không rõ') + ' · display-mode standalone: ' + (window.matchMedia && matchMedia('(display-mode: standalone)').matches ? 'có' : 'không'));
+    add('Secure context (https): ' + (window.isSecureContext ? 'có' : 'KHÔNG'), window.isSecureContext ? '' : 'bad');
+    add('Trang: ' + location.href);
+    var md = !!navigator.mediaDevices, gum = !!(md && navigator.mediaDevices.getUserMedia);
+    add('navigator.mediaDevices: ' + (md ? 'có' : 'KHÔNG') + ' · getUserMedia: ' + (gum ? 'có' : 'KHÔNG'), gum ? '' : 'bad');
+    add('AudioContext: ' + (window.AudioContext ? 'có' : window.webkitAudioContext ? 'chỉ webkitAudioContext' : 'KHÔNG'));
+    if (window.MediaRecorder) {
+      var types = ['audio/mp4', 'audio/mp4;codecs=mp4a.40.2', 'audio/aac', 'audio/webm', 'audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mpeg', 'audio/wav'];
+      var ok = types.filter(function (t) { try { return MediaRecorder.isTypeSupported(t); } catch (e) { return false; } });
+      add('MediaRecorder: có · hỗ trợ: ' + (ok.join(', ') || '(không loại nào)'));
+    } else add('MediaRecorder: KHÔNG', 'bad');
+    add('audioSession: ' + (navigator.audioSession ? 'có, type = ' + asNow() : 'không có'));
+    return gum;
+  }
+
+  async function permState(label) {
+    if (!(navigator.permissions && navigator.permissions.query)) { add('permissions.query (' + label + '): không có API'); return; }
+    try { var p = await navigator.permissions.query({ name: 'microphone' }); add('Quyền micro (' + label + '): ' + p.state); }
+    catch (e) { add('permissions.query (' + label + '): ' + errTxt(e)); }
+  }
+
+  async function devices(label) {
+    try { var d = await navigator.mediaDevices.enumerateDevices(); var a = d.filter(function (x) { return x.kind === 'audioinput'; }); add('Thiết bị micro (' + label + '): ' + a.length + (a.length ? ' · ' + a.map(function (x) { return x.label || '(chưa có tên)'; }).join(' | ') : '')); }
+    catch (e) { add('enumerateDevices (' + label + '): ' + errTxt(e)); }
+  }
+
+  /* level meter for a few seconds; returns the peak RMS */
+  async function meter(stream, secs, label) {
+    var C = window.AudioContext || window.webkitAudioContext; if (!C) { add('Không có AudioContext để đo âm lượng'); return; }
+    var c; try { c = new C(); if (c.state !== 'running') await c.resume(); } catch (e) { add('AudioContext lỗi: ' + errTxt(e), 'bad'); return; }
+    var peak = 0, voiced = 0;
+    try {
+      var src = c.createMediaStreamSource(stream), an = c.createAnalyser(); an.fftSize = 1024; src.connect(an);
+      var buf = new Float32Array(1024); mbox.style.display = 'block'; mlab.textContent = label;
+      var t0 = performance.now();
+      while (performance.now() - t0 < secs * 1000) {
+        an.getFloatTimeDomainData(buf); var s = 0; for (var k = 0; k < buf.length; k++) s += buf[k] * buf[k];
+        var r = Math.sqrt(s / buf.length); if (r > peak) peak = r; if (r > 0.012) voiced += 0.05;
+        mbar.style.width = Math.min(100, r * 400) + '%'; await sleep(50);
+      }
+      src.disconnect();
+    } catch (e) { add('Đo âm lượng lỗi: ' + errTxt(e), 'bad'); }
+    mbar.style.width = '0'; mbox.style.display = 'none';
+    add('  → âm lượng lớn nhất ' + peak.toFixed(3) + ', có tiếng ' + voiced.toFixed(1) + ' giây' + (peak === 0 ? ' (KHÔNG nghe được gì)' : ''), peak > 0.012 ? 'ok' : 'bad');
+    try { c.close(); } catch (e) { }
+  }
+
+  async function record(stream) {
+    if (!window.MediaRecorder) return;
+    try {
+      var chunks = [], mr = new MediaRecorder(stream);
+      mr.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+      var done = new Promise(function (r) { mr.onstop = r; });
+      mr.start(); await sleep(1500); mr.stop(); await done;
+      var size = chunks.reduce(function (a, b) { return a + b.size; }, 0);
+      add('  → MediaRecorder thu 1,5 giây: ' + size + ' byte, loại ' + (mr.mimeType || '(trống)'), size ? 'ok' : 'bad');
+    } catch (e) { add('  → MediaRecorder lỗi: ' + errTxt(e), 'bad'); }
+  }
+
+  /* one getUserMedia attempt; p = the promise (already started) */
+  async function attempt(name, p) {
+    var t0 = performance.now();
+    try {
+      var s = await p; var tr = s.getAudioTracks()[0];
+      add('✓ ' + name + ': THÀNH CÔNG sau ' + Math.round(performance.now() - t0) + ' ms · ' + (tr ? (tr.label || 'micro') + ' · ' + tr.readyState + (tr.muted ? ' · muted' : '') : 'không có track') + ' · audioSession = ' + asNow(), 'ok');
+      return s;
+    } catch (e) {
+      add('✗ ' + name + ': ' + errTxt(e) + ' · audioSession = ' + asNow(), 'bad');
+      return null;
+    }
+  }
+
+  go.addEventListener('click', function () {
+    go.disabled = true; out.textContent = ''; lines = [];
+    var gum = info();
+    if (!gum) { add('→ Trình duyệt này không có getUserMedia, không thử tiếp được.', 'bad'); go.disabled = false; return; }
+    /* Test A: called straight inside the click, audio session untouched */
+    var asA = asNow();
+    var pA; try { pA = navigator.mediaDevices.getUserMedia({ audio: true }); } catch (e) { pA = Promise.reject(e); }
+    (async function () {
+      add('');
+      add('— Thử A: xin micro ngay trong cú bấm (audioSession giữ nguyên = ' + asA + ')');
+      var s = await attempt('Thử A', pA);
+      await permState('sau thử A'); await devices('sau thử A');
+      if (s) { await meter(s, 4, 'Thử A: nói thử vài tiếng…'); await record(s); stopS(s); }
+      await sleep(400);
+      /* Test B: like the app before the fix: audioSession = playback, then ask */
+      add('');
+      add('— Thử B: đặt audioSession = "playback" rồi mới xin micro (giống app cũ)');
+      if (navigator.audioSession) {
+        add('  đặt type → ' + setAS('playback'));
+        var sB = await attempt('Thử B', (function () { try { return navigator.mediaDevices.getUserMedia({ audio: true }); } catch (e) { return Promise.reject(e); } })());
+        if (sB) { await meter(sB, 2, 'Thử B: nói thử…'); stopS(sB); }
+      } else add('  máy không có audioSession → bỏ qua thử B');
+      await sleep(400);
+      /* Test C: like the app after the fix: play-and-record first, then ask */
+      add('');
+      add('— Thử C: đặt audioSession = "play-and-record" rồi mới xin micro (cách sửa mới)');
+      if (navigator.audioSession) add('  đặt type → ' + setAS('play-and-record'));
+      var sC = await attempt('Thử C', (function () { try { return navigator.mediaDevices.getUserMedia({ audio: true }); } catch (e) { return Promise.reject(e); } })());
+      if (sC) { await meter(sC, 3, 'Thử C: nói thử…'); await record(sC); stopS(sC); }
+      if (navigator.audioSession) setAS('auto');
+      add('');
+      add('Xong. Bấm “Sao chép kết quả” rồi dán vào chat.');
+      go.disabled = false; go.textContent = 'Thử lại';
+    })();
+  });
+
+  cp.addEventListener('click', function () {
+    var txt = 'KẾT QUẢ THỬ MICRO (mictest)\n' + (lines.length ? lines.join('\n') : '(chưa chạy)');
+    function fallback() {
+      var ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0, txt.length);
+      var ok = false; try { ok = document.execCommand('copy'); } catch (e) { } ta.remove();
+      cp.textContent = ok ? '✓ Đã sao chép' : 'Chưa sao chép được: giữ tay vào ô kết quả để chọn chữ';
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function () { cp.textContent = '✓ Đã sao chép'; }, fallback);
+    else fallback();
+    setTimeout(function () { cp.textContent = '📋 Sao chép kết quả'; }, 2500);
+  });
+
+  /* show permission state before anything is asked */
+  (async function () { if (navigator.permissions && navigator.permissions.query) { try { var p = await navigator.permissions.query({ name: 'microphone' }); out.textContent = 'Chưa chạy. (Quyền micro hiện tại: ' + p.state + ')'; } catch (e) { } } })();
+})();
+</script>
+</body>
+</html>

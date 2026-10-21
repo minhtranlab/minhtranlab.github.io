@@ -152,6 +152,7 @@ async def main():
                 chk(await pg.query_selector('.cm-mic') is not None, 'denied: mic button offered first')
                 await pg.click('.cm-mic'); await pg.wait_for_selector('.cm-did', timeout=5000)
                 chk('micro' in await pg.inner_text('#toast'), 'denied: toast explains the switch')
+                ec = await pg.evaluate('window.__comicMicErr'); chk(bool(ec) and ('Mã lỗi: ' + ec) in (await pg.inner_text('.cm-big')), f'denied: real error code shown in the card ({ec})')
             else: chk(await pg.query_selector('.cm-mic') is None and await pg.query_selector('.cm-did') is not None, 'no-api: fallback from the start')
             await pg.click('.cm-x')
             await play_page(pg, lab, 'tap', Finger(pg), mic=False)
@@ -159,6 +160,21 @@ async def main():
             chk(await pg.evaluate("__comicFilm.frames.length")==len(await frames(pg)), f'{lab}: film ran')
             chk(not errs, f'{lab}: page errors {errs[:3]}')
             await ctx.close()
+        await b.close()
+        # 5) iOS-like audio session: the microphone is refused while navigator.audioSession.type is 'playback'
+        #    (the page sets 'playback' at load); the app must switch to 'play-and-record' before asking, and back after
+        b = await p.chromium.launch(executable_path='/opt/pw-browsers/chromium', args=common + ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream', '--use-file-for-fake-audio-capture=' + voice])
+        ctx = await b.new_context(viewport={'width': 390, 'height': 844}, has_touch=True, is_mobile=True, permissions=['microphone'])
+        await ctx.add_init_script('''(()=>{const as={type:'auto'};window.__asLog=[];Object.defineProperty(navigator,'audioSession',{value:new Proxy(as,{set(o,k,v){o[k]=v;if(k==='type')window.__asLog.push(v);return true}}),configurable:true});
+          const g=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);navigator.mediaDevices.getUserMedia=c=>as.type==='playback'?Promise.reject(new DOMException('capture refused in playback session','NotAllowedError')):g(c);})()''')
+        pg = await ctx.new_page(); errs = []; pg.on('pageerror', lambda e: errs.append(str(e)))
+        await goto_comic(pg); i = (await bank(pg))[0]
+        chk(await pg.evaluate("navigator.audioSession.type") == 'playback', 'ios-session: page starts in playback')
+        await read_mic(pg, i, Finger(pg))
+        chk(await pg.evaluate("!window.__comicMicErr"), 'ios-session: no mic error')
+        chk(await pg.evaluate("navigator.audioSession.type") == 'playback', 'ios-session: back to playback after the take')
+        chk('play-and-record' in await pg.evaluate("__asLog"), 'ios-session: switched to play-and-record to record')
+        chk(not errs, f'ios-session: page errors {errs[:3]}')
         await b.close()
     print('COMIC', 'FAIL' if fails else 'OK', len(fails), 'failures', fails[:20])
     sys.exit(1 if fails else 0)
