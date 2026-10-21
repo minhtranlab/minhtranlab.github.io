@@ -58,7 +58,7 @@ function initSheet() {
   document.body.appendChild(sheetEl);
   document.addEventListener('click', e => {
     const w = e.target.closest('.w');
-    if (w && (e.target.closest('.reveal') || !e.target.closest('.opt,.cx,.tile,.slot,.chip2,.line,.mw,.bigq,.wh,.sticker,.prompt,.wcf'))) { e.stopPropagation(); showSheet(w.dataset.k); return; }
+    if (w && (e.target.closest('.reveal') || !e.target.closest('.opt,.cx,.tile,.slot,.chip2,.line,.mw,.bigq,.wh,.sticker,.prompt,.wcf,.cm-card'))) { e.stopPropagation(); showSheet(w.dataset.k); return; }
     if (sheetEl.classList.contains('open') && !e.target.closest('#sheet')) sheetEl.classList.remove('open');
   }, true);
 }

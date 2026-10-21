@@ -290,6 +290,55 @@ button:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){.fl,.wv,.rn,.sticker,.pane,.panel,.new{animation:none!important}}
 .acct{display:block;margin:8px 0 2px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;font:600 13px var(--body);color:var(--mut)}.acct.ok{color:var(--ok)}.acct.warn{color:#b45309;border-color:#f59e0b}
 .acin{width:100%;font:600 20px var(--body);letter-spacing:.06em;text-transform:uppercase;padding:12px 14px;border:2px solid var(--line);border-radius:14px;background:var(--bg);color:var(--ink)}
+/* comic — "Ghép truyện" screen (t:'comic'). Shapes only, colours from the theme tokens above; chat Minh họa may restyle everything in this block. */
+.cm-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cm-pg{font-size:13px;font-weight:600;color:var(--mut);white-space:nowrap}
+.cm-frames{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (min-width:600px){.cm-frames{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.cm-fr{position:relative;display:flex;flex-direction:column;gap:6px;padding:6px;border-radius:16px;background:var(--card);border:2px solid var(--line);transition:border-color .15s,transform .2s,box-shadow .2s,opacity .2s;outline:0}
+.cm-pic{aspect-ratio:4/3;border-radius:11px;overflow:hidden;background:var(--chip)}
+.cm-pic svg{width:100%;height:100%;display:block}
+.cm-n{position:absolute;left:11px;top:11px;min-width:24px;height:24px;padding:0 6px;border-radius:99px;background:var(--card);color:var(--ink);font:700 13px/24px var(--disp);text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.cm-slots{display:flex;flex-direction:column;gap:6px}
+.cm-ph{min-height:30px;border-radius:10px;border:2px dashed var(--line)}
+body.cm-holding .cm-fr:not(.full){border-color:var(--acc);border-style:dashed}
+.cm-fr.hov{border-color:var(--acc);border-style:solid;background:var(--accsoft)}
+.cm-fr.bad{border-color:var(--bad);animation:sh .35s}
+.cm-fr.play{border-color:var(--acc);border-style:solid;box-shadow:0 0 0 4px var(--accsoft);transform:scale(1.02)}
+.cm-fr.dim{opacity:.45}
+.cm-pl{display:grid;grid-template-columns:minmax(0,1fr) 34px;gap:0 4px;align-items:center;padding:4px 4px 4px 8px;border-radius:10px;background:var(--okbg);border:1px solid var(--ok);animation:in .25s both}
+.cm-pl .cm-z{font:500 15px/1.75 var(--han)}
+.cm-pl .cm-v{grid-column:1/2;font-size:12.5px;line-height:1.35;color:var(--mut)}
+.cm-pl .spk{grid-column:2;grid-row:1/3;width:34px;height:34px;font-size:15px}
+.cm-pl.now{outline:3px solid var(--acc);outline-offset:1px}
+.cm-bank{display:flex;flex-direction:column;gap:8px}
+.cm-card{position:relative;text-align:left;padding:8px 14px 10px;border-radius:14px;background:var(--card);border:2px solid var(--line);color:var(--ink);font:500 20px/1.75 var(--han);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.cm-card .w{pointer-events:none}
+.cm-tag{display:block;font:600 12.5px/1.4 var(--body);color:var(--mut)}
+.cm-card.rdy{border-color:var(--teal);box-shadow:0 0 0 3px rgba(23,128,138,.18),0 4px 14px rgba(23,128,138,.18);touch-action:none;cursor:grab}
+.cm-card.rdy .cm-tag{color:var(--teal)}
+.cm-card.sel{border-color:var(--acc);background:var(--new)}
+.cm-card.drag{opacity:.3}
+.cm-card.shake{animation:sh .35s}
+.cm-ghost{position:fixed;z-index:70;pointer-events:none;width:min(80vw,420px);margin:0;transform:translate(-50%,-70%) rotate(-2deg);box-shadow:0 14px 34px rgba(0,0,0,.3)}
+.cm-hold{position:fixed;left:16px;right:16px;bottom:calc(var(--fh) + 8px);z-index:41;max-width:648px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:6px 6px 6px 14px;border-radius:16px;background:var(--ink);color:var(--bg);font-size:14.5px;box-shadow:0 8px 24px rgba(0,0,0,.25);animation:in .2s both}
+.cm-hold span{flex:1}
+.cm-hold button{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.18);color:inherit;font-size:16px}
+body.cm-holding.ins #stage{padding-bottom:calc(var(--fh) + 80px)}
+.cm-big{display:flex;flex-direction:column;gap:12px}
+.cm-bt{font:700 18px/1.2 var(--disp)}
+.cm-bz{font:500 27px/1.85 var(--han)}
+.cm-mic{width:100%;min-height:66px;border-radius:18px;background:var(--acc);color:#fff;font:700 18px var(--disp);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.cm-mic.on{background:var(--bad)}
+.cm-mic.on.loud{box-shadow:0 0 0 6px var(--badbg)}
+.cm-mic[disabled]{opacity:.6}
+.cm-meter{height:10px;border-radius:99px;background:var(--chip);overflow:hidden}
+.cm-meter i{display:block;width:0;height:100%;border-radius:99px;background:var(--ok);transition:width .1s}
+.cm-msg{min-height:22px;font-size:15px;line-height:1.45;color:var(--mut)}
+.cm-msg.good{color:var(--ok);font-weight:600}
+.cm-note{font-size:13.5px;line-height:1.45;color:var(--mut);margin:0}
+@media (prefers-reduced-motion:reduce){.cm-fr,.cm-pl,.cm-hold{transition:none;animation:none}}
+/* end comic */
 .soon{margin:26px 0 8px}.soonc{display:flex;gap:14px;align-items:center;width:100%;text-align:left;padding:14px 16px;margin:8px 0;border-radius:16px;border:2px dashed var(--line);background:transparent;color:var(--mut)}.soonc b{display:block;font:700 17px var(--disp);color:var(--ink);opacity:.55}.soonc small{display:block;font-size:13px}.soonk{font-size:22px;opacity:.7}
 </style></head>
 <body>
@@ -359,7 +408,7 @@ function initSheet() {
   document.body.appendChild(sheetEl);
   document.addEventListener('click', e => {
     const w = e.target.closest('.w');
-    if (w && (e.target.closest('.reveal') || !e.target.closest('.opt,.cx,.tile,.slot,.chip2,.line,.mw,.bigq,.wh,.sticker,.prompt,.wcf'))) { e.stopPropagation(); showSheet(w.dataset.k); return; }
+    if (w && (e.target.closest('.reveal') || !e.target.closest('.opt,.cx,.tile,.slot,.chip2,.line,.mw,.bigq,.wh,.sticker,.prompt,.wcf,.cm-card'))) { e.stopPropagation(); showSheet(w.dataset.k); return; }
     if (sheetEl.classList.contains('open') && !e.target.closest('#sheet')) sheetEl.classList.remove('open');
   }, true);
 }
@@ -780,7 +829,8 @@ const SESSIONS = [
       { t: '如何', reply: ['如何不能问原因。', '如何 không hỏi được lý do.'], note: 'Hỏi lý do (“sao lại…”) chỉ dùng được 怎么. 如何 chỉ hỏi cách thức hoặc tình trạng (như 他俩是如何恩爱的).' },
       { t: '什么', reply: ['不是“什么没来”。', 'Không ai nói “cái gì không đến”.'], note: '什么 hỏi “cái gì”, không hỏi lý do.' }],
       teach: 'Nhớ: <b>hỏi lý do → 怎么</b>. 如何 chỉ hỏi cách thức hoặc tình trạng, giọng trang trọng như phát thanh.' },
-    { t: 'read', ids: [0, 1, 2, 3, 4, 5, 6, 7, 8] },
+    { t: 'comic', ids: [0, 1, 2, 3, 4], page: [1, 2] },
+    { t: 'comic', ids: [5, 6, 7, 8], page: [2, 2] },
     { t: 'album', words: ['抱怨', '爱护'], say: [B(6), B(7)], recall: 'p3',
       tease: { scene: 'finalists', vi: 'còn hai cặp nữa. Cặp thứ hai nói họ chưa bao giờ cãi nhau, còn cặp thứ ba mãi không chịu xuất hiện… Ai mới là cặp thắm thiết nhất?' } }
   ] }
@@ -1688,7 +1738,7 @@ Object.keys(st.stk).forEach(wrec);           // saves from before the revision p
 let curMiss = new Set(), curLook = new Set();
 function onLook(k) { if (curLook.has(k)) return; curLook.add(k); st.look[k] = (st.look[k] || 0) + 1; save(); }
 /* ===== self-update: build.py stamps APP_V and writes version.json; a new deploy shows a banner at home (never inside a lesson) ===== */
-const APP_V = 'd5ee91094187';
+const APP_V = '7e96883a2463';
 const UPD = { last: 0, newV: '', n: 0 };
 function checkUpdate(force) {
   if (!/^https?:/.test(location.protocol)) return;
@@ -1910,7 +1960,7 @@ const CHAPTERS = [{ n: 1, ready: true }, { n: 2 }, { n: 3 }, { n: 4 }];   // add
 const unlocked = (list, i) => !!st.openAll || i === 0 || SS(list[i].id).done || SS(list[i - 1].id).done;
 function home(tab) {
   if (tab) homeTab = tab;
-  tickFlush(); inScreen = false; save(); document.body.classList.add('hb'); document.body.classList.remove('ins');
+  runLeave(); tickFlush(); inScreen = false; save(); document.body.classList.add('hb'); document.body.classList.remove('ins');
   EP++; stopAudio(); cur = null; sheetEl.classList.remove('open');
   const got = Object.keys(st.stk).length, total = STUDY().reduce((n, s) => n + s.words.length, 0);
   app.innerHTML = '';
@@ -2155,7 +2205,7 @@ function recordResult(sc) {
 }
 function renderScreen() {
   const S = SESSIONS.find(x => x.id === sid), x = SS(sid), sc = S.screens[x.i];
-  tickFlush(); inScreen = true; tAct = Date.now(); document.body.classList.remove('hb'); document.body.classList.add('ins'); hideUpd();
+  runLeave(); tickFlush(); inScreen = true; tAct = Date.now(); document.body.classList.remove('hb'); document.body.classList.add('ins'); hideUpd();
   const ep = ++EP; stopAudio(); stopRec(); sheetEl.classList.remove('open'); curMiss = new Set(); curLook = new Set(); retryNow = !!sc._retry;
   app.innerHTML = `<div id="top"><button class="tb" id="bHome" aria-label="Về trang chính">✕</button><div id="dots">${S.screens.map((_, k) => `<i class="${k < x.i ? 'd' : k === x.i ? 'c' : ''}"></i>`).join('')}</div><button class="tb ${st.py ? 'on' : ''}" id="bPy" aria-label="Hiện pinyin">拼</button><button class="tb ${st.auto ? 'on' : ''}" id="bAuto" aria-label="Tự đọc to">🔊</button><button class="tb" id="bFb" aria-label="Góp ý">💬</button></div><div id="stage"></div><footer><button id="next">Tiếp →</button></footer>`;
   $('#bHome').onclick = home;
@@ -2174,7 +2224,7 @@ function renderScreen() {
     x.i++; x.b = S.screens.slice(0, x.i).filter(q => !q._retry).length; save(); renderScreen();
   };
   const pane = h('div', 'pane'); stage.appendChild(pane);
-  ({ story, word, pick, mc, read, album, match, hear, order, type, choose, wrap, tf, spot, predict })[sc.t](sc, pane, ep, gate, nb);
+  ({ story, word, pick, mc, read, comic, album, match, hear, order, type, choose, wrap, tf, spot, predict })[sc.t](sc, pane, ep, gate, nb);
   if (sc._retry) pane.insertBefore(h('div', 'retry', '↻ Ôn lại câu bạn vừa nhầm'), pane.firstChild);
   stage.scrollTop = 0;
 }
@@ -2295,6 +2345,268 @@ function read(sc, pane, ep, gate) {
   let all = false;
   bt.onclick = () => { all = !all; vis.forEach(([vi, tr]) => { vi.hidden = !all; tr.textContent = all ? 'Ẩn dịch' : 'Dịch'; }); bt.textContent = all ? 'Ẩn hết bản dịch' : 'Hiện hết bản dịch'; };
 }
+
+/* ---- comic ("Ghép truyện"): read each sentence aloud, then put it under its picture; at the end a film in the learner's own voice ----
+   Frames come from the story screens (the scene each BOOK line was shown with), never guessed; consecutive lines with the same scene share a frame (max 2).
+   The microphone is only used to check that something was said for long enough (no pronunciation scoring). Recordings stay in memory for this screen only. */
+const COMIC = { thr: 0.012, perChar: 0.4, share: 0.5, maxFrames: 6 };
+function bookScenes() {
+  const m = {};
+  SESSIONS.forEach(S2 => (S2.base || S2.screens || []).forEach(c => { if (c.t === 'story') (c.lines || []).forEach(l => { const i = BOOK.findIndex(b => b.zh === l.zh); if (i >= 0 && !(i in m)) m[i] = c.scene; }); }));
+  return m;
+}
+function comicFrames(ids) {
+  const m = bookScenes(), fr = [];
+  ids.forEach(i => { const last = fr[fr.length - 1]; if (last && last.scene === m[i] && last.ids.length < 2) last.ids.push(i); else fr.push({ scene: m[i], ids: [i] }); });
+  return fr;
+}
+const micOK = () => !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && (window.AudioContext || window.webkitAudioContext));
+/* one recording attempt: level meter (time with voice above the threshold) + MediaRecorder for the film */
+function startTake(stream, onLevel) {
+  const c = ac(); try { if (c.state !== 'running') c.resume(); } catch (e) { }
+  let src = null, an = null; try { src = c.createMediaStreamSource(stream); an = c.createAnalyser(); an.fftSize = 1024; src.connect(an); } catch (e) { an = null; }
+  const fb = new Float32Array(1024), bb = new Uint8Array(1024), t0 = performance.now(); let last = t0, voiced = 0, any = 0;
+  let mr = null; const chunks = [];
+  try { if (window.MediaRecorder) { mr = new MediaRecorder(stream); mr.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); }; mr.start(); } } catch (e) { mr = null; }
+  const iv = setInterval(() => {
+    const now = performance.now(), dt = (now - last) / 1000; last = now; if (!an) return;
+    let s = 0;
+    if (an.getFloatTimeDomainData) { an.getFloatTimeDomainData(fb); for (let k = 0; k < fb.length; k++) s += fb[k] * fb[k]; }
+    else { an.getByteTimeDomainData(bb); for (let k = 0; k < bb.length; k++) { const v = (bb[k] - 128) / 128; s += v * v; } }
+    const rms = Math.sqrt(s / 1024); if (rms > 0) any = 1; if (rms > COMIC.thr) voiced += dt; onLevel(rms, voiced);
+  }, 50);
+  return {
+    stop: () => new Promise(res => {
+      clearInterval(iv); try { if (src) src.disconnect(); } catch (e) { }
+      const dur = (performance.now() - t0) / 1000;
+      const fin = url => { stream.getTracks().forEach(t => t.stop()); res({ voiced, dur, any, url }); };
+      if (mr && mr.state !== 'inactive') { mr.onstop = () => fin(chunks.length ? URL.createObjectURL(new Blob(chunks, { type: mr.mimeType || 'audio/mp4' })) : ''); try { mr.stop(); } catch (e) { fin(''); } }
+      else fin('');
+    })
+  };
+}
+/* play one of the learner's recordings; resolves when it ends, fails or is stopped */
+function playUrl(url, tag) {
+  return new Promise(res => {
+    stopAudio(); window.__plays.push('REC:' + tag);
+    const a = new Audio(url); window.__uA = a; let fin = 0;
+    const done = v => { if (fin) return; fin = 1; res(v); };
+    a.onended = () => done(true); a.onpause = () => done(false);
+    a.onerror = () => { toast('Chưa phát được bản thu'); done(false); };
+    const p = a.play(); if (p && p.catch) p.catch(() => { toast('Chưa phát được bản thu'); done(false); });
+  });
+}
+function comic(sc, pane, ep, gate) {
+  gate(false);
+  const key = sid + ':' + SS(sid).i, frames = comicFrames(sc.ids), V = {}; sc.ids.forEach(i => { V[i] = B(i).v; });
+  const C = { mode: micOK() ? 'mic' : 'tap', rec: {}, ready: {}, placed: {}, first: {}, hold: null, take: null, dragEnd: 0, done: false };
+  window.__comic = C;
+  const stage = $('#stage');
+  pane.insertAdjacentHTML('beforeend', `<div class="cm-head"><div class="h2">Ghép truyện tranh</div>${sc.page ? `<span class="cm-pg">Trang ${sc.page[0]}/${sc.page[1]}</span>` : ''}</div><div class="prompt" style="font-weight:500">Chạm một thẻ và đọc to câu trên thẻ. Đọc xong thì kéo thẻ vào đúng khung tranh, hoặc chạm thẻ rồi chạm khung.</div>`);
+  const grid = h('div', 'cm-frames'), bank = h('div', 'cm-bank'), fb = h('div', ''), end = h('div', '');
+  end.style.cssText = 'display:flex;flex-direction:column;gap:10px';
+  const fEls = frames.map((f, n) => {
+    const d = h('div', 'cm-fr', `<div class="cm-pic">${scene(f.scene)}</div><span class="cm-n">${n + 1}</span><div class="cm-slots">${f.ids.map(() => '<div class="cm-ph"></div>').join('')}</div>`);
+    d.dataset.f = n; d.tabIndex = 0; d.setAttribute('role', 'button'); d.setAttribute('aria-label', 'Khung ' + (n + 1) + ': ' + (SCENE_LABEL[f.scene] || ''));
+    const tap = () => { if (C.done) return; if (C.hold != null) place(C.hold, n); else { fb.className = 'fb bad'; fb.textContent = 'Chọn một thẻ câu ở dưới và đọc to trước nhé.'; } };
+    d.onclick = e => { if (!e.target.closest('.cm-pl')) tap(); };
+    d.onkeydown = e => { if ((e.key === 'Enter' || e.key === ' ') && e.target === d) { e.preventDefault(); tap(); } };
+    grid.appendChild(d); return d;
+  });
+  let order = sc.ids.slice(); for (let k = 0; k < 6 && order.join() === sc.ids.join() && order.length > 1; k++) order = shuffle(sc.ids);
+  const cEls = {};
+  order.forEach(i => {
+    const b = h('button', 'cm-card', `<span class="cm-tag">🎤 Chạm để đọc</span>${zh(BOOK[i].zh)}`); b.dataset.i = i; cEls[i] = b;
+    b.addEventListener('pointerdown', e => dragStart(e, i));
+    b.addEventListener('click', () => { if (Date.now() - C.dragEnd < 350 || C.placed[i] != null || C.done) return; if (!C.ready[i]) openCard(i); else setHold(C.hold === i ? null : i); });
+    b.oncontextmenu = e => e.preventDefault();
+    bank.appendChild(b);
+  });
+  pane.append(grid, bank, fb, end);
+
+  /* holding a card (tap-then-tap placement) */
+  let holdEl = null;
+  function setHold(i) {
+    if (C.hold != null && cEls[C.hold]) cEls[C.hold].classList.remove('sel');
+    C.hold = i; if (holdEl) { holdEl.remove(); holdEl = null; } document.body.classList.toggle('cm-holding', i != null);
+    if (i == null) return;
+    cEls[i].classList.add('sel'); fb.className = ''; fb.textContent = '';
+    holdEl = h('div', 'cm-hold', '<span>Đang cầm một thẻ. Chạm vào khung tranh đúng với câu đó.</span><button aria-label="Bỏ thẻ xuống">✕</button>');
+    $('button', holdEl).onclick = () => setHold(null); document.body.appendChild(holdEl);
+    const r = grid.getBoundingClientRect(), sr = stage.getBoundingClientRect(); if (r.top < sr.top) stage.scrollTo({ top: stage.scrollTop + r.top - sr.top - 6, behavior: 'smooth' });
+  }
+
+  /* drag and drop with pointer events (mouse, pen, finger); the stage scrolls when the finger nears its top or bottom */
+  let D = null, scT = 0;
+  const frameAt = (x, y) => { const el = document.elementFromPoint(x, y), f = el && el.closest('.cm-fr'); return f && grid.contains(f) ? +f.dataset.f : null; };
+  const hover = f => { if (D.over === f) return; if (D.over != null) fEls[D.over].classList.remove('hov'); D.over = f; if (f != null) fEls[f].classList.add('hov'); };
+  function dragStart(e, i) {
+    if (!C.ready[i] || C.placed[i] != null || C.done || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    D = { i, id: e.pointerId, x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, on: false, el: cEls[i], ghost: null, over: null };
+    try { cEls[i].setPointerCapture(e.pointerId); } catch (_) { }
+  }
+  function dragMove(e) {
+    if (!D || e.pointerId !== D.id) return;
+    D.x = e.clientX; D.y = e.clientY;
+    if (!D.on) {
+      if (Math.hypot(D.x - D.x0, D.y - D.y0) < 8) return;
+      D.on = true; setHold(null); D.el.classList.add('drag');
+      D.ghost = D.el.cloneNode(true); D.ghost.classList.remove('drag', 'sel'); D.ghost.classList.add('cm-ghost'); document.body.appendChild(D.ghost);
+      scT = setInterval(() => {
+        if (!D || !D.on) return; const sr = stage.getBoundingClientRect(), f = $('footer'), bot = f ? f.getBoundingClientRect().top : innerHeight;
+        const dy = D.y < sr.top + 70 ? -14 : D.y > bot - 70 ? 14 : 0; if (dy) { stage.scrollTop += dy; hover(frameAt(D.x, D.y)); }
+      }, 30);
+    }
+    if (e.cancelable) e.preventDefault();
+    D.ghost.style.left = D.x + 'px'; D.ghost.style.top = D.y + 'px'; hover(frameAt(D.x, D.y));
+  }
+  function dragEnd(e) {
+    if (!D || e.pointerId !== D.id) return;
+    const d = D; D = null; clearInterval(scT);
+    if (!d.on) return;
+    C.dragEnd = Date.now(); if (d.ghost) d.ghost.remove(); d.el.classList.remove('drag'); if (d.over != null) fEls[d.over].classList.remove('hov');
+    const f = e.type === 'pointercancel' ? null : frameAt(e.clientX, e.clientY);
+    if (f != null) place(d.i, f);
+  }
+  window.addEventListener('pointermove', dragMove, { passive: false }); window.addEventListener('pointerup', dragEnd); window.addEventListener('pointercancel', dragEnd);
+
+  /* put card i into frame n; the first placement of each card is its score */
+  function missWords(t) { const now = Date.now(); [...new Set(segs(t).map(x => x.k).filter(k => W[k]))].forEach(id => { const r = wrec(id); r.box = 0; r.fail = 1; r.due = Math.min(r.due || now + DAY, now + DAY); }); }
+  function place(i, n) {
+    if (C.placed[i] != null || C.done) return;
+    const f = frames[n], ok = f.ids.includes(i);
+    if (!(i in C.first)) { C.first[i] = ok ? 1 : 0; logQ(ok); if (!ok) missWords(BOOK[i].zh); save(); }
+    setHold(null);
+    if (!ok) {
+      sfx.bad(); fEls[n].classList.add('bad'); cEls[i].classList.add('shake'); setTimeout(() => { fEls[n].classList.remove('bad'); cEls[i].classList.remove('shake'); }, 450);
+      const lab = SCENE_LABEL[f.scene] || ''; fb.className = 'fb bad';
+      fb.innerHTML = `Chưa đúng khung. Tranh ${n + 1} vẽ: ${lab ? lab.charAt(0).toLowerCase() + lab.slice(1) : 'một cảnh khác'}. Câu trên thẻ nói chuyện khác, đọc lại các từ chính rồi thử khung khác nhé.`;
+      return;
+    }
+    sfx.ok(); C.placed[i] = n; fb.className = ''; fb.textContent = '';
+    const pl = h('div', 'cm-pl', `<div class="cm-z">${zh(BOOK[i].zh)}</div><div class="cm-v">${BOOK[i].vi}</div><button class="spk" aria-label="Nghe">🔊</button>`); pl.dataset.i = i;
+    $('.spk', pl).onclick = ev => { ev.stopPropagation(); EP++; stopAudio(); vox(BOOK[i].zh, V[i]); };
+    $$('.cm-slots > *', fEls[n])[f.ids.indexOf(i)].replaceWith(pl);
+    if (f.ids.every(k => C.placed[k] != null)) fEls[n].classList.add('full');
+    cEls[i].remove();
+    const e0 = EP; if (st.auto !== 0) setTimeout(() => { if (e0 === EP) vox(BOOK[i].zh, V[i]); }, 250);
+    if (sc.ids.every(k => C.placed[k] != null)) finish();
+  }
+  function finish() {
+    C.done = true; const allOk = sc.ids.every(i => C.first[i] === 1);
+    st.res[key] = allOk ? 1 : 0; save(); gate(true); bank.remove();
+    end.innerHTML = `<div class="new"><div class="k">Ghép xong cả trang</div>${allOk ? 'Thẻ nào cũng vào đúng khung ngay lần đầu.' : 'Câu nào lần đầu đặt nhầm khung thì các từ mới trong câu đó sẽ được ôn lại sau.'} Giờ xem lại câu chuyện bằng chính giọng của bạn.</div><div class="row"><button class="ghost on cm-film">▶ Xem phim</button></div>`;
+    $('.cm-film', end).onclick = () => film(false);
+    showAns(end);
+  }
+  /* the film: frames light up one by one; the learner's recording of each sentence (or the model voice when there is none) */
+  const inView = el => { const sr = stage.getBoundingClientRect(), r = el.getBoundingClientRect(), f = $('footer'), bot = f ? f.getBoundingClientRect().top : innerHeight; if (r.top < sr.top || r.bottom > bot) stage.scrollTo({ top: stage.scrollTop + r.top - sr.top - 8, behavior: 'smooth' }); };
+  async function film(model) {
+    EP++; const e = EP; stopAudio(); setHold(null); const log = window.__comicFilm = { model, frames: [], done: false };
+    for (let n = 0; n < frames.length; n++) {
+      if (e !== EP) return;
+      fEls.forEach((x, k) => { x.classList.toggle('play', k === n); x.classList.toggle('dim', k !== n); }); inView(fEls[n]); log.frames.push(n);
+      for (const i of frames[n].ids) {
+        if (e !== EP) return;
+        const pl = $(`.cm-pl[data-i="${i}"]`, fEls[n]); if (pl) pl.classList.add('now');
+        if (!model && C.rec[i]) await playUrl(C.rec[i], i); else await vox(BOOK[i].zh, V[i]);
+        if (pl) pl.classList.remove('now'); if (e !== EP) return; await sleep(300);
+      }
+    }
+    fEls.forEach(x => x.classList.remove('play', 'dim')); log.done = true;
+    if (!$('.cm-model', end)) { const b = h('button', 'ghost cm-model', '▶ Nghe giọng mẫu'); b.onclick = () => film(true); $('.row', end).appendChild(b); $('.cm-film', end).textContent = '▶ Xem lại phim'; }
+    showAns(end);
+  }
+
+  /* the big card: listen (optional), then read aloud holding 🎤; without a microphone: listen, then "Mình đã đọc" */
+  function openCard(i) {
+    setHold(null); EP++; stopAudio();
+    const text = BOOK[i].zh, need = Math.max(1, COMIC.perChar * COMIC.share * akey(text).length);
+    const m = modal(`<div class="cm-big"><div class="cm-bt">Đọc to câu này</div><div class="cm-bz">${zh(text)}</div><div class="row"><button class="ghost cm-sam">🔊 Nghe mẫu</button><button class="ghost cm-py">Pinyin</button><button class="ghost cm-mine" hidden>▶ Giọng của bạn</button></div><div class="cm-act" style="display:flex;flex-direction:column;gap:10px"></div><div class="cm-msg" role="status"></div><div class="row"><button class="ghost on cm-put" hidden>Đặt thẻ vào khung →</button><button class="ghost cm-x">Đóng</button></div></div>`);
+    const box = m.box, act = $('.cm-act', box), msg = $('.cm-msg', box), bz = $('.cm-bz', box), pyb = $('.cm-py', box), put = $('.cm-put', box), mine = $('.cm-mine', box);
+    let take = null, pending = false, held = false, tapMode = false, downAt = 0, maxT = 0, fails = 0, heard = false, did = null;
+    const say = (t, good) => { msg.textContent = t; msg.classList.toggle('good', !!good); };
+    if (document.body.classList.contains('py')) { bz.classList.add('showpy'); pyb.textContent = 'Ẩn pinyin'; }
+    pyb.onclick = () => { const on = !bz.classList.contains('showpy'); bz.classList.toggle('showpy', on); pyb.textContent = on ? 'Ẩn pinyin' : 'Pinyin'; };
+    const sample = () => { if (take) return; heard = true; if (did) did.disabled = false; EP++; stopAudio(); vox(text, V[i]); };
+    $('.cm-sam', box).onclick = sample;
+    mine.onclick = () => { if (C.rec[i]) playUrl(C.rec[i], i); };
+    const discard = () => { if (!take) return; const t = take; take = null; C.take = null; clearTimeout(maxT); t.stop().then(r => { if (r.url) URL.revokeObjectURL(r.url); setAS('playback'); }); };
+    C.discard = discard;
+    const close = () => { discard(); m.close(); };
+    m.ov.onclick = e => { if (e.target === m.ov) close(); };
+    $('.cm-x', box).onclick = close;
+    const watch = setInterval(() => { if (!box.isConnected) { discard(); clearInterval(watch); } }, 300);
+    function passed(recorded) {
+      C.ready[i] = 1; const b = cEls[i]; b.classList.add('rdy'); $('.cm-tag', b).textContent = '✓ Đã đọc · kéo vào khung tranh';
+      sfx.ok(); say('✓ Đọc tốt! Giờ đặt thẻ vào khung tranh.', true); put.hidden = false; mine.hidden = !C.rec[i]; $$('.cm-did', act).forEach(x => { x.hidden = true; });
+      const mic = $('.cm-mic', act); if (mic) mic.textContent = '🎤 Đọc lại (giữ nút)'; if (did) did.hidden = true;
+      try { put.focus(); } catch (e) { }
+    }
+    put.onclick = () => { close(); setHold(i); };
+    function tapUI(note) {
+      C.mode = 'tap'; act.innerHTML = `<p class="cm-note">${note}</p><button class="ghost on cm-did">✓ Mình đã đọc</button>`;
+      did = $('.cm-did', act); did.disabled = !heard && !C.ready[i]; did.hidden = !!C.ready[i];
+      did.onclick = () => passed(false);
+      if (!heard && st.auto !== 0) setTimeout(() => { if (box.isConnected && !heard) sample(); }, 350);
+    }
+    function noMic(err) {
+      tapUI('Chưa dùng được micro, nên mình làm cách khác: nghe mẫu, đọc to theo, rồi bấm “Mình đã đọc”.');
+      toast('Không mở được micro. Chuyển sang: nghe mẫu rồi bấm “Mình đã đọc”');
+      window.__comicMicErr = String(err && (err.name || err.message) || err);
+    }
+    function micUI() {
+      act.innerHTML = `<button class="cm-mic">🎤 Bấm giữ để đọc</button><div class="cm-meter" aria-hidden="true"><i></i></div><p class="cm-note">Giữ nút trong lúc đọc, đọc hết câu rồi thả ra (hoặc chạm một lần để bắt đầu, chạm lần nữa để dừng). App chỉ nghe xem bạn có đọc đủ dài không, không chấm phát âm.</p>`;
+      const mic = $('.cm-mic', act), meter = $('.cm-meter i', act);
+      const idle = () => { mic.classList.remove('on', 'loud'); mic.textContent = C.ready[i] ? '🎤 Đọc lại (giữ nút)' : '🎤 Bấm giữ để đọc'; };
+      async function start() {
+        pending = true; mic.textContent = 'Đang mở micro…'; let stream;
+        try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+        catch (err) { pending = false; noMic(err); return; }
+        pending = false;
+        if (!box.isConnected) { stream.getTracks().forEach(t => t.stop()); return; }
+        if (!held && !tapMode) { stream.getTracks().forEach(t => t.stop()); idle(); say('Micro đã sẵn sàng. Giờ giữ nút trong lúc đọc nhé.'); return; }
+        stopAudio(); setAS('play-and-record'); meter.style.width = '0';
+        take = startTake(stream, (rms, v) => { meter.style.width = Math.min(100, v / need * 100) + '%'; mic.classList.toggle('loud', rms > COMIC.thr); });
+        C.take = take; mic.classList.add('on'); mic.textContent = tapMode ? '⏹ Chạm để dừng' : '🔴 Đang nghe… đọc xong thì thả ra'; say('');
+        maxT = setTimeout(stop, Math.min(30000, (akey(text).length * 0.9 + 6) * 1000));
+      }
+      async function stop() {
+        if (!take) return; const t = take; take = null; C.take = null; clearTimeout(maxT); tapMode = false; idle(); mic.disabled = true;
+        const r = await t.stop(); setAS('playback'); mic.disabled = false;
+        const ok = r.any ? r.voiced >= need : r.dur >= need;   /* no level reading at all (audio engine asleep): judge by how long the button was held */
+        (window.__comicTakes = window.__comicTakes || []).push({ i, voiced: +r.voiced.toFixed(2), dur: +r.dur.toFixed(2), any: r.any, need: +need.toFixed(2), ok, rec: !!r.url });
+        if (!box.isConnected) { if (r.url) URL.revokeObjectURL(r.url); return; }
+        if (ok) { if (r.url) { if (C.rec[i]) URL.revokeObjectURL(C.rec[i]); C.rec[i] = r.url; } meter.style.width = '100%'; passed(true); return; }
+        if (r.url) URL.revokeObjectURL(r.url);
+        fails++; meter.style.width = '0';
+        say(r.dur < 0.8 ? 'Giữ nút trong lúc đọc nhé: đọc hết câu rồi mới thả ra.' : `Chưa nghe đủ tiếng (khoảng ${Math.round(Math.min(1, (r.any ? r.voiced : r.dur) / need) * 100)}%). Đọc to và đọc hết câu nhé.`);
+        if (fails >= 3 && !C.ready[i] && !$('.cm-did', act)) { const esc = h('button', 'ghost cm-did', 'Micro không bắt được tiếng? Bấm: Mình đã đọc'); esc.onclick = () => passed(false); act.appendChild(esc); }
+      }
+      mic.addEventListener('pointerdown', e => {
+        e.preventDefault(); if (mic.disabled) return;
+        if (take || pending) { if (tapMode) { tapMode = false; if (take) stop(); } return; }
+        held = true; downAt = Date.now(); start();
+      });
+      const up = e => { if (!held) return; held = false; if (e.type !== 'pointercancel' && Date.now() - downAt < 300) { tapMode = true; if (take) mic.textContent = '⏹ Chạm để dừng'; return; } if (take) stop(); };
+      mic.addEventListener('pointerup', up); mic.addEventListener('pointercancel', up);
+      mic.oncontextmenu = e => e.preventDefault();
+    }
+    if (C.mode === 'mic') micUI(); else tapUI('Micro chưa dùng được trên máy này, nên mình làm cách khác: nghe mẫu, đọc to theo, rồi bấm “Mình đã đọc”.');
+    if (C.ready[i]) { say('✓ Câu này bạn đã đọc rồi.', true); put.hidden = false; mine.hidden = !C.rec[i]; }
+  }
+
+  onLeave(() => {
+    if (C.discard) C.discard(); clearInterval(scT); if (D && D.ghost) D.ghost.remove(); D = null;
+    window.removeEventListener('pointermove', dragMove); window.removeEventListener('pointerup', dragEnd); window.removeEventListener('pointercancel', dragEnd);
+    if (holdEl) holdEl.remove(); holdEl = null; document.body.classList.remove('cm-holding');
+    Object.values(C.rec).forEach(u => { try { URL.revokeObjectURL(u); } catch (e) { } }); C.rec = {};
+  });
+}
+/* things a screen must clean up when the learner leaves it (open microphone, window listeners, floating bars, recordings) */
+let leaveFns = [];
+const onLeave = f => leaveFns.push(f);
+function runLeave() { const L = leaveFns; leaveFns = []; L.forEach(f => { try { f(); } catch (e) { } }); }
 
 
 /* ================= review question types ================= */

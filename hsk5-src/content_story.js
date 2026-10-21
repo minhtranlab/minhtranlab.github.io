@@ -90,7 +90,8 @@ const SESSIONS = [
       { t: '如何', reply: ['如何不能问原因。', '如何 không hỏi được lý do.'], note: 'Hỏi lý do (“sao lại…”) chỉ dùng được 怎么. 如何 chỉ hỏi cách thức hoặc tình trạng (như 他俩是如何恩爱的).' },
       { t: '什么', reply: ['不是“什么没来”。', 'Không ai nói “cái gì không đến”.'], note: '什么 hỏi “cái gì”, không hỏi lý do.' }],
       teach: 'Nhớ: <b>hỏi lý do → 怎么</b>. 如何 chỉ hỏi cách thức hoặc tình trạng, giọng trang trọng như phát thanh.' },
-    { t: 'read', ids: [0, 1, 2, 3, 4, 5, 6, 7, 8] },
+    { t: 'comic', ids: [0, 1, 2, 3, 4], page: [1, 2] },
+    { t: 'comic', ids: [5, 6, 7, 8], page: [2, 2] },
     { t: 'album', words: ['抱怨', '爱护'], say: [B(6), B(7)], recall: 'p3',
       tease: { scene: 'finalists', vi: 'còn hai cặp nữa. Cặp thứ hai nói họ chưa bao giờ cãi nhau, còn cặp thứ ba mãi không chịu xuất hiện… Ai mới là cặp thắm thiết nhất?' } }
   ] }

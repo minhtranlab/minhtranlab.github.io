@@ -1,4 +1,5 @@
 import asyncio, sys, json
+from comic_util import solve_nomic
 from playwright.async_api import async_playwright
 SHOT_SIDS = set(sys.argv[1].split(',')) if len(sys.argv) > 1 else set()
 FIRST_ONLY = False
@@ -38,6 +39,8 @@ async def solve(pg, sid, i, t, wrongfirst):
     elif t == 'order':
         for c in await pg.evaluate(f'{cur}.chunks'):
             tl = await pg.query_selector(f'.obank .tile[data-t="{c}"]'); assert tl, (sid, i, c); await tl.click()
+    elif t == 'comic':
+        await solve_nomic(pg, wrongfirst)
     elif t == 'type':
         z = await pg.evaluate(f'{cur}.zh'); await pg.fill('.tin input', z); await pg.click('.tin button')
 async def main():
