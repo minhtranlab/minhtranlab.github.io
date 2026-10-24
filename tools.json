@@ -1,4 +1,8 @@
 [
+  {"title":"Matrix house explorer","level":["High School"],"topic":["Matrices","Transformations"],"description":"Drag two arrows and watch a house move. See why column 1 of a 2×2 matrix is where (1, 0) goes and column 2 is where (0, 1) goes.","path":"tools/matrix-house-explorer.html","type":"tool","date":"2026-10-24"},
+  {"title":"HSK5 · 爱的细节","level":["Languages"],"topic":["Chinese","HSK"],"description":"HSK5 Chinese lessons with audio, stories and speaking practice. Add it to your phone's home screen to use it like an app.","path":"hsk5/","type":"tool","date":"2026-10-16"},
+  {"title":"Tarot Log","level":["Other"],"topic":["Tarot"],"description":"Draw Rider-Waite-Smith tarot cards in different spreads and keep a history of your readings.","path":"tarot-log/","type":"tool","date":"2026-10-19"},
+  {"title":"Chồi Ơi","level":["Other"],"topic":["Apps"],"description":"Opens the Chồi Ơi app.","path":"choioi/","type":"tool","date":"2026-10-24"},
   {"title":"Cho thú ăn · Feed the Monster","level":["Kids & Games"],"topic":["Counting"],"description":"A counting game for ages 4–5: feed each animal the right number of treats, 1 to 9. Vietnamese and English voices.","path":"tools/feed-the-monster.html","type":"tool","date":"2026-10-07"},
   {"title":"SAT Vocab Practice","level":["High School"],"topic":["SAT","Vocabulary"],"description":"Adaptive Words in Context vocabulary practice for the SAT. Opens the app.","path":"sat-vocab/","type":"tool","date":"2026-10-06"},
   {"title":"3 Boxes · ABC 123","level":["Kids & Games"],"topic":["Letters & numbers"],"description":"A shuffle-and-find game for young children to learn letters and numbers. Vietnamese and English voices.","path":"tools/three-boxes.html","type":"tool","date":"2026-10-06"}
