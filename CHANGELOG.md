@@ -1,8 +1,9 @@
 # Changelog
 
 ## 2026-10-24
-- Added "Matrix house explorer" (drag the two arrows of a 2×2 matrix and watch a house transform): `tools/matrix-house-explorer.html`. Listed under High School.
-- Listed apps that were live but missing from the home page: HSK5 (`hsk5/`), Tarot Log (`tarot-log/`) and Chồi Ơi (`choioi/`).
+- Added a "Math illustrations" section, `math/`, listed on the home page as one card. It groups illustrations by topic from `math/illustrations.json`.
+- Added "Matrix house explorer" (drag the two arrows of a 2×2 matrix and watch a house transform): `math/matrix-house-explorer.html`. The earlier address `tools/matrix-house-explorer.html` forwards there.
+- Listed apps that were live but missing from the home page: HSK5 (`hsk5/`) and Chồi Ơi (`choioi/`, a game for my kids). Tarot Log stays off the home page.
 
 ## 2026-10-07
 - Added "Cho thú ăn · Feed the Monster" (counting game for ages 4-5, v1.2): `tools/feed-the-monster.html`

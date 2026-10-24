@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Math illustrations · Minhtranlab</title>
+<meta name="description" content="Interactive pictures that show where math ideas come from, grouped by topic.">
+<style>
+:root{--bg:#faf8f4;--card:#fff;--ink:#26323a;--muted:#6b7780;--line:#e6e1d8;--accent:#2f6f73;--accent-soft:#e3f0ef}
+@media (prefers-color-scheme:dark){:root{--bg:#171c1f;--card:#20272b;--ink:#e8ecee;--muted:#9aa6ad;--line:#2f383d;--accent:#7cc4c0;--accent-soft:#233a3b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
+main{max-width:860px;margin:0 auto;padding:28px 20px 64px}
+.back{font-size:.9rem;color:var(--accent);text-decoration:none}
+h1{font-size:2rem;margin:12px 0 4px;letter-spacing:-.01em}
+.tag{color:var(--muted);margin:0 0 24px}
+#search{width:100%;font:inherit;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);-webkit-appearance:none}
+#search:focus{outline:2px solid var(--accent);outline-offset:1px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.row:empty{display:none}
+button.pill{font:inherit;font-size:.85rem;min-height:34px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+button.pill[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
+#count{color:var(--muted);font-size:.9rem;margin:22px 0 4px}
+h2{font-size:1.15rem;margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.grid{display:grid;gap:12px}
+a.card{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:inherit;text-decoration:none}
+a.card:active,a.card:hover{border-color:var(--accent)}
+.title{font-weight:600;font-size:1.05rem}
+.desc{color:var(--muted);margin:4px 0 6px;font-size:.95rem}
+.meta{font-size:.82rem;color:var(--muted)}
+.empty{padding:36px 20px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px;margin-top:16px}
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="../">← All tools</a>
+  <h1>Math illustrations</h1>
+  <p class="tag">Interactive pictures that show where math ideas come from. Drag, slide and watch.</p>
+  <input id="search" type="search" placeholder="Search" aria-label="Search" autocomplete="off">
+  <div id="topics" class="row" role="group" aria-label="Filter by topic"></div>
+  <p id="count" aria-live="polite"></p>
+  <div id="list"></div>
+</main>
+<script>
+(function () {
+  var items = [], topic = null, q = "";
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function topics() { var t = items.map(function (i) { return i.topic || "Other"; }); return t.filter(function (x, n) { return t.indexOf(x) === n; }).sort(); }
+
+  function render() {
+    var tp = $("topics"); tp.textContent = "";
+    var names = topics();
+    if (names.length > 1) names.forEach(function (t) {
+      var b = el("button", "pill", t); b.type = "button";
+      b.setAttribute("aria-pressed", topic === t ? "true" : "false");
+      b.addEventListener("click", function () { topic = topic === t ? null : t; render(); });
+      tp.appendChild(b);
+    });
+    var needle = q.trim().toLowerCase();
+    var shown = items.filter(function (i) {
+      if (topic && (i.topic || "Other") !== topic) return false;
+      if (!needle) return true;
+      return [i.title, i.description, i.topic].join(" ").toLowerCase().indexOf(needle) > -1;
+    });
+    var list = $("list"); list.textContent = "";
+    $("count").textContent = shown.length + (shown.length === 1 ? " illustration" : " illustrations");
+    if (!shown.length) { list.appendChild(el("div", "empty", items.length ? "No matches. Try a different word." : "Nothing here yet.")); return; }
+    names.forEach(function (t) {
+      var group = shown.filter(function (i) { return (i.topic || "Other") === t; })
+        .sort(function (a, b) { return String(a.title).localeCompare(String(b.title)); });
+      if (!group.length) return;
+      list.appendChild(el("h2", null, t));
+      var grid = el("div", "grid");
+      group.forEach(function (i) {
+        var a = el("a", "card"); a.href = i.path;
+        a.appendChild(el("div", "title", i.title));
+        if (i.description) a.appendChild(el("div", "desc", i.description));
+        if (i.date) { var d = new Date(i.date + "T00:00:00"); if (!isNaN(d)) a.appendChild(el("div", "meta", "Added " + d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }))); }
+        grid.appendChild(a);
+      });
+      list.appendChild(grid);
+    });
+  }
+  $("search").addEventListener("input", function (e) { q = e.target.value; render(); });
+  fetch("illustrations.json", { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (d) { items = Array.isArray(d) ? d : []; render(); })
+    .catch(function () { $("list").appendChild(el("div", "empty", "Could not load the list. View it on the website instead of opening the file directly.")); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matrix house explorer</title>
+<style>
+:root{--bg:#faf9f5;--card:#ffffff;--text:#1f1e1d;--muted:#6b6a65;--border:rgba(31,30,29,.15);--border-strong:rgba(31,30,29,.3);--accent:#185FA5;--axis:#9c9a92}
+@media (prefers-color-scheme: dark){:root{--bg:#1f1e1d;--card:#262624;--text:#f0eee6;--muted:#a3a19a;--border:rgba(240,238,230,.15);--border-strong:rgba(240,238,230,.3);--accent:#85B7EB;--axis:#73726c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
+main{max-width:640px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:22px;font-weight:500;margin:0 0 8px}
+p{margin:0 0 12px}
+.muted{color:var(--muted);font-size:14px}
+button{font:inherit;font-size:13px;color:var(--text);background:transparent;border:.5px solid var(--border-strong);border-radius:8px;padding:6px 12px;cursor:pointer}
+button:hover{background:var(--border)}
+.bar{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.on{border-color:var(--accent)!important;color:var(--accent)}
+.mat{display:inline-grid;grid-template-columns:auto auto;gap:2px 14px;padding:4px 10px;border-left:1.5px solid var(--text);border-right:1.5px solid var(--text);border-radius:8px;font-variant-numeric:tabular-nums;text-align:right;font-size:18px}
+.c1{color:#1D9E75;font-weight:500}.c2{color:#D85A30;font-weight:500}
+.card{background:var(--card);border:.5px solid var(--border);border-radius:12px;padding:16px}
+ul{padding-left:20px;margin:8px 0 0}
+</style>
+</head>
+<body>
+<main>
+<p style="margin:0 0 12px;font-size:14px"><a href="./" style="color:var(--accent)">← Math illustrations</a></p>
+<h1>Matrices as transformations: the house explorer</h1>
+<p>Column 1 of the matrix is where the <span class="c1">teal arrow (1, 0)</span> goes: the floor of the house. Column 2 is where the <span class="c2">coral arrow (0, 1)</span> goes: the left wall.</p>
+<p>Every other point has a fixed address in floor-steps and wall-steps. The roof peak is (0.5, 1.6): half a floor along, then 1.6 walls up. Move the arrows and each point follows its address. That is all M(x, y) computes: x × column 1 + y × column 2.</p>
+<div class="card">
+<p class="muted" style="margin:0">Drag the round handles at the arrow tips.</p>
+<svg id="pl" viewBox="-170 -170 340 340" width="100%" style="max-width:420px;display:block;margin:4px auto 0;overflow:hidden;touch-action:none;user-select:none"></svg>
+<div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px;margin:8px 0">
+<div id="mx"></div><div id="rc" style="font-size:14px;line-height:1.6;max-width:260px"></div>
+</div>
+<div class="muted">Track a point</div>
+<div class="bar" id="pts"></div>
+<div class="bar">
+<button id="snap" class="on">Snap to grid: on</button>
+<button id="grid">Moving grid: off</button>
+<button id="reset">Reset</button>
+</div>
+</div>
+<p class="muted" style="margin-top:16px">Things to try:</p>
+<ul class="muted">
+<li>Teal to (0, 1) and coral to (−1, 0): a quarter turn anticlockwise.</li>
+<li>Teal to (0, 1) and coral to (1, 0): the arrows swap, a reflection in y = x.</li>
+<li>Teal to (2, 0), coral unchanged: a horizontal stretch, scale factor 2.</li>
+<li>Turn on the moving grid to see that the whole plane moves, not just the house.</li>
+</ul>
+</main>
+<script>
+const S=40,T='#1D9E75',C='#D85A30',Pc='#7F77DD',G='#888780',Pk='#534AB7',NS='http://www.w3.org/2000/svg';
+const svg=document.getElementById('pl');
+const DEFS='<defs><marker id="mt" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto"><path d="M1 1L9 5L1 9z" fill="'+T+'"/></marker><marker id="mc" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto"><path d="M1 1L9 5L1 9z" fill="'+C+'"/></marker></defs>';
+const HOUSE=[[0,0],[1,0],[1,1],[.5,1.6],[0,1]],DOOR=[[.12,0],[.38,0],[.38,.5],[.12,.5]],WIN=[[.6,.55],[.85,.55],[.85,.8],[.6,.8]];
+const PTS=[['Roof peak',[.5,1.6]],['Door top',[.38,.5]],['Window corner',[.85,.8]],['None',null]];
+let M=[1,0,0,1],snap=true,grid=false,pi=0,drag=null;
+const P=(x,y)=>[x*S,-y*S];
+const ap=p=>[M[0]*p[0]+M[2]*p[1],M[1]*p[0]+M[3]*p[1]];
+const f=n=>{let r=Math.round(n*100)/100;if(Math.abs(r)<1e-9)r=0;return String(r).replace('-','−')};
+function el(tag,a){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);svg.appendChild(e);return e}
+function ln(x1,y1,x2,y2,o){const p=P(x1,y1),q=P(x2,y2);return el('line',Object.assign({x1:p[0],y1:p[1],x2:q[0],y2:q[1]},o))}
+function poly(pts,o,id){el('polygon',Object.assign({points:pts.map(p=>P(...(id?p:ap(p))).join(',')).join(' ')},o))}
+function draw(){
+svg.innerHTML=DEFS;
+for(let i=-4;i<=4;i++){ln(i,-4.3,i,4.3,{stroke:'var(--border)','stroke-width':.6});ln(-4.3,i,4.3,i,{stroke:'var(--border)','stroke-width':.6})}
+ln(-4.3,0,4.3,0,{stroke:'var(--axis)','stroke-width':1});ln(0,-4.3,0,4.3,{stroke:'var(--axis)','stroke-width':1});
+if(grid)for(let i=-8;i<=8;i++){const a=ap([i,-8]),b=ap([i,8]),c=ap([-8,i]),d=ap([8,i]);ln(a[0],a[1],b[0],b[1],{stroke:Pc,'stroke-opacity':.35,'stroke-width':.7});ln(c[0],c[1],d[0],d[1],{stroke:Pc,'stroke-opacity':.35,'stroke-width':.7})}
+poly(HOUSE,{fill:'none',stroke:G,'stroke-dasharray':'4 3','stroke-width':1},1);
+poly(HOUSE,{fill:Pc,'fill-opacity':.22,stroke:Pc,'stroke-width':1.2});
+poly(DOOR,{fill:Pc,'fill-opacity':.85});poly(WIN,{fill:'none',stroke:Pc,'stroke-width':1.2});
+const pt=PTS[pi][1];
+if(pt){const m=[pt[0]*M[0],pt[0]*M[1]],e=ap(pt);
+ln(0,0,m[0],m[1],{stroke:T,'stroke-width':2,'stroke-dasharray':'5 4'});ln(m[0],m[1],e[0],e[1],{stroke:C,'stroke-width':2,'stroke-dasharray':'5 4'});
+const q=P(...e);el('circle',{cx:q[0],cy:q[1],r:5.5,fill:Pk,stroke:'var(--bg)','stroke-width':1.5})}
+[[M[0],M[1],T,'mt'],[M[2],M[3],C,'mc']].forEach(([x,y,col,id],k)=>{
+if(Math.hypot(x,y)>.08)ln(0,0,x,y,{stroke:col,'stroke-width':3,'stroke-linecap':'round','marker-end':'url(#'+id+')'});
+const q=P(x,y);el('circle',{cx:q[0],cy:q[1],r:9,fill:col,'fill-opacity':.25,stroke:col,'stroke-width':1.5});
+el('circle',{cx:q[0],cy:q[1],r:20,fill:'transparent','data-h':k,style:'cursor:grab'})});
+document.getElementById('mx').innerHTML='<span class="mat"><span class="c1">'+f(M[0])+'</span><span class="c2">'+f(M[2])+'</span><span class="c1">'+f(M[1])+'</span><span class="c2">'+f(M[3])+'</span></span>';
+const rc=document.getElementById('rc');
+if(pt){const e=ap(pt);rc.innerHTML=PTS[pi][0]+' has address ('+pt[0]+', '+pt[1]+'):<br>'+pt[0]+' × <span class="c1">teal</span> + '+pt[1]+' × <span class="c2">coral</span><br>= ('+f(e[0])+', '+f(e[1])+')'}
+else rc.innerHTML='<span class="c1">teal</span> = floor = column 1<br><span class="c2">coral</span> = left wall = column 2'}
+function svgPt(ev){const p=svg.createSVGPoint();p.x=ev.clientX;p.y=ev.clientY;const q=p.matrixTransform(svg.getScreenCTM().inverse());return[q.x/S,-q.y/S]}
+svg.addEventListener('pointerdown',ev=>{const h=ev.target.getAttribute&&ev.target.getAttribute('data-h');if(h===null)return;drag=+h;svg.setPointerCapture(ev.pointerId);ev.preventDefault()});
+svg.addEventListener('pointermove',ev=>{if(drag===null)return;let[x,y]=svgPt(ev);x=Math.max(-4,Math.min(4,x));y=Math.max(-4,Math.min(4,y));if(snap){x=Math.round(x*2)/2;y=Math.round(y*2)/2}else{x=Math.round(x*100)/100;y=Math.round(y*100)/100}if(drag===0){M[0]=x;M[1]=y}else{M[2]=x;M[3]=y}draw()});
+const end=()=>{drag=null};svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',end);
+const pts=document.getElementById('pts');
+function ptBtns(){pts.innerHTML=PTS.map((p,i)=>'<button data-i="'+i+'" class="'+(i===pi?'on':'')+'">'+p[0]+'</button>').join('');pts.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{pi=+b.dataset.i;ptBtns();draw()}))}
+ptBtns();
+const sb=document.getElementById('snap'),gb=document.getElementById('grid');
+sb.addEventListener('click',()=>{snap=!snap;sb.textContent='Snap to grid: '+(snap?'on':'off');sb.classList.toggle('on',snap)});
+gb.addEventListener('click',()=>{grid=!grid;gb.textContent='Moving grid: '+(grid?'on':'off');gb.classList.toggle('on',grid);draw()});
+document.getElementById('reset').addEventListener('click',()=>{M=[1,0,0,1];draw()});
+draw();
+</script>
+</body>
+</html>
