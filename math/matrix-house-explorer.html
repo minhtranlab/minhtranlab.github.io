@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Matrix house explorer</title>
 <style>
-:root{--bg:#faf9f5;--card:#ffffff;--text:#1f1e1d;--muted:#6b6a65;--border:rgba(31,30,29,.15);--border-strong:rgba(31,30,29,.3);--accent:#185FA5;--axis:#9c9a92}
-@media (prefers-color-scheme: dark){:root{--bg:#1f1e1d;--card:#262624;--text:#f0eee6;--muted:#a3a19a;--border:rgba(240,238,230,.15);--border-strong:rgba(240,238,230,.3);--accent:#85B7EB;--axis:#73726c}}
+:root{--bg:#faf9f5;--card:#ffffff;--text:#1f1e1d;--muted:#6b6a65;--border:rgba(31,30,29,.15);--border-strong:rgba(31,30,29,.3);--accent:#185FA5;--axis:#9c9a92;--danger:#A32D2D;--soft:rgba(31,30,29,.05)}
+@media (prefers-color-scheme: dark){:root:not([data-mode="light"]){--bg:#1f1e1d;--card:#262624;--text:#f0eee6;--muted:#a3a19a;--border:rgba(240,238,230,.15);--border-strong:rgba(240,238,230,.3);--accent:#85B7EB;--axis:#73726c;--danger:#F09595;--soft:rgba(240,238,230,.06)}}
+:root[data-mode="dark"]{--bg:#1f1e1d;--card:#262624;--text:#f0eee6;--muted:#a3a19a;--border:rgba(240,238,230,.15);--border-strong:rgba(240,238,230,.3);--accent:#85B7EB;--axis:#73726c;--danger:#F09595;--soft:rgba(240,238,230,.06)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
 main{max-width:640px;margin:0 auto;padding:24px 16px 48px}
@@ -14,12 +15,31 @@ h1{font-size:22px;font-weight:500;margin:0 0 8px}
 p{margin:0 0 12px}
 .muted{color:var(--muted);font-size:14px}
 button{font:inherit;font-size:13px;color:var(--text);background:transparent;border:.5px solid var(--border-strong);border-radius:8px;padding:6px 12px;cursor:pointer}
-button:hover{background:var(--border)}
+button:hover{background:var(--soft)}
 .bar{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
 .on{border-color:var(--accent)!important;color:var(--accent)}
-.mat{display:inline-grid;grid-template-columns:auto auto;gap:2px 14px;padding:4px 10px;border-left:1.5px solid var(--text);border-right:1.5px solid var(--text);border-radius:8px;font-variant-numeric:tabular-nums;text-align:right;font-size:18px}
+.tabs button{font-size:13px}
 .c1{color:#1D9E75;font-weight:500}.c2{color:#D85A30;font-weight:500}
 .card{background:var(--card);border:.5px solid var(--border);border-radius:12px;padding:16px}
+.mrow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin:10px 0 4px}
+.br{display:inline-grid;grid-template-columns:auto auto;gap:4px 10px;padding:4px 8px;border-left:1.5px solid var(--text);border-right:1.5px solid var(--text);border-radius:8px;text-align:center;font-variant-numeric:tabular-nums}
+.br.sym{font-size:15px;gap:2px 14px}
+.br input{width:60px;font:inherit;font-size:17px;text-align:center;padding:4px;border:.5px solid var(--border-strong);border-radius:6px;background:var(--bg)}
+.br input.c1{color:#1D9E75}.br input.c2{color:#D85A30}
+.br input[readonly]{border-color:transparent;background:transparent}
+.br input.bad{border-color:var(--danger)}
+.desc{font-size:15px;font-weight:500;text-align:center;margin:6px 0 2px}
+.det{font-size:13px;color:var(--muted);text-align:center;margin:0 0 6px}
+details{margin-top:12px;border-top:.5px solid var(--border);padding-top:10px}
+summary{cursor:pointer;font-size:14px;font-weight:500;color:var(--accent)}
+.why{background:var(--soft);border-radius:8px;padding:10px 12px;margin:8px 0 0;font-size:14px;line-height:1.6}
+.why b{font-weight:500}
+.why p{margin:0 0 6px}.why p:last-child{margin:0}
+.slider{display:flex;align-items:center;gap:10px;margin:8px 0}
+.slider label{font-size:14px;color:var(--muted);min-width:56px}
+.slider input{flex:1}
+.slider span{font-size:14px;font-weight:500;min-width:48px;text-align:right;font-variant-numeric:tabular-nums}
+.sub{font-size:13px;color:var(--muted);margin:10px 0 2px}
 ul{padding-left:20px;margin:8px 0 0}
 </style>
 </head>
@@ -27,75 +47,167 @@ ul{padding-left:20px;margin:8px 0 0}
 <main>
 <p style="margin:0 0 12px;font-size:14px"><a href="./" style="color:var(--accent)">← Math illustrations</a></p>
 <h1>Matrices as transformations: the house explorer</h1>
-<p>Column 1 of the matrix is where the <span class="c1">teal arrow (1, 0)</span> goes: the floor of the house. Column 2 is where the <span class="c2">coral arrow (0, 1)</span> goes: the left wall.</p>
-<p>Every other point has a fixed address in floor-steps and wall-steps. The roof peak is (0.5, 1.6): half a floor along, then 1.6 walls up. Move the arrows and each point follows its address. That is all M(x, y) computes: x × column 1 + y × column 2.</p>
+<p>Column 1 of the matrix is where the <span class="c1">teal arrow (1, 0)</span> goes: the floor of the house. Column 2 is where the <span class="c2">coral arrow (0, 1)</span> goes: the left wall. Every other point follows: M(x, y) = x × column 1 + y × column 2.</p>
 <div class="card">
-<p class="muted" style="margin:0">Drag the round handles at the arrow tips.</p>
+<div class="bar tabs" id="tabs"></div>
+<p class="muted" id="hint" style="margin:4px 0 0"></p>
 <svg id="pl" viewBox="-170 -170 340 340" width="100%" style="max-width:420px;display:block;margin:4px auto 0;overflow:hidden;touch-action:none;user-select:none"></svg>
-<div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px;margin:8px 0">
-<div id="mx"></div><div id="rc" style="font-size:14px;line-height:1.6;max-width:260px"></div>
-</div>
-<div class="muted">Track a point</div>
+<div id="ctl"></div>
+<div class="mrow" id="mrow"></div>
+<p class="desc" id="desc"></p>
+<p class="det" id="det"></p>
+<div class="sub">Track a point</div>
 <div class="bar" id="pts"></div>
 <div class="bar">
 <button id="snap" class="on">Snap to grid: on</button>
 <button id="grid">Moving grid: off</button>
 <button id="reset">Reset</button>
 </div>
+<details id="whybox"><summary>Where this comes from</summary><div class="why" id="why"></div></details>
 </div>
 <p class="muted" style="margin-top:16px">Things to try:</p>
 <ul class="muted">
-<li>Teal to (0, 1) and coral to (−1, 0): a quarter turn anticlockwise.</li>
-<li>Teal to (0, 1) and coral to (1, 0): the arrows swap, a reflection in y = x.</li>
-<li>Teal to (2, 0), coral unchanged: a horizontal stretch, scale factor 2.</li>
-<li>Turn on the moving grid to see that the whole plane moves, not just the house.</li>
+<li>Rotation: watch the teal tip slide round the circle to (cos θ, sin θ). That is column 1.</li>
+<li>Reflection: set θ = 45 to get the mirror y = x. The booklet's θ is the mirror's angle, so the matrix uses 2θ.</li>
+<li>Enlarge + rotate: a = 1, b = 1 gives k = √2 and a 45° turn. Compare with multiplying by 1 + i.</li>
+<li>Your own matrix: type numbers into the box, or drag the arrow tips.</li>
 </ul>
 </main>
 <script>
+(function(){
 const S=40,T='#1D9E75',C='#D85A30',Pc='#7F77DD',G='#888780',Pk='#534AB7',NS='http://www.w3.org/2000/svg';
 const svg=document.getElementById('pl');
 const DEFS='<defs><marker id="mt" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto"><path d="M1 1L9 5L1 9z" fill="'+T+'"/></marker><marker id="mc" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto"><path d="M1 1L9 5L1 9z" fill="'+C+'"/></marker></defs>';
 const HOUSE=[[0,0],[1,0],[1,1],[.5,1.6],[0,1]],DOOR=[[.12,0],[.38,0],[.38,.5],[.12,.5]],WIN=[[.6,.55],[.85,.55],[.85,.8],[.6,.8]];
 const PTS=[['Roof peak',[.5,1.6]],['Door top',[.38,.5]],['Window corner',[.85,.8]],['None',null]];
-let M=[1,0,0,1],snap=true,grid=false,pi=0,drag=null;
+const TABS=[['free','Your own matrix'],['rot','Rotation'],['ref','Reflection'],['str','Stretch'],['enl','Enlargement'],['er','Enlarge + rotate (notes)']];
+const D={free:[1,0,0,1],th:30,dir:'acw',rth:30,skind:'h',sk:2,ek:2,ea:1,eb:1};
+let v=JSON.parse(JSON.stringify(D)),mode='free',snap=true,grid=false,pi=0,drag=null,M=[1,0,0,1];
+const rad=d=>d*Math.PI/180;
 const P=(x,y)=>[x*S,-y*S];
 const ap=p=>[M[0]*p[0]+M[2]*p[1],M[1]*p[0]+M[3]*p[1]];
-const f=n=>{let r=Math.round(n*100)/100;if(Math.abs(r)<1e-9)r=0;return String(r).replace('-','−')};
+const r2=n=>{let r=Math.round(n*100)/100;return Math.abs(r)<1e-9?0:r};
+const f=n=>String(r2(n)).replace('-','−');
+function compute(){
+ if(mode==='free')return v.free.slice();
+ if(mode==='rot'){const c=Math.cos(rad(v.th)),s=Math.sin(rad(v.th));return v.dir==='acw'?[c,s,-s,c]:[c,-s,s,c]}
+ if(mode==='ref'){const t=rad(2*v.rth);return[Math.cos(t),Math.sin(t),Math.sin(t),-Math.cos(t)]}
+ if(mode==='str')return v.skind==='h'?[v.sk,0,0,1]:[1,0,0,v.sk];
+ if(mode==='enl')return[v.ek,0,0,v.ek];
+ return[v.ea,v.eb,-v.eb,v.ea]}
+const SYM={rot:{acw:['cos θ','sin θ','−sin θ','cos θ'],cw:['cos θ','−sin θ','sin θ','cos θ']},ref:['cos 2θ','sin 2θ','sin 2θ','−cos 2θ'],str:{h:['k','0','0','1'],v:['1','0','0','k']},enl:['k','0','0','k'],er:['a','b','−b','a']};
+function sym(){if(mode==='free')return null;if(mode==='rot')return SYM.rot[v.dir];if(mode==='str')return SYM.str[v.skind];return SYM[mode]}
+function lineName(d){return{0:'the x-axis (y = 0)',45:'the line y = x',90:'the y-axis (x = 0)',135:'the line y = −x',180:'the x-axis (y = 0)'}[d]||('the line y = (tan '+d+'°)x, about y = '+f(Math.tan(rad(d)))+'x')}
+function describe(){
+ if(mode==='free')return'Your own matrix: each column says where an arrow lands.';
+ if(mode==='rot')return v.th%360===0?'Rotation of 0°: nothing moves.':'Rotation of '+v.th+'° '+(v.dir==='acw'?'anticlockwise':'clockwise')+' about O.';
+ if(mode==='ref')return'Reflection in '+lineName(v.rth)+'.';
+ if(mode==='str')return(v.skind==='h'?'Horizontal':'Vertical')+' stretch, scale factor '+f(v.sk)+', '+(v.skind==='h'?'y':'x')+'-axis invariant.';
+ if(mode==='enl')return'Enlargement, scale factor '+f(v.ek)+', centre O.';
+ const k=Math.hypot(v.ea,v.eb);if(k===0)return'k = 0: everything shrinks to the point O.';
+ const t=Math.round(Math.atan2(v.eb,v.ea)*180/Math.PI);
+ return'Enlargement, scale factor k = √('+f(v.ea)+'² + '+f(v.eb)+'²) = '+f(k)+', centre O, combined with a rotation of '+(t===0?'0°':Math.abs(t)+'° '+(t>0?'anticlockwise':'clockwise'))+' about O.'}
 function el(tag,a){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);svg.appendChild(e);return e}
 function ln(x1,y1,x2,y2,o){const p=P(x1,y1),q=P(x2,y2);return el('line',Object.assign({x1:p[0],y1:p[1],x2:q[0],y2:q[1]},o))}
 function poly(pts,o,id){el('polygon',Object.assign({points:pts.map(p=>P(...(id?p:ap(p))).join(',')).join(' ')},o))}
+function arc(r,a0,a1,col){if(Math.abs(a1-a0)<1)return;const p=P(r*Math.cos(rad(a0)),r*Math.sin(rad(a0))),q=P(r*Math.cos(rad(a1)),r*Math.sin(rad(a1)));const large=Math.abs(a1-a0)>180?1:0,sweep=a1>a0?0:1;el('path',{d:'M'+p[0]+' '+p[1]+' A'+r*S+' '+r*S+' 0 '+large+' '+sweep+' '+q[0]+' '+q[1],fill:'none',stroke:col,'stroke-width':1.5})}
+function txt(x,y,s,col){const q=P(x,y),t=el('text',{x:q[0],y:q[1]+4,'font-size':12,'text-anchor':'middle',fill:col});t.textContent=s}
 function draw(){
-svg.innerHTML=DEFS;
-for(let i=-4;i<=4;i++){ln(i,-4.3,i,4.3,{stroke:'var(--border)','stroke-width':.6});ln(-4.3,i,4.3,i,{stroke:'var(--border)','stroke-width':.6})}
-ln(-4.3,0,4.3,0,{stroke:'var(--axis)','stroke-width':1});ln(0,-4.3,0,4.3,{stroke:'var(--axis)','stroke-width':1});
-if(grid)for(let i=-8;i<=8;i++){const a=ap([i,-8]),b=ap([i,8]),c=ap([-8,i]),d=ap([8,i]);ln(a[0],a[1],b[0],b[1],{stroke:Pc,'stroke-opacity':.35,'stroke-width':.7});ln(c[0],c[1],d[0],d[1],{stroke:Pc,'stroke-opacity':.35,'stroke-width':.7})}
-poly(HOUSE,{fill:'none',stroke:G,'stroke-dasharray':'4 3','stroke-width':1},1);
-poly(HOUSE,{fill:Pc,'fill-opacity':.22,stroke:Pc,'stroke-width':1.2});
-poly(DOOR,{fill:Pc,'fill-opacity':.85});poly(WIN,{fill:'none',stroke:Pc,'stroke-width':1.2});
-const pt=PTS[pi][1];
-if(pt){const m=[pt[0]*M[0],pt[0]*M[1]],e=ap(pt);
-ln(0,0,m[0],m[1],{stroke:T,'stroke-width':2,'stroke-dasharray':'5 4'});ln(m[0],m[1],e[0],e[1],{stroke:C,'stroke-width':2,'stroke-dasharray':'5 4'});
-const q=P(...e);el('circle',{cx:q[0],cy:q[1],r:5.5,fill:Pk,stroke:'var(--bg)','stroke-width':1.5})}
-[[M[0],M[1],T,'mt'],[M[2],M[3],C,'mc']].forEach(([x,y,col,id],k)=>{
-if(Math.hypot(x,y)>.08)ln(0,0,x,y,{stroke:col,'stroke-width':3,'stroke-linecap':'round','marker-end':'url(#'+id+')'});
-const q=P(x,y);el('circle',{cx:q[0],cy:q[1],r:9,fill:col,'fill-opacity':.25,stroke:col,'stroke-width':1.5});
-el('circle',{cx:q[0],cy:q[1],r:20,fill:'transparent','data-h':k,style:'cursor:grab'})});
-document.getElementById('mx').innerHTML='<span class="mat"><span class="c1">'+f(M[0])+'</span><span class="c2">'+f(M[2])+'</span><span class="c1">'+f(M[1])+'</span><span class="c2">'+f(M[3])+'</span></span>';
-const rc=document.getElementById('rc');
-if(pt){const e=ap(pt);rc.innerHTML=PTS[pi][0]+' has address ('+pt[0]+', '+pt[1]+'):<br>'+pt[0]+' × <span class="c1">teal</span> + '+pt[1]+' × <span class="c2">coral</span><br>= ('+f(e[0])+', '+f(e[1])+')'}
-else rc.innerHTML='<span class="c1">teal</span> = floor = column 1<br><span class="c2">coral</span> = left wall = column 2'}
+ M=compute();svg.innerHTML=DEFS;
+ for(let i=-4;i<=4;i++){ln(i,-4.3,i,4.3,{stroke:'var(--border)','stroke-width':.6});ln(-4.3,i,4.3,i,{stroke:'var(--border)','stroke-width':.6})}
+ ln(-4.3,0,4.3,0,{stroke:'var(--axis)','stroke-width':1});ln(0,-4.3,0,4.3,{stroke:'var(--axis)','stroke-width':1});
+ if(grid)for(let i=-8;i<=8;i++){const a=ap([i,-8]),b=ap([i,8]),c=ap([-8,i]),d=ap([8,i]);ln(a[0],a[1],b[0],b[1],{stroke:Pc,'stroke-opacity':.35,'stroke-width':.7});ln(c[0],c[1],d[0],d[1],{stroke:Pc,'stroke-opacity':.35,'stroke-width':.7})}
+ if(mode==='rot'){el('circle',{cx:0,cy:0,r:S,fill:'none',stroke:'var(--axis)','stroke-dasharray':'3 3'});const a=v.dir==='acw'?v.th:-v.th;arc(.55,0,a,T);arc(.45,90,90+a,C);if(v.th>0){const m=rad(a/2);txt(.85*Math.cos(m),.85*Math.sin(m),'θ',T)}}
+ if(mode==='ref'){const t=rad(v.rth),cx=Math.cos(t)*6,cy=Math.sin(t)*6;const R=compute();ln(1,0,R[0],R[1],{stroke:T,'stroke-width':1,'stroke-dasharray':'2 3'});ln(0,1,R[2],R[3],{stroke:C,'stroke-width':1,'stroke-dasharray':'2 3'});ln(-cx,-cy,cx,cy,{stroke:Pk,'stroke-width':2});if(v.rth>0&&v.rth<180){arc(.7,0,v.rth,Pk);const m=rad(v.rth/2);txt(1.05*Math.cos(m),1.05*Math.sin(m),'θ',Pk)}}
+ if(mode==='str'){if(v.skind==='h')ln(0,-4.3,0,4.3,{stroke:Pk,'stroke-width':2.5});else ln(-4.3,0,4.3,0,{stroke:Pk,'stroke-width':2.5})}
+ if(mode==='er'){const k=Math.hypot(v.ea,v.eb);if(k>0){el('circle',{cx:0,cy:0,r:k*S,fill:'none',stroke:'var(--axis)','stroke-dasharray':'3 3'});const t=Math.atan2(v.eb,v.ea)*180/Math.PI;arc(.55,0,t,T)}}
+ poly(HOUSE,{fill:'none',stroke:G,'stroke-dasharray':'4 3','stroke-width':1},1);
+ if(mode!=='free'){ln(0,0,1,0,{stroke:T,'stroke-width':2,'stroke-opacity':.3});ln(0,0,0,1,{stroke:C,'stroke-width':2,'stroke-opacity':.3})}
+ poly(HOUSE,{fill:Pc,'fill-opacity':.22,stroke:Pc,'stroke-width':1.2});
+ poly(DOOR,{fill:Pc,'fill-opacity':.85});poly(WIN,{fill:'none',stroke:Pc,'stroke-width':1.2});
+ const pt=PTS[pi][1];
+ if(pt){const m=[pt[0]*M[0],pt[0]*M[1]],e=ap(pt);ln(0,0,m[0],m[1],{stroke:T,'stroke-width':2,'stroke-dasharray':'5 4'});ln(m[0],m[1],e[0],e[1],{stroke:C,'stroke-width':2,'stroke-dasharray':'5 4'});const q=P(...e);el('circle',{cx:q[0],cy:q[1],r:5.5,fill:Pk,stroke:'var(--bg)','stroke-width':1.5})}
+ [[M[0],M[1],T,'mt'],[M[2],M[3],C,'mc']].forEach(([x,y,col,id],k)=>{
+  if(Math.hypot(x,y)>.08)ln(0,0,x,y,{stroke:col,'stroke-width':3,'stroke-linecap':'round','marker-end':'url(#'+id+')'});
+  if(mode==='free'){const q=P(x,y);el('circle',{cx:q[0],cy:q[1],r:9,fill:col,'fill-opacity':.25,stroke:col,'stroke-width':1.5});el('circle',{cx:q[0],cy:q[1],r:20,fill:'transparent','data-h':k,style:'cursor:grab'})}});
+ matrix();info()}
+function matrix(){
+ const row=document.getElementById('mrow'),s=sym(),focused=document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.i;
+ if(row.dataset.mode!==mode+(s?s.join():'')){
+  let h='';
+  if(s)h+='<span class="br sym"><span class="c1">'+s[0]+'</span><span class="c2">'+s[2]+'</span><span class="c1">'+s[1]+'</span><span class="c2">'+s[3]+'</span></span><span>=</span>';
+  const ro=mode==='free'?'':' readonly tabindex="-1"';
+  h+='<span class="br">'+[0,2,1,3].map(i=>'<input data-i="'+i+'" class="'+(i<2?'c1':'c2')+'" inputmode="decimal" aria-label="matrix entry"'+ro+'>').join('')+'</span>';
+  row.innerHTML=h;row.dataset.mode=mode+(s?s.join():'');
+  row.querySelectorAll('input').forEach(inp=>{
+   inp.addEventListener('input',()=>{if(mode!=='free')return;const n=parseFloat(inp.value.replace('−','-'));if(inp.value.trim()===''||isNaN(n)||Math.abs(n)>10){inp.classList.add('bad');return}inp.classList.remove('bad');v.free[+inp.dataset.i]=n;draw()});
+   inp.addEventListener('blur',()=>{inp.classList.remove('bad');inp.value=String(r2(M[+inp.dataset.i]))})})}
+ row.querySelectorAll('input').forEach(inp=>{if(inp.dataset.i!==focused)inp.value=String(r2(M[+inp.dataset.i]))})}
+function info(){
+ document.getElementById('desc').textContent=describe();
+ const det=M[0]*M[3]-M[2]*M[1];
+ let s='det = ad − bc = '+f(det)+', so areas are multiplied by |det| = '+f(Math.abs(det))+'.';
+ if(Math.abs(det)<1e-9)s+=' The house is squashed flat.';else if(det<0)s+=' Negative: the house is flipped (mirror image).';
+ const pt=PTS[pi][1];if(pt){const e=ap(pt);s+=' '+PTS[pi][0]+' ('+pt[0]+', '+pt[1]+') → ('+f(e[0])+', '+f(e[1])+').'}
+ document.getElementById('det').textContent=s;why()}
+function why(){
+ const w=document.getElementById('why'),c1='<span class="c1">',c2='<span class="c2">',e='</span>';
+ const col=(a,b)=>'('+f(a)+', '+f(b)+')';let h='';
+ if(mode==='free'){w.innerHTML='<p>Every point is a recipe: (x, y) means x steps along (1, 0), then y steps along (0, 1).</p>'+'<p>The matrix only says where those two arrows go: '+c1+'column 1'+e+' is the new (1, 0), '+c2+'column 2'+e+' is the new (0, 1). So the point (x, y) lands at x × '+c1+'column 1'+e+' + y × '+c2+'column 2'+e+'.</p>'+'<p>Now: column 1 = '+col(M[0],M[1])+', column 2 = '+col(M[2],M[3])+'. The roof peak (0.5, 1.6) lands at 0.5 × '+col(M[0],M[1])+' + 1.6 × '+col(M[2],M[3])+' = '+col(.5*M[0]+1.6*M[2],.5*M[1]+1.6*M[3])+'.</p>';return}
+ if(mode==='rot'&&v.dir==='acw')h='<p>Both arrows sit on the circle of radius 1, so a point at angle α is (cos α, sin α).</p>'
+  +'<p>'+c1+'Column 1:'+e+' (1, 0) is at angle 0°. Turn it θ anticlockwise and it is at angle θ: '+c1+'(cos θ, sin θ)'+e+'.</p>'
+  +'<p>'+c2+'Column 2:'+e+' (0, 1) is at angle 90°. Turn it θ and it is at 90° + θ, which is '+c2+'(−sin θ, cos θ)'+e+'. It is the teal arrow turned another 90°.</p>'
+  +'<p>Now: θ = '+v.th+'°, so column 1 = '+col(M[0],M[1])+' and column 2 = '+col(M[2],M[3])+'.</p>';
+ if(mode==='rot'&&v.dir==='cw')h='<p>Clockwise θ is the same as anticlockwise −θ. Put −θ into the anticlockwise matrix.</p>'
+  +'<p>cos(−θ) = cos θ, but sin(−θ) = −sin θ. So the cos entries stay and the two sin entries swap sign.</p>'
+  +'<p>'+c1+'Column 1:'+e+' (1, 0) turns down to '+c1+'(cos θ, −sin θ)'+e+'. '+c2+'Column 2:'+e+' (0, 1) turns right to '+c2+'(sin θ, cos θ)'+e+'.</p>'
+  +'<p>The booklet says θ > 0 for both: the word clockwise or anticlockwise carries the direction. Now: θ = '+v.th+'°, column 1 = '+col(M[0],M[1])+', column 2 = '+col(M[2],M[3])+'.</p>';
+ if(mode==='ref')h='<p>θ is the angle of the mirror, not of the arrows. A reflection keeps an arrow\'s distance from the mirror but puts it on the other side.</p>'
+  +'<p>'+c1+'Column 1:'+e+' (1, 0) is at 0°, which is θ below the mirror. Its reflection is θ above the mirror, at θ + θ = 2θ: '+c1+'(cos 2θ, sin 2θ)'+e+'. That is why the booklet uses 2θ.</p>'
+  +'<p>'+c2+'Column 2:'+e+' (0, 1) is at 90°, which is 90° − θ above the mirror. Its reflection is 90° − θ below, at 2θ − 90°: '+c2+'(sin 2θ, −cos 2θ)'+e+'.</p>'
+  +'<p>Now: θ = '+v.rth+'°, 2θ = '+(2*v.rth)+'°, column 1 = '+col(M[0],M[1])+', column 2 = '+col(M[2],M[3])+'. The dotted lines cross the mirror at right angles.</p>';
+ if(mode==='str'&&v.skind==='h')h='<p>A stretch parallel to the x-axis multiplies every x-coordinate by k and leaves y alone.</p>'
+  +'<p>'+c1+'Column 1:'+e+' (1, 0) has x = 1, so it becomes '+c1+'(k, 0)'+e+'. '+c2+'Column 2:'+e+' (0, 1) has x = 0, and k × 0 = 0, so it stays at '+c2+'(0, 1)'+e+'.</p>'
+  +'<p>Every point on the y-axis has x = 0, so the y-axis does not move: it is invariant. Now: k = '+f(v.sk)+'.</p>';
+ if(mode==='str'&&v.skind==='v')h='<p>A stretch parallel to the y-axis multiplies every y-coordinate by k and leaves x alone.</p>'
+  +'<p>'+c1+'Column 1:'+e+' (1, 0) has y = 0, so it stays at '+c1+'(1, 0)'+e+'. '+c2+'Column 2:'+e+' (0, 1) has y = 1, so it becomes '+c2+'(0, k)'+e+'.</p>'
+  +'<p>Every point on the x-axis has y = 0, so the x-axis is invariant. Now: k = '+f(v.sk)+'.</p>';
+ if(mode==='enl')h='<p>An enlargement, centre (0, 0), multiplies every distance from the origin by k, in every direction.</p>'
+  +'<p>'+c1+'Column 1:'+e+' (1, 0) becomes '+c1+'(k, 0)'+e+'. '+c2+'Column 2:'+e+' (0, 1) becomes '+c2+'(0, k)'+e+'.</p>'
+  +'<p>It is a horizontal and a vertical stretch at the same time, so lengths × k and areas × k². Now: k = '+f(v.ek)+', area × '+f(v.ek*v.ek)+'.'+(v.ek<0?' A negative k also flips the house through O.':'')+'</p>';
+ if(mode==='er'){const k=Math.hypot(v.ea,v.eb);h='<p>This one is from your notes, not the booklet. Column 1 is the arrow (a, b), with length k = √(a² + b²) and angle θ, so a = k cos θ and b = k sin θ.</p>'
+  +'<p>Put those in: the matrix is k × (cos θ, −sin θ / sin θ, cos θ), which is k times the rotation matrix. So it enlarges by k and rotates by θ.</p>'
+  +'<p>'+c2+'Column 2'+e+' (−b, a) is column 1 turned 90°, same length, so the house keeps its shape. Now: k = '+f(k)+(k?', cos θ = '+f(v.ea/k)+', sin θ = '+f(v.eb/k):'')+'.</p>'}
+ w.innerHTML=h}
+function slider(key,label,mn,mx,st,unit){return'<div class="slider"><label>'+label+'</label><input type="range" min="'+mn+'" max="'+mx+'" step="'+st+'" value="'+v[key]+'" data-k="'+key+'"><span id="o_'+key+'">'+f(v[key])+(unit||'')+'</span></div>'}
+function choice(key,opts){return'<div class="bar">'+opts.map(([val,l])=>'<button data-c="'+key+'" data-v="'+val+'" class="'+(v[key]===val?'on':'')+'">'+l+'</button>').join('')+'</div>'}
+const HINT={free:'Drag the arrow tips or type numbers into the matrix box.',rot:'Slide θ. The teal tip moves round the unit circle.',ref:'θ is the angle of the purple mirror line.',str:'The thick purple line stays still (invariant).',enl:'Both arrows scale by k. Try a negative k.',er:'Columns (a, b) and (−b, a): coral is always teal turned 90°.'};
+function controls(){
+ const c=document.getElementById('ctl');let h='';
+ if(mode==='rot')h=choice('dir',[['acw','Anticlockwise'],['cw','Clockwise']])+slider('th','θ',0,360,5,'°');
+ if(mode==='ref')h=slider('rth','θ',0,180,5,'°');
+ if(mode==='str')h=choice('skind',[['h','Horizontal'],['v','Vertical']])+slider('sk','k',-3,3,.5);
+ if(mode==='enl')h=slider('ek','k',-3,3,.5);
+ if(mode==='er')h=slider('ea','a',-3,3,.5)+slider('eb','b',-3,3,.5);
+ c.innerHTML=h;
+ c.querySelectorAll('input[type=range]').forEach(i=>i.addEventListener('input',()=>{const k=i.dataset.k;v[k]=+i.value;document.getElementById('o_'+k).textContent=f(v[k])+((k==='th'||k==='rth')?'°':'');draw()}));
+ c.querySelectorAll('button[data-c]').forEach(b=>b.addEventListener('click',()=>{v[b.dataset.c]=b.dataset.v;controls();draw()}));
+ document.getElementById('hint').textContent=HINT[mode];
+ document.getElementById('snap').style.display=mode==='free'?'':'none'}
+function tabs(){const t=document.getElementById('tabs');t.innerHTML=TABS.map(([k,l])=>'<button data-t="'+k+'" class="'+(k===mode?'on':'')+'">'+l+'</button>').join('');
+ t.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{const nm=b.dataset.t;if(nm==='free'&&mode!=='free')v.free=M.map(r2);mode=nm;tabs();controls();draw()}))}
 function svgPt(ev){const p=svg.createSVGPoint();p.x=ev.clientX;p.y=ev.clientY;const q=p.matrixTransform(svg.getScreenCTM().inverse());return[q.x/S,-q.y/S]}
-svg.addEventListener('pointerdown',ev=>{const h=ev.target.getAttribute&&ev.target.getAttribute('data-h');if(h===null)return;drag=+h;svg.setPointerCapture(ev.pointerId);ev.preventDefault()});
-svg.addEventListener('pointermove',ev=>{if(drag===null)return;let[x,y]=svgPt(ev);x=Math.max(-4,Math.min(4,x));y=Math.max(-4,Math.min(4,y));if(snap){x=Math.round(x*2)/2;y=Math.round(y*2)/2}else{x=Math.round(x*100)/100;y=Math.round(y*100)/100}if(drag===0){M[0]=x;M[1]=y}else{M[2]=x;M[3]=y}draw()});
+svg.addEventListener('pointerdown',ev=>{const h=ev.target.getAttribute&&ev.target.getAttribute('data-h');if(h===null||mode!=='free')return;drag=+h;svg.setPointerCapture(ev.pointerId);ev.preventDefault()});
+svg.addEventListener('pointermove',ev=>{if(drag===null)return;let[x,y]=svgPt(ev);x=Math.max(-4,Math.min(4,x));y=Math.max(-4,Math.min(4,y));if(snap){x=Math.round(x*2)/2;y=Math.round(y*2)/2}else{x=r2(x);y=r2(y)}if(drag===0){v.free[0]=x;v.free[1]=y}else{v.free[2]=x;v.free[3]=y}draw()});
 const end=()=>{drag=null};svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',end);
 const pts=document.getElementById('pts');
 function ptBtns(){pts.innerHTML=PTS.map((p,i)=>'<button data-i="'+i+'" class="'+(i===pi?'on':'')+'">'+p[0]+'</button>').join('');pts.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{pi=+b.dataset.i;ptBtns();draw()}))}
-ptBtns();
 const sb=document.getElementById('snap'),gb=document.getElementById('grid');
 sb.addEventListener('click',()=>{snap=!snap;sb.textContent='Snap to grid: '+(snap?'on':'off');sb.classList.toggle('on',snap)});
 gb.addEventListener('click',()=>{grid=!grid;gb.textContent='Moving grid: '+(grid?'on':'off');gb.classList.toggle('on',grid);draw()});
-document.getElementById('reset').addEventListener('click',()=>{M=[1,0,0,1];draw()});
-draw();
+document.getElementById('reset').addEventListener('click',()=>{const keep=mode;v=JSON.parse(JSON.stringify(D));mode=keep;controls();draw()});
+ptBtns();tabs();controls();draw();
+})();
 </script>
 </body>
 </html>
