@@ -1,0 +1,166 @@
+串|xâu, chuỗi, chùm (lượng từ)|xuyến|t|story
+一辈子|suốt đời, cả đời|nhất bối tử|t|py:yíbèizi
+农村|nông thôn|nông thôn|t
+屋|nhà; căn phòng|ốc|t
+屋子|căn phòng, căn nhà|ốc tử|t|py:wūzi
+断|cai, dứt; đứt|đoạn|t
+以来|từ … đến nay|dĩ lai|t
+姥姥|bà ngoại|lão lão|t|py:lǎolao
+舅舅|cậu (anh, em trai của mẹ)|cữu cữu|t|py:jiùjiu
+姑姑|cô (chị, em gái của ba)|cô cô|t|py:gūgu
+坚决|kiên quyết|kiên quyết|t
+打工|làm thuê, làm công|đả công|t|py:dǎgōng
+挣|kiếm (tiền)|tranh|t|py:zhèng
+县|huyện|huyện|t
+套|bộ, căn, cái (lượng từ)|sáo|t
+装修|sửa sang, trang hoàng|trang tu|t
+不得了|cực kỳ, vô cùng|bất đắc liễu|t|py:bùdéliǎo
+醉|say (rượu)|tuý|t
+强烈|mãnh liệt; hết mức|cường liệt|t
+夜|ban đêm|dạ|t
+锁|cái khoá; khoá|toả|t
+临|sắp, gần (lúc)|lâm|t
+悄悄|lặng lẽ, nhẹ nhàng|tiễu tiễu|t|py:qiāoqiāo
+晒|phơi|sái|t
+被子|mền, chăn|bị tử|t|py:bèizi
+长途|đường dài|trường đồ|t|py:chángtú
+冻|bị cóng, rét|đống|t
+想象|tưởng tượng|tưởng tượng|t
+灰尘|bụi bặm|hôi trần|t
+亮|sáng; toả sáng|lượng|t
+微笑|mỉm cười; nụ cười|vi tiếu|t
+温暖|ấm áp; sưởi ấm|ôn noãn|t
+立刻|lập tức|lập khắc|t
+扑|bổ nhào; (mùi, hơi) phả vào|phác|t|story|py:pū
+卧室|phòng ngủ|ngoạ thất|t
+铺|trải|phô|t|story|py:pū
+飘|thoảng đưa, bay phấp phới|phiêu|t
+阵|trận, cơn, đợt (lượng từ)|trận|t
+感受|cảm nhận; sự cảm nhận|cảm thụ|t
+流泪|chảy nước mắt|lưu lệ|t|py:liúlèi
+老家|quê nhà|lão gia|s
+断奶|cai sữa, dứt sữa|đoạn nãi|s
+长年|bao năm, nhiều năm liền|trường niên|s|py:chángnián
+天色已晚|trời đã tối|thiên sắc dĩ vãn|s
+外地|nơi khác, tỉnh khác|ngoại địa|s
+赶来|vội đến|cản lai|s
+打扫卫生|quét dọn vệ sinh|đả tảo vệ sinh|s
+轻声细语|nói khẽ, nhỏ nhẹ|khinh thanh tế ngữ|s
+红着脸|đỏ mặt||s
+转眼|chớp mắt (thời gian trôi nhanh)|chuyển nhãn|s
+深冬|giữa mùa đông|thâm đông|s
+冷冷清清|vắng vẻ, lạnh lẽo|lãnh lãnh thanh thanh|s
+景象|cảnh tượng|cảnh tượng|s
+心里发寒|trong lòng lạnh buốt||s
+竟|lại (bất ngờ), hoá ra|cánh|s
+竟是|lại là (bất ngờ)||s
+气息|hơi, không khí|khí tức|s
+扑面而来|phả vào mặt||s
+室内|trong nhà, trong phòng|thất nội|s
+暖气|máy sưởi, hơi sưởi|noãn khí|s
+温热|âm ấm|ôn nhiệt|s
+饭菜香|mùi cơm canh thơm||s
+鼻子一酸|sống mũi cay cay (sắp khóc)||s
+热泪|nước mắt nóng hổi|nhiệt lệ|s
+偷偷|lén lút, ngấm ngầm|thâu thâu|s|py:tōutōu
+改正|sửa chữa, sửa cho đúng|cải chính|s
+伯伯|bác (anh của ba)|bá bá|s|py:bóbo
+舅妈|mợ (vợ của cậu)|cữu ma|s|py:jiùmā
+辈|lớp người, thế hệ|bối|s
+农|nghề nông|nông|s
+農|nông (chữ phồn thể)|nông|s
+辰|thần (lưỡi liềm vỏ trai thời xưa)|thần|s
+村|làng, thôn|thôn|s
+姥|bà ngoại (chữ trong 姥姥)|lão|s
+舅|cậu (chữ trong 舅舅)|cữu|s
+臼|cái cối|cữu|s
+姑|cô (chữ trong 姑姑)|cô|s
+堅|kiên (chữ phồn thể của 坚)|kiên|s
+土|đất|thổ|s
+決|quyết (chữ phồn thể của 决)|quyết|s
+夬|quyết (bộ phận chữ)|quái|s
+至|đến|chí|s
+斤|cái rìu; cân (đơn vị)|cân|s
+坚|vững, chắc|kiên|s
+决|quyết|quyết|s
+国|nước, quốc gia|quốc
+记|ghi, nhớ|ký
+候|lúc, khi (时候)|hậu
+间|gian, căn (lượng từ cho phòng)|gian
+奶|sữa|nãi
+歌|bài hát|ca
+今|nay|kim
+城|thành phố|thành
+房|nhà, phòng|phòng
+时|lúc, khi|thời
+仍|vẫn|nhưng
+妈|mẹ|ma
+净|sạch|tịnh
+已|đã|dĩ
+床|giường|sàng
+流|chảy|lưu
+姨|dì|di
+改|sửa, đổi|cải
+种|trồng|chủng|py:zhòng
+件|cái, chuyện (lượng từ)|kiện
+年轻|trẻ|niên khinh
+干净|sạch sẽ|can tịnh
+房间|căn phòng|phòng gian
+暖和|ấm áp|noãn hoà|py:nuǎnhuo
+毕业|tốt nghiệp|tất nghiệp
+联系|liên lạc, liên hệ|liên hệ
+见面|gặp mặt|kiến diện
+汉语|tiếng Hán, tiếng Trung|hán ngữ
+中文|tiếng Trung|trung văn
+回|về|hồi
+弟弟|em trai|đệ đệ
+岁|tuổi|tuế
+叔叔|chú (em trai của ba)|thúc thúc
+妹妹|em gái|muội muội
+每|mỗi|mỗi
+春|mùa xuân|xuân
+春节|Tết (âm lịch)|xuân tiết
+态度|thái độ|thái độ
+反对|phản đối|phản đối
+层|tầng, lớp|tằng
+以|lấy, để (chữ nối)|dĩ
+坚持|kiên trì, nhất định (làm)|kiên trì
+母亲|mẹ, mẫu thân|mẫu thân
+因此|vì vậy|nhân thử
+尽管|dù, mặc dù|tận quản|py:jǐnguǎn
+钱|tiền|tiền
+钥匙|chìa khoá|thược thi|py:yàoshi
+拒绝|từ chối|cự tuyệt
+父亲|ba, cha|phụ thân
+喝|uống|hát
+趟|chuyến (lượng từ)|thảng
+准备|chuẩn bị|chuẩn bị
+空|trống, bỏ không|không|py:kòng
+送|tiễn; tặng|tống
+一边|một bên, một góc|nhất biên
+要是|nếu|yếu thị
+顺便|tiện thể|thuận tiện
+打扫|quét dọn|đả tảo
+害羞|ngượng, xấu hổ|hại tu
+儿子|con trai|nhi tử
+门|cửa|môn
+抬|ngẩng, nhấc|đài
+抬头|ngẩng đầu|đài đầu
+发现|phát hiện, nhận ra|phát hiện
+灯|đèn|đăng
+光|ánh sáng|quang
+灯光|ánh đèn|đăng quang
+楼|toà nhà, lầu|lâu
+干|khô; làm|can
+厨房|nhà bếp|trù phòng
+为了|để, vì|vị liễu
+搬|chuyển, dọn|ban
+辆|chiếc (lượng từ cho xe)|lượng
+周末|cuối tuần|chu mạt
+玩|chơi|ngoạn
+熟悉|quen thuộc, quen|thục tất
+八|tám|bát
+哥哥|anh trai|ca ca
+阿姨|dì; cô (gọi phụ nữ lớn tuổi)|a di
+新房|nhà mới|tân phòng
+外婆|bà ngoại (cách nói miền Nam Trung Quốc)|ngoại bà|s
