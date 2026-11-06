@@ -19,6 +19,7 @@ async def solve(pg, sid, i, t, wrongfirst):
             L = await pg.query_selector(f'.mw[data-id="{idw}"]'); await L.click()
             if k == 0:
                 wr = await pg.query_selector(f'.mm:not([data-id="{idw}"])'); await wr.click(); await pg.wait_for_timeout(560)
+                await L.click()   # a wrong pair deselects the word (phiếu #4)
             await (await pg.query_selector(f'.mm[data-id="{idw}"]')).click()
     elif t == 'tf':
         opts = await pg.query_selector_all('.opt')

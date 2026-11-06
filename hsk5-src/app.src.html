@@ -83,7 +83,11 @@ button{font-family:inherit}
 .mt{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mcol{display:flex;flex-direction:column;gap:10px}
 .mw,.mm{min-height:58px;padding:8px 12px;border-radius:16px;background:var(--card);color:var(--ink);border:2px solid var(--line);text-align:center;line-height:1.3}
 .mw{font:600 28px var(--han)}.mm{font-size:16px}.mw.sel{border-color:var(--acc);background:var(--new)}
-.mw.ok,.mm.ok{background:var(--okbg);border-color:var(--ok);opacity:.8}.mm.bad{background:var(--badbg);border-color:var(--bad)}
+.mw.ok,.mm.ok{background:var(--okbg);border-color:var(--ok);opacity:.8}
+.mw,.mm{position:relative}.mw.bad,.mm.bad{background:var(--badbg);border-color:var(--bad);border-width:3px;color:var(--bad);opacity:1}.mw.shake,.mm.shake{animation:sh .35s 2}
+.mw.miss::after{content:'';position:absolute;top:6px;right:6px;width:10px;height:10px;border-radius:50%;background:var(--bad)}.mw.miss:not(.sel){border-color:var(--bad)}
+.mfb{font:600 1.15em var(--han)}
+.mrow.miss .mz{color:var(--bad)}.mrow .mnote{grid-column:1/-1;font-size:13px;color:var(--bad);margin:-6px 0 2px}
 .olin{min-height:72px;border-radius:16px;border:2px dashed var(--line);padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}.olin.good{border:2px solid var(--ok);background:var(--okbg)}.olin.shake{animation:sh .35s}
 .obank{display:flex;flex-wrap:wrap;gap:8px}.tile{padding:10px 14px;min-height:50px;border-radius:14px;background:var(--card);border:2px solid var(--line);font:500 24px var(--han);color:var(--ink)}
 .tin{display:flex;gap:8px}.tin input{flex:1;min-width:0;min-height:58px;border-radius:14px;border:2px solid var(--line);padding:0 14px;font:500 24px var(--han);background:var(--card);color:var(--ink)}
@@ -111,6 +115,7 @@ button{font-family:inherit}
 .fb.bad{background:var(--badbg);color:var(--ink);border:1px solid var(--bad)}.fb.good{background:var(--okbg);color:var(--ink);border:1px solid var(--ok)}
 .fb .rv{font:500 22px/1.6 var(--han)}.fb .rvv{font-size:14px;color:var(--mut)}
 .reveal{padding:12px 14px;border-radius:16px;background:var(--card);border:2px solid var(--line);animation:in .25s both}
+.reveal .artbox.ra{height:min(24dvh,calc((100vw - 60px)*.6),240px);margin-top:10px}
 .reveal .rz{font:500 24px/1.9 var(--han);color:var(--ink)}.reveal .rvv2{font-size:15px;color:var(--mut);margin:2px 0 8px}.reveal .lr{margin-top:4px}.reveal .hintw{font-size:12.5px;color:var(--mut)}
 .new{padding:14px 16px;border-radius:16px;background:var(--new);border:1px solid var(--newline);color:var(--ink);font-size:16.5px;line-height:1.55;animation:in .25s both}
 .new .k{font-size:12px;font-weight:700;color:var(--newink);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
@@ -470,7 +475,15 @@ let EP = 0, cur = null;           // EP: bumps on every screen change so old aud
 const art = (n, cls = '') => `<div class="artbox ${cls}">${scene(n)}</div>`;
 const SS = id => st.sess[id] || (st.sess[id] = { i: 0, done: 0 });
 const toast = t => { const e = $('#toast'); e.textContent = t; e.classList.add('show'); setTimeout(() => e.classList.remove('show'), 2300); };
-const setPy = on => { st.py = on ? 1 : 0; document.body.classList.toggle('py', !!on); };
+const setPy = on => { st.py = on ? 1 : 0; document.body.classList.toggle('py', !!on); document.querySelectorAll('[data-pyz]').forEach(z => { z.classList.remove('showpy', 'hidepy'); if (z._pyLab) z._pyLab(); }); };
+/* a local "Pinyin / Ẩn pinyin" button for one block z (answer block, comic big card): follows the top 拼 until tapped, then overrides it both ways (.showpy / .hidepy); 拼 resets it */
+function pyBtn(pb, z) {
+  const isOn = () => z.classList.contains('showpy') || (document.body.classList.contains('py') && !z.classList.contains('hidepy'));
+  const lab = () => { pb.textContent = isOn() ? 'Ẩn pinyin' : 'Pinyin'; };
+  z.dataset.pyz = 1; z._pyLab = lab;
+  pb.onclick = () => { const on = !isOn(); z.classList.toggle('showpy', on); z.classList.toggle('hidepy', !on); lab(); };
+  lab();
+}
 const vox = (zhText, v) => speak(zhText, false, v === 'm');
 async function chain(items, ep, mark) { // play several lines one after another
   for (let k = 0; k < items.length; k++) { if (ep !== EP) return; if (mark) mark(k); await vox(items[k].zh, items[k].v); if (ep !== EP) return; await sleep(260); }
@@ -494,11 +507,10 @@ const fmtNew = html => String(html).replace(/\s*([①②③④⑤])/g, '\n$1').r
 function addReplay(pane, t) { const r = h('div', 'lr'), b = h('button', 'sb', '🔊'); b.setAttribute('aria-label', 'Nghe lại'); b.onclick = () => speak(t); r.append(b, h('span', '', 'Nghe lại')); r.lastChild.style.cssText = 'font-size:14px;color:var(--mut)'; pane.appendChild(r); }
 /* answer reveal (rule for every question type): auto-play the answer, 🔊 replay, Pinyin on/off, every word tappable, Vietnamese; the learner moves on only with Tiếp */
 function answerBlock(pane, zhT, viT, o = {}) {
-  const d = h('div', 'reveal'); d.innerHTML = `<div class="rz">${zh(zhT)}</div>${viT ? `<div class="rvv2">${viT}</div>` : ''}<div class="lr"><button class="sb" aria-label="Nghe lại">🔊</button><button class="tr rpy">Pinyin</button><span class="hintw">Chạm vào một từ để xem nghĩa</span></div>`;
+  const d = h('div', 'reveal'); d.innerHTML = `<div class="rz">${zh(zhT)}</div>${viT ? `<div class="rvv2">${viT}</div>` : ''}<div class="lr"><button class="sb" aria-label="Nghe lại">🔊</button><button class="tr rpy">Pinyin</button><span class="hintw">Chạm vào một từ để xem nghĩa</span></div>${o.scene ? art(o.scene, 'sm ra') : ''}`;
   const sb = $('.sb', d), pb = $('.rpy', d), z = $('.rz', d);
   sb.onclick = () => speak(zhT, false, !!o.male);
-  pb.onclick = () => { const on = !z.classList.contains('showpy'); z.classList.toggle('showpy', on); pb.textContent = on ? 'Ẩn pinyin' : 'Pinyin'; };
-  if (document.body.classList.contains('py')) { z.classList.add('showpy'); pb.textContent = 'Ẩn pinyin'; }
+  pyBtn(pb, z);
   pane.appendChild(d);
   const e0 = EP; if (st.auto !== 0) setTimeout(() => { if (e0 === EP) speak(zhT, false, !!o.male); }, o.delay || 250);
   showAns(d);
@@ -514,14 +526,14 @@ function showAns(el) {
   }, 90);
 }
 /* match: after the last pair, every word with its meaning, each with its own 🔊; the whole list is read once (auto) */
-function matchBlock(pane, ids) {
+function matchBlock(pane, ids, missed) {
+  missed = missed || new Set();
   const d = h('div', 'reveal');
-  d.innerHTML = `<div class="rz mlist">${ids.map(id => `<div class="mrow"><span class="mz">${zh(id)}</span><span class="mv">${MEAN[id] || (W[id] ? W[id].vi : '')}</span><button class="spk" data-k="${id}" aria-label="Nghe">🔊</button></div>`).join('')}</div><div class="lr"><button class="sb" aria-label="Nghe lại cả lượt">🔊</button><button class="tr rpy">Pinyin</button><span class="hintw">Chạm vào một từ để xem nghĩa</span></div>`;
+  d.innerHTML = `<div class="rz mlist">${ids.map(id => `<div class="mrow${missed.has(id) ? ' miss' : ''}"><span class="mz">${zh(id)}</span><span class="mv">${MEAN[id] || (W[id] ? W[id].vi : '')}</span><button class="spk" data-k="${id}" aria-label="Nghe">🔊</button>${missed.has(id) ? '<div class="mnote">Lần đầu chưa đúng nên từ này sẽ được ôn lại</div>' : ''}</div>`).join('')}</div><div class="lr"><button class="sb" aria-label="Nghe lại cả lượt">🔊</button><button class="tr rpy">Pinyin</button><span class="hintw">Chạm vào một từ để xem nghĩa</span></div>`;
   const z = $('.rz', d), pb = $('.rpy', d), all = () => { EP++; const e2 = EP; stopAudio(); chain(ids.map(id => ({ zh: id, v: 'f' })), e2); };
   $$('.spk', d).forEach(b => b.onclick = () => speak(b.dataset.k));
   $('.sb', d).onclick = all;
-  pb.onclick = () => { const on = !z.classList.contains('showpy'); z.classList.toggle('showpy', on); pb.textContent = on ? 'Ẩn pinyin' : 'Pinyin'; };
-  if (document.body.classList.contains('py')) { z.classList.add('showpy'); pb.textContent = 'Ẩn pinyin'; }
+  pyBtn(pb, z);
   pane.appendChild(d);
   const e0 = EP; if (st.auto !== 0) setTimeout(() => { if (e0 === EP) chain(ids.map(id => ({ zh: id, v: 'f' })), e0); }, 350);
   showAns(d);
@@ -903,12 +915,12 @@ function pick(sc, pane, ep, gate) {
 /* ---- multiple choice with a picture ---- */
 function mc(sc, pane, ep, gate) {
   gate(false); let wrong = 0; const key = sid + ':' + SS(sid).i;
-  pane.insertAdjacentHTML('beforeend', art(sc.scene, 'sm'));
+  /* no picture before answering: pictures gave the answer away (§12.11); it appears in the answer block */
   pane.insertAdjacentHTML('beforeend', `<div class="sent" id="mcs">${zh(sc.say[0])}</div><div class="prompt">${zh(sc.prompt)}</div>`);
   const box = h('div', 'opts'), fb = h('div', ''), btns = [];
   const finish = () => {
     logQ(!wrong); st.res[key] = wrong ? 0 : 1; save(); recordResult(sc); gate(true);
-    $('#mcs').hidden = true; answerBlock(pane, sc.full, sc.say[1]);
+    $('#mcs').hidden = true; answerBlock(pane, sc.full, sc.say[1], { scene: sc.scene });
     if (sc.teach) pane.appendChild(h('div', 'new', `<div class="k">Điều mới</div>${zh(fmtNew(sc.teach))}`));
   };
   shuffle(sc.opts).forEach(o => {
@@ -1129,8 +1141,7 @@ function comic(sc, pane, ep, gate) {
     const box = m.box, act = $('.cm-act', box), msg = $('.cm-msg', box), bz = $('.cm-bz', box), pyb = $('.cm-py', box), put = $('.cm-put', box), mine = $('.cm-mine', box);
     let take = null, pending = false, held = false, tapMode = false, downAt = 0, maxT = 0, fails = 0, heard = false, did = null;
     const say = (t, good) => { msg.textContent = t; msg.classList.toggle('good', !!good); };
-    if (document.body.classList.contains('py')) { bz.classList.add('showpy'); pyb.textContent = 'Ẩn pinyin'; }
-    pyb.onclick = () => { const on = !bz.classList.contains('showpy'); bz.classList.toggle('showpy', on); pyb.textContent = on ? 'Ẩn pinyin' : 'Pinyin'; };
+    pyBtn(pyb, bz);
     const sample = () => { if (take) return; heard = true; if (did) did.disabled = false; EP++; stopAudio(); vox(text, V[i]); };
     $('.cm-sam', box).onclick = sample;
     mine.onclick = () => { if (C.rec[i]) playUrl(C.rec[i], i); };
@@ -1219,21 +1230,31 @@ function finishQ(sc, pane, wrong, extra, label) {
   logQ(!wrong); const key = sid + ':' + SS(sid).i; st.res[key] = wrong ? 0 : 1; save(); recordResult(sc); $('#next').disabled = false;
   if (extra) pane.appendChild(h('div', 'new', `<div class="k">${label || 'Điều mới'}</div>${extra}`));
 }
-/* ---- match: tap a word, then tap its meaning ---- */
+/* ---- match: tap a word, then tap its meaning ----
+   wrong pair (phiếu #4): BOTH cells red ~1 s + shake + error sound + one line "<word> không có nghĩa là '<meaning>'" (right meaning not shown),
+   the word is deselected, keeps a red dot (.miss) to the end, goes to revision (noteMiss → recordResult sets box 0), and the answer block marks it */
 function match(sc, pane, ep, gate) {
-  gate(false); let wrong = 0, left = sc.w.length, selW = null;
+  gate(false); let wrong = 0, left = sc.w.length, selW = null, badT = 0; const missed = new Set();
   pane.insertAdjacentHTML('beforeend', `<div class="prompt">${zh(sc.prompt)}</div>`);
   const grid = h('div', 'mt'), cl = h('div', 'mcol'), cr = h('div', 'mcol'), fb = h('div', ''); grid.append(cl, cr); pane.append(grid, fb);
   const Ls = sc.w.map(id => { const b = h('button', 'mw', zh(id)); b.dataset.id = id; cl.appendChild(b); return b; });
   const Rs = shuffle(sc.w.slice()).map(id => { const b = h('button', 'mm', MEAN[id]); b.dataset.id = id; cr.appendChild(b); return b; });
-  Ls.forEach(b => b.onclick = () => { if (b.classList.contains('ok')) return; Ls.forEach(x => x.classList.remove('sel')); b.classList.add('sel'); selW = b; speak(b.dataset.id); });
+  const clearBad = () => { clearTimeout(badT); [...Ls, ...Rs].forEach(x => x.classList.remove('bad', 'shake')); };
+  Ls.forEach(b => b.onclick = () => { if (b.classList.contains('ok')) return; clearBad(); Ls.forEach(x => x.classList.remove('sel')); b.classList.add('sel'); selW = b; speak(b.dataset.id); });
   Rs.forEach(b => b.onclick = () => {
     if (b.classList.contains('ok')) return;
     if (!selW) { fb.className = 'fb bad'; fb.textContent = 'Chạm một từ ở cột trái trước.'; return; }
+    clearBad();
     if (b.dataset.id === selW.dataset.id) {
       sfx.ok(); b.classList.add('ok'); selW.classList.remove('sel'); selW.classList.add('ok'); selW = null; fb.className = ''; fb.textContent = ''; left--;
-      if (!left) { fb.className = wrong ? 'fb good' : ''; fb.innerHTML = wrong ? 'Từ nào làm bạn nhầm sẽ hiện lại ở cuối buổi ôn.' : ''; matchBlock(pane, sc.w); finishQ(sc, pane, wrong); }
-    } else { wrong++; noteMiss([selW.dataset.id]); sfx.bad(); b.classList.add('bad', 'shake'); setTimeout(() => b.classList.remove('bad', 'shake'), 500); }
+      if (!left) { matchBlock(pane, sc.w, missed); finishQ(sc, pane, wrong); }
+    } else {
+      const w = selW, id = w.dataset.id; wrong++; missed.add(id); noteMiss([id]); sfx.bad();
+      w.classList.remove('sel'); w.classList.add('miss'); selW = null;
+      [w, b].forEach(x => x.classList.add('bad', 'shake'));
+      badT = setTimeout(() => [w, b].forEach(x => x.classList.remove('bad', 'shake')), 1100);
+      fb.className = 'fb bad'; fb.innerHTML = `<span class="mfb">${zh(id)}</span> không có nghĩa là “${MEAN[b.dataset.id]}”. Chọn lại từ bên trái nhé.`;
+    }
   });
 }
 /* ---- hear: listen, pick the Vietnamese meaning ---- */
@@ -1386,7 +1407,7 @@ function buildMix(s) {
 /* ---- tf: true or false about the story ---- */
 function tf(sc, pane, ep, gate) {
   gate(false); let wrong = 0;
-  pane.insertAdjacentHTML('beforeend', art(sc.scene, 'sm') + `<div class="prompt">Đúng hay sai, theo câu chuyện?</div><div class="sent">${zh(sc.zh)}</div>`);
+  pane.insertAdjacentHTML('beforeend', `<div class="prompt">Đúng hay sai, theo câu chuyện?</div><div class="sent">${zh(sc.zh)}</div>`);
   const row = h('div', 'lr'), sb = h('button', 'sb', '🔊'); sb.setAttribute('aria-label', 'Nghe'); sb.onclick = () => speak(sc.zh); row.appendChild(sb); pane.appendChild(row);
   const sentEl = $('.sent', pane);
   const box = h('div', 'opts'), fb = h('div', ''), btns = [];
@@ -1397,7 +1418,7 @@ function tf(sc, pane, ep, gate) {
       if (!good) { wrong++; noteMiss(sc.w || []); sfx.bad(); b.classList.add('bad', 'shake'); } else { sfx.ok(); b.classList.add('good'); }
       btns.forEach(x => { x.disabled = true; if (x.dataset.ok === '1') x.classList.add('good'); });
       fb.className = good ? '' : 'fb bad'; fb.innerHTML = good ? '' : '<b>Chưa đúng.</b>';
-      sentEl.hidden = true; row.hidden = true; answerBlock(pane, sc.zh, sc.vi); finishQ(sc, pane, wrong, zh(fmtNew(sc.why)));
+      sentEl.hidden = true; row.hidden = true; answerBlock(pane, sc.zh, sc.vi, { scene: sc.scene }); finishQ(sc, pane, wrong, zh(fmtNew(sc.why)));
     };
   });
   pane.append(box, fb);
