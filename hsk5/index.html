@@ -1750,7 +1750,7 @@ SC.importantWork = () => R(0, 0, 400, 300, '#e9f1fb') + R(0, 232, 400, 68, '#cdb
   person(300, 140, { s: 1, hs: 'short', shirt: C.teal, collar: C.white, m: 'smile', gl: 'round' }) + R(232, 192, 130, 46, '#cfd6e2', 6) + R(242, 200, 56, 34, '#8fb4ee', 4);
 Object.assign(SCENE_LABEL, { discuss: 'Hai người đang bàn cách giải quyết một vấn đề', phoneWipe: 'Một người lau chiếc điện thoại mới cho sạch', shockMeet: 'Hai người gặp nhau, một người ngạc nhiên', easyTest: 'Bài toán rất dễ mà người ta vẫn bối rối', importantWork: 'Tài liệu nghiên cứu quan trọng có gắn ngôi sao' });
 
-const CH_SRC = {"2": "ch2.js?v=64a206986498"}; const WORD_CH = {"一辈子": 2, "农村": 2, "屋": 2, "断": 2, "以来": 2, "姥姥": 2, "舅舅": 2, "姑姑": 2, "坚决": 2, "打工": 2, "挣": 2, "县": 2, "套": 2, "装修": 2, "不得了": 2, "串": 2, "醉": 2, "强烈": 2, "夜": 2, "锁": 2, "临": 2, "悄悄": 2, "晒": 2, "被子": 2, "长途": 2, "冻": 2, "想象": 2, "灰尘": 2, "亮": 2, "微笑": 2, "温暖": 2, "立刻": 2, "扑": 2, "卧室": 2, "铺": 2, "飘": 2, "阵": 2, "感受": 2, "流泪": 2};
+const CH_SRC = {"2": "ch2.js?v=0c7ce932a079"}; const WORD_CH = {"一辈子": 2, "农村": 2, "屋": 2, "断": 2, "以来": 2, "姥姥": 2, "舅舅": 2, "姑姑": 2, "坚决": 2, "打工": 2, "挣": 2, "县": 2, "套": 2, "装修": 2, "不得了": 2, "串": 2, "醉": 2, "强烈": 2, "夜": 2, "锁": 2, "临": 2, "悄悄": 2, "晒": 2, "被子": 2, "长途": 2, "冻": 2, "想象": 2, "灰尘": 2, "亮": 2, "微笑": 2, "温暖": 2, "立刻": 2, "扑": 2, "卧室": 2, "铺": 2, "飘": 2, "阵": 2, "感受": 2, "流泪": 2};
 </script>
 <!--CH_INLINE-->
 <script>
@@ -1770,7 +1770,7 @@ Object.keys(st.stk).forEach(wrec);           // saves from before the revision p
 let curMiss = new Set(), curLook = new Set();
 function onLook(k) { if (curLook.has(k)) return; curLook.add(k); st.look[k] = (st.look[k] || 0) + 1; save(); }
 /* ===== self-update: build.py stamps APP_V and writes version.json; a new deploy shows a banner at home (never inside a lesson) ===== */
-const APP_V = 'dfcd2783505c';
+const APP_V = 'ee6ce78b70c6';
 const UPD = { last: 0, newV: '', n: 0 };
 function checkUpdate(force) {
   if (!/^https?:/.test(location.protocol)) return;
