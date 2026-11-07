@@ -684,37 +684,37 @@ WORDS.push(
 /* ===== word cards + listening items (phase 1 and 2 of each episode) ===== */
 const LEARN = {
   '电台': { exv: ['Đài phát thanh muốn chọn ra một cặp vợ chồng thắm thiết nhất.', 'Anh ấy là phóng viên của đài.'],
-    hear: { s: '我每天早上在车里听电台。', opts: ['Sáng nào mình cũng nghe đài trên xe.', 'Sáng nào mình cũng xem ti vi trên xe.', 'Tối nào mình cũng nghe đài ở nhà.'],
+    hear: { s: '我每天早上在车里听电台。', opts: ['Sáng nào mình cũng nghe đài trên xe.', 'Tối nào mình cũng nghe đài trên xe.', 'Sáng nào mình cũng nghe đài ở nhà.'], whyNot: ['', '早上 = buổi sáng, không phải buổi tối.', '在车里 = ở trong xe, không phải ở nhà.'], whyNot: ['', '早上 = buổi sáng, không phải buổi tối.', '在车里 = ở trong xe, không phải ở nhà.'],
       why: 'Bạn cần bắt 3 mảnh: <b>早上</b> (buổi sáng), <b>在车里</b> (ở trong xe), <b>听电台</b> (nghe đài). Đổi một mảnh là đổi cả câu.' } },
   '恩爱': { exv: ['Họ cưới nhau ba mươi năm rồi mà vẫn rất thắm thiết.', 'Đừng khoe tình cảm trên mạng nữa!'],
-    hear: { s: '他们结婚五十年了，还是很恩爱。', opts: ['Họ cưới nhau năm mươi năm rồi mà vẫn rất thắm thiết.', 'Họ cưới nhau năm năm rồi và hay cãi nhau.', 'Họ mới cưới nên rất thắm thiết.'],
+    hear: { s: '他们结婚五十年了，还是很恩爱。', opts: ['Họ cưới nhau năm mươi năm rồi mà vẫn rất thắm thiết.', 'Họ cưới nhau năm năm rồi mà vẫn rất thắm thiết.', 'Họ cưới nhau năm mươi năm rồi, giờ không còn thắm thiết nữa.'], whyNot: ['', '五十年 = năm mươi năm; năm năm là 五年.', '还是很恩爱 = vẫn rất thắm thiết.'], whyNot: ['', '五十年 = năm mươi năm; năm năm là 五年.', '还是很恩爱 = vẫn rất thắm thiết.'],
       why: '<b>五十</b> = 50 (năm mươi, nghe khác 五 = 5). <b>还是</b> = vẫn. Cả câu là lời khen một cặp vợ chồng già.' } },
   '入围': { exv: ['Sau khi so sánh, có ba cặp vợ chồng lọt vào vòng trong.', 'Cuộc thi lần này anh ấy không lọt vào vòng trong.'],
-    hear: { s: '她入围了，明天晚上还有比赛。', opts: ['Cô ấy lọt vào vòng trong, tối mai còn thi nữa.', 'Cô ấy thắng rồi, tối mai đi ăn mừng.', 'Cô ấy không lọt vào vòng trong, tối mai không thi.'],
+    hear: { s: '她入围了，明天晚上还有比赛。', opts: ['Cô ấy lọt vào vòng trong, tối mai còn thi nữa.', 'Cô ấy lọt vào vòng trong, tối nay còn thi nữa.', 'Cô ấy lọt vào vòng trong, tối mai không phải thi nữa.'], whyNot: ['', '明天晚上 = tối mai, không phải tối nay.', '还有比赛 = vẫn còn một cuộc thi.'], whyNot: ['', '明天晚上 = tối mai, không phải tối nay.', '还有比赛 = vẫn còn một cuộc thi.'],
       why: '<b>入围了</b> + <b>还有比赛</b> (còn có cuộc thi): lọt vào vòng trong nghĩa là cuộc thi vẫn chưa kết thúc.' } },
   '对比': { exv: ['Mình cùng so sánh hai chiếc điện thoại này nhé.', 'Hai tấm ảnh này tương phản rất mạnh.'],
-    hear: { s: '请对比一下这两张照片。', opts: ['Hãy so sánh hai tấm ảnh này.', 'Hãy mua hai tấm ảnh này.', 'Hai tấm ảnh này đều rất đẹp.'],
+    hear: { s: '请对比一下这两张照片。', opts: ['Bạn hãy so sánh hai tấm ảnh này.', 'Bạn hãy so sánh ba tấm ảnh này.', 'Mình đã so sánh xong hai tấm ảnh này rồi.'], whyNot: ['', '两张 = hai tấm, không phải ba.', '请…一下 = mời bạn làm (lời đề nghị); chưa ai so sánh xong.'], whyNot: ['', '两张 = hai tấm, không phải ba.', '请…一下 = mời bạn làm (lời đề nghị); chưa ai so sánh xong.'],
       why: '<b>请…一下</b> = “xin hãy… một chút” (lịch sự). <b>对比一下</b> + <b>两张照片</b>: đặt hai thứ cạnh nhau để so.' } },
   '评委': { exv: ['Cả ba giám khảo đều đến rồi.', 'Cảm ơn thầy cô giám khảo!'],
-    hear: { s: '评委说：你们的表演太长了。', opts: ['Giám khảo nói: phần trình diễn của các bạn dài quá.', 'Khán giả nói: phần trình diễn của các bạn dài quá.', 'Giám khảo nói: phần trình diễn của các bạn rất ngắn.'],
+    hear: { s: '评委说：你们的表演太长了。', opts: ['Giám khảo nói: phần trình diễn của các bạn dài quá.', 'Giám khảo nói: phần trình diễn của các bạn hơi dài một chút.', 'Giám khảo nói: phần trình diễn của các bạn ngắn quá.'], whyNot: ['', '太长了 = dài QUÁ; hơi dài là 有点儿长.', '长 = dài, không phải ngắn.'], whyNot: ['', '太长了 = dài QUÁ; hơi dài là 有点儿长.', '长 = dài, không phải ngắn.'],
       why: 'Hai thứ cần bắt: <b>评委</b> (giám khảo, không phải 观众 khán giả) và <b>太长了</b> (dài quá). Chữ <b>太</b> = “quá”.' } },
   '如何': { exv: ['Hai bạn quen nhau như thế nào?', 'Vấn đề này nên giải quyết thế nào?'],
-    hear: { s: '最近你的身体如何？', opts: ['Dạo này sức khỏe bạn thế nào?', 'Tại sao dạo này bạn bị ốm?', 'Dạo này bạn ở đâu?'],
+    hear: { s: '最近你的身体如何？', opts: ['Dạo này sức khoẻ bạn thế nào?', 'Hồi trước sức khoẻ bạn thế nào?', 'Dạo này công việc của bạn thế nào?'], whyNot: ['', '最近 = dạo này, gần đây.', '身体 = sức khoẻ, không phải công việc.'], whyNot: ['', '最近 = dạo này, gần đây.', '身体 = sức khoẻ, không phải công việc.'],
       why: '<b>如何</b> ở cuối câu = “thế nào?”. Đây là câu thăm hỏi lịch sự, nghe giống người dẫn chương trình.' } },
   '瘫痪': { exv: ['Anh ấy bị liệt toàn thân.', 'Mưa to, giao thông tê liệt.'],
-    hear: { s: '大雨以后，路上的交通瘫痪了。', opts: ['Sau cơn mưa lớn, giao thông trên đường tê liệt.', 'Sau cơn mưa lớn, đường rất thông thoáng.', 'Sau cơn mưa lớn, mọi người đi du lịch.'],
+    hear: { s: '大雨以后，路上的交通瘫痪了。', opts: ['Sau cơn mưa lớn, giao thông trên đường tê liệt.', 'Trước cơn mưa lớn, giao thông trên đường đã tê liệt.', 'Sau trận tuyết lớn, giao thông trên đường tê liệt.'], whyNot: ['', '以后 = sau, không phải trước.', '大雨 = mưa lớn, không phải tuyết.'], whyNot: ['', '以后 = sau, không phải trước.', '大雨 = mưa lớn, không phải tuyết.'],
       why: '<b>大雨</b> (mưa lớn) + <b>以后</b> (sau khi) + <b>交通瘫痪</b> (giao thông tê liệt): nghĩa bóng của 瘫痪.' } },
   '离婚': { exv: ['Năm ngoái họ ly hôn.', 'Anh ấy từng ly hôn với cô ấy.'],
-    hear: { s: '他们没有离婚，他们还很恩爱。', opts: ['Họ không ly hôn, họ vẫn rất thắm thiết.', 'Họ đã ly hôn rồi, không còn thân nhau.', 'Họ vừa mới kết hôn.'],
+    hear: { s: '他们没有离婚，他们还很恩爱。', opts: ['Họ không ly hôn, họ vẫn rất thắm thiết.', 'Họ đã ly hôn, nhưng vẫn rất thắm thiết.', 'Họ không ly hôn, nhưng không còn thắm thiết nữa.'], whyNot: ['', '没有离婚 = không ly hôn.', '还很恩爱 = vẫn rất thắm thiết.'], whyNot: ['', '没有离婚 = không ly hôn.', '还很恩爱 = vẫn rất thắm thiết.'],
       why: '<b>没有离婚</b> = chưa/không ly hôn. Chữ <b>没有</b> đứng trước đảo cả nghĩa, y như 没入围.' } },
   '自杀': { exv: ['Trong tin tức nói anh ấy từng nghĩ đến tự tử.'],
-    hear: { s: '他很难过，想过自杀，可是朋友帮了他。', opts: ['Anh rất đau lòng, từng nghĩ đến tự tử, nhưng bạn bè đã giúp anh.', 'Anh rất vui, và đi du lịch cùng bạn bè.', 'Anh rất giận, và bạn bè không giúp anh.'],
+    hear: { s: '他很难过，想过自杀，可是朋友帮了他。', opts: ['Anh rất đau lòng, từng nghĩ đến tự tử, nhưng bạn bè đã giúp anh.', 'Anh rất đau lòng, từng nghĩ đến tự tử, nhưng gia đình đã giúp anh.', 'Anh rất đau lòng, từng nghĩ đến tự tử, và không ai giúp anh.'], whyNot: ['', '朋友 = bạn bè, không phải gia đình.', '可是朋友帮了他 = nhưng bạn bè đã giúp anh.'], whyNot: ['', '朋友 = bạn bè, không phải gia đình.', '可是朋友帮了他 = nhưng bạn bè đã giúp anh.'],
       why: '<b>难过</b> = buồn, đau lòng. <b>想过自杀</b> = từng nghĩ đến chuyện đó. <b>可是</b> = nhưng: nửa sau là tin tốt, bạn bè đã giúp.' } },
   '抱怨': { exv: ['Ngày nào anh ấy cũng than việc nhiều.', 'Đừng than nữa, làm nhanh lên!'],
-    hear: { s: '他从不抱怨，也不生气。', opts: ['Anh ấy chưa bao giờ than phiền, cũng không giận.', 'Ngày nào anh ấy cũng than phiền và hay giận.', 'Anh ấy rất hay khen người khác.'],
+    hear: { s: '他从不抱怨，也不生气。', opts: ['Anh ấy chưa bao giờ phàn nàn, cũng không giận.', 'Anh ấy chưa bao giờ phàn nàn, nhưng hay giận.', 'Anh ấy thỉnh thoảng phàn nàn, nhưng không giận.'], whyNot: ['', '也不生气 = cũng không giận.', '从不 = chưa bao giờ, không phải thỉnh thoảng.'], whyNot: ['', '也不生气 = cũng không giận.', '从不 = chưa bao giờ, không phải thỉnh thoảng.'],
       why: '<b>从不</b> = chưa bao giờ (từ trước đến nay đều không). <b>也不</b> = cũng không. Hai phủ định đi liền nhau.' } },
   '爱护': { exv: ['Mong mọi người giữ gìn hoa cỏ của trường.', 'Anh ấy rất giữ gìn chiếc điện thoại mới.'],
-    hear: { s: '他很爱护花草，每天都给它们水。', opts: ['Anh ấy rất yêu quý hoa cỏ, ngày nào cũng tưới nước cho chúng.', 'Anh ấy rất ghét hoa cỏ.', 'Anh ấy bán hoa cỏ mỗi ngày.'],
+    hear: { s: '他很爱护花草，每天都给它们水。', opts: ['Anh ấy rất yêu quý hoa cỏ, ngày nào cũng tưới nước cho chúng.', 'Anh ấy rất yêu quý hoa cỏ, thỉnh thoảng mới tưới nước.', 'Mẹ anh ấy rất yêu quý hoa cỏ, ngày nào cũng tưới nước.'], whyNot: ['', '每天都 = ngày nào cũng.', '他 = anh ấy; câu không nhắc tới mẹ.'], whyNot: ['', '每天都 = ngày nào cũng.', '他 = anh ấy; câu không nhắc tới mẹ.'],
       why: '<b>每天都</b> = ngày nào cũng. <b>给它们水</b> = cho chúng nước (tưới). Người nào 爱护 hoa cỏ thì chăm chúng mỗi ngày.' } }
 };
 /* one "hear and type" item per episode */
@@ -778,7 +778,7 @@ const SESSIONS = [
   { id: 1, title: 'Đài tìm cặp đôi thắm thiết nhất', sub: '4 từ mới', thumb: 'radioBig', words: ['电台', '恩爱', '入围', '对比'], screens: [
     { t: 'story', scene: 'radioBig', lines: [B(0)] },
     { t: 'word', id: '电台', scene: 'radioBig' },
-    { t: 'hear', w: ['电台'], s: '我每天晚上都听电台。', opts: ['Mỗi tối mình đều nghe đài.', 'Mỗi tối mình đều xem tivi.', 'Mỗi sáng mình đều đọc báo.'],
+    { t: 'hear', w: ['电台'], s: '我每天晚上都听电台。', opts: ['Mỗi tối mình đều nghe đài.', 'Mỗi sáng mình đều nghe đài.', 'Tối qua mình nghe đài.'], whyNot: ['', '晚上 = buổi tối, không phải buổi sáng.', '每天晚上 = mỗi tối, không phải tối qua (昨天晚上).'],
       why: '<b>电台</b> = đài phát thanh. <b>听电台</b> = nghe đài. <b>每天晚上</b> = mỗi tối.' },
     { t: 'word', id: '恩爱', scene: 'couple' },
     { t: 'pick', zh: '他们结婚五十年了，还是很恩爱。', vi: 'Họ cưới nhau năm mươi năm rồi mà vẫn rất thắm thiết.', prompt: 'Nghe rồi chọn bức tranh đúng:', opts: [
@@ -803,7 +803,7 @@ const SESSIONS = [
     { t: 'story', scene: 'coupleOne', lines: [B(2)] },
     { t: 'word', id: '评委', scene: 'judges' },
     { t: 'word', id: '如何', scene: 'how' },
-    { t: 'hear', w: ['评委'], s: '评委们都认真地听她说话。', opts: ['Các giám khảo đều chăm chú nghe cô ấy nói.', 'Các bác sĩ đều chăm chú nghe cô ấy nói.', 'Các giám khảo đều không muốn nghe cô nói.'],
+    { t: 'hear', w: ['评委'], s: '评委们都认真地听她说话。', opts: ['Các giám khảo đều chăm chú nghe cô ấy nói.', 'Các giám khảo đều không chú ý nghe cô ấy nói.', 'Chỉ một giám khảo chăm chú nghe cô ấy nói.'], whyNot: ['', '认真地听 = chăm chú nghe.', '评委们都 = tất cả các giám khảo.'],
       why: '<b>评委</b> = giám khảo (người chấm trong cuộc thi). <b>认真地听</b> = chăm chú nghe.' },
     { t: 'story', scene: 'wheelchair', lines: [B(3)] },
     { t: 'word', id: '瘫痪', scene: 'jam' },
@@ -825,7 +825,7 @@ const SESSIONS = [
     { t: 'album', words: ['评委', '如何', '瘫痪', '离婚', '自杀'], say: [B(2), B(4)],
       tease: { scene: 'hospitals', vi: 'người chồng đã làm gì khi ai cũng nghĩ anh sẽ bỏ đi?' } }
   ] },
-  { id: 3, title: 'Người chồng không bao giờ phàn nàn', sub: '2 từ mới và đọc lại cả phần đầu', thumb: 'standUp', words: ['抱怨', '爱护'], screens: [
+  { id: 3, title: 'Người chồng không bao giờ phàn nàn', sub: '2 từ mới và ghép truyện tranh phần đầu', thumb: 'standUp', words: ['抱怨', '爱护'], screens: [
     { t: 'predict', scene: 'sadWindow', key: 'p3', q: 'Ai cũng nghĩ người chồng sẽ bỏ đi. Theo bạn, anh ấy đã làm gì?', opts: ['Anh ở lại chăm sóc vợ và động viên cô', 'Anh bỏ đi một thời gian rồi quay về', 'Anh thuê người khác chăm vợ'] },
     { t: 'story', scene: 'hospitals', lines: [B(5), B(6)] },
     { t: 'word', id: '抱怨', scene: 'grumble' },
@@ -897,7 +897,7 @@ SESSIONS.push(
     { t: 'word', id: '暗暗', scene: 'secretJoy' },
     cl('secretJoy', '听了他的话，我___高兴。', 'Nghe lời anh ấy nói, mình thầm vui.', '听了他的话，我暗暗高兴。', '暗暗', [['从来', '从来 đi với 没/不 (chưa từng), không hợp trước 高兴 ở đây.'], ['吵架', '吵架 là động từ “cãi nhau”, không đứng trước 高兴.']],
       '<b>暗暗 + động từ</b>: làm gì thầm trong lòng, không nói ra: 暗暗点头, 暗暗高兴, 暗暗决定.'),
-    { t: 'hear', w: ['相敬如宾'], s: '他们结婚几十年，一直相敬如宾。', opts: ['Họ cưới nhau mấy chục năm, lúc nào cũng kính trọng nhau như khách quý.', 'Họ cưới nhau mấy chục năm rồi mà hay cãi nhau.', 'Họ mới cưới mấy tháng, rất thân thiết.'],
+    { t: 'hear', w: ['相敬如宾'], s: '他们结婚几十年，一直相敬如宾。', opts: ['Họ cưới nhau mấy chục năm, lúc nào cũng kính trọng nhau như khách quý.', 'Họ cưới nhau mấy năm, lúc nào cũng kính trọng nhau như khách quý.', 'Họ cưới nhau mấy chục năm, gần đây mới kính trọng nhau như khách quý.'], whyNot: ['', '几十年 = mấy chục năm; mấy năm là 几年.', '一直 = lúc nào cũng, suốt từ trước tới nay.'], whyNot: ['', '几十年 = mấy chục năm; mấy năm là 几年.', '一直 = lúc nào cũng, suốt từ trước tới nay.'],
       why: '<b>几十年</b> = mấy chục năm. <b>一直</b> = luôn luôn. 相敬如宾 là thành ngữ khen vợ chồng đối xử lễ độ, tôn trọng nhau.' },
     { t: 'album', words: ['婚姻', '吵架', '相敬如宾', '暗暗'], say: [B(10), B(11)],
       tease: { scene: 'emptyDoor', vi: 'đến lượt cặp thứ ba, nhưng cánh cửa vẫn đóng. Điều gì đang xảy ra ngoài cửa?' } }
@@ -909,7 +909,7 @@ SESSIONS.push(
       '<b>轮到 + người</b> = đến lượt ai: 轮到你了, 轮到第三对夫妻了. Không nói 轮你.'),
     { t: 'story', scene: 'judgesWait', lines: [B(13)] },
     { t: 'word', id: '不耐烦', scene: 'impatient' },
-    { t: 'hear', w: ['不耐烦'], s: '他等了一个小时，有点儿不耐烦了。', opts: ['Anh ấy đợi một tiếng rồi, hơi sốt ruột.', 'Anh ấy đợi một tiếng rồi, rất vui.', 'Anh ấy đợi mười phút rồi, hơi mệt.'],
+    { t: 'hear', w: ['不耐烦'], s: '他等了一个小时，有点儿不耐烦了。', opts: ['Anh ấy đợi một tiếng rồi, hơi sốt ruột.', 'Anh ấy đợi mười phút rồi, hơi sốt ruột.', 'Anh ấy đợi một tiếng rồi, sốt ruột vô cùng.'], whyNot: ['', '一个小时 = một tiếng.', '有点儿 = hơi, một chút.'], whyNot: ['', '一个小时 = một tiếng.', '有点儿 = hơi, một chút.'],
       why: '<b>不耐烦</b> = sốt ruột, hết kiên nhẫn. <b>一个小时</b> = một tiếng. <b>有点儿</b> = hơi. Cuối câu có <b>了</b>: nói trạng thái đã thành như vậy.' },
     { t: 'story', scene: 'sleepShoulder', lines: [B(14)] },
     { t: 'word', id: '靠', scene: 'lean' },
@@ -938,7 +938,7 @@ SESSIONS.push(
     cl('shout', '别___了，孩子睡着了。', 'Đừng la nữa, bé ngủ rồi.', '别喊了，孩子睡着了。', '喊', [['伸', '伸 là chìa ra, không dùng để bảo ngừng la.'], ['靠', '靠 là tựa vào, không hợp nghĩa.']],
       '<b>喊</b> = gọi to, hét. <b>喊醒</b> = gọi cho tỉnh dậy (喊醒那个男的). <b>别喊了</b> = đừng la nữa.'),
     { t: 'order', w: ['伸'], zh: '他伸出手，想拿桌子上的书。', vi: 'Anh ấy chìa tay ra, muốn lấy quyển sách trên bàn.', chunks: ['他', '伸出手', '想拿', '桌子上的书'] },
-    { t: 'hear', w: ['手指'], s: '她的手指很长，也很漂亮。', opts: ['Ngón tay cô ấy rất dài, cũng rất đẹp.', 'Tay cô ấy rất nhỏ, cũng rất đẹp.', 'Cô ấy giơ tay lên, rất lịch sự.'],
+    { t: 'hear', w: ['手指'], s: '她的手指很长，也很漂亮。', opts: ['Ngón tay cô ấy rất dài, cũng rất đẹp.', 'Ngón tay cô ấy rất ngắn, nhưng rất đẹp.', 'Ngón tay cô ấy rất dài, nhưng không đẹp.'], whyNot: ['', '很长 = rất dài.', '也很漂亮 = cũng rất đẹp.'], whyNot: ['', '很长 = rất dài.', '也很漂亮 = cũng rất đẹp.'],
       why: '<b>手指</b> = ngón tay. <b>很长</b> = rất dài. <b>也</b> = cũng.' },
     { t: 'type', w: ['伸'], silent: 1, zh: '伸出手', vi: 'chìa tay ra', py: 'shēn chū shǒu', prompt: 'Gõ bằng bàn phím pinyin: “chìa tay ra”' },
     { t: 'album', words: ['喊', '伸', '手指'], say: [B(15)], recall: 'p6',
@@ -960,7 +960,7 @@ SESSIONS.push(
     cl('shoulder', '孩子的___靠在妈妈肩上。', 'Đầu đứa bé tựa vào vai mẹ.', '孩子的脑袋靠在妈妈肩上。', '脑袋', [['手指', '手指 là ngón tay, không tựa lên vai được.'], ['肩膀', '肩膀 là vai: nơi được tựa vào. Cái đang tựa là 脑袋 (đầu).']],
       '<b>脑袋</b> = đầu, khẩu ngữ hơn 头. Cấu trúc: <b>脑袋靠在肩膀上</b> (đầu tựa trên vai).'),
     { t: 'order', w: ['靠', '脑袋'], zh: '男人的脑袋靠在女人的肩膀上。', vi: 'Đầu người đàn ông tựa trên vai người phụ nữ.', chunks: ['男人的脑袋', '靠在', '女人的', '肩膀上'] },
-    { t: 'hear', w: ['歪歪扭扭'], s: '他的字写得歪歪扭扭的，我看不清。', opts: ['Chữ anh ấy viết xiêu vẹo, mình nhìn không rõ.', 'Chữ anh ấy viết rất đẹp, mình nhìn rất rõ.', 'Anh ấy viết rất nhanh, mình đọc không kịp.'],
+    { t: 'hear', w: ['歪歪扭扭'], s: '他的字写得歪歪扭扭的，我看不清。', opts: ['Chữ anh ấy viết xiêu vẹo, mình nhìn không rõ.', 'Chữ anh ấy viết xiêu vẹo, nhưng mình vẫn nhìn rõ.', 'Chữ mình viết xiêu vẹo, anh ấy nhìn không rõ.'], whyNot: ['', '看不清 = nhìn không rõ.', '他的字 = chữ của anh ấy; người nhìn không rõ là mình (我).'], whyNot: ['', '看不清 = nhìn không rõ.', '他的字 = chữ của anh ấy; người nhìn không rõ là mình (我).'],
       why: '<b>歪歪扭扭</b> = xiêu vẹo, nguệch ngoạc. <b>写得…</b> = viết ra (kết quả) như thế nào. <b>看不清</b> = nhìn không rõ.' },
     { t: 'album', words: ['歪歪扭扭', '递', '脑袋'], say: [B(16), B(17)],
       tease: { scene: 'notePaper', vi: 'các giám khảo đọc mảnh giấy. Trên đó viết gì?' } }
@@ -969,7 +969,7 @@ SESSIONS.push(
     { t: 'story', scene: 'notePaper', lines: [B(18)] },
     { t: 'story', scene: 'judgeWrites', lines: [B(19)] },
     { t: 'word', id: '女士', scene: 'ladySir' },
-    { t: 'hear', w: ['女士'], s: '那位女士是我们的汉语老师。', opts: ['Bà (cô) kia là giáo viên tiếng Trung của chúng mình.', 'Ông kia là giáo viên tiếng Trung của chúng mình.', 'Cô bé kia là bạn học tiếng Trung của mình.'],
+    { t: 'hear', w: ['女士'], s: '那位女士是我们的汉语老师。', opts: ['Bà (cô) kia là giáo viên tiếng Trung của chúng mình.', 'Bà (cô) kia là giáo viên tiếng Anh của chúng mình.', 'Bà (cô) kia là bạn học tiếng Trung của chúng mình.'], whyNot: ['', '汉语 = tiếng Trung, không phải tiếng Anh.', '老师 = giáo viên, không phải bạn học.'], whyNot: ['', '汉语 = tiếng Trung, không phải tiếng Anh.', '老师 = giáo viên, không phải bạn học.'],
       why: '<b>女士</b> là cách gọi lịch sự một người phụ nữ (thưa bà, thưa cô). Với đàn ông là <b>先生</b>. <b>汉语老师</b> = giáo viên tiếng Trung.' },
     { t: 'word', id: '叙述', scene: 'narrate' },
     cl('narrate', '请你简单地___一下事情的经过。', 'Bạn hãy kể lại sơ lược diễn biến sự việc.', '请你简单地叙述一下事情的经过。', '叙述', [['递', '递 là đưa vật bằng tay, không phải kể lại.'], ['喊', '喊 là gọi to, không hợp với 事情的经过.']],
@@ -1022,7 +1022,7 @@ SESSIONS.push(
     { t: 'word', id: '吵', scene: 'noisy' },
     cl('noisy', '这里太___了，我睡不着。', 'Chỗ này ồn quá, mình không ngủ được.', '这里太吵了，我睡不着。', '吵', [['叮', '叮 là đốt, chích, không dùng để nói “ồn”.'], ['催', '催 là giục, không phải “ồn”.']],
       '<b>吵</b> có hai nghĩa: tính từ “ồn” (太吵了) và động từ “làm ồn”. <b>吵醒</b> = làm ồn khiến ai thức dậy (吵醒老婆). Khác 吵架 (cãi nhau).'),
-    { t: 'hear', w: ['半夜', '老婆'], s: '他半夜才回家，老婆还在等他。', opts: ['Nửa đêm anh ấy mới về nhà, vợ vẫn đang đợi.', 'Sáng sớm anh ấy đã về, mẹ vẫn đang ngủ.', 'Nửa đêm anh ấy ra khỏi nhà, vợ không biết.'],
+    { t: 'hear', w: ['半夜', '老婆'], s: '他半夜才回家，老婆还在等他。', opts: ['Nửa đêm anh ấy mới về nhà, vợ vẫn đang đợi.', 'Nửa đêm anh ấy mới về nhà, vợ đã ngủ rồi.', 'Nửa đêm anh ấy ra khỏi nhà, vợ vẫn đang đợi.'], whyNot: ['', '还在等他 = vẫn đang đợi anh ấy.', '回家 = về nhà, không phải ra khỏi nhà.'], whyNot: ['', '还在等他 = vẫn đang đợi anh ấy.', '回家 = về nhà, không phải ra khỏi nhà.'],
       why: '<b>半夜</b> = nửa đêm. <b>才</b> = mãi mới. <b>老婆</b> = vợ (không phải “bà già” như âm Hán–Việt gợi ra).' },
     { t: 'album', words: ['蚊子', '叮', '半夜', '老婆', '吵'], say: [B(25), B(26)], recall: 'p10',
       tease: { scene: 'awards', vi: 'ban tổ chức công bố kết quả. Ai sẽ thắng giải “thắm thiết nhất”?' } }
@@ -1042,7 +1042,7 @@ SESSIONS.push(
     { t: 'type', w: ['患难与共'], silent: 1, zh: '患难与共', vi: 'cùng nhau vượt qua hoạn nạn', py: 'huàn nàn yǔ gòng', prompt: 'Gõ bằng bàn phím pinyin thành ngữ nghĩa là “cùng nhau vượt qua hoạn nạn”:' },
     { t: 'story', scene: 'thirdWin', lines: [B(29)] },
     { t: 'word', id: '细节', scene: 'detailZoom' },
-    { t: 'hear', w: ['细节'], s: '爱就在生活的小细节里。', opts: ['Tình yêu nằm trong những chi tiết nhỏ của cuộc sống.', 'Tình yêu là chuyện lớn nhất đời người.', 'Cuộc sống quá nhỏ nên không có tình yêu.'],
+    { t: 'hear', w: ['细节'], s: '爱就在生活的小细节里。', opts: ['Tình yêu nằm trong những chi tiết nhỏ của cuộc sống.', 'Tình yêu nằm trong những chi tiết lớn của cuộc sống.', 'Tình yêu không nằm trong những chi tiết nhỏ của cuộc sống.'], whyNot: ['', '小细节 = chi tiết nhỏ.', '就在 = chính là ở đó; câu không có 不.'], whyNot: ['', '小细节 = chi tiết nhỏ.', '就在 = chính là ở đó; câu không có 不.'],
       why: 'Đây chính là ý của tên bài <b>爱的细节</b>: tình yêu nằm trong những <b>细节</b> nhỏ. 细节 hay đi với: 电影的细节, 小说的细节, 生活的细节.' },
     { t: 'read', title: 'Đọc cả bài từ đầu đến cuối', ids: Array.from({ length: 30 }, (_, i) => i) },
     { t: 'album', words: ['项', '患难与共', '细节'], say: [B(27), B(29)], recall: 'win', tease: { done: 1, scene: 'thirdWin', vi: 'Bạn đã học xong cả bài. Từ nào còn lung lay thì vào “Ôn tập tổng hợp” nhé.' } }
@@ -1081,67 +1081,67 @@ const cz = (w, scene, say, vi, full, ok, wrongs, teach) => ({ t: 'mc', w: [w], s
   opts: [{ t: ok, ok: 1, reply: ['对！', 'Đúng!'] }, ...wrongs.map(([t, note]) => ({ t, note }))], teach });
 const od = (w, zhs, vi, chunks) => ({ t: 'order', w, zh: zhs, vi, chunks });
 const ty = (w, zhs, vi) => ({ t: 'type', w, zh: zhs, vi, prompt: 'Nghe và gõ lại bằng bàn phím pinyin:' });
-const hr = (w, s, opts, why) => ({ t: 'hear', w: [w], s, opts, why });
+const hr = (w, s, opts, why, whyNot) => ({ t: 'hear', w: [w], s, opts, why, ...(whyNot ? { whyNot } : {}) });   /* whyNot[k] = why option k is wrong (phiếu #6) */
 const QB = {
   '电台': [
     cz('电台', 'car', '他每天早上开车的时候听___。', 'Sáng nào anh ấy cũng nghe đài khi lái xe.', '他每天早上开车的时候听电台。', '电台', [['电视', '电视 là ti vi, để xem. Nghe đài thì dùng 听电台.'], ['电脑', '电脑 là máy tính, không “nghe” được kiểu đó.']], 'Nghe đài là <b>听电台</b>. Xem ti vi mới là 看电视.'),
     cz('电台', 'radioBig', '我最喜欢的___每天晚上放音乐。', 'Đài phát thanh tôi thích nhất tối nào cũng phát nhạc.', '我最喜欢的电台每天晚上放音乐。', '电台', [['对比', '对比 là so sánh, không phải một cái đài.'], ['评委', '评委 là giám khảo, một người, không phát nhạc.']], '<b>电台</b> là danh từ: 电台的记者, 电台广播, 电台新闻.'),
     od(['电台'], '他每天早上在车里听电台。', 'Sáng nào anh ấy cũng nghe đài trên xe.', ['他每天早上', '在车里', '听电台']),
-    hr('电台', '我每天早上在车里听电台。', ['Sáng nào mình cũng nghe đài trên xe.', 'Sáng nào mình cũng xem ti vi trên xe.', 'Tối nào mình cũng nghe đài ở nhà.'], 'Bạn cần bắt 3 mảnh: <b>早上</b> (buổi sáng), <b>在车里</b> (ở trong xe), <b>听电台</b> (nghe đài).')
+    hr('电台', '我每天早上在车里听电台。', ['Sáng nào mình cũng nghe đài trên xe.', 'Tối nào mình cũng nghe đài trên xe.', 'Sáng nào mình cũng nghe đài ở nhà.'], 'Bạn cần bắt 3 mảnh: <b>早上</b> (buổi sáng), <b>在车里</b> (ở trong xe), <b>听电台</b> (nghe đài).', ['', '早上 = buổi sáng, không phải buổi tối.', '在车里 = ở trong xe, không phải ở nhà.'])
   ],
   '恩爱': [
     cz('恩爱', 'couple', '他们结婚四十年了，还是那么___。', 'Họ cưới nhau bốn mươi năm rồi mà vẫn thắm thiết như vậy.', '他们结婚四十年了，还是那么恩爱。', '恩爱', [['抱怨', '抱怨 là phàn nàn, không hợp với “vẫn như vậy” khi khen cặp đôi.'], ['入围', '入围 là lọt vào vòng trong, không nói về tình cảm.']], '<b>恩爱</b> chỉ dùng cho vợ chồng, cặp đôi.'),
     cz('恩爱', 'pickHold', '爷爷和奶奶一起走路，手拉着手，很___。', 'Ông bà đi bộ cùng nhau, nắm tay nhau, rất thắm thiết.', '爷爷和奶奶一起走路，手拉着手，很恩爱。', '恩爱', [['瘫痪', '瘫痪 là bị liệt, không hợp với cảnh nắm tay đi bộ.'], ['离婚', '离婚 là ly hôn, trái nghĩa với cảnh này.']], '<b>手拉着手</b> = nắm tay nhau. Hình ảnh điển hình của 恩爱.'),
     od(['恩爱'], '他们结婚四十年了，还是很恩爱。', 'Họ cưới nhau bốn mươi năm rồi mà vẫn rất thắm thiết.', ['他们', '结婚四十年了', '还是', '很恩爱']),
-    hr('恩爱', '他们结婚五十年了，还是很恩爱。', ['Họ cưới nhau năm mươi năm rồi mà vẫn rất thắm thiết.', 'Họ cưới nhau năm năm rồi và hay cãi nhau.', 'Họ mới cưới nên rất thắm thiết.'], '<b>五十</b> = 50. <b>还是</b> = vẫn. Cả câu là lời khen một cặp vợ chồng già.')
+    hr('恩爱', '他们结婚五十年了，还是很恩爱。', ['Họ cưới nhau năm mươi năm rồi mà vẫn rất thắm thiết.', 'Họ cưới nhau năm năm rồi mà vẫn rất thắm thiết.', 'Họ cưới nhau năm mươi năm rồi, giờ không còn thắm thiết nữa.'], '<b>五十</b> = 50. <b>还是</b> = vẫn. Cả câu là lời khen một cặp vợ chồng già.', ['', '五十年 = năm mươi năm; năm năm là 五年.', '还是很恩爱 = vẫn rất thắm thiết.'])
   ],
   '入围': [
     cz('入围', 'finalists', '这次比赛，我们班有两个人___了。', 'Cuộc thi lần này lớp mình có hai bạn lọt vào vòng trong.', '这次比赛，我们班有两个人入围了。', '入围', [['离婚', '离婚 là ly hôn, không dùng cho cuộc thi.'], ['抱怨', '抱怨 là phàn nàn. Câu này tả một tin vui.']], '<b>入围</b> = vào vòng trong, <b>chưa thắng</b>.'),
     cz('入围', 'finalists', '他没有___，所以不用参加明天的比赛。', 'Anh ấy không lọt vào vòng trong nên không phải thi ngày mai.', '他没有入围，所以不用参加明天的比赛。', '入围', [['对比', '对比 là so sánh, không đi với 没有 theo nghĩa này.'], ['爱护', '爱护 là giữ gìn, không hợp với cuộc thi.']], '<b>没入围</b> = không lọt vào vòng trong. 没 đứng trước đảo nghĩa.'),
     od(['入围'], '这次比赛我们班有两个人入围了。', 'Cuộc thi lần này lớp mình có hai bạn lọt vào vòng trong.', ['这次比赛', '我们班', '有两个人', '入围了']),
-    hr('入围', '她入围了，明天晚上还有比赛。', ['Cô ấy lọt vào vòng trong, tối mai còn thi nữa.', 'Cô ấy thắng rồi, tối mai đi ăn mừng.', 'Cô ấy không lọt vào vòng trong, tối mai không thi.'], '<b>入围了</b> + <b>还有比赛</b> (còn có cuộc thi): cuộc thi chưa kết thúc.')
+    hr('入围', '她入围了，明天晚上还有比赛。', ['Cô ấy lọt vào vòng trong, tối mai còn thi nữa.', 'Cô ấy lọt vào vòng trong, tối nay còn thi nữa.', 'Cô ấy lọt vào vòng trong, tối mai không phải thi nữa.'], '<b>入围了</b> + <b>还有比赛</b> (còn có cuộc thi): cuộc thi chưa kết thúc.', ['', '明天晚上 = tối mai, không phải tối nay.', '还有比赛 = vẫn còn một cuộc thi.'])
   ],
   '对比': [
     cz('对比', 'compare', '买手机以前，我先___了一下价格。', 'Trước khi mua điện thoại, mình so sánh giá một chút.', '买手机以前，我先对比了一下价格。', '对比', [['爱护', '爱护 là giữ gìn, không dùng để so giá.'], ['电台', '电台 là đài phát thanh, không phải một động tác.']], '<b>对比一下</b> = so sánh thử một chút.'),
     cz('对比', 'pickPhotosDiff', '这两张照片的___很大：一张很黑，一张很亮。', 'Độ tương phản của hai tấm ảnh rất lớn: một tối, một sáng.', '这两张照片的对比很大：一张很黑，一张很亮。', '对比', [['如何', '如何 là “như thế nào”, không nói về độ tương phản.'], ['评委', '评委 là giám khảo.']], '<b>对比很大</b> = tương phản mạnh. Ở đây 对比 là danh từ.'),
     od(['对比'], '我们来对比一下这两个手机。', 'Mình cùng so sánh hai chiếc điện thoại này nhé.', ['我们来', '对比一下', '这两个手机']),
-    hr('对比', '请对比一下这两张照片。', ['Hãy so sánh hai tấm ảnh này.', 'Hãy mua hai tấm ảnh này.', 'Hai tấm ảnh này đều rất đẹp.'], '<b>请…一下</b> = “xin hãy… một chút”. <b>对比一下</b> + hai tấm ảnh: đặt cạnh nhau để so.')
+    hr('对比', '请对比一下这两张照片。', ['Bạn hãy so sánh hai tấm ảnh này.', 'Bạn hãy so sánh ba tấm ảnh này.', 'Mình đã so sánh xong hai tấm ảnh này rồi.'], '<b>请…一下</b> = “xin hãy… một chút”. <b>对比一下</b> + hai tấm ảnh: đặt cạnh nhau để so.', ['', '两张 = hai tấm, không phải ba.', '请…一下 = mời bạn làm (lời đề nghị); chưa ai so sánh xong.'])
   ],
   '评委': [
     cz('评委', 'judges', '三位___都说她唱得很好。', 'Cả ba giám khảo đều nói cô ấy hát rất hay.', '三位评委都说她唱得很好。', '评委', [['观众', '观众 là khán giả, còn người chấm điểm là 评委.'], ['医生', '医生 là bác sĩ, không chấm điểm cuộc thi.']], '<b>评委</b> = giám khảo. Đếm bằng 位: 三位评委.'),
     cz('评委', 'judges', '比赛结束了，___老师请大家安静。', 'Cuộc thi kết thúc, thầy cô giám khảo mời mọi người giữ yên lặng.', '比赛结束了，评委老师请大家安静。', '评委', [['电台', '电台 là đài, không đứng trước 老师.'], ['如何', '如何 là “như thế nào”, không chỉ người.']], 'Thí sinh gọi giám khảo là <b>评委老师</b>.'),
     od(['评委'], '三位评委都说她唱得很好。', 'Cả ba giám khảo đều nói cô ấy hát rất hay.', ['三位评委', '都说', '她唱得很好']),
-    hr('评委', '评委说：你们的表演太长了。', ['Giám khảo nói: phần trình diễn của các bạn dài quá.', 'Khán giả nói: phần trình diễn của các bạn dài quá.', 'Giám khảo nói: phần trình diễn của các bạn rất ngắn.'], 'Hai thứ cần bắt: <b>评委</b> (giám khảo, không phải khán giả) và <b>太长了</b> (dài quá).')
+    hr('评委', '评委说：你们的表演太长了。', ['Giám khảo nói: phần trình diễn của các bạn dài quá.', 'Giám khảo nói: phần trình diễn của các bạn hơi dài một chút.', 'Giám khảo nói: phần trình diễn của các bạn ngắn quá.'], 'Hai thứ cần bắt: <b>评委</b> (giám khảo, không phải khán giả) và <b>太长了</b> (dài quá).', ['', '太长了 = dài QUÁ; hơi dài là 有点儿长.', '长 = dài, không phải ngắn.'])
   ],
   '如何': [
     cz('如何', 'discuss', '你觉得这个问题该___解决？', 'Bạn thấy vấn đề này nên giải quyết thế nào?', '你觉得这个问题该如何解决？', '如何', [['什么', '什么 hỏi “cái gì”, không hỏi cách thức.'], ['哪儿', '哪儿 hỏi “ở đâu”.']], '<b>该如何 + động từ</b> = nên làm thế nào. Giọng trang trọng.'),
     cz('如何', 'sickFriend', '你最近身体___？', 'Dạo này sức khỏe bạn thế nào?', '你最近身体如何？', '如何', [['什么', '什么 hỏi “cái gì”, không hỏi tình trạng.'], ['哪个', '哪个 hỏi “cái nào”.']], '<b>如何</b> ở cuối câu = “thế nào?”, hỏi thăm tình trạng.'),
-    hr('如何', '最近你的身体如何？', ['Dạo này sức khỏe bạn thế nào?', 'Tại sao dạo này bạn bị ốm?', 'Dạo này bạn ở đâu?'], '<b>如何</b> ở cuối câu = “thế nào?”. Câu thăm hỏi lịch sự, nghe giống người dẫn chương trình.')
+    hr('如何', '最近你的身体如何？', ['Dạo này sức khoẻ bạn thế nào?', 'Hồi trước sức khoẻ bạn thế nào?', 'Dạo này công việc của bạn thế nào?'], '<b>如何</b> ở cuối câu = “thế nào?”. Câu thăm hỏi lịch sự, nghe giống người dẫn chương trình.', ['', '最近 = dạo này, gần đây.', '身体 = sức khoẻ, không phải công việc.'])
   ],
   '瘫痪': [
     cz('瘫痪', 'rainJam', '大雪以后，城市的交通___了。', 'Sau trận tuyết lớn, giao thông thành phố tê liệt.', '大雪以后，城市的交通瘫痪了。', '瘫痪', [['恩爱', '恩爱 chỉ vợ chồng thắm thiết, không nói về giao thông.'], ['入围', '入围 là lọt vào vòng trong.']], '<b>交通瘫痪</b> = giao thông tê liệt.'),
     cz('瘫痪', 'wheelchair', '他生了很重的病，全身___了，不能走路。', 'Anh ấy bị bệnh nặng, liệt toàn thân, không đi lại được.', '他生了很重的病，全身瘫痪了，不能走路。', '瘫痪', [['抱怨', '抱怨 là phàn nàn, không phải tình trạng cơ thể.'], ['爱护', '爱护 là giữ gìn, không hợp.']], '<b>全身瘫痪</b> = liệt toàn thân.'),
-    hr('瘫痪', '大雨以后，路上的交通瘫痪了。', ['Sau cơn mưa lớn, giao thông trên đường tê liệt.', 'Sau cơn mưa lớn, đường rất thông thoáng.', 'Sau cơn mưa lớn, mọi người đi du lịch.'], '<b>大雨</b> + <b>以后</b> + <b>交通瘫痪</b>: nghĩa bóng của 瘫痪.')
+    hr('瘫痪', '大雨以后，路上的交通瘫痪了。', ['Sau cơn mưa lớn, giao thông trên đường tê liệt.', 'Trước cơn mưa lớn, giao thông trên đường đã tê liệt.', 'Sau trận tuyết lớn, giao thông trên đường tê liệt.'], '<b>大雨</b> + <b>以后</b> + <b>交通瘫痪</b>: nghĩa bóng của 瘫痪.', ['', '以后 = sau, không phải trước.', '大雨 = mưa lớn, không phải tuyết.'])
   ],
   '离婚': [
     cz('离婚', 'divorce', '他们去年___了，现在不住在一起。', 'Năm ngoái họ ly hôn, bây giờ không sống chung nữa.', '他们去年离婚了，现在不住在一起。', '离婚', [['入围', '入围 là lọt vào vòng trong, không nói chuyện hôn nhân.'], ['对比', '对比 là so sánh, không nói chuyện cưới hỏi.']], '<b>离婚了</b> + “không sống chung nữa”: hai chuyện đi liền nhau.'),
     cz('离婚', 'divorce', '他跟妻子吵了很多次，最后还是___了。', 'Anh ấy cãi nhau với vợ nhiều lần, cuối cùng vẫn ly hôn.', '他跟妻子吵了很多次，最后还是离婚了。', '离婚', [['恩爱', '恩爱 là thắm thiết, trái với chuyện cãi nhau rồi chia tay.'], ['爱护', '爱护 là giữ gìn, không hợp.']], '<b>跟 + người + 离婚</b>. Từ đầu câu cũng dùng 跟: 跟妻子吵架.'),
-    hr('离婚', '他们没有离婚，他们还很恩爱。', ['Họ không ly hôn, họ vẫn rất thắm thiết.', 'Họ đã ly hôn rồi, không còn thân nhau.', 'Họ vừa mới kết hôn.'], '<b>没有离婚</b> = chưa/không ly hôn. Chữ <b>没有</b> đứng trước đảo cả nghĩa.')
+    hr('离婚', '他们没有离婚，他们还很恩爱。', ['Họ không ly hôn, họ vẫn rất thắm thiết.', 'Họ đã ly hôn, nhưng vẫn rất thắm thiết.', 'Họ không ly hôn, nhưng không còn thắm thiết nữa.'], '<b>没有离婚</b> = chưa/không ly hôn. Chữ <b>没有</b> đứng trước đảo cả nghĩa.', ['', '没有离婚 = không ly hôn.', '还很恩爱 = vẫn rất thắm thiết.'])
   ],
   '自杀': [
-    hr('自杀', '他很难过，想过自杀，可是朋友帮了他。', ['Anh rất đau lòng, từng nghĩ đến tự tử, nhưng bạn bè đã giúp anh.', 'Anh rất vui, và đi du lịch cùng bạn bè.', 'Anh rất giận, và bạn bè không giúp anh.'], '<b>难过</b> = buồn, đau lòng. <b>想过自杀</b> = từng nghĩ đến chuyện đó. <b>可是</b> = nhưng: nửa sau là tin tốt.')
+    hr('自杀', '他很难过，想过自杀，可是朋友帮了他。', ['Anh rất đau lòng, từng nghĩ đến tự tử, nhưng bạn bè đã giúp anh.', 'Anh rất đau lòng, từng nghĩ đến tự tử, nhưng gia đình đã giúp anh.', 'Anh rất đau lòng, từng nghĩ đến tự tử, và không ai giúp anh.'], '<b>难过</b> = buồn, đau lòng. <b>想过自杀</b> = từng nghĩ đến chuyện đó. <b>可是</b> = nhưng: nửa sau là tin tốt.', ['', '朋友 = bạn bè, không phải gia đình.', '可是朋友帮了他 = nhưng bạn bè đã giúp anh.'])
   ],
   '抱怨': [
     cz('抱怨', 'grumble', '工作太多，他天天___。', 'Việc nhiều quá, ngày nào anh ấy cũng than phiền.', '工作太多，他天天抱怨。', '抱怨', [['爱护', '爱护 là giữ gìn, không hợp với “việc nhiều”.'], ['入围', '入围 là lọt vào vòng trong.']], '<b>抱怨 + chuyện bực</b>: 抱怨工作太多.'),
     cz('抱怨', 'grumble', '别___了，我们一起想办法吧。', 'Đừng than nữa, cùng nghĩ cách đi.', '别抱怨了，我们一起想办法吧。', '抱怨', [['恩爱', '恩爱 chỉ vợ chồng thắm thiết, không hợp với lời khuyên này.'], ['评委', '评委 là giám khảo, một người.']], '<b>别…了</b> = đừng… nữa. 别抱怨了 = đừng than nữa.'),
     od(['抱怨'], '他从不抱怨工作太多。', 'Anh ấy chưa bao giờ phàn nàn việc nhiều.', ['他', '从不', '抱怨', '工作太多']),
-    hr('抱怨', '他从不抱怨，也不生气。', ['Anh ấy chưa bao giờ phàn nàn, cũng không giận.', 'Ngày nào anh ấy cũng phàn nàn và hay giận.', 'Anh ấy rất hay khen người khác.'], '<b>从不</b> = chưa bao giờ. <b>也不</b> = cũng không.')
+    hr('抱怨', '他从不抱怨，也不生气。', ['Anh ấy chưa bao giờ phàn nàn, cũng không giận.', 'Anh ấy chưa bao giờ phàn nàn, nhưng hay giận.', 'Anh ấy thỉnh thoảng phàn nàn, nhưng không giận.'], '<b>从不</b> = chưa bao giờ. <b>也不</b> = cũng không.', ['', '也不生气 = cũng không giận.', '从不 = chưa bao giờ, không phải thỉnh thoảng.'])
   ],
   '爱护': [
     cz('爱护', 'sign', '请大家___学校的花草。', 'Mong mọi người giữ gìn hoa cỏ của trường.', '请大家爱护学校的花草。', '爱护', [['抱怨', '抱怨 là than phiền, hoa cỏ đâu có lỗi.'], ['对比', '对比 là so sánh, không hợp.']], 'Biển <b>请爱护花草</b> bạn sẽ gặp ở công viên, trường học.'),
     cz('爱护', 'phoneWipe', '他很___自己的新手机，每天都擦一擦。', 'Anh ấy rất giữ gìn chiếc điện thoại mới, ngày nào cũng lau một chút.', '他很爱护自己的新手机，每天都擦一擦。', '爱护', [['抱怨', '抱怨 là phàn nàn, không đi với chuyện lau chùi.'], ['离婚', '离婚 là ly hôn, không hợp.']], '<b>爱护</b> dùng cho thứ cần được gìn giữ, chăm chút.'),
     od(['爱护'], '请大家爱护学校的花草。', 'Mong mọi người giữ gìn hoa cỏ của trường.', ['请大家', '爱护', '学校的', '花草']),
-    hr('爱护', '他很爱护花草，每天都给它们水。', ['Anh ấy rất yêu quý hoa cỏ, ngày nào cũng tưới nước cho chúng.', 'Anh ấy rất ghét hoa cỏ.', 'Anh ấy bán hoa cỏ mỗi ngày.'], '<b>每天都</b> = ngày nào cũng. <b>给它们水</b> = cho chúng nước (tưới).')
+    hr('爱护', '他很爱护花草，每天都给它们水。', ['Anh ấy rất yêu quý hoa cỏ, ngày nào cũng tưới nước cho chúng.', 'Anh ấy rất yêu quý hoa cỏ, thỉnh thoảng mới tưới nước.', 'Mẹ anh ấy rất yêu quý hoa cỏ, ngày nào cũng tưới nước.'], '<b>每天都</b> = ngày nào cũng. <b>给它们水</b> = cho chúng nước (tưới).', ['', '每天都 = ngày nào cũng.', '他 = anh ấy; câu không nhắc tới mẹ.'])
   ]
 };
 
@@ -1155,32 +1155,32 @@ Object.assign(QB, {
   '婚姻': [
     cz('婚姻', 'marriage', '爷爷奶奶的___很幸福，他们从来没吵过架。', 'Cuộc hôn nhân của ông bà rất hạnh phúc, họ chưa từng cãi nhau.', '爷爷奶奶的婚姻很幸福，他们从来没吵过架。', '婚姻', [['结婚', '结婚 là động từ; sau “的” cần danh từ 婚姻.'], ['离婚', '离婚 là ly hôn, trái với “rất hạnh phúc”.']], '<b>的婚姻</b>: 婚姻 là danh từ nên đứng sau 的.'),
     od(['婚姻'], '好的婚姻需要两个人一起努力。', 'Một cuộc hôn nhân tốt cần hai người cùng cố gắng.', ['好的婚姻', '需要', '两个人', '一起努力']),
-    hr('婚姻', '他们的婚姻生活很幸福。', ['Cuộc sống hôn nhân của họ rất hạnh phúc.', 'Họ vừa mới kết hôn, rất vui.', 'Cuộc sống của họ rất bận rộn.'], '<b>婚姻生活</b> = cuộc sống hôn nhân. <b>很幸福</b> = rất hạnh phúc.')
+    hr('婚姻', '他们的婚姻生活很幸福。', ['Cuộc sống hôn nhân của họ rất hạnh phúc.', 'Cuộc sống hôn nhân của họ không hạnh phúc lắm.', 'Cuộc sống hôn nhân của chúng mình rất hạnh phúc.'], '<b>婚姻生活</b> = cuộc sống hôn nhân. <b>很幸福</b> = rất hạnh phúc.', ['', '很幸福 = rất hạnh phúc.', '他们 = họ, không phải chúng mình (我们).'])
   ],
   '吵架': [
     cz('吵架', 'pickArgue', '他们俩昨天又___了，今天谁也不说话。', 'Hai người hôm qua lại cãi nhau, hôm nay chẳng ai nói chuyện với ai.', '他们俩昨天又吵架了，今天谁也不说话。', '吵架', [['婚姻', '婚姻 là danh từ “hôn nhân”, không phải hành động.'], ['暗暗', '暗暗 là “thầm”, không hợp nghĩa.']], '<b>又吵架了</b> = lại cãi nhau rồi. 吵架 là động từ tách đôi: 吵了一架.'),
     od(['吵架'], '我昨天跟朋友吵了一架。', 'Hôm qua mình cãi nhau với bạn một trận.', ['我昨天', '跟朋友', '吵了', '一架']),
-    hr('吵架', '他们结婚十年了，从来没吵过架。', ['Họ cưới nhau mười năm rồi, chưa từng cãi nhau.', 'Họ cưới nhau mười năm rồi, hay cãi nhau.', 'Họ mới cưới, hôm qua vừa cãi nhau.'], '<b>从来没…过</b> = chưa từng. <b>十年</b> = mười năm.')
+    hr('吵架', '他们结婚十年了，从来没吵过架。', ['Họ cưới nhau mười năm rồi, chưa từng cãi nhau.', 'Họ cưới nhau mười năm rồi, thỉnh thoảng cãi nhau.', 'Họ cưới nhau một năm rồi, chưa từng cãi nhau.'], '<b>从来没…过</b> = chưa từng. <b>十年</b> = mười năm.', ['', '从来没…过 = chưa từng.', '十年 = mười năm, không phải một năm.'])
   ],
   '相敬如宾': [
     cz('相敬如宾', 'guestRespect', '他们结婚几十年，说话总是很客气，一直___。', 'Họ cưới mấy chục năm, nói chuyện luôn rất khách sáo, luôn kính trọng nhau như khách quý.', '他们结婚几十年，说话总是很客气，一直相敬如宾。', '相敬如宾', [['吵架', '吵架 là cãi nhau, trái với “khách sáo, lịch sự”.'], ['婚姻', '婚姻 là danh từ, không đứng sau 一直 theo nghĩa này.']], '相敬如宾 khen cách đối xử <b>tôn trọng, lễ độ</b> giữa vợ chồng.'),
-    hr('相敬如宾', '他们俩相敬如宾，很少吵架。', ['Hai người họ kính trọng nhau như khách quý, rất ít cãi nhau.', 'Hai người họ hay cãi nhau, ít khi nói chuyện.', 'Hai người họ mới quen nhau, rất khách sáo.'], '<b>很少</b> = rất ít. <b>吵架</b> = cãi nhau.'),
+    hr('相敬如宾', '他们俩相敬如宾，很少吵架。', ['Hai người họ kính trọng nhau như khách quý, rất ít cãi nhau.', 'Hai người họ kính trọng nhau như khách quý, nhưng hay cãi nhau.', 'Hai người họ kính trọng nhau như khách quý, chưa từng cãi nhau.'], '<b>很少</b> = rất ít. <b>吵架</b> = cãi nhau.', ['', '很少吵架 = rất ít cãi nhau.', '很少 = rất ít (vẫn có); chưa từng là 从来没.']),
     od(['相敬如宾'], '他们结婚几十年，一直相敬如宾。', 'Họ cưới mấy chục năm, luôn kính trọng nhau như khách quý.', ['他们', '结婚几十年', '一直', '相敬如宾'])
   ],
   '暗暗': [
     cz('暗暗', 'secretJoy', '听到好消息，她___笑了。', 'Nghe tin tốt, cô thầm cười.', '听到好消息，她暗暗笑了。', '暗暗', [['吵架', '吵架 là cãi nhau, không đứng trước 笑.'], ['婚姻', '婚姻 là danh từ, không đứng trước động từ 笑.']], '<b>暗暗 + động từ</b>: làm gì trong lòng, người khác không biết.'),
     od(['暗暗'], '听了他的话，我暗暗高兴。', 'Nghe lời anh ấy nói, mình thầm vui.', ['听了他的话', '我', '暗暗', '高兴']),
-    hr('暗暗', '她暗暗决定，明年一定要考上大学。', ['Cô thầm quyết định, sang năm nhất định phải đỗ đại học.', 'Cô nói to rằng sang năm sẽ học đại học.', 'Năm ngoái cô đã thi đỗ đại học.'], '<b>暗暗决定</b> = thầm quyết định. <b>一定要</b> = nhất định phải. <b>考上</b> = thi đỗ.')
+    hr('暗暗', '她暗暗决定，明年一定要考上大学。', ['Cô thầm quyết định, sang năm nhất định phải đỗ đại học.', 'Cô thầm quyết định, năm nay nhất định phải đỗ đại học.', 'Cô thầm quyết định, sang năm có lẽ sẽ thi đại học.'], '<b>暗暗决定</b> = thầm quyết định. <b>一定要</b> = nhất định phải. <b>考上</b> = thi đỗ.', ['', '明年 = sang năm.', '一定要 = nhất định phải, không phải “có lẽ”.'])
   ],
   '轮': [
     cz('轮', 'turn', '今天___到我做饭，明天是妈妈做。', 'Hôm nay đến lượt mình nấu cơm, ngày mai là mẹ nấu.', '今天轮到我做饭，明天是妈妈做。', '轮', [['等', '等 là chờ; “đến lượt” phải là 轮到.'], ['靠', '靠 là tựa vào, không phải “đến lượt”.']], '<b>轮到 + người</b> = đến lượt ai. Không nói 轮我.'),
     od(['轮'], '下一个轮到谁了？', 'Tiếp theo đến lượt ai rồi?', ['下一个', '轮到', '谁了']),
-    hr('轮', '今天轮到我洗碗了。', ['Hôm nay đến lượt mình rửa bát.', 'Hôm nay mình rửa bát xong rồi.', 'Hôm nay mình không muốn rửa bát.'], '<b>轮到我</b> = đến lượt mình. <b>洗碗</b> = rửa bát.')
+    hr('轮', '今天轮到我洗碗了。', ['Hôm nay đến lượt mình rửa bát.', 'Hôm nay đến lượt em mình rửa bát.', 'Ngày mai mới đến lượt mình rửa bát.'], '<b>轮到我</b> = đến lượt mình. <b>洗碗</b> = rửa bát.', ['', '轮到我 = đến lượt mình.', '今天 = hôm nay.'])
   ],
   '不耐烦': [
     cz('不耐烦', 'impatient', '他等了一个小时，有些___了。', 'Anh ấy đợi một tiếng rồi, có chút sốt ruột.', '他等了一个小时，有些不耐烦了。', '不耐烦', [['肩膀', '肩膀 là vai, không đi với 有些.'], ['轮', '轮 là “đến lượt”, không diễn tả tâm trạng.']], '<b>有些 / 很 + 不耐烦</b>: hơi / rất sốt ruột. Cũng nói <b>等得不耐烦</b>.'),
     od(['不耐烦'], '她不耐烦地看了看表。', 'Cô sốt ruột nhìn đồng hồ.', ['她', '不耐烦地', '看了看', '表']),
-    hr('不耐烦', '他等得有些不耐烦，一直看手机。', ['Anh ấy đợi đến hơi sốt ruột, cứ nhìn điện thoại mãi.', 'Anh ấy đợi rất vui, cứ nói chuyện với bạn.', 'Anh ấy không đợi nữa, đã đi về.'], '<b>等得有些不耐烦</b> = đợi đến hơi sốt ruột. <b>一直</b> = cứ, liên tục.')
+    hr('不耐烦', '他等得有些不耐烦，一直看手机。', ['Anh ấy đợi đến hơi sốt ruột, cứ nhìn điện thoại mãi.', 'Anh ấy đợi đến hơi sốt ruột, cứ nhìn đồng hồ mãi.', 'Anh ấy đợi đến hơi sốt ruột, nên tắt điện thoại đi.'], '<b>等得有些不耐烦</b> = đợi đến hơi sốt ruột. <b>一直</b> = cứ, liên tục.', ['', '手机 = điện thoại, không phải đồng hồ.', '一直看手机 = cứ nhìn điện thoại mãi.'])
   ],
   '靠': [
     cz('靠', 'lean', '他累了，___在椅子上睡着了。', 'Anh ấy mệt, tựa vào ghế ngủ thiếp đi.', '他累了，靠在椅子上睡着了。', '靠', [['轮', '轮 là “đến lượt”, không hợp nghĩa.'], ['肩膀', '肩膀 là danh từ “vai”, không đứng trước 在.']], '<b>靠在 + chỗ</b> = tựa vào chỗ đó. Nghĩa thứ nhất của 靠.'),
@@ -1189,82 +1189,82 @@ Object.assign(QB, {
   ],
   '肩膀': [
     cz('肩膀', 'shoulder', '孩子累了，把头靠在妈妈的___上睡着了。', 'Đứa bé mệt, tựa đầu trên vai mẹ ngủ thiếp đi.', '孩子累了，把头靠在妈妈的肩膀上睡着了。', '肩膀', [['不耐烦', '不耐烦 là tính từ “sốt ruột”, không dùng như danh từ.'], ['轮', '轮 là “đến lượt”, không hợp.']], '<b>靠在…的肩膀上</b> = tựa trên vai của…'),
-    hr('肩膀', '他拍了拍我的肩膀。', ['Anh ấy vỗ vai mình.', 'Anh ấy nắm tay mình.', 'Anh ấy gọi mình.'], '<b>拍肩膀</b> = vỗ vai. <b>拍了拍</b> = vỗ nhẹ vài cái.'),
+    hr('肩膀', '他拍了拍我的肩膀。', ['Anh ấy vỗ vỗ vai mình.', 'Mình vỗ vỗ vai anh ấy.', 'Anh ấy dựa vào vai mình.'], '<b>拍肩膀</b> = vỗ vai. <b>拍了拍</b> = vỗ nhẹ vài cái.', ['', '他拍…我的肩膀: anh ấy vỗ, vai là của mình.', '拍 = vỗ, không phải dựa (靠).']),
     od(['肩膀'], '他靠在朋友的肩膀上哭了。', 'Anh ấy tựa vào vai bạn khóc.', ['他', '靠在', '朋友的肩膀上', '哭了'])
   ],
   '喊': [
     cz('喊', 'shout', '他在楼下大声地___我的名字。', 'Anh ấy ở dưới lầu gọi to tên mình.', '他在楼下大声地喊我的名字。', '喊', [['伸', '伸 là chìa ra, không dùng với 名字.'], ['手指', '手指 là danh từ, không đứng sau 大声地.']], '<b>大声地 + 喊</b> = gọi to (trạng ngữ + động từ).'),
-    hr('喊', '别喊了，孩子睡着了。', ['Đừng la nữa, bé ngủ rồi.', 'Đừng chạy nữa, bé mệt rồi.', 'Đừng khóc nữa, bé đói rồi.'], '<b>别…了</b> = đừng… nữa. <b>睡着了</b> = đã ngủ.'),
+    hr('喊', '别喊了，孩子睡着了。', ['Đừng la nữa, bé ngủ rồi.', 'Đừng la nữa, bé còn chưa ngủ.', 'La to lên, bé ngủ rồi.'], '<b>别…了</b> = đừng… nữa. <b>睡着了</b> = đã ngủ.', ['', '睡着了 = đã ngủ rồi.', '别喊了 = đừng la nữa.']),
     od(['喊'], '他大声地喊着我的名字。', 'Anh ấy gọi to tên mình.', ['他', '大声地', '喊着', '我的名字'])
   ],
   '伸': [
     cz('伸', 'stretch', '请把手___出来，我看看。', 'Xin hãy chìa tay ra, để mình xem.', '请把手伸出来，我看看。', '伸', [['喊', '喊 là gọi to, không dùng với 手 ở đây.'], ['靠', '靠 là tựa vào, không phải chìa ra.']], '<b>伸出来</b> = chìa ra. 伸 thường đi với bổ ngữ: 伸出, 伸进去, 伸开.'),
     od(['伸'], '她把手伸进包里，拿出了一支笔。', 'Cô thò tay vào túi, lấy ra một cây bút.', ['她', '把手', '伸进包里', '拿出了一支笔']),
-    hr('伸', '他伸出手，想拿桌子上的书。', ['Anh ấy chìa tay ra, muốn lấy quyển sách trên bàn.', 'Anh ấy cất sách lên bàn.', 'Anh ấy đưa sách cho mình.'], '<b>伸出手</b> = chìa tay ra. <b>想拿</b> = muốn lấy.')
+    hr('伸', '他伸出手，想拿桌子上的书。', ['Anh ấy chìa tay ra, muốn lấy quyển sách trên bàn.', 'Anh ấy chìa tay ra, muốn lấy quyển sách dưới bàn.', 'Anh ấy chìa tay ra, đặt quyển sách lên bàn.'], '<b>伸出手</b> = chìa tay ra. <b>想拿</b> = muốn lấy.', ['', '桌子上 = trên bàn.', '想拿 = muốn lấy, không phải đặt xuống.'])
   ],
   '手指': [
     cz('手指', 'finger', '她伸出一根___，放在嘴边。', 'Cô chìa một ngón tay, đặt lên môi.', '她伸出一根手指，放在嘴边。', '手指', [['喊', '喊 là động từ gọi to, không đếm bằng 根.'], ['伸', '伸 là động từ, sau 一根 cần danh từ.']], 'Ngón tay đếm bằng <b>根</b>: 一根手指.'),
     od(['手指'], '她的手指很长，也很漂亮。', 'Ngón tay cô ấy rất dài, cũng rất đẹp.', ['她的手指', '很长', '也很漂亮']),
-    hr('手指', '他的手指很长，会弹钢琴。', ['Ngón tay anh ấy rất dài, biết chơi piano.', 'Tay anh ấy rất nhỏ, không biết chơi piano.', 'Anh ấy đang học đàn guitar.'], '<b>手指很长</b> = ngón tay dài. <b>会弹钢琴</b> = biết chơi piano.')
+    hr('手指', '他的手指很长，会弹钢琴。', ['Ngón tay anh ấy rất dài, biết chơi piano.', 'Ngón tay anh ấy rất dài, nhưng không biết chơi piano.', 'Ngón tay anh ấy rất ngắn, biết chơi piano.'], '<b>手指很长</b> = ngón tay dài. <b>会弹钢琴</b> = biết chơi piano.', ['', '会弹钢琴 = biết chơi piano.', '很长 = rất dài.'])
   ],
   '歪歪扭扭': [
     cz('歪歪扭扭', 'wobbly', '他的手受伤了，写出来的字___的。', 'Tay anh bị thương, chữ viết ra xiêu vẹo.', '他的手受伤了，写出来的字歪歪扭扭的。', '歪歪扭扭', [['不耐烦', '不耐烦 là sốt ruột, không dùng để tả chữ viết.'], ['相敬如宾', '相敬如宾 là thành ngữ về vợ chồng, không dùng để tả chữ.']], '<b>歪歪扭扭的字</b>: chữ xiêu vẹo. Dạng AABB, thêm 的.'),
     od(['歪歪扭扭'], '孩子写的字歪歪扭扭的。', 'Chữ đứa bé viết xiêu vẹo.', ['孩子写的字', '歪歪扭扭的']),
-    hr('歪歪扭扭', '路边的树长得歪歪扭扭的。', ['Cây ven đường mọc xiêu vẹo.', 'Cây ven đường mọc rất cao.', 'Cây ven đường rất nhiều.'], '<b>长得歪歪扭扭</b> = mọc xiêu vẹo. <b>路边</b> = ven đường.')
+    hr('歪歪扭扭', '路边的树长得歪歪扭扭的。', ['Cây ven đường mọc xiêu vẹo.', 'Cây trong vườn mọc xiêu vẹo.', 'Cây ven đường mọc thẳng, không xiêu vẹo.'], '<b>长得歪歪扭扭</b> = mọc xiêu vẹo. <b>路边</b> = ven đường.', ['', '路边 = ven đường.', '歪歪扭扭的 = xiêu vẹo, không thẳng.'])
   ],
   '递': [
     cz('递', 'pass', '他从包里拿出一张纸条，___给了我。', 'Anh ấy lấy từ trong túi ra một mảnh giấy, đưa cho mình.', '他从包里拿出一张纸条，递给了我。', '递', [['喊', '喊 là gọi to, không phải đưa vật.'], ['靠', '靠 là tựa vào, không phải đưa đồ.']], '<b>递给 + người</b>: đưa cho ai. Hay đi với 一杯水, 一张纸条.'),
     od(['递'], '请把那杯水递给我。', 'Làm ơn đưa cho mình cốc nước đó.', ['请把那杯水', '递给我']),
-    hr('递', '她递给我一张纸条。', ['Cô ấy đưa cho mình một mảnh giấy.', 'Cô ấy xé mảnh giấy của mình.', 'Cô ấy viết cho mình một lá thư.'], '<b>递给我</b> = đưa cho mình. <b>一张纸条</b> = một mảnh giấy.')
+    hr('递', '她递给我一张纸条。', ['Cô ấy đưa cho mình một mảnh giấy.', 'Mình đưa cho cô ấy một mảnh giấy.', 'Cô ấy đưa cho mình hai mảnh giấy.'], '<b>递给我</b> = đưa cho mình. <b>一张纸条</b> = một mảnh giấy.', ['', '她递给我 = cô ấy đưa cho mình.', '一张 = một mảnh.'])
   ],
   '脑袋': [
     cz('脑袋', 'headShake', '他摇了摇___，说：“我不同意。”', 'Anh ấy lắc đầu, nói: “Tôi không đồng ý.”', '他摇了摇脑袋，说：“我不同意。”', '脑袋', [['手指', '手指 là ngón tay, không “lắc” theo nghĩa này.'], ['肩膀', '肩膀 là vai, không dùng để nói “lắc đầu”.']], '<b>摇脑袋</b> = lắc đầu (khẩu ngữ). Cũng nói 摇头.'),
     od(['脑袋'], '孩子的脑袋靠在妈妈肩上。', 'Đầu đứa bé tựa vào vai mẹ.', ['孩子的脑袋', '靠在', '妈妈肩上']),
-    hr('脑袋', '他不好意思地摸了摸脑袋。', ['Anh ấy ngượng ngùng xoa đầu.', 'Anh ấy tức giận đập bàn.', 'Anh ấy cười to với mọi người.'], '<b>不好意思地</b> = ngượng ngùng. <b>摸了摸脑袋</b> = xoa xoa đầu (cử chỉ ngại).')
+    hr('脑袋', '他不好意思地摸了摸脑袋。', ['Anh ấy ngượng ngùng xoa xoa đầu.', 'Anh ấy tức giận xoa xoa đầu.', 'Anh ấy ngượng ngùng xoa đầu em bé.'], '<b>不好意思地</b> = ngượng ngùng. <b>摸了摸脑袋</b> = xoa xoa đầu (cử chỉ ngại).', ['', '不好意思 = ngượng, ngại.', 'Câu không nhắc em bé: anh ấy xoa đầu mình.'])
   ],
   '女士': [
     cz('女士', 'ladySir', '___们，先生们，晚上好！', 'Thưa quý bà, quý ông, chào buổi tối!', '女士们，先生们，晚上好！', '女士', [['婚姻', '婚姻 là hôn nhân, không dùng để xưng hô.'], ['手指', '手指 là ngón tay, không dùng để xưng hô.']], '<b>女士 / 先生</b> là cách gọi lịch sự. Thêm 们 để gọi nhiều người: 女士们, 先生们.'),
-    hr('女士', '这位女士是我们的客人。', ['Bà này là khách của chúng tôi.', 'Bà này là giáo viên của chúng tôi.', 'Ông này là khách của chúng tôi.'], '<b>这位女士</b> = vị nữ này. <b>位</b> là lượng từ lịch sự cho người.'),
+    hr('女士', '这位女士是我们的客人。', ['Bà này là khách của chúng tôi.', 'Bà này là chủ nhà của chúng tôi.', 'Bà này không phải khách của chúng tôi.'], '<b>这位女士</b> = vị nữ này. <b>位</b> là lượng từ lịch sự cho người.', ['', '客人 = khách.', 'Câu không có 不: bà này là khách.']),
     od(['女士'], '女士，请坐。', 'Thưa bà, xin mời ngồi.', ['女士', '请坐'])
   ],
   '叙述': [
     cz('叙述', 'narrate', '他详细地___了那天发生的事。', 'Anh ấy kể lại chi tiết chuyện xảy ra hôm đó.', '他详细地叙述了那天发生的事。', '叙述', [['递', '递 là đưa vật, không phải kể lại.'], ['伸', '伸 là chìa ra, không phải kể lại.']], '<b>详细地 + 叙述</b> = kể lại chi tiết. 叙述 trang trọng, hay dùng khi kể diễn biến.'),
-    hr('叙述', '请你简单地叙述一下事情的经过。', ['Bạn hãy kể lại sơ lược diễn biến sự việc.', 'Bạn hãy viết ra tên của mình.', 'Bạn hãy đọc to cả bài.'], '<b>简单地叙述</b> = kể sơ lược. <b>事情的经过</b> = diễn biến sự việc.'),
+    hr('叙述', '请你简单地叙述一下事情的经过。', ['Bạn hãy kể lại sơ lược diễn biến sự việc.', 'Bạn hãy kể lại thật chi tiết diễn biến sự việc.', 'Bạn hãy kể lại sơ lược kết quả sự việc.'], '<b>简单地叙述</b> = kể sơ lược. <b>事情的经过</b> = diễn biến sự việc.', ['', '简单地 = ngắn gọn, sơ lược.', '经过 = diễn biến, không phải kết quả.']),
     od(['叙述'], '请你简单地叙述一下经过。', 'Bạn hãy kể sơ lược diễn biến.', ['请你', '简单地', '叙述一下', '经过'])
   ],
   '居然': [
     cz('居然', 'easyTest', '这么简单的题，你___也不会做？', 'Bài đơn giản thế này, bạn mà cũng không làm được?', '这么简单的题，你居然也不会做？', '居然', [['暗暗', '暗暗 là “thầm”, không diễn tả sự bất ngờ.'], ['一直', '一直 là “luôn”, không diễn tả sự bất ngờ.']], '<b>居然</b> = không ngờ. Thường đi cùng 也 / 还: 居然也不会.'),
     od(['居然'], '没想到居然在这儿碰到你！', 'Không ngờ lại gặp bạn ở đây!', ['没想到', '居然', '在这儿', '碰到你']),
-    hr('居然', '她居然放弃了这次机会。', ['Cô ấy lại bỏ cả cơ hội lần này.', 'Cô ấy đã nắm lấy cơ hội lần này.', 'Cô ấy đang tìm một cơ hội khác.'], '<b>居然 + 放弃</b>: không ngờ lại bỏ. <b>这次机会</b> = cơ hội lần này.')
+    hr('居然', '她居然放弃了这次机会。', ['Không ngờ cô ấy lại bỏ qua cơ hội lần này.', 'Không ngờ cô ấy lại nắm lấy cơ hội lần này.', 'Không ngờ cô ấy lại bỏ qua cơ hội lần trước.'], '<b>居然 + 放弃</b>: không ngờ lại bỏ. <b>这次机会</b> = cơ hội lần này.', ['', '放弃 = bỏ, từ bỏ.', '这次 = lần này.'])
   ],
   '催': [
     cz('催', 'urge', '妈妈一直___我早点睡觉。', 'Mẹ cứ giục mình đi ngủ sớm.', '妈妈一直催我早点睡觉。', '催', [['递', '递 là đưa vật, không phải giục.'], ['伸', '伸 là chìa ra, không phải giục.']], '<b>催 + người + động từ</b> = giục ai làm gì: 催我早点睡觉.'),
     od(['催'], '你别催我，我马上就好。', 'Bạn đừng giục mình, mình xong ngay đây.', ['你别催我', '我马上就好']),
-    hr('催', '妈妈催我早点睡觉。', ['Mẹ giục mình đi ngủ sớm.', 'Mẹ gọi mình dậy sớm.', 'Mẹ bảo mình đừng ngủ.'], '<b>催我</b> = giục mình. <b>早点</b> = sớm một chút.')
+    hr('催', '妈妈催我早点睡觉。', ['Mẹ giục mình đi ngủ sớm.', 'Mẹ giục mình dậy sớm.', 'Mình giục mẹ đi ngủ sớm.'], '<b>催我</b> = giục mình. <b>早点</b> = sớm một chút.', ['', '睡觉 = đi ngủ, không phải dậy.', '妈妈催我 = mẹ giục mình.'])
   ],
   '等待': [
     cz('等待', 'waiting', '我们都在___比赛的结果。', 'Tất cả chúng mình đều đang chờ kết quả cuộc thi.', '我们都在等待比赛的结果。', '等待', [['催', '催 là giục, không phải chờ.'], ['递', '递 là đưa, không phải chờ.']], '<b>等待 + kết quả / cơ hội…</b> = chờ đợi. Trang trọng hơn 等.'),
     od(['等待'], '请再等待一会儿。', 'Xin hãy chờ thêm một lát.', ['请再', '等待', '一会儿']),
-    hr('等待', '他在医院门口等待消息。', ['Anh ấy đợi tin tức ngoài cửa bệnh viện.', 'Anh ấy đang gửi tin cho bệnh viện.', 'Anh ấy vừa từ bệnh viện ra.'], '<b>等待消息</b> = đợi tin tức. <b>医院门口</b> = cổng bệnh viện.')
+    hr('等待', '他在医院门口等待消息。', ['Anh ấy đợi tin tức ở cửa bệnh viện.', 'Anh ấy đợi tin tức trong phòng bệnh.', 'Anh ấy đợi bác sĩ ở cửa bệnh viện.'], '<b>等待消息</b> = đợi tin tức. <b>医院门口</b> = cổng bệnh viện.', ['', '门口 = ở cửa, trước cửa.', '消息 = tin tức, không phải bác sĩ.'])
   ],
   '蚊子': [
     cz('蚊子', 'mosquito', '夏天，我家的___特别多。', 'Mùa hè, nhà mình muỗi đặc biệt nhiều.', '夏天，我家的蚊子特别多。', '蚊子', [['电台', '电台 là đài phát thanh, không phải con vật.'], ['脑袋', '脑袋 là cái đầu, không hợp với 特别多 ở đây.']], '<b>蚊子多</b> = nhiều muỗi. Đếm bằng 只: 一只蚊子.'),
     od(['蚊子'], '夏天，我家的蚊子特别多。', 'Mùa hè, nhà mình muỗi đặc biệt nhiều.', ['夏天', '我家的蚊子', '特别多']),
-    hr('蚊子', '一只蚊子在我耳边飞。', ['Một con muỗi bay bên tai mình.', 'Một con chim đậu trên vai mình.', 'Một chiếc xe chạy bên cạnh mình.'], '<b>一只蚊子</b> = một con muỗi. <b>耳边</b> = bên tai. <b>飞</b> = bay.')
+    hr('蚊子', '一只蚊子在我耳边飞。', ['Một con muỗi bay bên tai mình.', 'Hai con muỗi bay bên tai mình.', 'Một con muỗi bay bên chân mình.'], '<b>一只蚊子</b> = một con muỗi. <b>耳边</b> = bên tai. <b>飞</b> = bay.', ['', '一只 = một con.', '耳边 = bên tai.'])
   ],
   '叮': [
     cz('叮', 'bitten', '我的手被蚊子___了一下。', 'Tay mình bị muỗi đốt một cái.', '我的手被蚊子叮了一下。', '叮', [['催', '催 là giục, không dùng với 蚊子.'], ['吵', '吵 là ồn, không phải “đốt”.']], '<b>被蚊子叮</b> = bị muỗi đốt. <b>叮了一下</b> = đốt một cái.'),
     od(['叮'], '昨晚我被蚊子叮醒了。', 'Tối qua mình bị muỗi đốt tỉnh giấc.', ['昨晚', '我被蚊子', '叮醒了']),
-    hr('叮', '我的脚被蚊子叮了，很痒。', ['Chân mình bị muỗi đốt, rất ngứa.', 'Chân mình bị thương, rất đau.', 'Chân mình bị lạnh, rất cứng.'], '<b>被蚊子叮了</b> = bị muỗi đốt. <b>很痒</b> = rất ngứa.')
+    hr('叮', '我的脚被蚊子叮了，很痒。', ['Chân mình bị muỗi đốt, rất ngứa.', 'Tay mình bị muỗi đốt, rất ngứa.', 'Chân mình bị muỗi đốt, rất đau.'], '<b>被蚊子叮了</b> = bị muỗi đốt. <b>很痒</b> = rất ngứa.', ['', '脚 = chân, không phải tay.', '痒 = ngứa, không phải đau.'])
   ],
   '半夜': [
     cz('半夜', 'midnight', '他___才回家，老婆一直在等他。', 'Nửa đêm anh ấy mới về nhà, vợ cứ đợi mãi.', '他半夜才回家，老婆一直在等他。', '半夜', [['蚊子', '蚊子 là con muỗi, không chỉ thời gian.'], ['等待', '等待 là động từ “chờ”, không chỉ thời gian.']], '<b>半夜</b> = nửa đêm, đứng trước động từ làm trạng ngữ thời gian: 半夜醒来.'),
-    hr('半夜', '我半夜被冷醒了。', ['Nửa đêm mình bị lạnh làm tỉnh giấc.', 'Sáng sớm mình bị nóng làm tỉnh giấc.', 'Nửa đêm mình bị muỗi đốt.'], '<b>半夜</b> = nửa đêm. <b>被冷醒</b> = bị lạnh mà tỉnh.'),
+    hr('半夜', '我半夜被冷醒了。', ['Nửa đêm mình bị lạnh làm tỉnh giấc.', 'Nửa đêm mình bị nóng làm tỉnh giấc.', 'Nửa đêm mình bị muỗi làm tỉnh giấc.'], '<b>半夜</b> = nửa đêm. <b>被冷醒</b> = bị lạnh mà tỉnh.', ['', '冷 = lạnh, không phải nóng.', '被冷醒 = lạnh quá nên tỉnh; câu không nhắc muỗi.']),
     od(['半夜'], '他昨天半夜才回家。', 'Hôm qua nửa đêm anh ấy mới về nhà.', ['他', '昨天半夜', '才回家'])
   ],
   '老婆': [
     cz('老婆', 'wife', '他对___特别好，每天都给她做饭。', 'Anh ấy đối xử với vợ đặc biệt tốt, mỗi ngày đều nấu cơm cho cô ấy.', '他对老婆特别好，每天都给她做饭。', '老婆', [['蚊子', '蚊子 là con muỗi, không phải người được nấu cơm cho.'], ['半夜', '半夜 là nửa đêm, không phải người.']], '<b>老婆</b> = vợ (khẩu ngữ, thân mật). Đừng hiểu theo âm Hán–Việt “lão bà”. Trang trọng hơn: 妻子.'),
-    hr('老婆', '我老婆做饭很好吃。', ['Vợ mình nấu ăn rất ngon.', 'Mẹ mình nấu ăn rất ngon.', 'Vợ mình ăn rất nhiều.'], '<b>老婆</b> = vợ. <b>做饭很好吃</b> = nấu ăn rất ngon.'),
+    hr('老婆', '我老婆做饭很好吃。', ['Vợ mình nấu ăn rất ngon.', 'Vợ mình nấu ăn không ngon lắm.', 'Mình nấu cho vợ ăn, rất ngon.'], '<b>老婆</b> = vợ. <b>做饭很好吃</b> = nấu ăn rất ngon.', ['', '很好吃 = rất ngon.', '我老婆做饭 = vợ mình nấu.']),
     od(['老婆'], '他对老婆特别好。', 'Anh ấy đối xử với vợ đặc biệt tốt.', ['他', '对老婆', '特别好'])
   ],
   '吵': [
@@ -1275,17 +1275,17 @@ Object.assign(QB, {
   '项': [
     cz('项', 'importantWork', '这是一___很重要的研究。', 'Đây là một nghiên cứu rất quan trọng.', '这是一项很重要的研究。', '项', [['只', '只 là lượng từ cho con vật, không dùng cho nghiên cứu.'], ['张', '张 là lượng từ cho vật phẳng, không dùng cho nghiên cứu.']], '<b>一项</b> + 研究 / 工作 / 计划 / 任务 / 奖项.'),
     od(['项'], '电台增加了两项奖项。', 'Đài phát thanh thêm hai giải thưởng.', ['电台', '增加了', '两项奖项']),
-    hr('项', '他得了一项大奖。', ['Anh ấy đoạt một giải thưởng lớn.', 'Anh ấy mua một món quà lớn.', 'Anh ấy nhận một nhiệm vụ lớn.'], '<b>一项大奖</b> = một giải thưởng lớn. <b>得了</b> = đạt được.')
+    hr('项', '他得了一项大奖。', ['Anh ấy đoạt một giải thưởng lớn.', 'Anh ấy đoạt hai giải thưởng lớn.', 'Anh ấy suýt đoạt một giải thưởng lớn.'], '<b>一项大奖</b> = một giải thưởng lớn. <b>得了</b> = đạt được.', ['', '一项 = một (giải).', '得了 = đã đoạt được.'])
   ],
   '患难与共': [
     cz('患难与共', 'sameBoat', '他们是___的好朋友，一起走过了最难的日子。', 'Họ là những người bạn tốt cùng nhau vượt hoạn nạn, cùng đi qua những ngày khó khăn nhất.', '他们是患难与共的好朋友，一起走过了最难的日子。', '患难与共', [['相敬如宾', '相敬如宾 là kính trọng nhau như khách, không nói về cùng vượt khó.'], ['不耐烦', '不耐烦 là sốt ruột, không hợp với “bạn tốt”.']], '<b>患难与共</b> = cùng nhau vượt qua khó khăn: 患难与共的朋友 / 夫妻.'),
-    hr('患难与共', '夫妻应该患难与共。', ['Vợ chồng nên cùng nhau vượt qua hoạn nạn.', 'Vợ chồng nên luôn kính trọng nhau.', 'Vợ chồng không nên cãi nhau.'], '<b>应该</b> = nên. <b>患难与共</b> = cùng chia hoạn nạn.'),
+    hr('患难与共', '夫妻应该患难与共。', ['Vợ chồng nên cùng nhau vượt qua hoạn nạn.', 'Bạn bè nên cùng nhau vượt qua hoạn nạn.', 'Vợ chồng không cần cùng nhau vượt qua hoạn nạn.'], '<b>应该</b> = nên. <b>患难与共</b> = cùng chia hoạn nạn.', ['', '夫妻 = vợ chồng.', '应该 = nên.']),
     od(['患难与共'], '他们是患难与共的好朋友。', 'Họ là những người bạn tốt cùng nhau vượt hoạn nạn.', ['他们是', '患难与共的', '好朋友'])
   ],
   '细节': [
     cz('细节', 'detailZoom', '这部电影的___很感人。', 'Những chi tiết của bộ phim này rất cảm động.', '这部电影的细节很感人。', '细节', [['项', '项 là lượng từ, không đứng sau 的 làm chủ ngữ.'], ['吵', '吵 là ồn, không hợp nghĩa.']], '<b>电影的细节</b>: chi tiết của phim. 细节 hay đi với 电影, 小说, 生活.'),
     od(['细节'], '爱就在生活的小细节里。', 'Tình yêu nằm trong những chi tiết nhỏ của cuộc sống.', ['爱', '就在', '生活的小细节里']),
-    hr('细节', '好的电影都有很多感人的细节。', ['Phim hay đều có nhiều chi tiết cảm động.', 'Phim hay đều rất dài.', 'Phim hay đều có nhiều người xem.'], '<b>感人的细节</b> = chi tiết cảm động.')
+    hr('细节', '好的电影都有很多感人的细节。', ['Phim hay đều có nhiều chi tiết cảm động.', 'Phim hay đều có nhiều chi tiết buồn cười.', 'Phim hay chỉ có vài chi tiết cảm động.'], '<b>感人的细节</b> = chi tiết cảm động.', ['', '感人 = cảm động.', '很多 = nhiều, không phải vài.'])
   ]
 });
 
@@ -1750,7 +1750,7 @@ SC.importantWork = () => R(0, 0, 400, 300, '#e9f1fb') + R(0, 232, 400, 68, '#cdb
   person(300, 140, { s: 1, hs: 'short', shirt: C.teal, collar: C.white, m: 'smile', gl: 'round' }) + R(232, 192, 130, 46, '#cfd6e2', 6) + R(242, 200, 56, 34, '#8fb4ee', 4);
 Object.assign(SCENE_LABEL, { discuss: 'Hai người đang bàn cách giải quyết một vấn đề', phoneWipe: 'Một người lau chiếc điện thoại mới cho sạch', shockMeet: 'Hai người gặp nhau, một người ngạc nhiên', easyTest: 'Bài toán rất dễ mà người ta vẫn bối rối', importantWork: 'Tài liệu nghiên cứu quan trọng có gắn ngôi sao' });
 
-const CH_SRC = {"2": "ch2.js?v=16242d40e5cc"}; const WORD_CH = {"一辈子": 2, "农村": 2, "屋": 2, "断": 2, "以来": 2, "姥姥": 2, "舅舅": 2, "姑姑": 2, "坚决": 2, "打工": 2, "挣": 2, "县": 2, "套": 2, "装修": 2, "不得了": 2, "串": 2, "醉": 2, "强烈": 2, "夜": 2, "锁": 2, "临": 2, "悄悄": 2, "晒": 2, "被子": 2, "长途": 2, "冻": 2, "想象": 2, "灰尘": 2, "亮": 2, "微笑": 2, "温暖": 2, "立刻": 2, "扑": 2, "卧室": 2, "铺": 2, "飘": 2, "阵": 2, "感受": 2, "流泪": 2};
+const CH_SRC = {"2": "ch2.js?v=0fdc094312fe"}; const WORD_CH = {"一辈子": 2, "农村": 2, "屋": 2, "断": 2, "以来": 2, "姥姥": 2, "舅舅": 2, "姑姑": 2, "坚决": 2, "打工": 2, "挣": 2, "县": 2, "套": 2, "装修": 2, "不得了": 2, "串": 2, "醉": 2, "强烈": 2, "夜": 2, "锁": 2, "临": 2, "悄悄": 2, "晒": 2, "被子": 2, "长途": 2, "冻": 2, "想象": 2, "灰尘": 2, "亮": 2, "微笑": 2, "温暖": 2, "立刻": 2, "扑": 2, "卧室": 2, "铺": 2, "飘": 2, "阵": 2, "感受": 2, "流泪": 2};
 </script>
 <!--CH_INLINE-->
 <script>
@@ -1770,7 +1770,7 @@ Object.keys(st.stk).forEach(wrec);           // saves from before the revision p
 let curMiss = new Set(), curLook = new Set();
 function onLook(k) { if (curLook.has(k)) return; curLook.add(k); st.look[k] = (st.look[k] || 0) + 1; save(); }
 /* ===== self-update: build.py stamps APP_V and writes version.json; a new deploy shows a banner at home (never inside a lesson) ===== */
-const APP_V = 'f18a2acaebfd';
+const APP_V = 'e4ab1e08988d';
 const UPD = { last: 0, newV: '', n: 0 };
 function checkUpdate(force) {
   if (!/^https?:/.test(location.protocol)) return;

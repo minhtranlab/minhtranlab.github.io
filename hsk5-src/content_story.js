@@ -21,7 +21,7 @@ const SESSIONS = [
   { id: 1, title: 'Đài tìm cặp đôi thắm thiết nhất', sub: '4 từ mới', thumb: 'radioBig', words: ['电台', '恩爱', '入围', '对比'], screens: [
     { t: 'story', scene: 'radioBig', lines: [B(0)] },
     { t: 'word', id: '电台', scene: 'radioBig' },
-    { t: 'hear', w: ['电台'], s: '我每天晚上都听电台。', opts: ['Mỗi tối mình đều nghe đài.', 'Mỗi tối mình đều xem tivi.', 'Mỗi sáng mình đều đọc báo.'],
+    { t: 'hear', w: ['电台'], s: '我每天晚上都听电台。', opts: ['Mỗi tối mình đều nghe đài.', 'Mỗi sáng mình đều nghe đài.', 'Tối qua mình nghe đài.'], whyNot: ['', '晚上 = buổi tối, không phải buổi sáng.', '每天晚上 = mỗi tối, không phải tối qua (昨天晚上).'],
       why: '<b>电台</b> = đài phát thanh. <b>听电台</b> = nghe đài. <b>每天晚上</b> = mỗi tối.' },
     { t: 'word', id: '恩爱', scene: 'couple' },
     { t: 'pick', zh: '他们结婚五十年了，还是很恩爱。', vi: 'Họ cưới nhau năm mươi năm rồi mà vẫn rất thắm thiết.', prompt: 'Nghe rồi chọn bức tranh đúng:', opts: [
@@ -46,7 +46,7 @@ const SESSIONS = [
     { t: 'story', scene: 'coupleOne', lines: [B(2)] },
     { t: 'word', id: '评委', scene: 'judges' },
     { t: 'word', id: '如何', scene: 'how' },
-    { t: 'hear', w: ['评委'], s: '评委们都认真地听她说话。', opts: ['Các giám khảo đều chăm chú nghe cô ấy nói.', 'Các bác sĩ đều chăm chú nghe cô ấy nói.', 'Các giám khảo đều không muốn nghe cô nói.'],
+    { t: 'hear', w: ['评委'], s: '评委们都认真地听她说话。', opts: ['Các giám khảo đều chăm chú nghe cô ấy nói.', 'Các giám khảo đều không chú ý nghe cô ấy nói.', 'Chỉ một giám khảo chăm chú nghe cô ấy nói.'], whyNot: ['', '认真地听 = chăm chú nghe.', '评委们都 = tất cả các giám khảo.'],
       why: '<b>评委</b> = giám khảo (người chấm trong cuộc thi). <b>认真地听</b> = chăm chú nghe.' },
     { t: 'story', scene: 'wheelchair', lines: [B(3)] },
     { t: 'word', id: '瘫痪', scene: 'jam' },
@@ -68,7 +68,7 @@ const SESSIONS = [
     { t: 'album', words: ['评委', '如何', '瘫痪', '离婚', '自杀'], say: [B(2), B(4)],
       tease: { scene: 'hospitals', vi: 'người chồng đã làm gì khi ai cũng nghĩ anh sẽ bỏ đi?' } }
   ] },
-  { id: 3, title: 'Người chồng không bao giờ phàn nàn', sub: '2 từ mới và đọc lại cả phần đầu', thumb: 'standUp', words: ['抱怨', '爱护'], screens: [
+  { id: 3, title: 'Người chồng không bao giờ phàn nàn', sub: '2 từ mới và ghép truyện tranh phần đầu', thumb: 'standUp', words: ['抱怨', '爱护'], screens: [
     { t: 'predict', scene: 'sadWindow', key: 'p3', q: 'Ai cũng nghĩ người chồng sẽ bỏ đi. Theo bạn, anh ấy đã làm gì?', opts: ['Anh ở lại chăm sóc vợ và động viên cô', 'Anh bỏ đi một thời gian rồi quay về', 'Anh thuê người khác chăm vợ'] },
     { t: 'story', scene: 'hospitals', lines: [B(5), B(6)] },
     { t: 'word', id: '抱怨', scene: 'grumble' },
