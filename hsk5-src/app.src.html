@@ -309,6 +309,15 @@ body.cm-holding.ins #stage{padding-bottom:calc(var(--fh) + 80px)}
 .cm-note{font-size:13.5px;line-height:1.45;color:var(--mut);margin:0}
 @media (prefers-reduced-motion:reduce){.cm-fr,.cm-pl,.cm-hold{transition:none;animation:none}}
 /* end comic */
+/* say ("Nhắc lại", phiếu #5): reuses .cm-mic / .cm-meter / .cm-msg / .cm-note */
+.sy-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sy-tag{display:inline-block;padding:4px 12px;border-radius:99px;background:var(--accsoft);color:var(--acc2);font:700 14px var(--disp)}
+.sy-z{font:500 26px/1.85 var(--han);text-align:center;padding:6px 4px}
+.sy-pl{text-align:center;font-size:17px;color:var(--mut)}
+.sy-act{display:flex;flex-direction:column;gap:10px}
+.sy-act[hidden],.sy-z[hidden],.sy-pl[hidden],.sy-hints[hidden],.sy-after[hidden],.sy-skip[hidden]{display:none!important}
+.sy-skip{align-self:center;background:none;border:0;color:var(--mut);font:600 14.5px var(--body);text-decoration:underline;min-height:40px;padding:0 10px}
+/* end say */
 .chs{display:flex;gap:8px;margin:0 0 -4px}.chb{flex:1;min-height:42px;border-radius:99px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:700 15px var(--disp)}.chb.on{background:var(--acc);border-color:var(--acc);color:#fff}
 .nd.comic{border-color:#7a5cc7;box-shadow:0 5px 0 #5a3f9e;border-radius:22px}.nd.comic.lock{border-color:var(--line);box-shadow:0 5px 0 var(--line)}.nd.comic .nc{border-radius:18px}
 .nem{position:absolute;right:-8px;top:-10px;font-size:24px;line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
@@ -538,7 +547,7 @@ function answerBlock(pane, zhT, viT, o = {}) {
   sb.onclick = say;
   pyBtn(pb, z);
   pane.appendChild(d);
-  const e0 = EP; if (st.auto !== 0) setTimeout(() => { if (e0 === EP) say(); }, o.delay || 250);
+  const e0 = EP; if (st.auto !== 0 && !o.quiet) setTimeout(() => { if (e0 === EP) say(); }, o.delay || 250);
   showAns(d);
   return d;
 }
@@ -628,8 +637,8 @@ function chSess(c, e) {
 }
 /* a comic stage: its sentences cut into pages of at most COMIC.maxFrames frames */
 function comicPages(ids, n) {
-  const fr = comicFrames(ids, n), pages = [];
-  fr.forEach(f => { const pg = pages[pages.length - 1]; if (pg && pg.length < COMIC.maxFrames) pg.push(f); else pages.push([f]); });
+  const fr = comicFrames(ids, n), P = Math.max(1, Math.ceil(fr.length / COMIC.maxFrames)), pages = [];   /* pages as even as possible (8 frames: 4 + 4, not 6 + 2) */
+  for (let k = 0, a = 0; k < P; k++) { const b = Math.round(fr.length * (k + 1) / P); pages.push(fr.slice(a, b)); a = b; }
   return pages.map((pg, k) => ({ t: 'comic', ids: pg.flatMap(f => f.ids), ...(pages.length > 1 ? { page: [k + 1, pages.length] } : {}) }));
 }
 const pathOf = n => { const c = CHN(n); return c && c.loaded ? c.PATH.map(e => ({ e, S: chSess(c, e) })) : []; };
@@ -660,7 +669,20 @@ function loadCh(n) {
 /* chapters to load at start: the one on screen, and every chapter the learner has progress in (so Ôn tập tổng hợp sees all their words) */
 const chStarted = n => n === (st.ch || 1) || Object.keys(st.sess).some(k => chOfId(k) === n) || Object.keys(st.wl).some(w => wordCh(w) === n);
 function bootLoad() { CHAPTERS.filter(c => c.ready && !c.loaded && chStarted(c.n)).forEach(c => loadCh(c.n).then(() => { if (!inScreen && !document.querySelector('.wcov,.mback')) home(); }).catch(() => { })); }
-const unlocked = (list, i) => !!st.openAll || i === 0 || (list[i].S && SS(list[i].S.id).done) || (!!list[i - 1].S && !!SS(list[i - 1].S.id).done);
+/* phiếu #5: Bài 1's path changed (Ôn tập + 🎬 Ghép truyện placed by the story; reviews o1–o5 instead of m1–m6). A save made on the old path
+   keeps open every stage up to the furthest one it could open there: walk PATH1_OLD as a strict chain (a stage is open when the one before
+   it was open AND done). A learner of the new path never plays m1–m6, so the chain stops at m1 and opens nothing extra. Nothing is stored:
+   it is read from st.sess every time, so saves merged from an old device (Sheet sync) are carried over too. */
+function legacyOpen1() {
+  const inNew = new Set(PATH1.map(e => String(e.id))); let open = null;
+  for (let k = 0; k < PATH1_OLD.length; k++) {
+    if (k > 0) { const p = st.sess[PATH1_OLD[k - 1]]; if (!(p && p.done)) break; }
+    if (inNew.has(String(PATH1_OLD[k]))) open = PATH1_OLD[k];
+  }
+  return open;
+}
+const legacyIdx = list => { if (!list.length || chOfId(list[0].e.id) !== 1) return -1; const o = legacyOpen1(); return o == null ? -1 : list.findIndex(x => String(x.e.id) === String(o)); };
+const unlocked = (list, i) => !!st.openAll || i === 0 || (list[i].S && SS(list[i].S.id).done) || (!!list[i - 1].S && !!SS(list[i - 1].S.id).done) || i <= legacyIdx(list);
 function home(tab) {
   if (tab) homeTab = tab;
   runLeave(); tickFlush(); inScreen = false; save(); document.body.classList.add('hb'); document.body.classList.remove('ins');
@@ -706,7 +728,8 @@ function pathView(el) {
     loadCh(VC.n).then(() => { if (!inScreen) home(); }).catch(() => { toast('Chưa tải được Bài ' + VC.n + '. Kiểm tra mạng rồi thử lại.'); if (!inScreen) { st.ch = 1; home(); } });
     return null;
   }
-  const list = pathOf(VC.n), ROW = 150, TOP = 24, cur = list.findIndex(o => o.S && !SS(o.S.id).done);
+  const list = pathOf(VC.n), ROW = 150, TOP = 24, lastDone = list.map(o => !!(o.S && SS(o.S.id).done)).lastIndexOf(true);
+  let cur = list.findIndex((o, i) => i > lastDone && o.S && !SS(o.S.id).done); if (cur < 0) cur = list.findIndex(o => o.S && !SS(o.S.id).done);   /* the next stage after the furthest one done (phiếu #5: old saves have open, undone stages behind it) */
   const wrap = h('div', 'path'); wrap.style.height = (list.length * ROW + TOP + 10) + 'px';
   const X = i => 50 + 25 * Math.sin(i * 1.05), Y = i => TOP + i * ROW;
   const KIND = o => o.e.kind === 'learn' || o.e.kind === 'reader' ? 'study' : o.e.kind;
@@ -927,6 +950,7 @@ function clipsFor(S) {
     (c.lines || []).forEach(l => add(l.zh, l.v)); (c.ids || []).forEach(i => { const b = BOOK[i]; if (b) add(b.zh, 'm'); });
     if (c.t === 'pick') add(c.zh, 'f'); if (c.t === 'hear') add(c.s, 'f'); if (c.t === 'order' || c.t === 'type') add(c.zh, 'f'); if (c.t === 'mc') add(c.full, 'f'); if (c.t === 'tf') add(c.zh, 'f'); if (c.t === 'spot') add(c.full, 'f');
     if (c.audio) add(c.audio, 'f'); (c.say || []).forEach(x => add(x.zh, 'm'));
+    if (c.t === 'say') { const b = c.i != null ? BOOK[c.i] : c; if (b) add(b.zh, c.v || (c.i != null ? 'm' : 'f')); }
   });
   (S.words || []).forEach(id => { add(id, 'm'); ks.add('MS|' + akey(id)); const w = W[id]; if (w) (w.ex || []).forEach(e => add(e, 'm')); });
   return [...ks];
@@ -958,7 +982,7 @@ function renderScreen() {
     x.i++; x.b = S.screens.slice(0, x.i).filter(q => !q._retry).length; save(); renderScreen();
   };
   const pane = h('div', 'pane'); stage.appendChild(pane);
-  ({ story, word, pick, mc, read, comic, album, match, hear, order, type, choose, wrap, tf, spot, predict })[sc.t](sc, pane, ep, gate, nb);
+  ({ story, word, pick, mc, read, comic, say, album, match, hear, order, type, choose, wrap, tf, spot, predict })[sc.t](sc, pane, ep, gate, nb);
   if (sc._retry) pane.insertBefore(h('div', 'retry', '↻ Ôn lại câu bạn vừa nhầm'), pane.firstChild);
   if (S.rev && S.info && x.i === 0) pane.insertBefore(h('div', 'revinfo', S.info), pane.firstChild);
   stage.scrollTop = 0;
@@ -1345,6 +1369,109 @@ let leaveFns = [];
 const onLeave = f => leaveFns.push(f);
 function runLeave() { const L = leaveFns; leaveFns = []; L.forEach(f => { try { f(); } catch (e) { } }); }
 
+/* ---- say ("Nhắc lại", phiếu #5): speaking practice on one book sentence. NEVER scored (no logQ, no st.res, no revision record).
+   { t:'say', mode:'echo'|'read', i:<BOOK index> } (or zh/vi/v instead of i; v = voice of the model, book lines 'm').
+   echo: the sentence is played (Tự đọc to on), no text yet ("Hiện chữ" / "Pinyin" are hints) → hold 🎤 and say it → own take played →
+         "▶ Nghe câu mẫu" + answer block (§12).   read: only the text (Pinyin button), no sound → hold 🎤 and read → own take, then the model.
+   The microphone part is the comic's: openMic() + startTake() (voiced time ≥ need, no pronunciation scoring), 3 failed tries → "Mình đã nói",
+   no mic / denied → listen and say it along, then "Mình đã nói" (+ "Mã lỗi"). "Bỏ qua (không tiện nói)" is always there.
+   The take lives only in memory while the screen is open (blob URL revoked on leave). */
+function sayLine(sc) {
+  const B = bookOf(SESSIONS.find(x => x.id === sid)), b = sc.i != null ? B[sc.i] : sc;
+  return { zh: b.zh, vi: b.vi, v: sc.v || (sc.i != null ? 'm' : 'f') };
+}
+function say(sc, pane, ep, gate) {
+  gate(false);
+  const L = sayLine(sc), echo = sc.mode !== 'read', need = Math.max(1, COMIC.perChar * COMIC.share * akey(L.zh).length);
+  const Y = window.__say = { mode: micOK() && window.MediaRecorder ? 'mic' : 'tap', echo, url: '', done: false, how: '', fails: 0, takes: [] };
+  const sc0 = sc.scene || bookScenes(chOf(SESSIONS.find(x => x.id === sid)))[sc.i];
+  pane.insertAdjacentHTML('beforeend', `<div class="sy-head"><span class="sy-tag">${echo ? '🎧 Nghe rồi nhắc lại' : '📖 Đọc to trước'}</span></div>` + (sc0 ? art(sc0, 'sm') : '') +
+    `<div class="prompt" style="font-weight:500">${echo ? 'Nghe câu trong truyện, rồi bấm giữ 🎤 và nói lại theo. Không cần nhìn chữ.' : 'Đọc to câu này. Đọc xong sẽ được nghe lại giọng mình và câu mẫu.'}</div>`);
+  const z = h('div', 'sy-z', zh(L.zh)), pl = h('div', 'sy-pl', pyL(L.zh)), hints = h('div', 'row sy-hints'), act = h('div', 'sy-act'), msg = h('div', 'cm-msg'), after = h('div', 'row sy-after'), skip = h('button', 'sy-skip', 'Bỏ qua (không tiện nói)');
+  msg.setAttribute('role', 'status'); after.hidden = true; pl.hidden = true;
+  const model = () => { EP++; stopAudio(); return vox(L.zh, L.v); };
+  if (echo) {
+    z.hidden = true;
+    const bs = h('button', 'ghost sy-hear', '🔊 Nghe lại'), bt = h('button', 'ghost sy-show', 'Hiện chữ'), bp = h('button', 'ghost sy-py', 'Pinyin');
+    let pyOn = false;
+    const lab = () => { bt.textContent = z.hidden ? 'Hiện chữ' : 'Ẩn chữ'; pl.hidden = !(pyOn && z.hidden); z.classList.toggle('showpy', pyOn && !z.hidden); bp.textContent = pyOn ? 'Ẩn pinyin' : 'Pinyin'; };
+    bs.onclick = model; bt.onclick = () => { z.hidden = !z.hidden; lab(); }; bp.onclick = () => { pyOn = !pyOn; lab(); };
+    hints.append(bs, bt, bp); pane.append(hints, z, pl);
+    if (st.auto !== 0) setTimeout(() => { if (ep === EP) vox(L.zh, L.v); }, 400);
+  } else {
+    const bp = h('button', 'ghost sy-py', 'Pinyin'); pyBtn(bp, z); hints.appendChild(bp); pane.append(z, hints);
+  }
+  pane.append(act, msg, after, skip);
+  const sayMsg = (t, good) => { msg.textContent = t; msg.classList.toggle('good', !!good); };
+  let ab = null;
+  /* finished: by a take (rec), "Mình đã nói" (did) or skipping (skip). Tiếp unlocks; the learner hears the take / the model, never auto-advances */
+  function finish(how) {
+    const first = !Y.done; Y.done = true; Y.how = how; gate(true);
+    if (how === 'skip') { act.hidden = true; } skip.hidden = true;
+    after.hidden = false; after.innerHTML = '';
+    if (Y.url) { const b = h('button', 'ghost on sy-mine', '▶ Giọng của bạn'); b.onclick = () => { EP++; playUrl(Y.url, 'say'); }; after.appendChild(b); }
+    const m = h('button', 'ghost sy-model', '▶ Nghe câu mẫu'); m.onclick = model; after.appendChild(m);
+    if (first) { z.hidden = true; pl.hidden = true; hints.hidden = true; ab = answerBlock(pane, L.zh, L.vi, { male: L.v === 'm', quiet: how === 'rec' }); }
+    else if (ab) showAns(ab);
+    if (how === 'rec') {   /* own voice first; read mode then the model (Tự đọc to on) */
+      EP++; const e0 = EP;
+      (Y.url ? playUrl(Y.url, 'say') : Promise.resolve()).then(() => { if (e0 === EP && !echo && st.auto !== 0) setTimeout(() => { if (e0 === EP) vox(L.zh, L.v); }, 300); });
+    }
+  }
+  skip.onclick = () => { if (take) discard(); sayMsg(''); finish('skip'); };
+  function tapUI(note, err) {
+    Y.mode = 'tap';
+    act.innerHTML = `<p class="cm-note">${note}</p><div class="row"><button class="ghost sy-sam">🔊 Nghe mẫu</button><button class="ghost on sy-did">✓ Mình đã nói</button></div>`;
+    $('.sy-sam', act).onclick = model; $('.sy-did', act).onclick = () => { act.hidden = true; finish('did'); };
+    if (err) { const code = micErr(err); window.__sayMicErr = code; const ec = h('p', 'cm-err', ''); ec.style.cssText = 'font-size:12px;opacity:.7;margin:0'; ec.textContent = 'Mã lỗi: ' + code + (err.message && err.name ? ' (' + err.message + ')' : ''); act.appendChild(ec); toast('Không mở được micro (' + code + '). Chuyển sang: nghe mẫu, nói theo rồi bấm “Mình đã nói”'); }
+  }
+  /* the microphone: hold to speak (a quick tap toggles start/stop), like the comic's big card */
+  let take = null, pending = false, held = false, tapMode = false, downAt = 0, maxT = 0;
+  function discard() { if (!take) return; const t = take; take = null; clearTimeout(maxT); t.stop().then(r => { if (r.url) URL.revokeObjectURL(r.url); setAS('playback'); }); }
+  function micUI() {
+    act.innerHTML = `<button class="cm-mic sy-mic">🎤 Bấm giữ để ${echo ? 'nói' : 'đọc'}</button><div class="cm-meter" aria-hidden="true"><i></i></div><p class="cm-note">Giữ nút trong lúc nói, nói hết câu rồi thả ra (hoặc chạm một lần để bắt đầu, chạm lần nữa để dừng). Không chấm điểm, chỉ để bạn tập nói và nghe lại giọng mình.</p>`;
+    const mic = $('.sy-mic', act), meter = $('.cm-meter i', act);
+    const V = echo ? 'nói' : 'đọc', idle = () => { mic.classList.remove('on', 'loud'); mic.textContent = Y.url ? (echo ? '🎤 Nói lại (giữ nút)' : '🎤 Đọc lại (giữ nút)') : '🎤 Bấm giữ để ' + V; };
+    async function start() {
+      pending = true; mic.textContent = 'Đang mở micro…'; EP++; stopAudio(); let stream;
+      try { stream = await openMic(); }
+      catch (err) { pending = false; if (!Y.done) tapUI('Chưa dùng được micro, nên mình làm cách khác: nghe mẫu, nói theo, rồi bấm “Mình đã nói”.', err); else { act.hidden = true; window.__sayMicErr = micErr(err); } return; }
+      pending = false;
+      if (!pane.isConnected) { stream.getTracks().forEach(t => t.stop()); setAS('playback'); return; }
+      if (!held && !tapMode) { stream.getTracks().forEach(t => t.stop()); setAS('playback'); idle(); sayMsg('Micro đã sẵn sàng. Giờ giữ nút trong lúc nói nhé.'); return; }
+      meter.style.width = '0';
+      take = startTake(stream, (rms, v) => { meter.style.width = Math.min(100, v / need * 100) + '%'; mic.classList.toggle('loud', rms > COMIC.thr); });
+      mic.classList.add('on'); mic.textContent = tapMode ? '⏹ Chạm để dừng' : '🔴 Đang nghe… ' + V + ' xong thì thả ra'; sayMsg('');
+      maxT = setTimeout(stop, Math.min(30000, (akey(L.zh).length * 0.9 + 6) * 1000));
+    }
+    async function stop() {
+      if (!take) return; const t = take; take = null; clearTimeout(maxT); tapMode = false; idle(); mic.disabled = true;
+      const r = await t.stop(); setAS('playback'); mic.disabled = false;
+      const ok = r.any ? r.voiced >= need : r.dur >= need;   /* no level reading at all (audio engine asleep): judge by how long the button was held */
+      Y.takes.push({ voiced: +r.voiced.toFixed(2), dur: +r.dur.toFixed(2), any: r.any, need: +need.toFixed(2), ok, rec: !!r.url });
+      if (!pane.isConnected) { if (r.url) URL.revokeObjectURL(r.url); return; }
+      if (ok) {
+        if (r.url) { if (Y.url) URL.revokeObjectURL(Y.url); Y.url = r.url; }
+        meter.style.width = '100%'; idle(); sfx.ok(); sayMsg((echo ? '✓ Nói tốt!' : '✓ Đọc tốt!') + (Y.url ? ' Nghe lại giọng của bạn nhé.' : ''), true); finish('rec'); return;
+      }
+      if (r.url) URL.revokeObjectURL(r.url);
+      Y.fails++; meter.style.width = '0';
+      sayMsg(r.dur < 0.8 ? 'Giữ nút trong lúc nói nhé: nói hết câu rồi mới thả ra.' : `Chưa nghe đủ tiếng (khoảng ${Math.round(Math.min(1, (r.any ? r.voiced : r.dur) / need) * 100)}%). Nói to và nói hết câu nhé.`);
+      if (Y.fails >= 3 && !Y.done && !$('.sy-did', act)) { const esc = h('button', 'ghost sy-did', 'Micro không bắt được tiếng? Bấm: Mình đã nói'); esc.onclick = () => { esc.remove(); finish('did'); }; act.appendChild(esc); }
+    }
+    mic.addEventListener('pointerdown', e => {
+      e.preventDefault(); if (mic.disabled) return;
+      if (take || pending) { if (tapMode) { tapMode = false; if (take) stop(); } return; }
+      held = true; downAt = Date.now(); start();
+    });
+    const up = e => { if (!held) return; held = false; if (e.type !== 'pointercancel' && Date.now() - downAt < 300) { tapMode = true; if (take) mic.textContent = '⏹ Chạm để dừng'; return; } if (take) stop(); };
+    mic.addEventListener('pointerup', up); mic.addEventListener('pointercancel', up);
+    mic.oncontextmenu = e => e.preventDefault();
+  }
+  if (Y.mode === 'mic') micUI(); else tapUI('Micro chưa dùng được trên máy này, nên mình làm cách khác: nghe mẫu, nói theo, rồi bấm “Mình đã nói”.');
+  onLeave(() => { discard(); if (Y.url) { try { URL.revokeObjectURL(Y.url); } catch (e) { } Y.url = ''; } });
+}
+
 
 /* ================= review question types ================= */
 function finishQ(sc, pane, wrong, extra, label) {
@@ -1528,7 +1655,7 @@ function buildRevision(fixed) {
   const now = Date.now(), ids = Object.keys(st.wl).filter(i => W[i]);
   if (!ids.length) return [];
   const T = fixed ? shuffle(fixed) : shuffle(pickRev(ids, now)); buildRevision.words = T.slice();
-  const Q = fixed ? Math.min(10, T.length + 1) : Math.max(3, Math.min(8, T.length * 2)), qs = [], usedNow = {};
+  const Q = fixed ? Math.min(Math.max(10, T.length), T.length + 1) : Math.max(3, Math.min(8, T.length * 2)), qs = [], usedNow = {};   /* fixed: every word asked at least once (phiếu #5: o1 / o5 of Bài 1 have 11 words) */
   for (let n = 0; n < Q; n++) qs.push(revQ(T[n % T.length], usedNow));
   ensureBoth(qs);
   for (let n = 1; n < qs.length; n++) if (qs[n].t === qs[n - 1].t) { const m = qs.findIndex((q, j) => j > n && q.t !== qs[n - 1].t && (j + 1 >= qs.length || q.t !== qs[j + 1].t)); if (m > 0) [qs[n], qs[m]] = [qs[m], qs[n]]; }

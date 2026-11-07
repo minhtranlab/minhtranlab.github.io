@@ -39,6 +39,7 @@ const SESSIONS = [
       { sc: 'pickPhotosSame', why: 'Hai tấm giống hệt nhau thì không có 对比 mạnh. Câu nói một tấm 黑 (tối), một tấm 亮 (sáng).' },
       { sc: 'pickShop', why: 'Câu này nói về ảnh và sự tương phản, không phải mua đồ.' }],
       teach: '对比 cũng là <b>danh từ</b>: <b>对比很大</b> = tương phản mạnh. Còn <b>对比一下</b> hay <b>对比后</b> (như trong bài) là động từ: so sánh.' },
+    { t: 'say', mode: 'echo', i: 0 },   /* Nhắc lại (phiếu #5) */
     { t: 'album', words: ['电台', '恩爱', '入围', '对比'], say: [B(0), B(1)],
       tease: { scene: 'coupleOne', vi: 'ban giám khảo mời cặp thứ nhất kể chuyện. Họ thắm thiết như thế nào?' } }
   ] },
@@ -65,10 +66,11 @@ const SESSIONS = [
     { t: 'word', id: '自杀', scene: 'news' },
     { t: 'tf', scene: 'sadWindow', w: ['自杀'], zh: '这位妻子也想过自杀。', vi: 'Người vợ cũng từng nghĩ đến chuyện tự tử.', ok: true,
       why: '<b>自杀</b> = tự tử. <b>想过 + động từ</b> = từng nghĩ đến…: 她也想过要自杀. Cô vượt qua được nhờ tình yêu của chồng.' },
+    { t: 'say', mode: 'echo', i: 2 },   /* Nhắc lại (phiếu #5) */
     { t: 'album', words: ['评委', '如何', '瘫痪', '离婚', '自杀'], say: [B(2), B(4)],
       tease: { scene: 'hospitals', vi: 'người chồng đã làm gì khi ai cũng nghĩ anh sẽ bỏ đi?' } }
   ] },
-  { id: 3, title: 'Người chồng không bao giờ phàn nàn', sub: '2 từ mới và ghép truyện tranh phần đầu', thumb: 'standUp', words: ['抱怨', '爱护'], screens: [
+  { id: 3, title: 'Người chồng không bao giờ phàn nàn', sub: '2 từ mới', thumb: 'standUp', words: ['抱怨', '爱护'], screens: [
     { t: 'predict', scene: 'sadWindow', key: 'p3', q: 'Ai cũng nghĩ người chồng sẽ bỏ đi. Theo bạn, anh ấy đã làm gì?', opts: ['Anh ở lại chăm sóc vợ và động viên cô', 'Anh bỏ đi một thời gian rồi quay về', 'Anh thuê người khác chăm vợ'] },
     { t: 'story', scene: 'hospitals', lines: [B(5), B(6)] },
     { t: 'word', id: '抱怨', scene: 'grumble' },
@@ -90,8 +92,7 @@ const SESSIONS = [
       { t: '如何', reply: ['如何不能问原因。', '如何 không hỏi được lý do.'], note: 'Hỏi lý do (“sao lại…”) chỉ dùng được 怎么. 如何 chỉ hỏi cách thức hoặc tình trạng (như 他俩是如何恩爱的).' },
       { t: '什么', reply: ['不是“什么没来”。', 'Không ai nói “cái gì không đến”.'], note: '什么 hỏi “cái gì”, không hỏi lý do.' }],
       teach: 'Nhớ: <b>hỏi lý do → 怎么</b>. 如何 chỉ hỏi cách thức hoặc tình trạng, giọng trang trọng như phát thanh.' },
-    { t: 'comic', ids: [0, 1, 2, 3, 4], page: [1, 2] },
-    { t: 'comic', ids: [5, 6, 7, 8], page: [2, 2] },
+    { t: 'say', mode: 'echo', i: 6 },   /* Nhắc lại (phiếu #5) */
     { t: 'album', words: ['抱怨', '爱护'], say: [B(6), B(7)], recall: 'p3',
       tease: { scene: 'finalists', vi: 'còn hai cặp nữa. Cặp thứ hai nói họ chưa bao giờ cãi nhau, còn cặp thứ ba mãi không chịu xuất hiện… Ai mới là cặp thắm thiết nhất?' } }
   ] }

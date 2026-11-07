@@ -84,6 +84,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
       hearOf('一辈子'),
       { t: 'tf', scene: 'c2_parents', w: ['一辈子', '农村'], zh: '父母一辈子都住在城市里。', vi: 'Ba mẹ cả đời sống ở thành phố.', ok: false,
         why: 'Câu trong bài: <b>父母一辈子住在农村老家</b>. Ba mẹ sống cả đời ở quê, dưới nông thôn, không phải thành phố (城市).' },
+      { t: 'say', mode: 'read', i: 0 },   /* Nhắc lại (phiếu #5) */
       { t: 'album', words: ['一辈子', '农村', '屋', '断'], say: [B(0)],
         tease: { scene: 'c2_twoPlaces', vi: 'bà ngoại, cậu và cô đều đã lên thành phố. Ba mẹ có chịu lên ở cùng không?' } }
     ] },
@@ -110,6 +111,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
         [['很少', '很少 = hiếm khi. 很少不在城里住 thành “hiếm khi không ở thành phố”, ngược ý câu.'], ['以来', '以来 đứng sau một mốc thời gian, không đứng trước động từ.']],
         '<b>坚决不 + động từ</b> = nhất quyết không… <b>尽管…也…</b> = dù… vẫn…. Họ hàng đều ở thành phố, nhưng ba mẹ vẫn không chịu lên.', 'Chọn từ điền vào chỗ trống (câu trong bài):'),
       { t: 'type', w: ['坚决'], silent: 1, zh: '坚决不同意', vi: 'nhất quyết không đồng ý', py: 'jiān jué bù tóng yì', prompt: 'Gõ bằng bàn phím pinyin: “nhất quyết không đồng ý”' },
+      { t: 'say', mode: 'read', i: 1 },   /* Nhắc lại (phiếu #5) */
       { t: 'album', words: ['以来', '姥姥', '舅舅', '姑姑', '坚决'], say: [B(1)],
         tease: { scene: 'c2_newHouse', vi: 'hai vợ chồng đi làm thuê, dành dụm mua được một căn nhà mới. Ba mẹ lên xem nhà mới thì sao?' } }
     ] },
@@ -152,6 +154,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
         '<b>一套新房</b> = một căn nhà mới. <b>用打工挣的钱</b> = dùng tiền làm thuê kiếm được.', 'Chọn từ điền vào chỗ trống (câu trong bài):'),
       { t: 'tf', scene: 'c2_buyHouse', w: ['挣', '打工'], zh: '我们用父母的钱买了新房。', vi: 'Chúng tôi dùng tiền của ba mẹ mua nhà mới.', ok: false,
         why: 'Trong bài: <b>用打工挣的钱</b> = dùng tiền tự đi làm thuê kiếm được, không phải tiền của ba mẹ.' },
+      { t: 'say', mode: 'read', i: 2 },   /* Nhắc lại (phiếu #5) */
       { t: 'album', words: ['打工', '挣', '县', '套'], say: [B(2)],
         tease: { scene: 'c2_newHome', vi: 'nhà mới sửa xong, ba mẹ lên xem lần đầu. Vợ mình muốn để lại cho ba mẹ một thứ…' } }
     ] },
@@ -177,6 +180,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
       { t: 'tf', scene: 'c2_newHome', w: ['串'], zh: '父母很高兴地拿了新房的钥匙。', vi: 'Ba mẹ vui vẻ cầm chìa khoá nhà mới.', ok: false,
         why: 'Trong bài: <b>可他们拒绝了</b> = nhưng ba mẹ từ chối. Ba mẹ mừng vì nhà mới, nhưng không nhận chùm chìa khoá.' },
       { t: 'order', w: ['装修'], zh: '这家饭馆装修得很漂亮。', vi: 'Quán ăn này trang trí rất đẹp.', chunks: ['这家饭馆', '装修得', '很', '漂亮'] },
+      { t: 'say', mode: 'echo', i: 4 },   /* Nhắc lại (phiếu #5) */
       { t: 'album', words: ['装修', '不得了', '串'], say: [B(3), B(4)],
         tease: { scene: 'c2_drunkNight', vi: 'tối hôm đó ba uống say. Vợ chồng mình giữ ba mẹ ở lại, ba mẹ có chịu không?' } }
     ] },
@@ -205,6 +209,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
       { t: 'tf', scene: 'c2_lastBus', w: ['夜'], zh: '那天父母在新房住了一夜。', vi: 'Hôm đó ba mẹ ở lại nhà mới một đêm.', ok: false,
         why: 'Trong bài: <b>但他们仍坚持坐上了最后一趟回老家的车</b> = nhưng ba mẹ vẫn nhất định lên chuyến xe cuối cùng về quê.' },
       { t: 'order', w: ['夜'], zh: '我们在姑姑家住了一夜。', vi: 'Tụi mình ở lại nhà cô một đêm.', chunks: ['我们', '在姑姑家', '住了', '一夜'] },
+      { t: 'say', mode: 'echo', i: 5 },   /* Nhắc lại (phiếu #5) */
       { t: 'album', words: ['醉', '强烈', '夜'], say: [B(5), B(6)],
         tease: { scene: 'c2_lockedHouse', vi: 'vợ chồng mình lại phải đi làm xa, căn nhà mới đành khoá cửa để trống…' } }
     ] },
@@ -238,6 +243,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
         teach: '<b>临走那天</b> = hôm sắp đi. <b>以来</b> là “từ… đến nay”, không đi với 临走.' },
       { t: 'order', w: ['临'], zh: '临睡前，她总是给姥姥打个电话。', vi: 'Trước lúc ngủ, cô ấy luôn gọi điện cho bà ngoại.', chunks: ['临睡前', '她总是', '给姥姥', '打个电话'] },
       { t: 'type', w: ['锁'], zh: '锁门', vi: 'khoá cửa', prompt: 'Nghe và gõ lại bằng bàn phím pinyin:' },
+      { t: 'say', mode: 'echo', i: 8 },   /* Nhắc lại (phiếu #5) */
       { t: 'album', words: ['锁', '临'], say: [B(7), B(8)],
         tease: { scene: 'c2_whisper', vi: 'trước lúc lên xe, ba lặng lẽ kéo mình ra một góc. Ba muốn nói gì?' } }
     ] },
@@ -261,6 +267,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
       { t: 'tf', scene: 'c2_shyDad', w: ['悄悄'], zh: '父亲大声地对我说了这些话。', vi: 'Ba nói to với tôi những lời này.', ok: false,
         why: 'Ba <b>悄悄</b> kéo mình ra một góc, nói <b>轻声细语</b> (nhỏ nhẹ), mặt còn đỏ lên vì ngượng. Ba không nói to.' },
       { t: 'order', w: ['晒', '被子'], zh: '今天天气好，我们晒晒被子吧。', vi: 'Hôm nay trời đẹp, mình phơi chăn đi.', chunks: ['今天天气好', '我们', '晒晒', '被子吧'] },
+      { t: 'say', mode: 'read', i: 10 },   /* Nhắc lại (phiếu #5) */
       { t: 'album', words: ['悄悄', '晒', '被子'], say: [B(9), B(10), B(11)],
         tease: { scene: 'c2_winterNight', vi: 'chớp mắt đã nửa năm. Một đêm giữa mùa đông, cả nhà trở về…' } }
     ] },
@@ -296,6 +303,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
         '<b>都是灰尘 / 满是灰尘</b> = toàn là bụi. Trong bài: <b>满是灰尘、冷冷清清的景象</b>.'),
       { t: 'tf', scene: 'c2_dustyImagine', w: ['想象', '灰尘'], zh: '我们一打开家门，就看到家里满是灰尘。', vi: 'Vừa mở cửa nhà, chúng tôi đã thấy trong nhà đầy bụi.', ok: false,
         why: '<b>想象着</b> = đang tưởng tượng: lúc xuống xe, hai vợ chồng mới chỉ nghĩ nhà sẽ đầy bụi, chưa mở cửa. Tập sau mới biết thật ra thế nào.' },
+      { t: 'say', mode: 'echo', i: 12 },   /* Nhắc lại (phiếu #5) */
       { t: 'album', words: ['长途', '冻', '想象', '灰尘'], say: [B(12), B(13), B(14)],
         tease: { scene: 'c2_litWindow', vi: 'đến dưới toà nhà, ngẩng đầu lên thì… nhà mình đang sáng đèn?' } }
     ] },
@@ -319,6 +327,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
         teach: '<b>一…就立刻…</b> = vừa… là ngay lập tức…' },
       { t: 'word', id: '扑', scene: 'c2_pounce' },
       hearOf('扑'),
+      { t: 'say', mode: 'echo', i: 15 },   /* Nhắc lại (phiếu #5) */
       { t: 'album', words: ['亮', '微笑', '温暖', '立刻', '扑'], say: [B(15), B(16)],
         tease: { scene: 'c2_warmRoom', vi: 'bước vào nhà: ai đã quét dọn, trải chăn, nấu cơm sẵn?' } }
     ] },
@@ -346,6 +355,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
       { t: 'tf', scene: 'c2_warmRoom', w: ['铺'], zh: '我们回到家时，屋里很冷，被子也没铺。', vi: 'Lúc chúng tôi về tới nhà, trong nhà rất lạnh, chăn cũng chưa trải.', ok: false,
         why: 'Trong bài: <b>暖气开着</b> (máy sưởi đang bật) và <b>被子已铺好</b> (chăn đã trải sẵn).' },
       { t: 'type', w: ['卧室'], zh: '两个卧室', vi: 'hai phòng ngủ', prompt: 'Nghe và gõ lại bằng bàn phím pinyin:' },
+      { t: 'say', mode: 'read', i: 17 },   /* Nhắc lại (phiếu #5) */
       { t: 'album', words: ['卧室', '铺', '飘', '阵'], say: [B(17)],
         tease: { scene: 'c2_dadTalk', vi: 'ba kể: hôm qua mẹ nhận được điện thoại… Vì sao ba mẹ lại ở đây?' } }
     ] },
@@ -366,6 +376,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
       { t: 'type', w: ['感受'], zh: '感受到温暖', vi: 'cảm nhận được hơi ấm', prompt: 'Nghe và gõ lại bằng bàn phím pinyin:' },
       { t: 'tf', scene: 'c2_realize', w: ['感受'], zh: '父母要钥匙，是因为他们想住在城里。', vi: 'Ba mẹ xin chìa khoá vì muốn lên thành phố ở.', ok: false,
         why: 'Ba mẹ vẫn không muốn ở thành phố (tập 2: <b>坚决不在城里住</b>). Ba mẹ xin chìa khoá <b>只是为了让我们回来时，能立刻感受到家的温暖</b>: để khi con về là có ngay một căn nhà ấm.' },
+      { t: 'say', mode: 'read', i: 19 },   /* Nhắc lại (phiếu #5) */
       { t: 'album', words: ['感受', '流泪'], say: [B(18), B(19), B(20)], recall: 'c2key',
         tease: { done: 1, scene: 'c2_keys', vi: 'Bạn đã học xong cả bài. Chùm chìa khoá ba mẹ xin không phải để giữ nhà, mà để giữ hơi ấm cho con. Từ nào còn lung lay thì vào “Ôn tập tổng hợp” nhé.' } }
     ] },

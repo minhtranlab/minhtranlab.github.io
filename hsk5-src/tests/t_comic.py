@@ -1,4 +1,4 @@
-"""The 'comic' screen (Ghép truyện, Tập 3, two pages). Plays it to the end on iPhone 390x844 and iPad 820x1180 with BOTH ways of
+"""The 'comic' screen (Ghép truyện; since phiếu #5 the stage g1 of Bài 1, sentences 0–8, two pages). Plays it to the end on iPhone 390x844 and iPad 820x1180 with BOTH ways of
 placing a card (drag with a finger/mouse, and tap the card then tap the frame), with:
   - a fake microphone that 'speaks' (a looped tone file): hold 🎤 long enough -> card lights up; too short -> it does not,
   - a fake microphone that only hears room noise: 3 failed holds -> the escape button 'Mình đã đọc' appears (never stuck),
@@ -29,10 +29,9 @@ def chk(c, m):
 
 async def goto_comic(pg, page=0):
     await pg.goto(BASE); await pg.wait_for_timeout(400)
-    await pg.evaluate("st.auto=1; st.openAll=1; window.__comicTakes=[]")
-    i = await pg.evaluate(f"SESSIONS.find(s=>s.id===3).screens.findIndex(c=>c.t==='comic')+{page}")
-    await pg.evaluate(f"st.sess[3]={{i:{i},b:{i},done:0}}; play(3)"); await pg.wait_for_timeout(500)
-    return i
+    await pg.evaluate("st.auto=1; st.openAll=1; window.__comicTakes=[]; pathOf(1)")   # pathOf builds the 🎬 stage g1 from PATH1
+    await pg.evaluate(f"st.sess.g1={{i:{page},b:{page},done:0}}; play('g1')"); await pg.wait_for_timeout(500)
+    return page
 
 async def nextbar(pg):
     return await pg.evaluate('''(()=>{const nx=document.getElementById('next'),r=nx.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
@@ -74,10 +73,10 @@ async def play_page(pg, lab, how, finger, mic=True, wrong=False, shot=None):
 
 async def after_page(pg, lab, key_i, wrong_i, recs, shot=None):
     nb = await nextbar(pg); chk(not nb['dis'] and nb['vis'], f'{lab}: Tiếp open and visible when done {nb}')
-    i0 = await pg.evaluate('SS(3).i'); await pg.wait_for_timeout(1200)
-    chk(await pg.evaluate('SS(3).i') == i0, f'{lab}: no auto-advance')
+    i0 = await pg.evaluate('SS(sid).i'); await pg.wait_for_timeout(1200)
+    chk(await pg.evaluate('SS(sid).i') == i0, f'{lab}: no auto-advance')
     chk('Đúng!' not in await pg.inner_text('#stage'), f'{lab}: no "Đúng!" text')
-    res = await pg.evaluate(f"st.res['3:{key_i}']"); chk(res == (0 if wrong_i is not None else 1), f'{lab}: first-placement score {res}')
+    res = await pg.evaluate(f"st.res[String(sid)+':{key_i}']"); chk(res == (0 if wrong_i is not None else 1), f'{lab}: first-placement score {res}')
     if wrong_i is not None:
         bad = await pg.evaluate(f"[...new Set(segs(BOOK[{wrong_i}].zh).map(x=>x.k).filter(k=>W[k]))].filter(k=>!(st.wl[k]&&st.wl[k].fail))")
         chk(not bad, f'{lab}: taught words of the wrongly placed sentence go to revision {bad}')
@@ -114,7 +113,7 @@ async def full_run(b, lab, vp, mobile, how1, how2):
     w2 = await play_page(pg, f'{lab} p2 {how2}', how2, finger)
     await after_page(pg, f'{lab} p2', k1 + 1, w2, True)
     await pg.click('#next'); await pg.wait_for_timeout(500)
-    chk(await pg.evaluate(f"{CUR}.t") == 'album', f'{lab}: album after the comic')
+    chk(await pg.evaluate(f"{CUR}.t") == 'wrap', f'{lab}: the closing wrap after the comic')
     left = await pg.evaluate("({hold:!!document.querySelector('.cm-hold'),ghost:!!document.querySelector('.cm-ghost'),cls:document.body.classList.contains('cm-holding'),take:!!(__comic&&__comic.take),recs:Object.keys(__comic.rec).length})")
     chk(not any(left.values()), f'{lab}: comic cleaned up after leaving {left}')
     chk(not errs, f'{lab}: page errors {errs[:3]}')

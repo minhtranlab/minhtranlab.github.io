@@ -13,7 +13,9 @@ Match (phiếu #4): a wrong pair makes BOTH cells visibly red (computed backgrou
 one line "<word> không có nghĩa là …" without the right meaning, the word deselected and marked with a red dot to the end; the answer block marks it
 "Lần đầu chưa đúng…" and the word really drops to box 0 in the revision list (st.wl).
 Comic (Ghép truyện) screens: Tiếp locked until done but always visible, each placed card shows Chinese (tappable, pinyin) +
-Vietnamese + 🔊 and is spoken (nothing when 'Tự đọc to' is off), a male clip exists for every sentence, no auto-advance, no 'Đúng!'."""
+Vietnamese + 🔊 and is spoken (nothing when 'Tự đọc to' is off), a male clip exists for every sentence, no auto-advance, no 'Đúng!'.
+Say (Nhắc lại, phiếu #5) screens: Tiếp locked but visible, no text before speaking on echo; after 'Mình đã nói' / 'Bỏ qua': answer block
+with meaning + Pinyin, read aloud only with Tự đọc to, male clip, Tiếp open and visible, no auto-advance, no 'Đúng!', nothing scored."""
 import asyncio, sys, json
 from comic_util import solve_nomic, bank, frame_of, read_nomic, place_tap
 from playwright.async_api import async_playwright
@@ -124,7 +126,7 @@ async def main():
         # 3) Tiếp visible on every non-question screen too (story, word, read, album, predict, wrap), both sizes
         for pgx, lab in ((pg, 'phone'), (pg2, 'pad')):
             bad = await pgx.evaluate('''async()=>{const bad=[];for(const s of SESSIONS.filter(s=>!s.rev&&!s.mix&&!s.test)){const L=(s.base||s.screens);
-              for(let i=0;i<L.length;i++){if(!['story','word','read','comic','album','predict'].includes(L[i].t))continue;st.sess[s.id]={i,done:0,b:i};play(s.id);await new Promise(r=>setTimeout(r,30));
+              for(let i=0;i<L.length;i++){if(!['story','word','read','comic','say','album','predict'].includes(L[i].t))continue;st.sess[s.id]={i,done:0,b:i};play(s.id);await new Promise(r=>setTimeout(r,30));
               const nx=document.getElementById('next'),r=nx.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
               if(!(r.top>=0&&r.bottom<=innerHeight&&hit&&(hit===nx||nx.contains(hit))))bad.push(s.id+'#'+i)}}home();return bad}''')
             chk(not bad, f'[{lab}] Tiếp visible on lesson screens: {bad[:10]}')
@@ -171,6 +173,38 @@ async def main():
                         chk(await pgx.evaluate("document.getElementById('sheet').classList.contains('open')"), f'{tag}: word in a placed card opens the meaning sheet')
             await pgx.evaluate('st.auto=1;save();home()')
         print('comic checks done:', len(cms), 'screens x 2 sizes x auto on/off')
+        # 4d) say (Nhắc lại, phiếu #5) screens: no microphone in this browser -> the fallback. Phone: "Mình đã nói" on every one; pad: "Bỏ qua"
+        #     on every one; auto off on one echo and one read. Before: Tiếp locked but visible, no Chinese text yet on echo; after: answer block
+        #     with Pinyin, read aloud (nothing when auto is off), male clip, Tiếp open + visible, no auto-advance, no "Đúng!", nothing scored.
+        sys_ = await pg.evaluate("SESSIONS.filter(s=>!s.rev&&!s.mix&&!s.test).flatMap(s=>(s.base||s.screens).map((c,i)=>[s.id,i,c.t,c.mode]).filter(x=>x[2]==='say'))")
+        chk(len(sys_) == 22, f'say screens found: {len(sys_)}')
+        runs = [(pg, 'phone', x, 1, 'did') for x in sys_] + [(pg2, 'pad', x, 1, 'skip') for x in sys_]
+        runs += [(pg, 'phone', next(x for x in sys_ if x[3] == m), 0, 'did') for m in ('echo', 'read')]
+        for pgx, lab, (sid_, i, _, mode), auto, how in runs:
+            J = json.dumps(sid_); tag = f'[{lab}] say {sid_} #{i} {mode} {how} auto {auto}'
+            await pgx.evaluate(f"st.auto={auto};window.__plays.length=0;st.sess[{J}]={{i:{i},b:{i},done:0}};play({J})"); await pgx.wait_for_timeout(350)
+            pre = await pgx.evaluate("(()=>{const nx=document.getElementById('next'),r=nx.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2),z=document.querySelector('.sy-z');return [nx.disabled,r.top>=0&&r.bottom<=innerHeight&&(hit===nx||nx.contains(hit)),z.offsetHeight>0,JSON.stringify(st.res),(st.log.d[todayKey()]||{q:0}).q]})()")
+            chk(pre[0] and pre[1], f'{tag}: Tiếp locked but visible before speaking {pre[:2]}')
+            chk(pre[2] == (mode == 'read'), f'{tag}: Chinese text before speaking only in read mode ({pre[2]})')
+            if how == 'did':
+                if await pgx.query_selector('.sy-mic'): await pgx.click('.sy-mic'); await pgx.wait_for_selector('.sy-did', timeout=5000)
+                await pgx.evaluate('window.__plays.length=0'); await pgx.click('.sy-did')
+            else: await pgx.evaluate('window.__plays.length=0'); await pgx.click('.sy-skip')
+            await pgx.wait_for_timeout(900)
+            a = await pgx.evaluate(f"""(()=>{{const S=SESSIONS.find(x=>x.id==={J}),L=sayLine(S.screens[{i}]),rv=document.querySelector('.pane .reveal'),nx=document.getElementById('next'),r=nx.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2),
+              ft=document.querySelector('footer').getBoundingClientRect().top,rr=rv?rv.getBoundingClientRect():null;
+              return {{reveal:!!rv,py:!!(rv&&rv.querySelector('.rpy')),vi:!!(rv&&rv.querySelector('.rvv2')),spoke:__plays.includes('M:'+akey(L.zh)),plays:__plays.length,clip:!!AUD['M|'+akey(L.zh)],
+                on:!nx.disabled,vis:r.top>=0&&r.bottom<=innerHeight&&(hit===nx||nx.contains(hit)),inview:!!rr&&rr.top<ft,dung:/Đúng!|Đúng rồi/.test(document.getElementById('stage').innerText),
+                res:JSON.stringify(st.res),q:(st.log.d[todayKey()]||{{q:0}}).q}}}})()""")
+            chk(a['reveal'] and a['py'] and a['vi'], f'{tag}: answer block with meaning and Pinyin {a}')
+            chk(a['spoke'] if auto else a['plays'] == 0, f'{tag}: answer read aloud only when Tự đọc to is on (spoke {a["spoke"]}, plays {a["plays"]})')
+            chk(a['clip'], f'{tag}: male clip of the sentence')
+            chk(a['on'] and a['vis'] and a['inview'], f'{tag}: Tiếp open and visible, answer block in view {a}')
+            chk(not a['dung'], f'{tag}: no "Đúng!" text')
+            chk(a['res'] == pre[3] and a['q'] == pre[4], f'{tag}: nothing scored')
+            await pgx.wait_for_timeout(700); chk(await pgx.evaluate(f'SS({J}).i') == i, f'{tag}: no auto-advance')
+        await pg.evaluate('st.auto=1;save();home()'); await pg2.evaluate('st.auto=1;save();home()')
+        print('say checks done:', len(runs), 'runs')
         # 4c) match: a wrong pair is clearly red on both cells, sound, line, deselect, red dot, answer block note, word back to box 0
         for pgx, lab in ((pg, 'phone'), (pg2, 'pad')):
             await pgx.evaluate('''()=>{const S=SESSIONS.find(s=>s.mix);Object.keys(MEAN).filter(k=>W[k]).forEach(wrec);play(S.id);const i=S.screens.findIndex(c=>c.t==='match');SS(S.id).i=i;renderScreen();

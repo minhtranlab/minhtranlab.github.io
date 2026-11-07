@@ -38,24 +38,61 @@ async def main():
     async with async_playwright() as p:
         b = await p.chromium.launch(executable_path='/opt/pw-browsers/chromium', args=['--no-sandbox', '--autoplay-policy=no-user-gesture-required'])
 
-        # 1) migration: the old Bài 1 progress loads unchanged and the Bài 1 path looks the same
+        # 1) migration: the old Bài 1 progress loads unchanged; on the new path of phiếu #5 (Ôn tập + 🎬 by the story) everything stays open
         ctx, pg = await fresh(b, FIX)
         st = await pg.evaluate('JSON.parse(localStorage.getItem("hsk5_story_v4"))')
         chk(st['sess'] == FIX['sess'], 'old Bài 1 progress (st.sess) kept as is')
         chk(st['stk'] == FIX['stk'] and st['wl'] == FIX['wl'] and st['test'] == FIX['test'] and st['log'] == FIX['log'] and st['res'] == FIX['res'], 'stickers, revision records, test score, log, results kept')
-        h = await pg.evaluate("[document.querySelector('.brand').textContent, document.querySelector('.sub').textContent, document.querySelectorAll('.path .nd:not(.rev)').length, document.querySelectorAll('.path .nd.done').length, [...document.querySelectorAll('.chb')].map(b=>b.textContent).join('|'), [...document.querySelectorAll('.path .nl')].slice(0,3).map(e=>e.textContent).join(' / ')]")
+        h = await pg.evaluate("[document.querySelector('.brand').textContent, document.querySelector('.sub').textContent, document.querySelectorAll('.path .nd:not(.rev)').length, document.querySelectorAll('.path .nd.done').length, [...document.querySelectorAll('.chb')].map(b=>b.textContent).join('|'), [...document.querySelectorAll('.path .nl')].slice(0,3).map(e=>e.textContent).join(' / '), document.querySelectorAll('.path .nd.lock:not(.rev)').length, document.querySelectorAll('.path .nd.comic .nem').length]")
         chk(h[0] == '爱的细节' and h[1].startswith('HSK5 · Bài 1 ·'), f'home heading Bài 1: {h[:2]}')
-        chk(h[2] == 19 and h[3] == 19, f'Bài 1 path: 19 stages, all done ({h[2]}, {h[3]})')
+        chk(h[2] == 22 and h[3] == 13 and h[6] == 0 and h[7] == 4, f'Bài 1 new path: 22 stages, the 13 done before still done, none locked, 4 🎬 ({h[2]}, {h[3]}, locked {h[6]}, 🎬 {h[7]})')
         chk(h[4] == 'Bài 1|Bài 2', f'chapter switch shows Bài 1 | Bài 2 ({h[4]})')
         order = await pg.evaluate('STUDY(1).map(s=>s.id)')
-        chk(order == [1, 2, 'm1', 3, 4, 'm2', 5, 6, 'm3', 7, 8, 'm4', 9, 10, 'm5', 11, 'm6', 't1', 'rd'], f'Bài 1 path order unchanged {order}')
+        chk(order == [1, 2, 3, 'o1', 'g1', 4, 'o2', 'g2', 5, 6, 'o3', 7, 8, 'o4', 'g3', 9, 10, 11, 'o5', 'g4', 't1', 'rd'], f'Bài 1 path order (phiếu #5) {order}')
+        chk(await pg.evaluate("PATH1.filter(e=>e.kind==='comic').map(e=>e.ids.join(',')).join(' | ')") == '0,1,2,3,4,5,6,7,8 | 9,10,11 | 12,13,14,15,16,17,18,19,20 | 21,22,23,24,25,26,27,28,29', 'Ghép truyện g1–g4 cover sentences 0–8, 9–11, 12–20, 21–29')
+        pg_ = await pg.evaluate("['g1','g2','g3','g4'].map(id=>SESSIONS.find(s=>s.id===id).screens.filter(c=>c.t==='comic').length)")
+        chk(all(1 <= n <= 2 for n in pg_), f'each Ghép truyện is at most 2 pages {pg_}')
+        cur = await pg.evaluate("(()=>{const n=document.querySelector('.path .nd.cur');return n?n.getAttribute('aria-label'):''})()")
+        chk(cur.startswith('Ôn tập'), f'the pulsing "current" node is the first new stage after the furthest one done, not tập 1 ({cur})')
         chk(not any('ch2.js' in u for u in pg.reqs), 'Bài 2 bundle NOT downloaded while only Bài 1 is used')
         sum1 = await pg.evaluate('JSON.stringify(summary())')
         chk(json.loads(sum1)['units'] == 11 and json.loads(sum1)['words'] == 38, f'summary for the Sheet unchanged {sum1}')
+        chk(await pg.evaluate("SESSIONS.find(s=>s.id===3).screens.every(c=>c.t!=='comic') && SESSIONS.find(s=>s.id===11).screens.every(c=>c.t!=='read')"), 'no comic in tập 3, no 30-sentence read in tập 11')
         # old progress coming back from the Google Sheet (server copy without new fields) merges without loss
         mg = await pg.evaluate('''(R)=>{const L=JSON.parse(JSON.stringify(st));L.sess['2-1']={i:0,done:1,b:0};L.tests={'2-t':{best:3,n:5}};mergeInto(L,R,null);
           return [Object.keys(L.sess).length, L.sess['2-1'].done, L.tests['2-t'].best, L.sess[11].done, L.test.best]}''', FIX)
-        chk(mg == [20, 1, 3, 1, FIX['test']['best']], f'merge with an old server copy keeps Bài 1 and Bài 2 progress {mg}')
+        chk(mg == [29, 1, 3, 1, FIX['test']['best']], f'merge with an old server copy keeps Bài 1 and Bài 2 progress (19 old + 9 new stages of the path + 2-1) {mg}')
+        await ctx.close()
+
+        # 1b) migration of a PARTLY done old save (done to tập 5 + m1, m2 on the old path; tập 6 was open there) -> new path opens up to tập 6
+        part = json.loads(json.dumps(FIX)); part['sess'] = {k: v for k, v in FIX['sess'].items() if k in ('1', '2', '3', '4', '5', 'm1', 'm2')}; part['test'] = None
+        ctx, pg = await fresh(b, part)
+        lk = await pg.evaluate("pathOf(1).map((o,i)=>String(o.e.id)+(unlocked(pathOf(1),i)?'':'L')).join(' ')")
+        chk(lk == '1 2 3 o1 g1 4 o2 g2 5 6 o3L 7L 8L o4L g3L 9L 10L 11L o5L g4L t1L rdL', f'old save done to tập 5 + m1/m2: everything up to tập 6 open, the rest locked ({lk})')
+        cur = await pg.evaluate("(()=>{const n=document.querySelector('.path .nd.cur');return n?n.getAttribute('aria-label'):''})()")
+        chk(cur.startswith('Tập 6'), f'current node = tập 6 ({cur})')
+        wl0 = await pg.evaluate("JSON.stringify(st.wl)")
+        await play_through(pg, 6)
+        lk = await pg.evaluate("pathOf(1).map((o,i)=>String(o.e.id)+(unlocked(pathOf(1),i)?'':'L')).join(' ')")
+        chk(lk.startswith('1 2 3 o1 g1 4 o2 g2 5 6 o3 7L'), f'after tập 6: the new Ôn tập (5–6) opens, tập 7 waits for it ({lk[:40]})')
+        wl1 = json.loads(await pg.evaluate("JSON.stringify(st.wl)"))
+        chk(all(k in wl1 for k in json.loads(wl0)), 'revision records of the old reviews kept (st.wl)')
+        await ctx.close()
+
+        # 1c) a learner of the NEW path only gets the new rule (the old chain stops at m1, which is never played any more)
+        ctx, pg = await fresh(b)
+        await pg.evaluate("[1,2,3].forEach(id=>st.sess[id]={i:0,done:1,b:0});save();home()")
+        lk = await pg.evaluate("pathOf(1).map((o,i)=>String(o.e.id)+(unlocked(pathOf(1),i)?'':'L')).slice(0,7).join(' ')")
+        chk(lk == '1 2 3 o1 g1L 4L o2L', f'new learner after tập 3: Ôn tập open, 🎬 and tập 4 locked ({lk})')
+        await pg.evaluate("['o1','g1'].forEach(id=>st.sess[id]={i:0,done:1,b:0});save();home()")
+        lk = await pg.evaluate("pathOf(1).map((o,i)=>String(o.e.id)+(unlocked(pathOf(1),i)?'':'L')).slice(0,9).join(' ')")
+        chk(lk == '1 2 3 o1 g1 4 o2L g2L 5L', f'after Ôn tập + 🎬: tập 4 open, nothing more ({lk})')
+        # an old device's copy arriving from the Sheet (old path, done to m2) merges in and opens the same stages
+        await pg.evaluate("(R)=>{mergeInto(st,R,null);save();home()}", part)
+        lk = await pg.evaluate("pathOf(1).map((o,i)=>String(o.e.id)+(unlocked(pathOf(1),i)?'':'L')).slice(0,11).join(' ')")
+        chk(lk == '1 2 3 o1 g1 4 o2 g2 5 6 o3L', f'merged old copy from another device: open up to tập 6 ({lk})')
+        await ctx.close()
+        ctx, pg = await fresh(b, FIX)
         # the end of Bài 1 still says "Xong cả Bài 1!"
         await pg.evaluate("st.sess[11]={i:0,done:0};const S=SESSIONS.find(s=>s.id===11);play(11);SS(11).i=S.screens.length-1;renderScreen()"); await pg.wait_for_timeout(200)
         nb = await pg.evaluate("document.getElementById('next').textContent"); await pg.click('#next'); await pg.wait_for_timeout(100)

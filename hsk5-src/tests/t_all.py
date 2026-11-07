@@ -42,6 +42,11 @@ async def solve(pg, sid, i, t, wrongfirst):
             tl = await pg.query_selector(f'.obank .tile[data-t="{c}"]'); assert tl, (sid, i, c); await tl.click()
     elif t == 'comic':
         await solve_nomic(pg, wrongfirst)
+    elif t == 'say':   # Nhắc lại (phiếu #5): never scored; no microphone in this browser -> fallback 'Mình đã nói', or skip
+        if wrongfirst: await pg.click('.sy-skip')
+        else:
+            if await pg.query_selector('.sy-mic'): await pg.click('.sy-mic'); await pg.wait_for_selector('.sy-did', timeout=5000)
+            await pg.click('.sy-did')
     elif t == 'type':
         z = await pg.evaluate(f'{cur}.zh'); await pg.fill('.tin input', z); await pg.click('.tin button')
 async def main():
@@ -54,7 +59,7 @@ async def main():
         await pg.evaluate('loadCh(2)')   # phiếu #9: play Bài 1 and every stage of Bài 2 that exists
         await pg.screenshot(path='a_home.png')
         miss = await pg.evaluate('''()=>{const m=[];const chk=(z,v)=>{const k=akey(z);if(!k)return;const key=v==='m'?'M|'+k:k;if(!AUD[key])m.push(key)};
-          const scan=s=>s.screens.forEach(c=>{(c.lines||[]).forEach(l=>chk(l.zh,l.v));if(c.t==='pick')chk(c.zh,'f');if(c.t==='hear'&&c.s)chk(c.s,'f');if(c.t==='order'||c.t==='type')chk(c.zh,'f');if(c.t==='mc')chk(c.full,'f');if(c.t==='tf')chk(c.zh,'f');if(c.t==='spot')chk(c.full,'f');if(c.t==='album')(c.say||[]).forEach(x=>chk(x.zh,'m'))});
+          const scan=s=>s.screens.forEach(c=>{(c.lines||[]).forEach(l=>chk(l.zh,l.v));if(c.t==='pick')chk(c.zh,'f');if(c.t==='hear'&&c.s)chk(c.s,'f');if(c.t==='order'||c.t==='type')chk(c.zh,'f');if(c.t==='mc')chk(c.full,'f');if(c.t==='tf')chk(c.zh,'f');if(c.t==='spot')chk(c.full,'f');if(c.t==='album')(c.say||[]).forEach(x=>chk(x.zh,'m'));if(c.t==='say'){const B=bookOf(s),b=c.i!=null?B[c.i]:c;if(!b)m.push('say:'+s.id);else chk(b.zh,c.v||(c.i!=null?'m':'f'))}});
           SESSIONS.forEach(scan); SESSIONS.filter(s=>s.ext).forEach(s=>scan({screens:s.ext})); Object.values(QB).flat().concat(...CHAPTERS.filter(C=>C.loaded).map(C=>C.TESTBANK.tf.concat(C.TESTBANK.spot,C.TESTBANK.hsk||[]))).forEach(c=>scan({screens:[c]}));
           WORDS.forEach(w=>{chk(w.id,'m');if(!AUD['MS|'+akey(w.id)])m.push('MS|'+w.id);w.ex.forEach(e=>chk(e,'m'))});
           return [...new Set(m)]}''')

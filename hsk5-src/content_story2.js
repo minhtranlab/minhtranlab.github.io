@@ -43,6 +43,7 @@ SESSIONS.push(
       '<b>暗暗 + động từ</b>: làm gì thầm trong lòng, không nói ra: 暗暗点头, 暗暗高兴, 暗暗决定.'),
     { t: 'hear', w: ['相敬如宾'], s: '他们结婚几十年，一直相敬如宾。', opts: ['Họ cưới nhau mấy chục năm, lúc nào cũng kính trọng nhau như khách quý.', 'Họ cưới nhau mấy năm, lúc nào cũng kính trọng nhau như khách quý.', 'Họ cưới nhau mấy chục năm, gần đây mới kính trọng nhau như khách quý.'], whyNot: ['', '几十年 = mấy chục năm; mấy năm là 几年.', '一直 = lúc nào cũng, suốt từ trước tới nay.'], whyNot: ['', '几十年 = mấy chục năm; mấy năm là 几年.', '一直 = lúc nào cũng, suốt từ trước tới nay.'],
       why: '<b>几十年</b> = mấy chục năm. <b>一直</b> = luôn luôn. 相敬如宾 là thành ngữ khen vợ chồng đối xử lễ độ, tôn trọng nhau.' },
+    { t: 'say', mode: 'echo', i: 10 },   /* Nhắc lại (phiếu #5) */
     { t: 'album', words: ['婚姻', '吵架', '相敬如宾', '暗暗'], say: [B(10), B(11)],
       tease: { scene: 'emptyDoor', vi: 'đến lượt cặp thứ ba, nhưng cánh cửa vẫn đóng. Điều gì đang xảy ra ngoài cửa?' } }
   ] },
@@ -65,6 +66,7 @@ SESSIONS.push(
       teach: '靠 có <b>3 nghĩa</b>: ① <b>靠着 / 靠在 + chỗ</b>: tựa vào (头靠在肩膀上). ② <b>靠 + người</b>: dựa vào, nhờ (在家靠父母). ③ <b>靠 + chỗ</b>: sát, gần (靠窗, 靠海).' },
     cl('lean', '没有一个人可以完全不___别人而生活。', 'Không ai có thể hoàn toàn không dựa vào người khác mà sống.', '没有一个人可以完全不靠别人而生活。', '靠', [['抱怨', '抱怨 là phàn nàn, không hợp nghĩa “dựa vào”.'], ['爱护', '爱护 là yêu thương gìn giữ; chỗ này cần nghĩa “dựa vào”.']],
       '<b>靠 + người</b> = dựa vào, nhờ vào: 靠朋友, 靠父母. Đây là nghĩa thứ hai của 靠.'),
+    { t: 'say', mode: 'echo', i: 13 },   /* Nhắc lại (phiếu #5) */
     { t: 'album', words: ['轮', '不耐烦', '靠', '肩膀'], say: [B(13), B(14)],
       tease: { scene: 'shh', vi: 'một giám khảo định gọi người đàn ông dậy. Người vợ làm gì?' } }
   ] },
@@ -85,6 +87,7 @@ SESSIONS.push(
     { t: 'hear', w: ['手指'], s: '她的手指很长，也很漂亮。', opts: ['Ngón tay cô ấy rất dài, cũng rất đẹp.', 'Ngón tay cô ấy rất ngắn, nhưng rất đẹp.', 'Ngón tay cô ấy rất dài, nhưng không đẹp.'], whyNot: ['', '很长 = rất dài.', '也很漂亮 = cũng rất đẹp.'], whyNot: ['', '很长 = rất dài.', '也很漂亮 = cũng rất đẹp.'],
       why: '<b>手指</b> = ngón tay. <b>很长</b> = rất dài. <b>也</b> = cũng.' },
     { t: 'type', w: ['伸'], silent: 1, zh: '伸出手', vi: 'chìa tay ra', py: 'shēn chū shǒu', prompt: 'Gõ bằng bàn phím pinyin: “chìa tay ra”' },
+    { t: 'say', mode: 'read', i: 15 },   /* Nhắc lại (phiếu #5) */
     { t: 'album', words: ['喊', '伸', '手指'], say: [B(15)], recall: 'p6',
       tease: { scene: 'leftNote', vi: 'người vợ viết một mảnh giấy bằng tay trái. Trên đó viết gì?' } }
   ] },
@@ -106,6 +109,7 @@ SESSIONS.push(
     { t: 'order', w: ['靠', '脑袋'], zh: '男人的脑袋靠在女人的肩膀上。', vi: 'Đầu người đàn ông tựa trên vai người phụ nữ.', chunks: ['男人的脑袋', '靠在', '女人的', '肩膀上'] },
     { t: 'hear', w: ['歪歪扭扭'], s: '他的字写得歪歪扭扭的，我看不清。', opts: ['Chữ anh ấy viết xiêu vẹo, mình nhìn không rõ.', 'Chữ anh ấy viết xiêu vẹo, nhưng mình vẫn nhìn rõ.', 'Chữ mình viết xiêu vẹo, anh ấy nhìn không rõ.'], whyNot: ['', '看不清 = nhìn không rõ.', '他的字 = chữ của anh ấy; người nhìn không rõ là mình (我).'], whyNot: ['', '看不清 = nhìn không rõ.', '他的字 = chữ của anh ấy; người nhìn không rõ là mình (我).'],
       why: '<b>歪歪扭扭</b> = xiêu vẹo, nguệch ngoạc. <b>写得…</b> = viết ra (kết quả) như thế nào. <b>看不清</b> = nhìn không rõ.' },
+    { t: 'say', mode: 'echo', i: 17 },   /* Nhắc lại (phiếu #5) */
     { t: 'album', words: ['歪歪扭扭', '递', '脑袋'], say: [B(16), B(17)],
       tease: { scene: 'notePaper', vi: 'các giám khảo đọc mảnh giấy. Trên đó viết gì?' } }
   ] },
@@ -126,6 +130,7 @@ SESSIONS.push(
     { t: 'type', w: ['如何'], silent: 1, zh: '明天见面如何', vi: 'Mai gặp nhau, thấy sao?', py: 'míng tiān jiàn miàn rú hé', prompt: 'Gõ bằng bàn phím pinyin: “Mai gặp nhau, thấy sao?” (hỏi ý kiến, cuối câu)' },
     cl('shockMeet', '___，你不认识我了？！', 'Sao, bạn không nhận ra mình nữa à?!', '怎么，你不认识我了？！', '怎么', [['如何', '如何 không đứng đầu câu để tỏ ý ngạc nhiên.'], ['什么', '什么 hỏi “cái gì”, không phải ngạc nhiên kiểu “sao lại thế”.']],
       'Đầu câu <b>怎么，…？！</b> = “Sao…?!”, giọng ngạc nhiên. Chỉ 怎么 làm được, 如何 thì không.'),
+    { t: 'say', mode: 'read', i: 19 },   /* Nhắc lại (phiếu #5) */
     { t: 'album', words: ['女士', '叙述'], say: [B(19), B(20)],
       tease: { scene: 'shockJudges', vi: 'các giám khảo rất sốc: người phụ nữ bỏ cả cơ hội. Họ sẽ làm gì?' } }
   ] },
@@ -147,6 +152,7 @@ SESSIONS.push(
       why: '<b>等待</b> = chờ đợi, trang trọng hơn 等. <b>再等待一段时间</b> = chờ thêm một lúc. Họ chưa giục (先不催).' },
     { t: 'spot', w: ['居然'], chunks: ['没想到', '暗暗', '在这儿碰到你！'], bad: 1, fix: '居然', full: '没想到居然在这儿碰到你！', vi: 'Không ngờ lại gặp bạn ở đây!',
       teach: '<b>居然 + động từ</b> = không ngờ lại…, diễn tả sự bất ngờ; hay đi cùng <b>没想到</b>. 暗暗 là “thầm”, không diễn tả sự bất ngờ.' },
+    { t: 'say', mode: 'echo', i: 22 },   /* Nhắc lại (phiếu #5) */
     { t: 'album', words: ['居然', '催', '等待'], say: [B(21), B(22)], recall: 'p9',
       tease: { scene: 'wakes', vi: 'người đàn ông tỉnh dậy. Vì sao anh ấy mệt đến thế?' } }
   ] },
@@ -168,10 +174,11 @@ SESSIONS.push(
       '<b>吵</b> có hai nghĩa: tính từ “ồn” (太吵了) và động từ “làm ồn”. <b>吵醒</b> = làm ồn khiến ai thức dậy (吵醒老婆). Khác 吵架 (cãi nhau).'),
     { t: 'hear', w: ['半夜', '老婆'], s: '他半夜才回家，老婆还在等他。', opts: ['Nửa đêm anh ấy mới về nhà, vợ vẫn đang đợi.', 'Nửa đêm anh ấy mới về nhà, vợ đã ngủ rồi.', 'Nửa đêm anh ấy ra khỏi nhà, vợ vẫn đang đợi.'], whyNot: ['', '还在等他 = vẫn đang đợi anh ấy.', '回家 = về nhà, không phải ra khỏi nhà.'], whyNot: ['', '还在等他 = vẫn đang đợi anh ấy.', '回家 = về nhà, không phải ra khỏi nhà.'],
       why: '<b>半夜</b> = nửa đêm. <b>才</b> = mãi mới. <b>老婆</b> = vợ (không phải “bà già” như âm Hán–Việt gợi ra).' },
+    { t: 'say', mode: 'read', i: 26 },   /* Nhắc lại (phiếu #5) */
     { t: 'album', words: ['蚊子', '叮', '半夜', '老婆', '吵'], say: [B(25), B(26)], recall: 'p10',
       tease: { scene: 'awards', vi: 'ban tổ chức công bố kết quả. Ai sẽ thắng giải “thắm thiết nhất”?' } }
   ] },
-  { id: 11, title: 'Giải thưởng thật sự', sub: '3 từ mới và đọc cả bài', thumb: 'thirdWin', words: ['项', '患难与共', '细节'], screens: [
+  { id: 11, title: 'Giải thưởng thật sự', sub: '3 từ mới', thumb: 'thirdWin', words: ['项', '患难与共', '细节'], screens: [
     { t: 'story', scene: 'awards', lines: [B(27)] },
     { t: 'word', id: '项', scene: 'itemPrize' },
     cl('importantWork', '这是一___很重要的工作。', 'Đây là một công việc rất quan trọng.', '这是一项很重要的工作。', '项', [['只', '只 là lượng từ cho con vật (一只蚊子), không dùng cho công việc.'], ['张', '张 là lượng từ cho vật phẳng (一张纸), không dùng cho công việc.']],
@@ -188,20 +195,19 @@ SESSIONS.push(
     { t: 'word', id: '细节', scene: 'detailZoom' },
     { t: 'hear', w: ['细节'], s: '爱就在生活的小细节里。', opts: ['Tình yêu nằm trong những chi tiết nhỏ của cuộc sống.', 'Tình yêu nằm trong những chi tiết lớn của cuộc sống.', 'Tình yêu không nằm trong những chi tiết nhỏ của cuộc sống.'], whyNot: ['', '小细节 = chi tiết nhỏ.', '就在 = chính là ở đó; câu không có 不.'], whyNot: ['', '小细节 = chi tiết nhỏ.', '就在 = chính là ở đó; câu không có 不.'],
       why: 'Đây chính là ý của tên bài <b>爱的细节</b>: tình yêu nằm trong những <b>细节</b> nhỏ. 细节 hay đi với: 电影的细节, 小说的细节, 生活的细节.' },
-    { t: 'read', title: 'Đọc cả bài từ đầu đến cuối', ids: Array.from({ length: 30 }, (_, i) => i) },
+    { t: 'say', mode: 'echo', i: 29 },   /* Nhắc lại (phiếu #5) */
     { t: 'album', words: ['项', '患难与共', '细节'], say: [B(27), B(29)], recall: 'win', tease: { done: 1, scene: 'thirdWin', vi: 'Bạn đã học xong cả bài. Từ nào còn lung lay thì vào “Ôn tập tổng hợp” nhé.' } }
   ] },
-  /* mixed review after every two study units (built when played, from the words of those two units plus a few older ones) */
-  { id: 'm1', mix: 1, after: [1, 2], title: 'Ôn tập', sub: 'Các từ của tập 1 và 2', thumb: 'cup', words: [], screens: [] },
-  { id: 'm2', mix: 1, after: [3, 4], title: 'Ôn tập', sub: 'Các từ của tập 3 và 4', thumb: 'cup', words: [], screens: [] },
-  { id: 'm3', mix: 1, after: [5, 6], title: 'Ôn tập', sub: 'Các từ của tập 5 và 6', thumb: 'cup', words: [], screens: [] },
-  { id: 'm4', mix: 1, after: [7, 8], title: 'Ôn tập', sub: 'Các từ của tập 7 và 8', thumb: 'cup', words: [], screens: [] },
-  { id: 'm5', mix: 1, after: [9, 10], title: 'Ôn tập', sub: 'Các từ của tập 9 và 10', thumb: 'cup', words: [], screens: [] },
-  { id: 'm6', mix: 1, after: [11], extra: 6, title: 'Ôn tập', sub: 'Tập 11 và các từ cũ', thumb: 'cup', words: [], screens: [] },
+  /* Ôn tập of the study path (phiếu #5: placed by the story, see content_path.js); built when played from the words of their units + a few older ones */
+  { id: 'o1', mix: 1, after: [1, 2, 3], title: 'Ôn tập', sub: 'Các từ của tập 1, 2 và 3', thumb: 'cup', words: [], screens: [] },
+  { id: 'o2', mix: 1, after: [4], title: 'Ôn tập', sub: 'Các từ của tập 4 và vài từ cũ', thumb: 'cup', words: [], screens: [] },
+  { id: 'o3', mix: 1, after: [5, 6], title: 'Ôn tập', sub: 'Các từ của tập 5 và 6', thumb: 'cup', words: [], screens: [] },
+  { id: 'o4', mix: 1, after: [7, 8], title: 'Ôn tập', sub: 'Các từ của tập 7 và 8', thumb: 'cup', words: [], screens: [] },
+  { id: 'o5', mix: 1, after: [9, 10, 11], title: 'Ôn tập', sub: 'Các từ của tập 9, 10 và 11', thumb: 'cup', words: [], screens: [] },
   { id: 't1', test: 1, title: 'Kiểm tra cuối bài 1', sub: 'Xem bạn nhớ và dùng được bao nhiêu', thumb: 'trophy', words: [], screens: [] }
 );
-/* the study path: 1 2 mix, 3 4 mix, 5 6 mix, 7 8 mix, 9 10 mix, 11 mix, chapter test */
-{ const ORDER = [1, 2, 'm1', 3, 4, 'm2', 5, 6, 'm3', 7, 8, 'm4', 9, 10, 'm5', 11, 'm6', 't1']; const all = SESSIONS.slice(); SESSIONS.length = 0; ORDER.forEach(id => SESSIONS.push(all.find(s => s.id === id))); }
+/* sessions in the order of the study path (content_path.js; the 🎬 stages g1–g4 are made from PATH1 by chSess) */
+{ const ORDER = [1, 2, 3, 'o1', 4, 'o2', 5, 6, 'o3', 7, 8, 'o4', 9, 10, 11, 'o5', 't1']; const all = SESSIONS.slice(); SESSIONS.length = 0; ORDER.forEach(id => SESSIONS.push(all.find(s => s.id === id))); }
 
 /* the whole story, read again at the end of the chapter */
 SESSIONS.push({ id: 'rd', reader: 1, title: 'Đọc lại cả câu chuyện', sub: '', thumb: 'awards', words: [], screens: [{ t: 'read', pics: 1, ids: BOOK.map((_, i) => i), title: 'Cả câu chuyện của Bài 1' }] });
