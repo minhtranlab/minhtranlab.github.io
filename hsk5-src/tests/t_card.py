@@ -12,6 +12,7 @@ async def run(p, name):
     bad=0; vbad=0
     for wid in await pg.evaluate('WORDS.map(w=>w.id)'):
         await pg.evaluate(f'wordDetail({wid!r}, true)'); await pg.wait_for_timeout(60)
+        await pg.wait_for_function("(()=>{const c=document.querySelector('.wcard');return c&&!c.getAnimations().some(a=>a.playState==='running')&&!!c.querySelector('.wcb')})()", timeout=3000)   # flip finished (mid-flip the card is ~0 px wide)
         await pg.evaluate("document.querySelectorAll('.wcard .chip2, .wcard summary, .wcard [data-open]').forEach(e=>e.click())")
         a=await pg.evaluate('()=>('+AUDIT+')().filter(x=>x.inCard&&!x.par.includes("SVG")&&x.txt!=="拼"&&x.txt!=="✕")')
         if a: bad+=1; print(name, wid,a[:3])

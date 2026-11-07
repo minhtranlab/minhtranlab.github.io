@@ -315,6 +315,7 @@ body.cm-holding.ins #stage{padding-bottom:calc(var(--fh) + 80px)}
 .nd.comic.done{border-color:var(--teal);box-shadow:0 5px 0 var(--teal)}.nd.comic.cur{border-color:var(--acc);box-shadow:0 5px 0 var(--acc2)}
 .nd.soon{border-style:dashed;box-shadow:none;background:transparent}.nd.soon .nlk{opacity:.7}.nl small.soonl{color:var(--mut)}
 .soonc.open{border-style:solid;border-color:var(--acc);background:var(--card);color:var(--ink)}.soonc.open b{opacity:1}
+.revinfo{align-self:flex-start;font-size:13.5px;font-weight:600;color:var(--rv);background:var(--chip);border-radius:99px;padding:4px 12px;margin:0}
 .fb .whyn{margin-bottom:6px;color:var(--ink)}
 .soon{margin:26px 0 8px}.soonc{display:flex;gap:14px;align-items:center;width:100%;text-align:left;padding:14px 16px;margin:8px 0;border-radius:16px;border:2px dashed var(--line);background:transparent;color:var(--mut)}.soonc b{display:block;font:700 17px var(--disp);color:var(--ink);opacity:.55}.soonc small{display:block;font-size:13px}.soonk{font-size:22px;opacity:.7}
 </style></head>
@@ -898,7 +899,7 @@ let sid = 0;
 function play(id) {
   sid = id; const s = SESSIONS.find(x => x.id === id), x = SS(id); if (chOf(s) >= 1) window.CUR_CH = chOf(s);
   if (s.mix || s.test) { s.screens = s.test ? buildTest(s) : buildMix(s); x.i = 0; x.done = 0; Object.keys(st.res).filter(k => k.startsWith(id + ':')).forEach(k => delete st.res[k]); st.rv = { miss: {} }; save(); }
-  else if (s.rev) { s.screens = buildRevision(REV.fixed); REV.fixed = null; x.i = 0; x.done = 0; Object.keys(st.res).filter(k => k.startsWith(id + ':')).forEach(k => delete st.res[k]); st.rv = { miss: {} }; save(); if (!s.screens.length) { toast('Học xong một tập rồi quay lại ôn nhé'); return; } }
+  else if (s.rev) { s.screens = buildRevision(REV.fixed); s.info = revInfo(buildRevision.words || []); REV.fixed = null; x.i = 0; x.done = 0; Object.keys(st.res).filter(k => k.startsWith(id + ':')).forEach(k => delete st.res[k]); st.rv = { miss: {} }; save(); if (!s.screens.length) { toast('Học xong một tập rồi quay lại ôn nhé'); return; } }
   else { s.base = s.base || s.screens.slice(); s.screens = s.base.slice(); if (x.b != null) x.i = x.b; if (x.i >= s.screens.length) x.i = 0; }
   preload(clipsFor(s)); const nx = chOf(s) >= 1 ? STUDY(chOf(s)).filter(isLearn) : [], ni = nx.findIndex(q => q.id === id); if (ni >= 0 && nx[ni + 1] && !nx[ni + 1].locked) preload(clipsFor(nx[ni + 1]));
   renderScreen();
@@ -934,7 +935,7 @@ function renderScreen() {
   nb.onclick = () => {
     if (nb.disabled) return;
     if (sc.t === 'album' || sc.t === 'wrap' || (S.reader && sc.t === 'read')) {
-      x.done = 1; x.i = 0; x.b = 0; S.words.forEach(w => st.stk[w] = 1); tickFlush(); const hit = todaySec() >= goalMin() * 60 && st.goalDay !== todayKey(); if (hit) st.goalDay = todayKey(); save(); home();
+      x.done = 1; x.i = 0; x.b = 0; if (isLearn(S) && !x.at) x.at = Date.now(); S.words.forEach(w => st.stk[w] = 1); tickFlush(); const hit = todaySec() >= goalMin() * 60 && st.goalDay !== todayKey(); if (hit) st.goalDay = todayKey(); save(); home();
       toast(hit ? 'Đủ mục tiêu hôm nay rồi! 🎉' : S.reader ? 'Bạn đã đọc xong cả câu chuyện!' : S.test ? 'Xong bài kiểm tra!' : S.mix || S.rev ? 'Xong buổi ôn!' : S.comic ? 'Ghép xong truyện!' : lastLearn(S) ? 'Xong cả Bài ' + chOf(S) + '!' : 'Xong tập ' + unitNo(sid) + '!'); confetti(); return;
     }
     maybeRetry(S, x, sc);
@@ -943,6 +944,7 @@ function renderScreen() {
   const pane = h('div', 'pane'); stage.appendChild(pane);
   ({ story, word, pick, mc, read, comic, album, match, hear, order, type, choose, wrap, tf, spot, predict })[sc.t](sc, pane, ep, gate, nb);
   if (sc._retry) pane.insertBefore(h('div', 'retry', '↻ Ôn lại câu bạn vừa nhầm'), pane.firstChild);
+  if (S.rev && S.info && x.i === 0) pane.insertBefore(h('div', 'revinfo', S.info), pane.firstChild);
   stage.scrollTop = 0;
 }
 
@@ -1456,7 +1458,32 @@ const LAST = () => { const L = CHAPTERS[0].PATH.filter(e => e.kind === 'learn');
 SESSIONS.forEach(S => { S.ch = 1; });
 const REV = { id: 99, ch: 0, rev: 1, title: 'Ôn tập tổng hợp', sub: '', thumb: 'cup', words: [], screens: [], fixed: null };
 SESSIONS.push(REV);
-function revStatus() { const ids = Object.keys(st.wl).filter(i => W[i]), now = Date.now(); return { learned: ids.length, due: ids.filter(i => st.wl[i].due <= now).length }; }
+function revStatus() { const ids = Object.keys(st.wl).filter(i => W[i]), now = Date.now(), U = unitMap(); return { learned: ids.length, due: ids.filter(i => dueOf(i, U) <= now).length }; }
+/* ===== which words Ôn tập tổng hợp asks (phiếu #11, HANDOFF §6 + §11) =====
+   "đang học" (learning) = learned in the last 7 days, or box 0–1, or wrong last time; "đã vững" (solid) = box ≥ 2 and right last time.
+   A word is due for its FIRST review as soon as its unit is done (the first review matters most). Learned-at = r.t, or the time the unit
+   holding the word was done if that is earlier (r.t of old saves can be the time the record was made, not the time the word was learned).
+   A round of 6 words: up to 4 learning words that are due or were wrong (wrong first, then the most recently learned), the rest solid words
+   that are due (most overdue first); a group that is short is filled from the other. So an old word overdue for weeks never pushes out a
+   learning word that is due. Old st.wl records are read as they are (nothing rewritten). */
+const LEARN_WIN = 7 * DAY, REV_N = 6, REV_LEARN = 4;
+function unitMap() { const U = {}; STUDY().filter(isLearn).forEach(s => s.words.forEach(w => { if (!U[w]) U[w] = s.id; })); return U; }
+function learnedAt(id, U) { const r = wrec(id), u = (U || unitMap())[id], at = u != null && st.sess[u] && st.sess[u].at; return at ? Math.min(r.t || at, at) : r.t; }
+function dueOf(id, U) { const r = wrec(id); return r.rev ? r.due : Math.min(r.due, learnedAt(id, U)); }
+function isLearning(id, now, U) { const r = wrec(id); return now - learnedAt(id, U) < LEARN_WIN || (r.box || 0) <= 1 || !!r.fail; }
+function pickRev(ids, now) {
+  const U = unitMap(), L = ids.filter(i => isLearning(i, now, U)), S = ids.filter(i => !isLearning(i, now, U));
+  const ready = i => !!wrec(i).fail || dueOf(i, U) <= now, rnd = {}; ids.forEach(i => { rnd[i] = Math.random(); });
+  const Lr = L.filter(ready).sort((a, b) => (wrec(b).fail ? 1 : 0) - (wrec(a).fail ? 1 : 0) || learnedAt(b, U) - learnedAt(a, U) || rnd[a] - rnd[b]);
+  const Ln = L.filter(i => !ready(i)).sort((a, b) => dueOf(a, U) - dueOf(b, U) || rnd[a] - rnd[b]);
+  const Sd = S.filter(i => dueOf(i, U) <= now).sort((a, b) => dueOf(a, U) - dueOf(b, U) || rnd[a] - rnd[b]);
+  const Sn = S.filter(i => dueOf(i, U) > now).sort((a, b) => pri(b, now) - pri(a, now));
+  const out = Lr.slice(0, REV_LEARN), fill = arr => { for (const i of arr) { if (out.length >= REV_N) break; if (!out.includes(i)) out.push(i); } };
+  fill(Sd); fill(Lr); fill(Ln); fill(Sn);
+  return out;
+}
+/* "Lượt này: 4 từ mới học, 2 từ cũ" (shown on the first screen and at the end of Ôn tập tổng hợp) */
+function revInfo(words) { const now = Date.now(), U = unitMap(), n = words.filter(i => isLearning(i, now, U)).length, o = words.length - n; return 'Lượt này: ' + [n ? n + ' từ mới học' : '', o ? o + ' từ cũ' : ''].filter(Boolean).join(', '); }
 function pri(id, now) {
   const r = wrec(id); let s = 0;
   if (r.due <= now) s += 100 + Math.min(60, (now - r.due) / DAY * 5);     // due by the 1/3/7/21-day schedule
@@ -1484,7 +1511,7 @@ function genQ(id, kind) {
 function buildRevision(fixed) {
   const now = Date.now(), ids = Object.keys(st.wl).filter(i => W[i]);
   if (!ids.length) return [];
-  const T = fixed ? shuffle(fixed) : ids.sort((x, y) => pri(y, now) - pri(x, now)).slice(0, 6);
+  const T = fixed ? shuffle(fixed) : shuffle(pickRev(ids, now)); buildRevision.words = T.slice();
   const Q = fixed ? Math.min(10, T.length + 1) : Math.max(3, Math.min(8, T.length * 2)), qs = [], usedNow = {};
   for (let n = 0; n < Q; n++) qs.push(revQ(T[n % T.length], usedNow));
   ensureBoth(qs);
@@ -1620,7 +1647,7 @@ function wrap(sc, pane, ep, gate, nb) {
     } else pane.insertAdjacentHTML('beforeend', `<p class="vi" style="margin:0">Không sót từ nào. Giỏi lắm!</p>`);
     return;
   }
-  pane.insertAdjacentHTML('beforeend', art('cup') + `<div class="h2">Ôn xong rồi!</div><p class="prompt" style="margin:0">Đúng ngay lần đầu: <b>${ok}/${keys.length}</b> câu</p>`);
+  pane.insertAdjacentHTML('beforeend', art('cup') + `<div class="h2">Ôn xong rồi!</div><p class="prompt" style="margin:0">Đúng ngay lần đầu: <b>${ok}/${keys.length}</b> câu</p>${S.rev && S.info ? `<p class="revinfo">${S.info}</p>` : ''}`);
   const show = (title, list, sub) => { pane.insertAdjacentHTML('beforeend', `<div class="h2">${title}</div>`); const stk = h('div', 'stk'); list.forEach(id => { const s = h('button', 'sticker', `<div class="s1"${szs(id)}>${zh(id)}</div><div class="s2">${sub(id)}</div>`); s.onclick = () => speak(id); stk.appendChild(s); }); pane.appendChild(stk); };
   if (miss.length) show('Những từ nên nhìn lại', miss, id => MEAN[id] || '');
   else pane.insertAdjacentHTML('beforeend', `<p class="vi" style="margin:0">Không sót từ nào. Giỏi lắm!</p>`);
