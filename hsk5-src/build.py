@@ -85,7 +85,7 @@ def chapter_strings(n):
         dr, fs = CHAPTER_DIRS[n]
         js = 'var window = globalThis;\n' + ''.join(open(os.path.join(dr, f), encoding='utf-8').read() + '\n' for f in fs if f != 'kit.js')
         js += '\nconst out=[];const walk=v=>{if(typeof v==="string")out.push(v);else if(Array.isArray(v))v.forEach(walk);else if(v&&typeof v==="object")Object.values(v).forEach(walk)};walk(CH%d);process.stdout.write(JSON.stringify(out));' % n
-        _CHS[n] = json.loads(subprocess.run(['node', '-e', js], capture_output=True, text=True, check=True).stdout)
+        _CHS[n] = json.loads(subprocess.run(['node'], input=js, capture_output=True, text=True, check=True).stdout)   # stdin: a whole chapter is longer than one command-line argument may be (phiếu #12)
     return _CHS[n]
 def _chapter_keys(n):
     need = set()

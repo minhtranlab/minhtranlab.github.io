@@ -216,6 +216,168 @@ var CH2 = window.CH2 || (window.CH2 = {});
           { sc: 'c2_dogTied', why: 'Dây vẫn còn nguyên. 挣断 = giãy mạnh làm đứt dây.' },
           { sc: 'c2_cut', why: 'Đây là cắt đứt bằng kéo. 挣断 là tự giãy cho đứt.' }],
           teach: '<b>động từ + 断</b> = làm cho đứt, gãy: <b>打断</b> (đánh gãy; ngắt lời), <b>挣断</b> (giãy đứt), 摔断 (ngã gãy). Ở đây 挣 nghĩa là <b>giãy</b>, khác 挣钱 (kiếm tiền); sách in cùng âm zhèng.' }
+      ] },
+    /* ---------- Tập 6 · câu 8–9 · ngữ pháp 临 (2 từ: ngắn hơn, có sắp câu + gõ pinyin) ---------- */
+    { id: '2-6', title: 'Khoá cửa đi làm xa', sub: '2 từ mới và bài học về 临', thumb: 'c2_lockedHouse', words: ['锁', '临'], screens: [
+      { t: 'story', scene: 'c2_lockedHouse', lines: [B(7)] },
+      { t: 'word', id: '锁', scene: 'c2_lock' },
+      { t: 'pick', w: ['锁'], zh: '出门的时候，她忘了锁门。', vi: 'Lúc ra khỏi nhà, cô ấy quên khoá cửa.', prompt: PK, opts: [
+        { sc: 'c2_doorOpen', ok: 1 },
+        { sc: 'c2_doorLocking', why: '忘了锁门 = quên khoá cửa. Trong tranh này cô ấy đang khoá.' },
+        { sc: 'c2_lostKey', why: 'Tranh này là đang lo vì chìa khoá. Câu nói quên khoá cửa (锁门) rồi đi.' }],
+        teach: '<b>锁门</b> = khoá cửa. <b>忘了 + việc</b> = quên làm việc gì.' },
+      cl('锁', 'c2_lockedHouse', '一段时间后，我和妻子又准备去外地打工，新房只能上___空着。', 'Một thời gian sau, vợ chồng tôi lại chuẩn bị đi làm thuê ở nơi khác, căn nhà mới đành khoá cửa để trống.', '一段时间后，我和妻子又准备去外地打工，新房只能上锁空着。', '锁',
+        [['套', '套 là lượng từ (一套房).'], ['串', '串 là lượng từ “chùm” (一串钥匙), không đứng sau 上.']],
+        '<b>上锁</b> = khoá vào. <b>空着</b> = để trống. <b>外地</b> = nơi khác.', 'Chọn từ điền vào chỗ trống (câu trong bài):'),
+      { t: 'story', scene: 'c2_seeOff', lines: [B(8)] },
+      { t: 'word', id: '临', scene: 'c2_aboutToLeave' },
+      cl('临', 'c2_quilt', '___睡前，她总是给姥姥打个电话。', 'Trước lúc ngủ, cô ấy luôn gọi điện cho bà ngoại.', '临睡前，她总是给姥姥打个电话。', '临',
+        [['以来', '以来 đứng sau một mốc và kéo dài tới nay; “lúc sắp ngủ” là 临睡前.'], ['夜', '夜 là ban đêm, không đứng trước động từ để chỉ “lúc sắp”.']],
+        '<b>临 + động từ (+ 前 / 时 / 那天)</b> = lúc sắp…: 临睡前, 临出门的时候, <b>临走那天</b> (trong bài). 临 còn là “kề sát”: 临街 (sát đường).'),
+      { t: 'spot', w: ['临'], chunks: ['临走', '以来，', '父亲', '赶来送我们。'], bad: 1, fix: '那天，', full: '临走那天，父亲赶来送我们。', vi: 'Hôm sắp đi, ba vội đến tiễn chúng tôi.',
+        teach: '<b>临走那天</b> = hôm sắp đi. <b>以来</b> là “từ… đến nay”, không đi với 临走.' },
+      { t: 'order', w: ['临'], zh: '临睡前，她总是给姥姥打个电话。', vi: 'Trước lúc ngủ, cô ấy luôn gọi điện cho bà ngoại.', chunks: ['临睡前', '她总是', '给姥姥', '打个电话'] },
+      { t: 'type', w: ['锁'], zh: '锁门', vi: 'khoá cửa', prompt: 'Nghe và gõ lại bằng bàn phím pinyin:' },
+      { t: 'album', words: ['锁', '临'], say: [B(7), B(8)],
+        tease: { scene: 'c2_whisper', vi: 'trước lúc lên xe, ba lặng lẽ kéo mình ra một góc. Ba muốn nói gì?' } }
+    ] },
+    /* ---------- Tập 7 · câu 10 (2 màn) + câu 11 · phân biệt 悄悄–偷偷 ---------- */
+    { id: '2-7', title: 'Ba lặng lẽ xin chìa khoá', sub: '3 từ mới, phân biệt 悄悄 và 偷偷', thumb: 'c2_whisper', words: ['悄悄', '晒', '被子'], screens: [
+      { t: 'story', scene: 'c2_whisper', lines: [B(9)] },
+      { t: 'word', id: '悄悄', scene: 'c2_whisperWord' },
+      { t: 'pick', w: ['悄悄'], zh: '她怕吵醒孩子，悄悄地走了出去。', vi: 'Cô ấy sợ làm bé thức giấc nên khẽ khàng đi ra.', prompt: PK, opts: [
+        { sc: 'c2_tiptoe', ok: 1 },
+        { sc: 'c2_sneakCookie', why: 'Tranh này là lén lấy bánh, giấu người khác: đó là 偷偷 (lén lút). 悄悄 nhấn mạnh khẽ khàng, không gây tiếng động.' },
+        { sc: 'c2_stomp', why: 'Người này đi rầm rầm, nói to, làm bé thức. 悄悄 = khẽ khàng.' }],
+        teach: '<b>悄悄</b> nhấn mạnh <b>tiếng nhỏ</b>, khẽ khàng. <b>偷偷</b> (tōutōu, lén lút) nhấn mạnh <b>không muốn ai biết</b>: 他谁也没告诉，偷偷去旅行了. Nhiều câu dùng được cả hai: 他悄悄 / 偷偷地走了出去.' },
+      hearOf('悄悄'),
+      { t: 'story', scene: 'c2_quiltSun', lines: [B(10)] },
+      { t: 'word', id: '晒', scene: 'c2_dry' },
+      { t: 'word', id: '被子', scene: 'c2_quilt' },
+      cl('晒', 'c2_dry', '天气这么好，快把被子拿出去___吧！', 'Trời đẹp thế này, mau mang chăn ra phơi đi!', '天气这么好，快把被子拿出去晒吧！', '晒',
+        [['盖', '盖被子 = đắp chăn lúc ngủ; mang chăn ra ngoài trời nắng là để phơi.'], ['锁', '锁 là khoá.']],
+        '<b>晒被子</b> = phơi chăn. Trong bài: <b>晒晒被子</b> = phơi chăn một chút; <b>打扫打扫</b> = quét dọn một chút (lặp động từ cho nhẹ nhàng).'),
+      { t: 'story', scene: 'c2_shyDad', lines: [B(11)] },
+      { t: 'tf', scene: 'c2_shyDad', w: ['悄悄'], zh: '父亲大声地对我说了这些话。', vi: 'Ba nói to với tôi những lời này.', ok: false,
+        why: 'Ba <b>悄悄</b> kéo mình ra một góc, nói <b>轻声细语</b> (nhỏ nhẹ), mặt còn đỏ lên vì ngượng. Ba không nói to.' },
+      { t: 'order', w: ['晒', '被子'], zh: '今天天气好，我们晒晒被子吧。', vi: 'Hôm nay trời đẹp, mình phơi chăn đi.', chunks: ['今天天气好', '我们', '晒晒', '被子吧'] },
+      { t: 'album', words: ['悄悄', '晒', '被子'], say: [B(9), B(10), B(11)],
+        tease: { scene: 'c2_winterNight', vi: 'chớp mắt đã nửa năm. Một đêm giữa mùa đông, cả nhà trở về…' } }
+    ] },
+    /* ---------- Ôn tập 3 (sau tập 7): ext nhắc lại 悄悄–偷偷 ---------- */
+    { id: '2-m3', mix: 1, after: ['2-6', '2-7'], extra: 3, ch1: 2, max: 9, title: 'Ôn tập', sub: 'Các từ của tập 6–7, thêm từ cũ', thumb: 'cup', words: [], screens: [],
+      ext: [
+        { t: 'pick', w: ['悄悄'], zh: '弟弟偷偷拿了一块饼干。', vi: 'Em trai lén lấy một cái bánh quy.', prompt: 'Nhắc lại 悄悄 / 偷偷 · Nghe rồi chọn bức tranh đúng:', opts: [
+          { sc: 'c2_sneakCookie', ok: 1 },
+          { sc: 'c2_tiptoe', why: 'Đây là 悄悄: đi khẽ cho bé khỏi thức. Câu nghe nói 偷偷 = lén lút, giấu người khác.' },
+          { sc: 'c2_stomp', why: 'Người này đi rầm rầm, chẳng giấu ai cả.' }],
+          teach: '<b>偷偷</b> = lén lút, không muốn ai biết. <b>悄悄</b> = khẽ khàng, tiếng nhỏ.' }
+      ] },
+    /* ---------- Tập 8 · câu 12–14 ---------- */
+    { id: '2-8', title: 'Đêm đông trở về', sub: '4 từ mới', thumb: 'c2_winterNight', words: ['长途', '冻', '想象', '灰尘'], screens: [
+      { t: 'story', scene: 'c2_winterNight', lines: [B(12)] },
+      { t: 'story', scene: 'c2_cryingKid', lines: [B(13)] },
+      { t: 'word', id: '长途', scene: 'c2_coach' },
+      { t: 'word', id: '冻', scene: 'c2_frozen' },
+      cl('冻', 'c2_frozen', '外面太冷了，我的手都___红了。', 'Ngoài trời lạnh quá, tay mình rét đỏ cả lên.', '外面太冷了，我的手都冻红了。', '冻',
+        [['晒', '晒红 = bị nắng làm đỏ; câu nói trời lạnh.'], ['醉', '醉 là say rượu.']],
+        '<b>冻 + kết quả</b>: 冻红了 (rét đỏ lên). Trong bài: <b>儿子被冻得大哭</b> = con trai bị rét đến khóc ré lên.'),
+      { t: 'pick', w: ['长途'], zh: '坐了十个小时的长途汽车，大家都很累。', vi: 'Ngồi xe khách đường dài mười tiếng, ai cũng mệt.', prompt: PK, opts: [
+        { sc: 'c2_longBus', ok: 1 },
+        { sc: 'c2_cityBus', why: 'Đây là xe buýt trong phố (公共汽车). 长途汽车 là xe khách đi đường dài.' },
+        { sc: 'c2_plane', why: '汽车 là xe chạy trên đường, không phải máy bay (飞机).' }],
+        teach: '<b>长途汽车 / 长途车</b> = xe khách đường dài. Trong bài: <b>下了长途车</b>.' },
+      { t: 'story', scene: 'c2_dustyImagine', lines: [B(14)] },
+      { t: 'word', id: '想象', scene: 'c2_imagine' },
+      { t: 'word', id: '灰尘', scene: 'c2_dust' },
+      hearOf('想象'),
+      cl('灰尘', 'c2_dust', '很久没人住了，桌子上都是___。', 'Lâu rồi không ai ở, trên bàn toàn là bụi.', '很久没人住了，桌子上都是灰尘。', '灰尘',
+        [['雪', 'Trong nhà không có tuyết; lâu không ai ở thì bàn phủ bụi.'], ['被子', 'Bàn lâu không dùng thì phủ bụi, không phải chăn.']],
+        '<b>都是灰尘 / 满是灰尘</b> = toàn là bụi. Trong bài: <b>满是灰尘、冷冷清清的景象</b>.'),
+      { t: 'tf', scene: 'c2_dustyImagine', w: ['想象', '灰尘'], zh: '我们一打开家门，就看到家里满是灰尘。', vi: 'Vừa mở cửa nhà, chúng tôi đã thấy trong nhà đầy bụi.', ok: false,
+        why: '<b>想象着</b> = đang tưởng tượng: lúc xuống xe, hai vợ chồng mới chỉ nghĩ nhà sẽ đầy bụi, chưa mở cửa. Tập sau mới biết thật ra thế nào.' },
+      { t: 'album', words: ['长途', '冻', '想象', '灰尘'], say: [B(12), B(13), B(14)],
+        tease: { scene: 'c2_litWindow', vi: 'đến dưới toà nhà, ngẩng đầu lên thì… nhà mình đang sáng đèn?' } }
+    ] },
+    /* ---------- Tập 9 · câu 15 + nửa đầu câu 16 · ngữ pháp 立刻 ---------- */
+    { id: '2-9', title: 'Nhà mình đang sáng đèn', sub: '5 từ mới và bài học về 立刻', thumb: 'c2_litWindow', words: ['亮', '微笑', '温暖', '立刻', '扑'], screens: [
+      { t: 'story', scene: 'c2_litWindow', lines: [B(15)] },
+      { t: 'word', id: '亮', scene: 'c2_lamp' },
+      { t: 'tf', scene: 'c2_litWindow', w: ['亮'], zh: '我们到楼下的时候，家里的灯是关着的。', vi: 'Lúc chúng tôi đến dưới toà nhà, đèn nhà mình đang tắt.', ok: false,
+        why: '<b>自家亮着灯光</b> = nhà mình đang sáng đèn. <b>亮着</b> = đang sáng.' },
+      { t: 'story', scene: 'c2_parentsDoor', lines: [B(16)] },
+      { t: 'word', id: '微笑', scene: 'c2_smile' },
+      { t: 'word', id: '温暖', scene: 'c2_warm' },
+      cl('温暖', 'c2_warm', '朋友的一句话，让我觉得很___。', 'Một câu nói của bạn khiến mình thấy rất ấm lòng.', '朋友的一句话，让我觉得很温暖。', '温暖',
+        [['暖和', '暖和 nói thời tiết, đồ vật (天气很暖和); cảm giác ấm trong lòng là 温暖.'], ['强烈', '强烈 = mãnh liệt; một câu nói nhẹ nhàng làm lòng ấm lên.']],
+        '<b>温暖</b> dùng cho cả thời tiết lẫn tình cảm (温暖的家, 家的温暖). <b>暖和</b> chủ yếu cho thời tiết, đồ vật.'),
+      { t: 'word', id: '立刻', scene: 'c2_rightAway' },
+      cl('立刻', 'c2_rightAway', '电话一响，他就___跑过去接。', 'Điện thoại vừa reo, anh ấy liền lập tức chạy tới nghe.', '电话一响，他就立刻跑过去接。', '立刻',
+        [['以来', '以来 đứng sau một mốc thời gian (…以来), không đứng trước động từ.'], ['临', '临 + động từ = lúc sắp…; câu này nói việc xảy ra ngay sau khi điện thoại reo.']],
+        '<b>一…就立刻…</b> / <b>立刻 + động từ</b> = ngay lập tức: việc sau nối ngay việc trước. Gần nghĩa 马上. Trong bài: <b>温暖的气息立刻扑面而来</b>.'),
+      { t: 'order', w: ['立刻'], zh: '姥姥一看到我，就立刻笑了。', vi: 'Bà ngoại vừa thấy mình là cười ngay.', chunks: ['姥姥', '一看到我', '就立刻', '笑了'],
+        teach: '<b>一…就立刻…</b> = vừa… là ngay lập tức…' },
+      { t: 'word', id: '扑', scene: 'c2_pounce' },
+      hearOf('扑'),
+      { t: 'album', words: ['亮', '微笑', '温暖', '立刻', '扑'], say: [B(15), B(16)],
+        tease: { scene: 'c2_warmRoom', vi: 'bước vào nhà: ai đã quét dọn, trải chăn, nấu cơm sẵn?' } }
+    ] },
+    /* ---------- Ôn tập 4 (giữa đoạn D, sau tập 9) ---------- */
+    { id: '2-m4', mix: 1, after: ['2-8', '2-9'], extra: 3, ch1: 2, max: 9, title: 'Ôn tập', sub: 'Các từ của tập 8–9, thêm từ cũ', thumb: 'cup', words: [], screens: [] },
+    /* ---------- Tập 10 · nửa sau câu 16 · bẫy cùng âm 扑 / 铺 ---------- */
+    { id: '2-10', title: 'Căn nhà ấm sẵn', sub: '4 từ mới, có một story word', thumb: 'c2_warmRoom', words: ['卧室', '铺', '飘', '阵'], screens: [
+      { t: 'story', scene: 'c2_warmRoom', lines: [B(17)] },
+      { t: 'word', id: '卧室', scene: 'c2_roomBed' },
+      { t: 'pick', w: ['卧室'], zh: '妈妈在卧室里看书。', vi: 'Mẹ đang đọc sách trong phòng ngủ.', prompt: PK, opts: [
+        { sc: 'c2_roomBed', ok: 1 },
+        { sc: 'c2_roomKitchen', why: 'Đây là bếp (厨房). 卧室 là phòng ngủ: có giường.' },
+        { sc: 'c2_roomSofa', why: 'Đây là phòng khách (客厅): có sofa, tivi. 卧室 = phòng (室) để nằm (卧).' }],
+        teach: '<b>卧室</b> = phòng ngủ. Phòng khách: 客厅. Bếp: 厨房.' },
+      { t: 'word', id: '铺', scene: 'c2_makeBed' },
+      cl('铺', 'c2_makeBed', '妈妈已经把床上的被子___好了。', 'Mẹ đã trải chăn trên giường xong rồi.', '妈妈已经把床上的被子铺好了。', '铺',
+        [['扑', '扑 (bộ 扌 tay) = vồ tới, phả vào; cùng đọc pū nhưng trải chăn là 铺 (bộ 钅).'], ['晒', '晒 = phơi ngoài nắng; trên giường thì trải: 铺好.']],
+        '<b>Bẫy cùng âm pū</b>: <b>扑</b> (扌, tay: vồ, phả vào — 扑面而来) ≠ <b>铺</b> (钅: trải — 被子已铺好).', 'Chọn chữ đúng (hai chữ cùng đọc pū):'),
+      { t: 'word', id: '飘', scene: 'c2_float' },
+      { t: 'word', id: '阵', scene: 'c2_gust' },
+      cl('阵', 'c2_gust', '刚才下了一___大雨，现在天晴了。', 'Vừa nãy mưa một trận lớn, giờ trời tạnh rồi.', '刚才下了一阵大雨，现在天晴了。', '阵',
+        [['串', '串 = chùm, xâu (一串钥匙); mưa đến rồi đi là “một trận”: 一阵.'], ['套', '套 là bộ, căn (一套房子).']],
+        '<b>一阵</b> + 风 / 雨 / 歌声 / 香味. Lặp: <b>阵阵</b> = từng đợt. Trong bài: <b>飘来阵阵饭菜香</b>.'),
+      hearOf('飘'),
+      { t: 'tf', scene: 'c2_warmRoom', w: ['铺'], zh: '我们回到家时，屋里很冷，被子也没铺。', vi: 'Lúc chúng tôi về tới nhà, trong nhà rất lạnh, chăn cũng chưa trải.', ok: false,
+        why: 'Trong bài: <b>暖气开着</b> (máy sưởi đang bật) và <b>被子已铺好</b> (chăn đã trải sẵn).' },
+      { t: 'type', w: ['卧室'], zh: '两个卧室', vi: 'hai phòng ngủ', prompt: 'Nghe và gõ lại bằng bàn phím pinyin:' },
+      { t: 'album', words: ['卧室', '铺', '飘', '阵'], say: [B(17)],
+        tease: { scene: 'c2_dadTalk', vi: 'ba kể: hôm qua mẹ nhận được điện thoại… Vì sao ba mẹ lại ở đây?' } }
+    ] },
+    /* ---------- Tập 11 · câu 17–19 (2 từ: ngắn hơn, có sắp câu + gõ pinyin) ---------- */
+    { id: '2-11', title: 'Vì sao ba mẹ cần chìa khoá', sub: '2 từ mới, đoạn kết', thumb: 'c2_realize', words: ['感受', '流泪'], screens: [
+      { t: 'story', scene: 'c2_dadTalk', lines: [B(18)] },
+      { t: 'tf', scene: 'c2_dadTalk', w: [], zh: '妈妈今天才知道我们回来。', vi: 'Hôm nay mẹ mới biết chúng tôi về.', ok: false,
+        why: '<b>你妈昨天接到电话</b> = mẹ nhận điện thoại từ hôm qua, nên hôm nay lên nhà mới dọn dẹp cả ngày (<b>忙了一天了</b>).' },
+      { t: 'story', scene: 'c2_realize', lines: [B(19)] },
+      { t: 'word', id: '感受', scene: 'c2_feel' },
+      cl('感受', 'c2_feel', '来到这里，我___到了大家的热情。', 'Đến đây, mình cảm nhận được sự nhiệt tình của mọi người.', '来到这里，我感受到了大家的热情。', '感受',
+        [['想象', '想象 = tưởng tượng, chưa thật sự có; câu nói đã thật sự nhận được: 感受到.'], ['立刻', '立刻 là phó từ “ngay lập tức”, không làm động từ chính.']],
+        '<b>感受到 + danh từ</b> = cảm nhận được. Trong bài: <b>能立刻感受到家的温暖</b>.'),
+      { t: 'story', scene: 'c2_tears', lines: [B(20)] },
+      { t: 'word', id: '流泪', scene: 'c2_cry' },
+      { t: 'order', w: ['流泪'], zh: '听完他的话，大家都流下了眼泪。', vi: 'Nghe xong lời anh ấy, ai cũng rơi nước mắt.', chunks: ['听完他的话', '大家都', '流下了', '眼泪'],
+        teach: '<b>流泪</b> tách ra được: 流下了眼泪, 流下了热泪 (trong bài).' },
+      { t: 'type', w: ['感受'], zh: '感受到温暖', vi: 'cảm nhận được hơi ấm', prompt: 'Nghe và gõ lại bằng bàn phím pinyin:' },
+      { t: 'tf', scene: 'c2_realize', w: ['感受'], zh: '父母要钥匙，是因为他们想住在城里。', vi: 'Ba mẹ xin chìa khoá vì muốn lên thành phố ở.', ok: false,
+        why: 'Ba mẹ vẫn không muốn ở thành phố (tập 2: <b>坚决不在城里住</b>). Ba mẹ xin chìa khoá <b>只是为了让我们回来时，能立刻感受到家的温暖</b>: để khi con về là có ngay một căn nhà ấm.' },
+      { t: 'album', words: ['感受', '流泪'], say: [B(18), B(19), B(20)], recall: 'c2key',
+        tease: { done: 1, scene: 'c2_keys', vi: 'Bạn đã học xong cả bài. Chùm chìa khoá ba mẹ xin không phải để giữ nhà, mà để giữ hơi ấm cho con. Từ nào còn lung lay thì vào “Ôn tập tổng hợp” nhé.' } }
+    ] },
+    /* ---------- Ôn tập 5 (sau tập 11): ext = bẫy cùng âm 扑 / 铺 ---------- */
+    { id: '2-m5', mix: 1, after: ['2-10', '2-11'], extra: 3, ch1: 2, max: 9, title: 'Ôn tập', sub: 'Các từ của tập 10–11 và cả bài', thumb: 'cup', words: [], screens: [],
+      ext: [
+        cl('扑', 'c2_parentsDoor', '一开门，温暖的气息___面而来。', 'Vừa mở cửa, hơi ấm đã phả vào mặt.', '一开门，温暖的气息扑面而来。', '扑',
+          [['铺', '铺 (bộ 钅) = trải chăn, trải giường. Hơi ấm phả vào mặt là 扑面而来 (扌, tay: vồ tới).'], ['飘', '飘 = bay nhẹ, thoảng; cụm cố định là 扑面而来.']],
+          '<b>扑</b> và <b>铺</b> cùng đọc pū: 扑 (扌) = vồ, phả vào; 铺 (钅) = trải.', 'Bẫy cùng âm pū · Chọn chữ đúng:'),
+        cl('铺', 'c2_makeBed', '卧室床上的被子已经___好了。', 'Chăn trên giường phòng ngủ đã trải sẵn.', '卧室床上的被子已经铺好了。', '铺',
+          [['扑', '扑 = vồ tới, phả vào; trải chăn là 铺.'], ['飘', '飘 = bay nhẹ trong gió.']],
+          '<b>被子已铺好</b> (trong bài) = chăn đã trải sẵn.', 'Bẫy cùng âm pū · Chọn chữ đúng:')
       ] }
   ];
   /* screens written as {ref: ['HEAR', word]} or {ref: ['QB', word, index]} are copied from CH2.LEARN / CH2.QB.

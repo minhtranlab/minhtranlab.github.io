@@ -214,6 +214,145 @@ var CH2 = window.CH2 || (window.CH2 = {});
     person(270, 150, { s: .55, hs: 'short', shirt: C.teal, m: 'flat', flip: 1 }) + person(340, 150, { s: .55, hs: 'long', hair: C.hairD, shirt: C.pink, m: 'flat', flip: 1 }) + R(220, 196, 30, 40, C.red, 6) + R(366, 196, 30, 40, C.navy, 6);
   L.c2_lockedHouse = 'Căn nhà mới khoá cửa, hai vợ chồng kéo vali đi xa';
 
+  var sleepHead = function (x, y, s, hair) { return G(`translate(${x} ${y}) scale(${s || 1})`, `<ellipse cx="0" cy="0" rx="27" ry="29" fill="${C.skin}"/>` + Pa('M-29 -2 C-33 -42 33 -42 29 -2 C21 -19 -21 -19 -29 -2Z', hair || C.hairD) + Pa('M-15 -1 Q-10 3 -5 -1 M5 -1 Q10 3 15 -1', 'none', `stroke="${C.ink}" stroke-width="2.4" stroke-linecap="round"`) + Ci(-17, 9, 5, C.pink, 'opacity=".5"') + Ci(17, 9, 5, C.pink, 'opacity=".5"')); };
+  /* ---- tập 6 ---- */
+  S.c2_seeOff = () => R(0, 0, 400, 300, '#e3eef5') + R(0, 236, 400, 64, '#8a8f99') + bus(300, 214, .8, '#7a8fb2') + R(30, 60, 10, 176, '#8a96ad') + R(10, 50, 50, 26, C.teal, 4) +
+    dad(110, 150, { s: .5, m: 'grin' }) + R(70, 196, 26, 34, '#7a6a4f', 6) + hand(150, 166, 7) + person(190, 154, { s: .5, hs: 'short', shirt: C.teal, m: 'smile', flip: 1 }) + person(240, 156, { s: .48, hs: 'long', hair: C.hairD, shirt: C.pink, m: 'smile', flip: 1 }) + R(214, 202, 26, 34, C.red, 6);
+  L.c2_seeOff = 'Ba xách túi từ quê vội lên bến xe tiễn hai vợ chồng';
+  S.c2_lock = () => R(0, 0, 400, 300, '#fbf3e6') + padlock(140, 170, 2.6) + keyIcon(240, 160, 0, '#e2a83a').replace('translate(240 160)', 'translate(240 160) scale(1.4)');
+  L.c2_lock = 'Một ổ khoá và một chiếc chìa khoá';
+  S.c2_aboutToLeave = () => wall('#f6ead8') + door(330, 176, 1) + R(250, 186, 34, 50, C.red, 8) + R(262, 176, 10, 12, C.red, 3) + clockWall(90, 70, 30, 7, 55) + person(170, 150, { s: .65, hs: 'short', shirt: C.teal, m: 'smile', flip: 1 }) + R(196, 70, 70, 26, '#fff', 13, `stroke="${C.org}" stroke-width="3"`) + Pa('M206 83 l40 0 M238 75 l8 8 l-8 8', 'none', `stroke="${C.org}" stroke-width="3"`);
+  L.c2_aboutToLeave = 'Vali đặt sẵn ở cửa, đồng hồ sắp đến giờ, một người sắp đi';
+  var doorScene = function (kind) {
+    return R(0, 0, 400, 300, '#e3eef5') + R(0, 236, 400, 64, '#c9b79c') + R(40, 40, 200, 196, '#e2c9a8') + door(140, 196, .9, kind === 'open' ? 'open' : 'shut') +
+      (kind === 'lock' ? padlock(120, 176, .6) + person(200, 156, { s: .55, hs: 'pony', shirt: C.plum, m: 'smile' }) + hand(166, 176, 7) :
+        kind === 'open' ? person(300, 156, { s: .55, hs: 'pony', shirt: C.plum, m: 'smile', flip: 1 }) + R(330, 200, 26, 36, C.red, 6) :
+          person(220, 150, { s: .6, hs: 'pony', shirt: C.plum, m: 'frown', brows: 'worry' }) + bubble(270, 40, 110, 70, '', 26, C.white) + keyIcon(292, 76, 0, '#e2a83a') + Tx(366, 96, '?', 30, C.red));
+  };
+  S.c2_doorOpen = () => doorScene('open'); L.c2_doorOpen = 'Cô gái kéo vali đi xa, cửa nhà vẫn mở toang';
+  S.c2_doorLocking = () => doorScene('lock'); L.c2_doorLocking = 'Cô gái đang khoá cửa trước khi đi';
+  S.c2_lostKey = () => doorScene('lost'); L.c2_lostKey = 'Cô gái đứng trước cửa, lo lắng nghĩ về chiếc chìa khoá';
+  /* ---- tập 7 ---- */
+  S.c2_whisper = () => R(0, 0, 400, 300, '#e3eef5') + R(0, 236, 400, 64, '#8a8f99') + bus(330, 214, .6, '#7a8fb2') + person(330, 170, { s: .4, hs: 'long', hair: C.hairD, shirt: C.pink }) +
+    dad(130, 150, { s: .62, m: 'smile', flip: 1 }) + person(210, 150, { s: .62, hs: 'short', shirt: C.teal, m: 'smile' }) + hand(162, 126, 7) + Pa('M168 112 q8 -8 16 0 M172 102 q10 -12 22 0', 'none', `stroke="${C.org}" stroke-width="3" stroke-linecap="round"`);
+  L.c2_whisper = 'Ba kéo con trai ra một góc, ghé tai nói nhỏ';
+  S.c2_whisperWord = () => R(0, 0, 400, 300, '#f3eaf6') + R(0, 240, 400, 60, '#d8c6a8') + person(140, 140, { s: .8, hs: 'pony', shirt: C.plum, m: 'smile', flip: 1 }) + hand(186, 112, 9) + person(260, 140, { s: .8, hs: 'short', shirt: C.butter, m: 'wow', eyes: 'wide' }) +
+    Pa('M196 96 q8 -8 16 0 M200 84 q10 -12 22 0', 'none', `stroke="${C.plum}" stroke-width="3" stroke-linecap="round"`) + Tx(110, 50, '…', 34, C.grey);
+  L.c2_whisperWord = 'Một người che miệng nói thầm vào tai người kia';
+  S.c2_quiltSun = () => R(0, 0, 400, 300, '#fff6e3') + bubble(20, 16, 360, 220, '', 26, '#eaf6ff') + sun(320, 66, 22) + Ln(60, 70, 280, 70, C.grey, 3) + R(80, 70, 110, 70, '#9fd3ee', 6) + R(200, 70, 70, 60, C.pink, 6) +
+    mom(110, 160, { s: .38 }) + dad(250, 160, { s: .38, m: 'grin' }) + Ln(280, 184, 300, 220, C.brown, 4) + Pa('M292 214 L312 222 L300 232Z', C.butter);
+  L.c2_quiltSun = 'Trong bóng nghĩ: ba mẹ phơi chăn, quét dọn căn nhà mới';
+  S.c2_shyDad = () => R(0, 0, 400, 300, '#e3eef5') + R(0, 236, 400, 64, '#8a8f99') + dad(170, 140, { s: .85, m: 'smile', eyes: 'closed' }).replace(/opacity="\.5"/g, 'opacity="1"').replace(new RegExp('fill="' + C.pink + '" opacity="1"', 'g'), 'fill="#ef6b6b" opacity="1"') + hand(226, 150, 10) +
+    person(320, 160, { s: .6, hs: 'short', shirt: C.teal, m: 'smile', flip: 1 }) + Tx(110, 70, '…', 34, C.grey);
+  L.c2_shyDad = 'Ba nói nhỏ nhẹ, mặt đỏ lên, gãi đầu ngượng ngùng';
+  S.c2_dry = () => R(0, 0, 400, 300, '#cfe9f5') + sun(330, 60, 30) + R(0, 236, 400, 64, '#a8d48f') + R(40, 80, 8, 160, C.brown) + R(352, 80, 8, 160, C.brown) + Ln(44, 96, 356, 96, C.grey, 3) +
+    R(70, 96, 120, 100, '#9fd3ee', 6) + Ln(70, 130, 190, 130, 'rgba(255,255,255,.6)', 3) + Pa('M220 96 L240 96 L248 106 L262 106 L270 96 L290 96 L292 150 L218 150Z', C.red) + R(300, 96, 30, 70, C.navy, 4);
+  L.c2_dry = 'Chăn và quần áo phơi trên dây dưới nắng';
+  S.c2_quilt = () => wall('#e8e0f0', '#c9b79c') + win(280, 40, 90, 70, '#26304f') + bed(190, 200, 1.4) + sleepHead(100, 160, .7) + R(130, 160, 180, 40, '#9fd3ee', 14) + Ln(140, 176, 300, 176, 'rgba(255,255,255,.5)', 4) + Zs(170, 120, .7);
+  L.c2_quilt = 'Một người ngủ trên giường, đắp chiếc chăn dày';
+  S.c2_tiptoe = () => wall('#efe6f3') + bed(110, 196, .8) + sleepHead(60, 172, .45) + R(76, 168, 100, 24, '#9fd3ee', 10) + Zs(100, 130, .5) + door(330, 176, .9, 'open') +
+    person(250, 140, { s: .7, hs: 'long', hair: C.hairD, shirt: C.pink, m: 'smile', flip: 1 }) + R(214, 108, 4, 20, C.ink, 2) + Pa('M226 250 l14 -10 M262 252 l14 -10', 'none', `stroke="${C.grey}" stroke-width="3"`);
+  L.c2_tiptoe = 'Mẹ nhón chân khẽ khàng ra khỏi phòng, em bé đang ngủ';
+  S.c2_sneakCookie = () => wall('#fdf3e3') + R(40, 150, 140, 86, '#d9b88a', 4) + R(70, 120, 60, 36, '#e2b85c', 8) + Ci(84, 126, 6, '#a86a3a') + Ci(104, 124, 6, '#a86a3a') +
+    person(150, 160, { s: .55, hs: 'short', shirt: C.org, m: 'grin', eyes: 'closed' }) + hand(118, 130, 7) + R(300, 170, 90, 66, '#cfc3b0', 4) + R(320, 150, 50, 24, C.grey, 6) + Pa('M330 140 q6 -12 0 -24 M350 140 q6 -12 0 -24', 'none', `stroke="#bbb" stroke-width="3"`) + person(300, 130, { s: .6, hs: 'bob', hair: C.hairD, shirt: C.teal, m: 'smile' });
+  L.c2_sneakCookie = 'Cậu bé lén lấy bánh khi mẹ quay lưng';
+  S.c2_stomp = () => wall('#efe6f3') + bed(110, 196, .8) + person(90, 170, { s: .26, hs: 'short', shirt: C.butter, m: 'open', brows: 'worry' }) + R(96, 166, 70, 22, '#9fd3ee', 10) + tear(70, 160) +
+    person(270, 140, { s: .7, hs: 'long', hair: C.hairD, shirt: C.pink, m: 'open' }) + Pa('M230 260 l-16 10 M300 260 l16 10 M240 280 l-20 6', 'none', `stroke="${C.red}" stroke-width="4" stroke-linecap="round"`) + Pa('M300 110 q14 0 14 14 M308 96 q24 0 24 28 M316 82 q34 0 34 42', 'none', `stroke="${C.red}" stroke-width="4" stroke-linecap="round"`);
+  L.c2_stomp = 'Một người đi rầm rầm, nói to, em bé thức giấc khóc';
+  /* ---- tập 8 (tease of tập 7) ---- */
+  S.c2_winterNight = () => nightSky() + snow(36) + R(0, 236, 400, 64, '#eef3f8') + person(110, 160, { s: .5, hs: 'short', shirt: C.navy, m: 'flat' }) + person(180, 160, { s: .5, hs: 'long', hair: C.hairD, shirt: C.plum, m: 'flat' }) +
+    person(144, 196, { s: .28, hs: 'short', shirt: C.butter, m: 'frown' }) + R(220, 200, 30, 36, C.red, 6) + R(0, 160, 60, 76, '#3b4766') + R(330, 120, 70, 116, '#3b4766');
+  L.c2_winterNight = 'Đêm đông tuyết rơi, cả nhà xách hành lý trở về';
+
+  /* ---- tập 8 ---- */
+  var elephant = function (x, y, s) { return G(`translate(${x} ${y}) scale(${s || 1})`, R(-40, -26, 80, 50, '#9aa6b8', 22) + Ci(42, -20, 24, '#9aa6b8') + Pa('M58 -10 Q74 20 62 44', 'none', 'stroke="#9aa6b8" stroke-width="10" stroke-linecap="round"') + Pa('M30 -38 Q14 -20 30 -2Z', '#8a96ad') + Ci(48, -26, 3, C.ink) + [-30, -10, 14, 30].map(q => R(q, 16, 12, 26, '#9aa6b8', 4)).join('')); };
+  S.c2_cryingKid = () => nightSky() + snow(30) + R(0, 236, 400, 64, '#eef3f8') + bus(300, 210, .7, '#7a8fb2') + person(90, 150, { s: .5, hs: 'short', shirt: C.navy, m: 'frown', brows: 'worry' }) + person(160, 150, { s: .5, hs: 'long', hair: C.hairD, shirt: C.plum, m: 'frown', brows: 'worry' }) +
+    person(126, 196, { s: .32, hs: 'short', shirt: C.butter, m: 'open', eyes: 'closed', brows: 'worry' }) + tear(110, 196) + tear(142, 196) + R(190, 196, 26, 40, C.red, 6);
+  L.c2_cryingKid = 'Đêm đông, vừa xuống xe đường dài, đứa bé rét quá khóc to';
+  S.c2_dustyImagine = () => R(0, 0, 400, 300, '#dfe6ee') + R(0, 236, 400, 64, '#c9cdd4') + person(70, 160, { s: .5, hs: 'short', shirt: C.navy, m: 'frown', brows: 'worry' }) + person(130, 160, { s: .5, hs: 'long', hair: C.hairD, shirt: C.plum, m: 'frown', brows: 'worry' }) +
+    bubble(170, 20, 220, 170, '', 26, '#cfd3da') + R(196, 110, 120, 10, '#8a7a66', 3) + R(204, 120, 8, 50, '#8a7a66') + R(300, 120, 8, 50, '#8a7a66') + Pa('M200 104 Q256 92 312 104', 'none', 'stroke="#a8a8a8" stroke-width="6"') +
+    Pa('M330 40 L380 40 M330 40 L380 90 M330 40 L340 100 M340 56 Q356 52 366 56 M336 74 Q352 70 372 76', 'none', 'stroke="#888" stroke-width="2"') + [[220, 60], [250, 80], [280, 50], [300, 74], [240, 150], [320, 150]].map(([x, y]) => Ci(x, y, 3, '#999')).join('');
+  L.c2_dustyImagine = 'Hai vợ chồng lạnh run, tưởng tượng căn nhà lạnh lẽo phủ đầy bụi';
+  S.c2_coach = () => R(0, 0, 400, 300, '#cfe9f5') + Pa('M0 170 Q100 110 200 150 T400 120 L400 300 L0 300Z', '#a8d48f') + Pa('M-10 260 Q150 190 260 200 T420 150', 'none', 'stroke="#8a8f99" stroke-width="30"') +
+    Pa('M-10 260 Q150 190 260 200 T420 150', 'none', 'stroke="#fff" stroke-width="3" stroke-dasharray="14 12"') + bus(150, 212, .7, '#4f7f8f') + R(320, 60, 6, 90, C.brown) + R(290, 50, 70, 30, C.green, 4) + Tx(325, 72, '300 km', 16, C.white);
+  L.c2_coach = 'Chiếc xe khách chạy trên con đường dài qua đồi, biển báo 300 km';
+  S.c2_frozen = () => R(0, 0, 400, 300, '#dfeaf5') + snow(30) + R(0, 240, 400, 60, '#eef3f8') + person(200, 140, { s: .85, hs: 'short', shirt: C.navy, m: 'frown', brows: 'worry' }) + R(160, 176, 80, 16, C.red, 8) +
+    Ci(150, 222, 14, '#f08a8a') + Ci(250, 222, 14, '#f08a8a') + Pa('M120 120 l-14 -6 M118 136 l-16 0 M280 120 l14 -6 M282 136 l16 0', 'none', `stroke="${C.navy}" stroke-width="3"`) +
+    [[60, 80], [340, 70]].map(([x, y]) => Pa(`M${x} ${y - 16} L${x} ${y + 16} M${x - 14} ${y - 8} L${x + 14} ${y + 8} M${x - 14} ${y + 8} L${x + 14} ${y - 8}`, 'none', 'stroke="#8fc0e8" stroke-width="4"')).join('');
+  L.c2_frozen = 'Một người rét run, hai bàn tay cóng đỏ, tuyết rơi';
+  S.c2_imagine = () => R(0, 0, 400, 300, '#f3eaf6') + R(0, 240, 400, 60, '#d8c6a8') + person(110, 150, { s: .8, hs: 'pony', shirt: C.teal, m: 'smile', eyes: 'closed' }) +
+    Ci(170, 110, 6, '#fff', `stroke="${C.ink}" stroke-width="2"`) + Ci(186, 90, 9, '#fff', `stroke="${C.ink}" stroke-width="2"`) + bubble(200, 20, 180, 130, '', 26, '#fff') + elephant(280, 86, .9);
+  L.c2_imagine = 'Một người nhắm mắt, trong bóng nghĩ hiện ra con voi';
+  S.c2_dust = () => wall('#e6e2da', '#c9c3b8') + R(80, 150, 240, 16, '#8a7a66', 4) + R(96, 166, 12, 74, '#8a7a66') + R(292, 166, 12, 74, '#8a7a66') + R(80, 140, 240, 12, '#b9b2a6', 4) + Pa('M150 146 Q190 140 230 146', 'none', 'stroke="#8a7a66" stroke-width="5" stroke-linecap="round"') +
+    Pa('M330 20 L396 20 M330 20 L396 86 M330 20 L344 96 M344 40 Q364 34 380 40 M338 62 Q360 56 388 64', 'none', 'stroke="#999" stroke-width="2"') + [[120, 100], [170, 80], [220, 110], [270, 90], [140, 60], [250, 50]].map(([x, y]) => Ci(x, y, 3, '#aaa')).join('') + hand(240, 136, 9);
+  L.c2_dust = 'Mặt bàn phủ đầy bụi, một ngón tay vạch một đường, mạng nhện trên góc tường';
+  /* ---- tập 9 ---- */
+  S.c2_litWindow = () => nightSky() + R(0, 250, 400, 50, '#4a5068') + R(120, 30, 160, 220, '#4b5574') + [50, 100, 150, 200].map(y => [140, 190, 240].map(x => R(x, y, 26, 30, (x === 240 && y === 50) ? '#ffe39a' : '#2f3a5a', 3)).join('')).join('') +
+    person(60, 210, { s: .4, hs: 'short', shirt: C.navy, m: 'wow', eyes: 'wide' }) + person(320, 210, { s: .4, hs: 'long', hair: C.hairD, shirt: C.plum, m: 'wow', eyes: 'wide', flip: 1 });
+  L.c2_litWindow = 'Đêm tối, cả toà nhà tắt đèn, chỉ một ô cửa sổ sáng; hai vợ chồng ngẩng nhìn';
+  S.c2_lamp = () => R(0, 0, 400, 300, '#2f3a5a') + R(0, 240, 400, 60, '#3b4766') + Pa('M150 80 L250 80 L330 240 L70 240Z', 'rgba(255,214,120,.5)') + R(194, 70, 12, 150, '#c99a3e') + Pa('M160 40 L240 40 L262 80 L138 80Z', '#ffe39a') + R(170, 220, 60, 14, '#c99a3e', 6) +
+    [[110, 60], [290, 60], [90, 130], [310, 130]].map(([x, y]) => Ln(200 + (x - 200) * .6, 60 + (y - 60) * .6, x, y, '#ffe39a', 4)).join('');
+  L.c2_lamp = 'Trong phòng tối, một ngọn đèn đang sáng';
+  S.c2_parentsDoor = () => R(0, 0, 400, 300, '#3b4766') + R(0, 240, 400, 60, '#4a5068') + R(120, 40, 160, 210, '#ffe39a') + Pa('M120 40 L90 54 L90 250 L120 244Z', C.brown) + mom(170, 140, { s: .62, m: 'grin' }) + dad(236, 140, { s: .62, m: 'grin' }) +
+    [0, 1, 2].map(k => Pa(`M${300 + k * 22} ${120 + k * 30} q12 -10 0 -20 q-12 -10 0 -20`, 'none', `stroke="${C.org}" stroke-width="4" stroke-linecap="round"`)).join('') + heart(200, 30, 1, C.red, 'class="fl"');
+  L.c2_parentsDoor = 'Cửa mở, ba mẹ mỉm cười trong ánh đèn ấm, hơi ấm toả ra';
+  S.c2_smile = () => R(0, 0, 400, 300, '#fdf1e8') + R(0, 240, 400, 60, '#f0d9c4') + person(200, 130, { s: 1, hs: 'bob', hair: C.hairD, shirt: C.pink, m: 'smile' }) + heart(320, 70, 1, C.pink, 'class="fl"') + heart(80, 90, .8, C.pink, 'class="fl"');
+  L.c2_smile = 'Một người mỉm cười nhẹ nhàng';
+  S.c2_warm = () => R(0, 0, 400, 300, '#fff1e0') + R(0, 240, 400, 60, '#e8d3b0') + [0, 1, 2, 3, 4].map(k => R(40 + k * 22, 140, 16, 100, '#e8e8e8', 6)).join('') + R(36, 232, 116, 10, '#ccc', 4) +
+    Pa('M250 150 L330 150 L322 230 Q290 244 258 230Z', C.white, `stroke="${C.org}" stroke-width="4"`) + Pa('M330 170 q24 4 0 34', 'none', `stroke="${C.org}" stroke-width="5"`) + hand(246, 196, 12) + hand(334, 196, 12) +
+    [270, 290, 310].map(x => Pa(`M${x} 140 q8 -12 0 -24 q-8 -12 0 -24`, 'none', 'stroke="#ccc" stroke-width="4" stroke-linecap="round"')).join('') + heart(290, 50, 1.2, C.red, 'class="fl"');
+  L.c2_warm = 'Hai bàn tay ôm cốc nước bốc hơi bên máy sưởi';
+  S.c2_rightAway = () => wall('#eef4fb') + door(330, 176, 1, 'open') + R(60, 170, 70, 10, C.brown, 3) + R(80, 150, 30, 22, C.ink, 4) + Pa('M70 140 l-10 -10 M95 132 l0 -14 M120 140 l10 -10', 'none', `stroke="${C.red}" stroke-width="3"`) +
+    person(240, 150, { s: .65, hs: 'short', shirt: C.teal, m: 'open', flip: 1 }) + Pa('M170 140 l-30 0 M176 170 l-40 0 M170 200 l-30 0', 'none', `stroke="${C.grey}" stroke-width="5" stroke-linecap="round"`);
+  L.c2_rightAway = 'Điện thoại reo, một người lao ngay ra cửa';
+  S.c2_pounce = () => R(0, 0, 400, 300, '#e9f4e3') + R(0, 236, 400, 64, '#a8d48f') + G('rotate(-12 170 180)', dog(170, 170, 1.1)) + Pa('M60 150 l-30 0 M70 180 l-40 0 M64 210 l-30 0', 'none', `stroke="${C.grey}" stroke-width="5" stroke-linecap="round"`) +
+    person(310, 150, { s: .6, hs: 'short', shirt: C.butter, m: 'grin' });
+  L.c2_pounce = 'Con chó lao chồm tới một cậu bé';
+  /* ---- tập 10 ---- */
+  S.c2_warmRoom = () => wall('#fff1e0', '#e8d3b0') + [0, 1, 2, 3].map(k => R(24 + k * 18, 160, 14, 76, '#e8e8e8', 6)).join('') + Pa('M40 150 q8 -10 0 -20 M70 150 q8 -10 0 -20', 'none', `stroke="${C.org}" stroke-width="3"`) +
+    R(110, 60, 140, 176, '#f4e1ef') + bed(180, 200, .6) + R(270, 60, 120, 176, '#fdf3e3') + R(290, 170, 90, 66, '#cfc3b0', 4) + R(310, 146, 50, 26, C.grey, 6) +
+    [320, 340].map(x => Pa(`M${x} 136 q8 -12 0 -24 q-8 -12 0 -24`, 'none', 'stroke="#d9a86a" stroke-width="4" stroke-linecap="round"')).join('') + Pa('M150 40 l6 -10 l6 10 l-6 10Z M220 30 l5 -8 l5 8 l-5 8Z', C.butter);
+  L.c2_warmRoom = 'Trong nhà sạch sẽ, máy sưởi ấm, giường đã trải chăn, bếp toả hương thơm';
+  var roomRead = function (k) {
+    let g = k === 'bed' ? wall('#f4e1ef', '#d9b88a') + win(270, 40, 100, 70) + bed(150, 210, 1) : k === 'kit' ? wall('#eef4ee', '#cfc3b0') + R(220, 150, 170, 86, '#cfc3b0', 4) + R(250, 126, 50, 26, C.grey, 6) + R(320, 60, 60, 80, '#fff', 4, `stroke="${C.grey}" stroke-width="3"`) : wall('#fdf3e3', '#d9b88a') + win(40, 40, 100, 70) + R(300, 60, 70, 50, C.ink, 4) + R(296, 110, 78, 8, '#8a5a3b', 3);
+    g += k === 'bed' ? person(250, 170, { s: .5, hs: 'bob', hair: C.hairD, shirt: C.teal }) + book(224, 190, 46, 34, C.red, '') : k === 'kit' ? person(140, 150, { s: .6, hs: 'bob', hair: C.hairD, shirt: C.teal }) + book(110, 176, 50, 38, C.red, '') : sofa(170, 214, 1.1) + person(170, 160, { s: .5, hs: 'bob', hair: C.hairD, shirt: C.teal }) + book(146, 184, 46, 34, C.red, '');
+    return g;
+  };
+  S.c2_roomBed = () => roomRead('bed'); L.c2_roomBed = 'Mẹ ngồi đọc sách trong phòng có giường ngủ';
+  S.c2_roomKitchen = () => roomRead('kit'); L.c2_roomKitchen = 'Mẹ đứng đọc sách trong bếp, cạnh bếp nấu';
+  S.c2_roomSofa = () => roomRead('sofa'); L.c2_roomSofa = 'Mẹ ngồi đọc sách trên ghế sofa ở phòng khách có tivi';
+  S.c2_makeBed = () => wall('#f4e1ef', '#d9b88a') + bed(200, 210, 1.3, false) + mom(310, 150, { s: .6, flip: 1 }) + hand(260, 176, 9) + Pa('M120 150 Q190 120 258 170', 'none', `stroke="#7fb8d8" stroke-width="5" stroke-dasharray="8 8"`);
+  L.c2_makeBed = 'Người mẹ trải tấm chăn phẳng lên giường';
+  S.c2_float = () => R(0, 0, 400, 300, '#eef4fb') + R(0, 240, 400, 60, '#cfd8e2') + Pa('M20 80 Q120 40 200 90 T390 70', 'none', 'stroke="#b8c8dc" stroke-width="4" stroke-dasharray="10 10"') +
+    [[60, 110], [140, 60], [230, 120], [300, 70], [350, 140]].map(([x, y], i) => i % 2 ? Pa(`M${x} ${y} q12 -14 24 0 q-12 14 -24 0Z`, '#e2a83a') : Ci(x, y, 6, '#fff', `stroke="#9fb4cc" stroke-width="2"`)).join('') +
+    R(140, 196, 120, 44, C.grey, 10) + [170, 200, 230].map(x => Pa(`M${x} 190 q10 -14 0 -28 q-10 -14 0 -28`, 'none', 'stroke="#d9a86a" stroke-width="4" stroke-linecap="round"')).join('');
+  L.c2_float = 'Lá và bông tuyết bay theo gió, mùi thơm bay lên từ nồi';
+  S.c2_gust = () => R(0, 0, 400, 300, '#cfd8e2') + rain(30, 400, 240) + R(0, 240, 400, 60, '#8a8f99') + Pa('M20 90 Q120 60 200 100 Q260 130 380 90 M40 160 Q140 130 220 170 Q280 196 390 160', 'none', 'stroke="#fff" stroke-width="6" stroke-linecap="round"') +
+    umbrella(250, 150, .5, C.red, 160) + person(160, 160, { s: .55, hs: 'short', shirt: C.teal, m: 'wow', eyes: 'wide' });
+  L.c2_gust = 'Một cơn gió mạnh kèm mưa thổi lật chiếc ô';
+  /* ---- tập 11 ---- */
+  S.c2_dadTalk = () => wall('#fff1e0', '#e8d3b0') + dad(130, 140, { s: .75, m: 'open' }) + mom(250, 144, { s: .72, m: 'smile' }) + R(220, 190, 60, 40, '#fff', 6) + bubble(150, 20, 150, 70, '', 26, C.white) +
+    R(196, 34, 26, 44, C.ink, 5) + R(200, 40, 18, 30, C.sky, 3) + Pa('M232 40 q8 10 0 20 M240 34 q14 16 0 32', 'none', `stroke="${C.org}" stroke-width="3"`);
+  L.c2_dadTalk = 'Ba kể chuyện, mẹ đứng cạnh mỉm cười, bóng nói có chiếc điện thoại';
+  S.c2_realize = () => wall('#fff1e0', '#e8d3b0') + person(150, 140, { s: .8, hs: 'short', shirt: C.teal, m: 'wow', eyes: 'wide' }) + keyring(250, 150, .9) + hand(222, 166, 9) +
+    Pa('M150 40 Q130 40 130 60 Q130 74 142 82 L142 92 L158 92 L158 82 Q170 74 170 60 Q170 40 150 40Z', '#ffe39a', `stroke="${C.org}" stroke-width="3"`) + heart(300, 60, 1.3, C.red, 'class="fl"');
+  L.c2_realize = 'Người con chợt hiểu ra, tay cầm chùm chìa khoá, trái tim ấm áp';
+  S.c2_tears = () => wall('#fdf1e8', '#f0d9c4') + person(200, 130, { s: 1, hs: 'short', shirt: C.teal, m: 'smile', eyes: 'closed', brows: 'worry' }) + tear(176, 138) + tear(224, 138) + hand(200, 150, 10);
+  L.c2_tears = 'Người con nhắm mắt, sống mũi cay cay, nước mắt trào ra';
+  S.c2_feel = () => R(0, 0, 400, 300, '#fff1e0') + Ci(200, 150, 120, 'rgba(255,209,102,.35)') + R(0, 240, 400, 60, '#e8d3b0') + person(200, 130, { s: .9, hs: 'pony', shirt: C.pink, m: 'smile', eyes: 'closed' }) + hand(200, 196, 12) + heart(200, 196, .8, C.red);
+  L.c2_feel = 'Một người nhắm mắt, đặt tay lên ngực, cảm nhận hơi ấm';
+  S.c2_cry = () => R(0, 0, 400, 300, '#eef4fb') + R(0, 240, 400, 60, '#cfd8e2') + person(200, 130, { s: .95, hs: 'long', hair: C.hairD, shirt: C.plum, m: 'frown', eyes: 'closed', brows: 'worry' }) + tear(174, 140) + tear(226, 140) + tear(170, 166) + tear(230, 166) +
+    R(290, 200, 60, 40, '#fff', 4) + Pa('M300 200 q10 -20 20 0 q10 -20 20 0', '#fff', `stroke="#ddd" stroke-width="2"`);
+  L.c2_cry = 'Một người nhắm mắt, nước mắt chảy dài';
+  /* ---- pick tập 8 ---- */
+  S.c2_longBus = () => R(0, 0, 400, 300, '#cfe9f5') + R(0, 236, 400, 64, '#8a8f99') + bus(200, 214, 1.2, '#4f7f8f') + clock(60, 60, 30, 10, 0) + Tx(110, 70, '10h', 24, C.ink) +
+    [128, 176, 224].map(x => sleepHead(x, 150, .32)).join('');
+  L.c2_longBus = 'Xe khách đường dài, khách ngủ gục, đồng hồ chỉ 10 tiếng';
+  S.c2_cityBus = () => city() + bus(200, 250, .9, C.red) + R(330, 170, 6, 66, '#8a96ad') + R(316, 160, 34, 20, C.teal, 4);
+  L.c2_cityBus = 'Xe buýt đỏ dừng ở trạm giữa phố';
+  S.c2_plane = () => R(0, 0, 400, 300, '#cfe9f5') + cloud(90, 80, 1) + cloud(300, 220, .8) + G('translate(200 150) rotate(-12)', R(-110, -16, 220, 32, '#fff', 16, `stroke="${C.grey}" stroke-width="3"`) + Pa('M-20 -10 L-60 -70 L-30 -70 L30 -10Z', '#cfd8e2') + Pa('M-20 10 L-60 70 L-30 70 L30 10Z', '#cfd8e2') + Pa('M-100 -10 L-120 -46 L-96 -46 L-80 -10Z', C.red) + [-60, -36, -12, 12, 36, 60].map(x => Ci(x, -2, 5, C.sky)).join(''));
+  L.c2_plane = 'Một chiếc máy bay bay giữa trời';
+
   CH2.SC = S; CH2.SCENE_LABEL = L;
   if (typeof SC !== 'undefined') Object.assign(SC, S);
   if (typeof SCENE_LABEL !== 'undefined') Object.assign(SCENE_LABEL, L);

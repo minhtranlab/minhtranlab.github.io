@@ -198,3 +198,78 @@
 热闹|náo nhiệt, đông vui|nhiệt náo
 葡萄|quả nho|bồ đào|py:pútao
 羊肉|thịt cừu|dương nhục
+盖|đắp, che, đậy|cái|s
+钅|kim loại (bộ kim viết bên trái)|kim|s
+臨|lâm (chữ phồn thể của 临)|lâm|s
+臣|bề tôi; (trong chữ) hình con mắt|thần|s
+悄|lặng lẽ (chữ trong 悄悄)|tiễu|s
+忄|lòng, tâm (bộ tâm viết bên trái)|tâm|s
+肖|giống; (trong chữ) chỉ âm|tiếu|s
+衤|áo (bộ y viết bên trái)|y|s
+街|đường phố|nhai
+皮|da|bì
+江|sông|giang
+带|mang, đem theo|đới
+生日|sinh nhật|sinh nhật
+太阳|mặt trời; ánh nắng|thái dương
+裙子|cái váy|quần tử
+厚|dày|hậu
+旅行|du lịch|lữ hành
+些|một số, những|ta
+块|miếng, cái (lượng từ)|khối
+饼干|bánh quy|bính can
+衣服|quần áo|y phục
+卧|nằm|ngoạ|s
+吹|thổi|xuy|s
+泪|nước mắt, lệ|lệ|s
+眼泪|nước mắt|nhãn lệ|s
+途|đường đi|đồ|s
+余|dư, thừa; (trong chữ) chỉ âm|dư|s
+冫|băng (bộ băng, hai chấm)|băng|s
+灰|tro; màu xám|hôi|s
+尘|bụi|trần|s
+立|đứng; lập|lập|s
+卜|bói; (trong chữ) chỉ âm|bốc|s
+甫|(bộ phận chữ) chỉ âm|phủ|s
+阝|gò đất (bộ phụ viết bên trái)|phụ|s
+汽车|xe hơi, ô tô|khí xa
+风|gió|phong
+香味|mùi thơm|hương vị
+树叶|lá cây|thụ diệp
+暖风|gió ấm|noãn phong
+眼|mắt|nhãn
+象|con voi; hình tượng|tượng
+色|màu|sắc
+微|nhỏ, nhẹ|vi
+温|ấm|ôn
+暖|ấm|noãn
+室|phòng|thất
+感|cảm|cảm
+受|nhận, chịu|thụ
+成|thành|thành
+冰|băng, nước đá|băng
+封|lá (lượng từ cho thư)|phong
+信|thư|tín
+公共汽车|xe buýt|công cộng khí xa
+看见|nhìn thấy|khán kiến
+起床|thức dậy|khởi sàng
+客人|khách|khách nhân
+欢迎|chào mừng|hoan nghênh
+越|càng|việt
+客厅|phòng khách|khách sảnh
+香|thơm|hương
+晴|nắng, trời quang|tình
+停|ngừng, tạnh|đình
+热情|nhiệt tình|nhiệt tình
+东|đông; (trong chữ) chỉ âm|đông
+高|cao|cao
+刻|khắc; khoảnh khắc|khắc
+关|đóng, tắt|quan
+过去|qua đó; đã qua|quá khứ
+放心|yên tâm|phóng tâm
+冬|mùa đông|đông
+舒服|dễ chịu, thoải mái|thư phục
+打电话|gọi điện thoại|đả điện thoại
+一切|tất cả, mọi thứ|nhất thiết
+远|xa|viễn
+感觉|cảm thấy; cảm giác|cảm giác

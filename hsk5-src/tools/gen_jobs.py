@@ -7,11 +7,11 @@ os.chdir(SRC)
 man = json.load(open('audio_manifest.json', encoding='utf-8')); old = {j['k']: j for j in json.load(open('tts_jobs.json', encoding='utf-8'))}
 files = ['content_words.js','content_words2.js','content_learn.js','content_learn2.js','content_story.js','content_story2.js','content_bank.js','content_bank2.js','content_test.js']
 js = ''.join(open(f, encoding='utf-8').read() + '\n' for f in files) + "\nSESSIONS.push({screens:Object.values(QB).flat().concat(TESTBANK.tf,TESTBANK.spot)});process.stdout.write(JSON.stringify({S:SESSIONS,W:WORDS}));"
-o = json.loads(subprocess.run(['node', '-e', js], capture_output=True, text=True, check=True).stdout); data, WORDS = o['S'], o['W']
+o = json.loads(subprocess.run(['node'], input=js, capture_output=True, text=True, check=True).stdout); data, WORDS = o['S'], o['W']
 for n, (dr, fs) in B.CHAPTER_DIRS.items():   # later chapters (phiếu #9): their sessions, question bank, test bank and words (scenes not needed)
     cj = 'var window = globalThis;\n' + ''.join(open(os.path.join(dr, f), encoding='utf-8').read() + '\n' for f in fs if f != 'kit.js')
-    cj += f"\nconst C=CH{n};process.stdout.write(JSON.stringify({{S:(C.SESSIONS||[]).concat([{{screens:Object.values(C.QB||{{}}).flat().concat((C.TESTBANK||{{}}).tf||[],(C.TESTBANK||{{}}).spot||[])}}]),W:C.WORDS||[]}}));"
-    oc = json.loads(subprocess.run(['node', '-e', cj], capture_output=True, text=True, check=True).stdout); data += oc['S']; WORDS += oc['W']
+    cj += f"\nconst C=CH{n};process.stdout.write(JSON.stringify({{S:(C.SESSIONS||[]).concat((C.SESSIONS||[]).filter(s=>s.ext).map(s=>({{screens:s.ext}})),[{{screens:Object.values(C.QB||{{}}).flat().concat((C.TESTBANK||{{}}).tf||[],(C.TESTBANK||{{}}).spot||[],(C.TESTBANK||{{}}).hsk||[])   /* hsk: HSK5-style test items (phiếu #12) */}}]),W:C.WORDS||[]}}));"
+    oc = json.loads(subprocess.run(['node'], input=cj, capture_output=True, text=True, check=True).stdout); data += oc['S']; WORDS += oc['W']
 han = lambda t: ''.join(re.findall(r'[一-鿿]', t))
 need = B.needed_keys(); jobs = {}
 def add(text, voice, sp=0.88):
