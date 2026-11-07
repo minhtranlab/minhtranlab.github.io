@@ -14,6 +14,9 @@ async def main():
         print('requests after opening unit 1:',len(reqs),'unique',len(set(reqs)))
         n2=await pg.evaluate('clipsFor(SESSIONS.find(s=>s.id===2)).length'); print('clipsFor(2)',n2)
         total=len(await pg.evaluate('Object.keys(AUD)')); print('manifest clips',total)
+        # Bài 2 (phiếu #9): its clips come with its bundle, only when it is opened
+        await pg.evaluate("home()"); n0=len(reqs); await pg.evaluate("loadCh(2).then(()=>play('2-1'))"); await pg.wait_for_timeout(2500)
+        print('Bài 2: manifest clips after loading', len(await pg.evaluate('Object.keys(AUD)')), '| clipsFor(2-1)', await pg.evaluate("clipsFor(SESSIONS.find(s=>s.id==='2-1')).length"), 'missing from AUD', await pg.evaluate("clipsFor(SESSIONS.find(s=>s.id==='2-1')).filter(k=>!AUD[k]).length"), '| requests after opening Bài 2 tập 1:', len(reqs)-n0)
         ok=await pg.evaluate("speak('电台',false,true)"); print('speak male ok',ok)
         ok2=await pg.evaluate("speak('我老婆',false,false)"); print('speak female sentence', ok2)
         print('bad responses',bad)

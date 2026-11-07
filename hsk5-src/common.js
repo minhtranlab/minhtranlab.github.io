@@ -19,6 +19,8 @@ function segs(s) { // -> [{k, known}] for every Chinese word in s
   }
   return out;
 }
+/* a taught word (flag t) counts as "new word of the lesson" only from the chapter that teaches it on (DICT 5th item = that chapter; CUR_CH = chapter on screen) */
+const isT = d => d[3] === 't' && !(d[4] > (window.CUR_CH || 1));
 function zh(s) {
   let out = '', i = 0;
   while (i < s.length) {
@@ -28,7 +30,7 @@ function zh(s) {
       for (let L = Math.min(MAXL, s.length - i); L >= 1; L--) { if (DICT[s.substr(i, L)]) { m = L; break; } }
       if (!m) { out += `<span class="w unk" data-k="${c}">${c}</span>`; i++; continue; }
       const k = s.substr(i, m), d = DICT[k];
-      out += `<span class="w${d[3] === 't' ? ' t' : ''}" data-k="${k}"><ruby>${k}<rt>${d[0]}</rt></ruby></span>`;
+      out += `<span class="w${isT(d) ? ' t' : ''}" data-k="${k}"><ruby>${k}<rt>${d[0]}</rt></ruby></span>`;
       i += m;
     } else { out += c; i++; }
   }
@@ -66,7 +68,7 @@ function showSheet(k) {
   try { if (typeof onLook === 'function') onLook(k); } catch (e) { }
   const d = DICT[k];
   if (!d) { sheetEl.innerHTML = `<div class="sh-hz">${k}</div><div class="sh-vi">Chưa có nghĩa</div>`; sheetEl.classList.add('open'); return; }
-  const tag = d[3] === 't' ? '<span class="chip chip-t">từ mới của bài</span>' : d[3] === 's' ? '<span class="chip chip-s">từ phụ, chỉ cần hiểu</span>' : d[3] === 'n' ? '<span class="chip">tên riêng</span>' : '';
+  const tag = isT(d) ? '<span class="chip chip-t">từ mới của bài</span>' : d[3] === 's' ? '<span class="chip chip-s">từ phụ, chỉ cần hiểu</span>' : d[3] === 'n' ? '<span class="chip">tên riêng</span>' : '';
   sheetEl.innerHTML = `<div class="sh-row"><div class="sh-hz">${k}</div><div class="sh-py">${d[0]}</div>${canSpeak() ? '<button class="sh-snd" aria-label="Nghe">🔊</button>' : ''}</div>
   <div class="sh-vi">${d[1]}</div>${d[2] ? `<div class="sh-hv">Hán–Việt: <b>${d[2]}</b></div>` : ''}${tag}`;
   const b = $('.sh-snd', sheetEl); if (b) b.onclick = ev => { ev.stopPropagation(); speak(k); };

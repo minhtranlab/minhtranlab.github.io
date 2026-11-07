@@ -1,6 +1,6 @@
 # Bài 2 《留串钥匙给父母》 — nội dung (bản thử tập 1–2 + Ôn tập 1)
 
-Chưa được build.py đọc. Chat App nối vào app ở phiếu #9.
+Đã nối vào app ở phiếu #9: build.py đọc thư mục này (CHAPTER_DIRS), viết hsk5/ch2.js (tải khi mở Bài 2) và chạy check_ch2.py. Xem HANDOFF §6 "Chapters".
 
 **File** (thứ tự nạp tuỳ ý — đã thử 3 thứ tự, dữ liệu giống hệt): `words.js`, `learn.js`, `ety.js`, `story.js`, `bank.js`, `test.js`, `kit.js`, `glossary.txt`.
 Mỗi file gán vào `window.CH2`: `WORDS, EP_META, LEARN, ETY, BOOK, SESSIONS, QB, MEAN, TESTBANK, PATH` (+ `CH2.SC`, `CH2.SCENE_LABEL`; `kit.js` cũng tự đăng ký cảnh `c2_*` vào `SC`/`SCENE_LABEL` nếu kit.js Bài 1 đã nạp trước).

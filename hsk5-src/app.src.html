@@ -11,7 +11,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
-<title>爱的细节 · HSK5 Bài 1</title>
+<title>HSK5 · 爱的细节</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap">
 <style>
 /*COMMON_CSS*/
@@ -309,6 +309,13 @@ body.cm-holding.ins #stage{padding-bottom:calc(var(--fh) + 80px)}
 .cm-note{font-size:13.5px;line-height:1.45;color:var(--mut);margin:0}
 @media (prefers-reduced-motion:reduce){.cm-fr,.cm-pl,.cm-hold{transition:none;animation:none}}
 /* end comic */
+.chs{display:flex;gap:8px;margin:0 0 -4px}.chb{flex:1;min-height:42px;border-radius:99px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:700 15px var(--disp)}.chb.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.nd.comic{border-color:#7a5cc7;box-shadow:0 5px 0 #5a3f9e;border-radius:22px}.nd.comic.lock{border-color:var(--line);box-shadow:0 5px 0 var(--line)}.nd.comic .nc{border-radius:18px}
+.nem{position:absolute;right:-8px;top:-10px;font-size:24px;line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+.nd.comic.done{border-color:var(--teal);box-shadow:0 5px 0 var(--teal)}.nd.comic.cur{border-color:var(--acc);box-shadow:0 5px 0 var(--acc2)}
+.nd.soon{border-style:dashed;box-shadow:none;background:transparent}.nd.soon .nlk{opacity:.7}.nl small.soonl{color:var(--mut)}
+.soonc.open{border-style:solid;border-color:var(--acc);background:var(--card);color:var(--ink)}.soonc.open b{opacity:1}
+.fb .whyn{margin-bottom:6px;color:var(--ink)}
 .soon{margin:26px 0 8px}.soonc{display:flex;gap:14px;align-items:center;width:100%;text-align:left;padding:14px 16px;margin:8px 0;border-radius:16px;border:2px dashed var(--line);background:transparent;color:var(--mut)}.soonc b{display:block;font:700 17px var(--disp);color:var(--ink);opacity:.55}.soonc small{display:block;font-size:13px}.soonk{font-size:22px;opacity:.7}
 </style></head>
 <body>
@@ -321,6 +328,7 @@ body.cm-holding.ins #stage{padding-bottom:calc(var(--fh) + 80px)}
 /*COMMON_JS*/
 /*CONTENT_JS*/
 </script>
+<!--CH_INLINE-->
 <script>
 const KEY = 'hsk5_story_v4';
 const W = Object.fromEntries(WORDS.map(w => [w.id, w]));
@@ -332,7 +340,7 @@ if (st.v < 8) { Object.values(st.sess).forEach(x => { if (!x.done) x.i = 0; }); 
 st.pred = st.pred || {}; st.log = st.log || { d: {} };
 const DAY = 86400000, GAPS = [1, 3, 7, 21];
 const isRev = s => !!(s.rev || s.mix || s.test);
-const labOf = s => s.test ? 'bài kiểm tra' : s.mix ? 'ôn tập' : 'tập ' + s.id;
+const labOf = s => (chOf(s) > 1 ? 'Bài ' + chOf(s) + ' · ' : '') + (s.test ? 'bài kiểm tra' : s.mix ? 'ôn tập' : s.comic ? 'ghép truyện' : s.rev ? 'ôn tập tổng hợp' : 'tập ' + unitNo(s.id));
 const wrec = id => st.wl[id] || (st.wl[id] = { t: Date.now(), box: 0, due: Date.now() + DAY, last: 0, rev: 0, n: 0 });
 Object.keys(st.stk).forEach(wrec);           // saves from before the revision path
 let curMiss = new Set(), curLook = new Set();
@@ -371,7 +379,7 @@ async function api(a, body, ka) {
   try { const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ a }, body)), redirect: 'follow', keepalive: !!ka, signal: ctl.signal }); return await r.json(); }
   finally { clearTimeout(to); }
 }
-const summary = () => { const S = stats(); return { words: Object.keys(st.wl).length, units: STUDY().filter(q => !q.mix && !q.test && !q.reader && (st.sess[q.id] || {}).done).length, minToday: S.tmin, minTotal: S.min, streak: S.cur }; };
+const summary = () => { const S = stats(); return { words: Object.keys(st.wl).length, units: STUDY().filter(q => !q.mix && !q.test && !q.reader && !q.comic && (st.sess[q.id] || {}).done).length, minToday: S.tmin, minTotal: S.min, streak: S.cur }; };
 function blankState() { const v = st.v; Object.keys(st).forEach(k => delete st[k]); Object.assign(st, { sess: {}, stk: {}, res: {}, auto: 1, py: 0, wl: {}, look: {}, pred: {}, test: null, log: { d: {} }, v }); }
 /* merge another copy of the progress into this one, in place: never move anyone backwards, never touch the unit being played */
 function mergeInto(L, R, skip) {
@@ -390,11 +398,12 @@ function mergeInto(L, R, skip) {
   Object.keys(R.pred || {}).forEach(k => { if (!(k in L.pred)) L.pred[k] = R.pred[k]; });
   const have = new Set((L.fb || []).map(f => f.at + '|' + f.msg)); (R.fb || []).forEach(f => { if (!have.has(f.at + '|' + f.msg)) (L.fb = L.fb || []).push(f); });
   if (R.test && (!L.test || (R.test.best || 0) > (L.test.best || 0))) L.test = R.test;
+  Object.keys(R.tests || {}).forEach(k => { L.tests = L.tests || {}; const a = L.tests[k], b = R.tests[k]; if (!a || (b.best || 0) > (a.best || 0)) L.tests[k] = b; });
   if (newer) ['goal', 'goalDay', 'auto', 'py'].forEach(k => { if (R[k] !== undefined) L[k] = R[k]; });
   L.u = Math.max(L.u || 0, R.u || 0);
 }
 function adoptOrMerge(R) {
-  if (!inScreen && R.rs && R.rs > (st.u || 0)) { ['sess', 'stk', 'res', 'wl', 'look', 'pred', 'test', 'log'].forEach(k => { st[k] = R[k] !== undefined ? R[k] : k === 'log' ? { d: {} } : k === 'test' ? null : {}; }); st.rs = R.rs; st.u = R.u; return; }
+  if (!inScreen && R.rs && R.rs > (st.u || 0)) { ['sess', 'stk', 'res', 'wl', 'look', 'pred', 'test', 'tests', 'log'].forEach(k => { st[k] = R[k] !== undefined ? R[k] : k === 'log' ? { d: {} } : k === 'test' ? null : {}; }); st.rs = R.rs; st.u = R.u; return; }
   mergeInto(st, R, inScreen ? sid : null);
 }
 let syncT = 0;
@@ -563,19 +572,96 @@ function stats() {
 }
 /* ================= home ================= */
 let homeTab = 'path';
-const CHAPTERS = [{ n: 1, ready: true }, { n: 2 }, { n: 3 }, { n: 4 }];   // add content for a chapter, then flip ready
-const unlocked = (list, i) => !!st.openAll || i === 0 || SS(list[i].id).done || SS(list[i - 1].id).done;
+/* ================= chapters (phiếu #9) =================
+   CHAPTERS is the registry. Bài 1 is inline in index.html; Bài N>1 is the bundle hsk5/chN.js (CH_SRC, written by build.py from hsk5-src/chN/),
+   loaded the first time the chapter is opened, or at start when the learner already has progress in it (like the audio: only what is needed).
+   A bundle calls regChapter(): its WORDS, LEARN, ETY, QB, MEAN, scenes and clips join the shared tables (one word list and one Ôn tập tổng hợp
+   for every chapter); its BOOK, TESTBANK and PATH stay with the chapter. The study path of a chapter is its PATH (kind learn | mix | comic | test
+   | reader); a stage with no content yet is a locked "Sắp ra mắt" node. Bài 1 keeps its ids (1–11, m1–m6, t1, rd), so old progress needs no
+   migration; chapter N uses 'N-1', 'N-m1', 'N-g1', 'N-t'. Each chapter unlocks on its own (Bài 2 does not wait for Bài 1). */
+const CHAPTERS = [
+  { n: 1, zh: '爱的细节', vi: 'Những điều nhỏ nhặt trong tình yêu', loaded: true, PATH: PATH1, BOOK, TESTBANK },
+  { n: 2, zh: '留串钥匙给父母', vi: 'Để lại chùm chìa khoá cho ba mẹ' },
+  { n: 3 }, { n: 4 }
+];
+CHAPTERS.forEach(c => { c.ready = c.n === 1 || !!CH_SRC[c.n]; });
+const CHN = n => CHAPTERS.find(c => c.n === +n);
+const viewCh = () => { const c = CHN(st.ch || 1); return c && c.ready ? c : CHAPTERS[0]; };
+const chOfId = id => { const m = /^(\d+)-/.exec(String(id)); return m ? +m[1] : 1; };
+function chOf(S) { return !S ? 1 : S.ch != null ? S.ch : chOfId(S.id); }
+function bookOf(S) { const c = CHN(chOf(S)); return (c && c.BOOK) || BOOK; }
+function unitNo(id) { return chOfId(id) > 1 ? String(id).split('-').slice(1).join('-') : String(id); }
+const wordCh = id => WORD_CH[id] || 1;
+/* the session of a PATH stage; mix / comic / test stages without a SESSIONS entry are made here once their material exists */
+function chSess(c, e) {
+  let S = SESSIONS.find(x => x.id === e.id); if (S) return S;
+  if (!c.loaded) return null;
+  if (e.kind === 'comic') {
+    const m = bookScenes(c.n); if (!(e.ids || []).length || !e.ids.every(i => i in m)) return null;
+    S = { id: e.id, ch: c.n, comic: 1, title: e.title, sub: 'Đọc to rồi ghép câu vào tranh', thumb: m[e.ids[0]], words: [], screens: comicPages(e.ids, c.n).concat([{ t: 'wrap' }]) };
+  } else if (e.kind === 'mix') {
+    if (!(e.units || []).length || !e.units.every(u => SESSIONS.find(x => x.id === u))) return null;
+    S = { id: e.id, ch: c.n, mix: 1, after: e.units, title: e.title || 'Ôn tập', sub: '', thumb: 'cup', words: [], screens: [] };
+  } else if (e.kind === 'test') {
+    const tb = c.TESTBANK || {}; if ((tb.tf || []).length < 3 || (tb.spot || []).length < 2 || !c.PATH.every(x => x.kind !== 'learn' || SESSIONS.find(y => y.id === x.id))) return null;
+    S = { id: e.id, ch: c.n, test: 1, title: e.title, sub: 'Xem bạn nhớ và dùng được bao nhiêu', thumb: 'trophy', words: [], screens: [] };
+  }
+  if (S) SESSIONS.push(S);
+  return S || null;
+}
+/* a comic stage: its sentences cut into pages of at most COMIC.maxFrames frames */
+function comicPages(ids, n) {
+  const fr = comicFrames(ids, n), pages = [];
+  fr.forEach(f => { const pg = pages[pages.length - 1]; if (pg && pg.length < COMIC.maxFrames) pg.push(f); else pages.push([f]); });
+  return pages.map((pg, k) => ({ t: 'comic', ids: pg.flatMap(f => f.ids), ...(pages.length > 1 ? { page: [k + 1, pages.length] } : {}) }));
+}
+const pathOf = n => { const c = CHN(n); return c && c.loaded ? c.PATH.map(e => ({ e, S: chSess(c, e) })) : []; };
+const isLearn = S => !!S && !S.mix && !S.test && !S.reader && !S.comic && !S.rev;
+const lastLearn = S => { const c = CHN(chOf(S)); const L = c && c.PATH ? c.PATH.filter(e => e.kind === 'learn') : []; return !!L.length && String(L[L.length - 1].id) === String(S.id); };
+const CHW = {};
+function regChapter(n, D, aud) {
+  const c = CHN(n); if (!c || c.loaded) return;
+  Object.assign(AUD, aud || {});
+  (D.WORDS || []).forEach(w => { if (!W[w.id]) { WORDS.push(w); W[w.id] = w; } });
+  Object.assign(LEARN, D.LEARN || {}); Object.assign(ETY, D.ETY || {}); Object.assign(QB, D.QB || {}); Object.assign(MEAN, D.MEAN || {});
+  (D.SESSIONS || []).forEach(S => { S.ch = n; SESSIONS.push(S); });
+  Object.assign(c, { PATH: D.PATH || [], BOOK: D.BOOK || [], TESTBANK: D.TESTBANK || { tf: [], spot: [] }, loaded: true });
+  if (CHW[n] && CHW[n].res) CHW[n].res(c);
+}
+function loadCh(n) {
+  const c = CHN(n); if (!c || !c.ready) return Promise.reject(new Error('chapter ' + n + ' not ready'));
+  if (c.loaded) return Promise.resolve(c);
+  if (CHW[n]) return CHW[n].p;
+  const o = CHW[n] = {};
+  o.p = new Promise((res, rej) => {
+    o.res = res; const sc = document.createElement('script'); sc.src = CH_SRC[n]; sc.async = true;
+    sc.onerror = () => { delete CHW[n]; sc.remove(); rej(new Error('load chapter ' + n)); };
+    document.head.appendChild(sc);
+  });
+  return o.p;
+}
+/* chapters to load at start: the one on screen, and every chapter the learner has progress in (so Ôn tập tổng hợp sees all their words) */
+const chStarted = n => n === (st.ch || 1) || Object.keys(st.sess).some(k => chOfId(k) === n) || Object.keys(st.wl).some(w => wordCh(w) === n);
+function bootLoad() { CHAPTERS.filter(c => c.ready && !c.loaded && chStarted(c.n)).forEach(c => loadCh(c.n).then(() => { if (!inScreen && !document.querySelector('.wcov,.mback')) home(); }).catch(() => { })); }
+const unlocked = (list, i) => !!st.openAll || i === 0 || (list[i].S && SS(list[i].S.id).done) || (!!list[i - 1].S && !!SS(list[i - 1].S.id).done);
 function home(tab) {
   if (tab) homeTab = tab;
   runLeave(); tickFlush(); inScreen = false; save(); document.body.classList.add('hb'); document.body.classList.remove('ins');
   EP++; stopAudio(); cur = null; sheetEl.classList.remove('open');
-  const got = Object.keys(st.stk).length, total = STUDY().reduce((n, s) => n + s.words.length, 0);
+  const VC = viewCh(); window.CUR_CH = VC.n;
+  const got = STUDY().flatMap(s => s.words).filter(w => st.stk[w]).length, total = STUDY().reduce((n, s) => n + s.words.length, 0);
   app.innerHTML = '';
   const el = h('div', ''); el.id = 'home';
   const gm = goalMin(), sec = todaySec(), pr = Math.min(1, sec / (gm * 60)), C = 2 * Math.PI * 19;
-  el.innerHTML = `<div class="hd"><div><h1 class="brand">爱的细节</h1><p class="sub">HSK5 · Bài 1 · Những điều nhỏ nhặt trong tình yêu</p></div><button class="goal${pr >= 1 ? ' hit' : ''}" aria-label="Mục tiêu ${gm} phút mỗi ngày"><svg viewBox="0 0 48 48" width="52" height="52"><circle cx="24" cy="24" r="19" class="gb"/><circle cx="24" cy="24" r="19" class="gf" stroke-dasharray="${(C * pr).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 24 24)"/></svg><b>${pr >= 1 ? '✓' : Math.floor(sec / 60)}</b><small>/${gm}p</small></button></div>`;
+  el.innerHTML = `<div class="hd"><div><h1 class="brand">${VC.zh}</h1><p class="sub">HSK5 · Bài ${VC.n} · ${VC.vi}</p></div><button class="goal${pr >= 1 ? ' hit' : ''}" aria-label="Mục tiêu ${gm} phút mỗi ngày"><svg viewBox="0 0 48 48" width="52" height="52"><circle cx="24" cy="24" r="19" class="gb"/><circle cx="24" cy="24" r="19" class="gf" stroke-dasharray="${(C * pr).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 24 24)"/></svg><b>${pr >= 1 ? '✓' : Math.floor(sec / 60)}</b><small>/${gm}p</small></button></div>`;
   $('.goal', el).onclick = openGoal;
   if (API) { const [ac, at] = acctLabel(), ap = h('button', 'acct ' + ac, at); ap.onclick = openAcct; el.appendChild(ap); }
+  const RC = CHAPTERS.filter(c => c.ready);
+  if (RC.length > 1) {   /* switch chapter: "Bài 1", "Bài 2" … */
+    const cs = h('div', 'chs'); cs.setAttribute('role', 'tablist');
+    RC.forEach(c => { const b = h('button', 'chb' + (c.n === VC.n ? ' on' : ''), 'Bài ' + c.n); b.setAttribute('aria-label', 'Bài ' + c.n + ': ' + c.vi); b.onclick = () => { if (c.n === VC.n) return; st.ch = c.n; save(); homeTab = 'path'; home(); }; cs.appendChild(b); });
+    el.appendChild(cs);
+  }
   const tabs = h('div', 'tabs');
   [['path', 'Hành trình'], ['words', 'Từ vựng'], ['log', 'Nhật ký']].forEach(([k, t]) => { const b = h('button', 'tab' + (homeTab === k ? ' on' : ''), t); b.onclick = () => home(k); tabs.appendChild(b); });
   el.appendChild(tabs);
@@ -586,40 +672,52 @@ function home(tab) {
   const ba = h('button', 'ghost', st.auto ? 'Tự đọc to: bật' : 'Tự đọc to: tắt'); ba.onclick = () => { st.auto = st.auto ? 0 : 1; save(); ba.textContent = st.auto ? 'Tự đọc to: bật' : 'Tự đọc to: tắt'; };
   const bt = h('button', 'ghost', '🔊 Thử âm thanh'); bt.onclick = () => { speak('电台', false, true).then(ok => toast(ok ? 'Nghe thấy tiếng là ổn rồi' : 'Chưa có tiếng: tăng âm lượng, tắt chế độ im lặng rồi thử lại')); };
   const bo = h('button', 'ghost', st.openAll ? 'Mở hết các màn: bật' : 'Mở hết các màn: tắt'); bo.onclick = () => { st.openAll = st.openAll ? 0 : 1; save(); home(); };
-  let arm = 0; const br = h('button', 'ghost', 'Xóa tiến độ'); br.onclick = () => { if (!arm) { arm = 1; br.classList.add('arm'); br.textContent = 'Bấm lần nữa để xóa'; setTimeout(() => { arm = 0; br.classList.remove('arm'); br.textContent = 'Xóa tiến độ'; }, 3000); return; } st.sess = {}; st.stk = {}; st.res = {}; st.wl = {}; st.look = {}; st.pred = {}; st.test = null; st.log = { d: {} }; st.rs = Date.now(); save(); home(); };
+  let arm = 0; const br = h('button', 'ghost', 'Xóa tiến độ'); br.onclick = () => { if (!arm) { arm = 1; br.classList.add('arm'); br.textContent = 'Bấm lần nữa để xóa'; setTimeout(() => { arm = 0; br.classList.remove('arm'); br.textContent = 'Xóa tiến độ'; }, 3000); return; } st.sess = {}; st.stk = {}; st.res = {}; st.wl = {}; st.look = {}; st.pred = {}; st.test = null; st.tests = {}; st.log = { d: {} }; st.rs = Date.now(); save(); home(); };
   const bf = h('button', 'ghost', '💬 Góp ý' + ((st.fb || []).length ? ' (' + st.fb.length + ')' : '')); bf.onclick = () => openFb(null);
   row.append(bp, ba, bt, bf, bo, br); el.appendChild(row);
   if (!canSave) el.appendChild(h('p', 'sub', 'Trình duyệt không cho lưu: tiến độ sẽ mất khi đóng trang.'));
   app.appendChild(el);
   if (API && !ACC.code && !ACC.asked && !document.querySelector('.wcov')) { ACC.asked = 1; saveAcc(); setTimeout(openAcct, 350); }
   if (curNode) requestAnimationFrame(() => { try { curNode.scrollIntoView({ block: 'center' }); } catch (e) { } });
-  showUpd();
+  showUpd(); bootLoad();
 }
 /* ---- the journey: round levels that unlock one after another ---- */
 function pathView(el) {
-  const list = STUDY(), ROW = 150, TOP = 24, cur = list.findIndex(s => !SS(s.id).done);
+  const VC = viewCh();
+  if (!VC.loaded) {   /* first visit of a later chapter: fetch its bundle, then draw */
+    el.appendChild(h('p', 'sub chload', 'Đang tải Bài ' + VC.n + '…'));
+    loadCh(VC.n).then(() => { if (!inScreen) home(); }).catch(() => { toast('Chưa tải được Bài ' + VC.n + '. Kiểm tra mạng rồi thử lại.'); if (!inScreen) { st.ch = 1; home(); } });
+    return null;
+  }
+  const list = pathOf(VC.n), ROW = 150, TOP = 24, cur = list.findIndex(o => o.S && !SS(o.S.id).done);
   const wrap = h('div', 'path'); wrap.style.height = (list.length * ROW + TOP + 10) + 'px';
   const X = i => 50 + 25 * Math.sin(i * 1.05), Y = i => TOP + i * ROW;
-  const SZ = s => s.test ? 92 : s.mix ? 64 : 82, CY = i => Y(i) + SZ(list[i]) / 2;
-  list.forEach((s, i) => { if (i < list.length - 1) for (let k = 0; k < 4; k++) { const t = .3 + k * .13, d = h('i', 'dot' + (SS(s.id).done ? ' on' : '')); d.style.left = (X(i) + (X(i + 1) - X(i)) * t) + '%'; d.style.top = (CY(i) + (CY(i + 1) - CY(i)) * t) + 'px'; wrap.appendChild(d); } });
+  const KIND = o => o.e.kind === 'learn' || o.e.kind === 'reader' ? 'study' : o.e.kind;
+  const SZ = o => KIND(o) === 'test' ? 92 : KIND(o) === 'mix' ? 64 : KIND(o) === 'comic' ? 72 : 82, CY = i => Y(i) + SZ(list[i]) / 2;
+  const isDone = o => !!(o.S && SS(o.S.id).done);
+  list.forEach((o, i) => { if (i < list.length - 1) for (let k = 0; k < 4; k++) { const t = .3 + k * .13, d = h('i', 'dot' + (isDone(o) ? ' on' : '')); d.style.left = (X(i) + (X(i + 1) - X(i)) * t) + '%'; d.style.top = (CY(i) + (CY(i + 1) - CY(i)) * t) + 'px'; wrap.appendChild(d); } });
   let num = 0, node = null;
-  list.forEach((s, i) => {
-    const x = SS(s.id), open = unlocked(list, i), isCur = i === cur, kind = s.test ? 'test' : s.mix ? 'mix' : 'study';
-    if (kind === 'study' && !s.reader) num++;
-    const sz = SZ(s);
-    const b = h('button', `nd ${kind}${x.done ? ' done' : ''}${isCur ? ' cur' : ''}${open ? '' : ' lock'}`);
+  list.forEach((o, i) => {
+    const s = o.S, e = o.e, kind = KIND(o), soon = !s, x = s ? SS(s.id) : { i: 0, done: 0 }, open = !soon && unlocked(list, i), isCur = i === cur;
+    if (e.kind === 'learn') num++;
+    const sz = SZ(o), title = s ? s.title : e.title || '';
+    const b = h('button', `nd ${kind}${x.done ? ' done' : ''}${isCur ? ' cur' : ''}${open ? '' : ' lock'}${soon ? ' soon' : ''}`);
     b.style.cssText = `left:calc(${X(i)}% - ${sz / 2}px);top:${Y(i)}px;width:${sz}px;height:${sz}px`;
-    b.setAttribute('aria-label', (s.test || s.mix || s.reader ? s.title : 'Tập ' + s.id + ': ' + s.title) + (open ? '' : ' (chưa mở khóa)'));
-    b.innerHTML = `<span class="nc"><span class="ncs">${scene(s.thumb)}</span></span>${kind === 'study' && !s.reader ? `<span class="nb">${num}</span>` : ''}${x.done ? '<span class="nk">✓</span>' : ''}${open ? '' : '<span class="nlk">🔒</span>'}`;
-    b.onclick = () => open ? play(s.id) : toast('Hoàn thành màn trước để mở khóa nhé');
+    b.setAttribute('aria-label', (e.kind === 'learn' ? 'Tập ' + unitNo(e.id) + ': ' : '') + title + (soon ? ' (sắp ra mắt)' : open ? '' : ' (chưa mở khóa)'));
+    const thumb = s ? s.thumb : kind === 'mix' ? 'cup' : kind === 'test' ? 'trophy' : 'cup';
+    b.innerHTML = `<span class="nc"><span class="ncs">${kind === 'comic' && soon ? '' : scene(thumb)}</span></span>${e.kind === 'learn' ? `<span class="nb">${num}</span>` : ''}${kind === 'comic' ? '<span class="nem" aria-hidden="true">🎬</span>' : ''}${x.done ? '<span class="nk">✓</span>' : ''}${open ? '' : '<span class="nlk">🔒</span>'}`;
+    b.onclick = () => soon ? toast('Chặng này đang được xây dựng, sắp ra mắt nhé') : open ? play(s.id) : toast('Hoàn thành màn trước để mở khóa nhé');
     wrap.appendChild(b);
-    const lb = h('div', 'nl', (kind === 'study' ? s.title : s.title) + (isCur ? `<small>${x.i && kind === 'study' ? 'Tiếp tục · màn ' + (x.i + 1) + '/' + s.screens.length : 'Bắt đầu'}</small>` : ''));
+    const lb = h('div', 'nl', title + (soon ? '<small class="soonl">Sắp ra mắt</small>' : isCur ? `<small>${x.i && kind === 'study' ? 'Tiếp tục · màn ' + (x.i + 1) + '/' + s.screens.length : 'Bắt đầu'}</small>` : ''));
     const right = i === 0 || X(i) < 46, room = right ? 100 - X(i) : X(i); lb.classList.add(right ? 'r' : 'l'); lb.style.cssText = `left:calc(${X(i)}% ${right ? '+' : '-'} ${sz / 2 + 12}px);top:${CY(i)}px;width:min(150px,calc(${room}% - ${sz / 2 + 16}px))`; wrap.appendChild(lb);
     if (isCur) node = b;
   });
   el.appendChild(wrap);
-  const up = h('div', 'soon', '<div class="h2">Các bài tiếp theo</div><p class="sub">Đang được xây dựng. Khi sẵn sàng, bài mới sẽ tự mở ở đây.</p>');
-  CHAPTERS.filter(c => !c.ready).forEach(c => { const b = h('button', 'soonc', `<span class="soonk">🔒</span><span><b>Bài ${c.n}</b><small>Sắp ra mắt</small></span>`); b.onclick = () => toast('Bài ' + c.n + ' đang được xây dựng'); up.appendChild(b); });
+  const others = CHAPTERS.filter(c => c.n !== VC.n), up = h('div', 'soon', `<div class="h2">${others.some(c => c.ready) ? 'Các bài khác' : 'Các bài tiếp theo'}</div><p class="sub">${others.some(c => c.ready) ? 'Mỗi bài có đường học riêng, học bài nào trước cũng được.' : 'Đang được xây dựng. Khi sẵn sàng, bài mới sẽ tự mở ở đây.'}</p>`);
+  others.forEach(c => {
+    if (c.ready) { const b = h('button', 'soonc open', `<span class="soonk">${c.n > VC.n ? '✨' : '📖'}</span><span><b>Bài ${c.n} · ${c.zh}</b><small>${c.vi}</small></span>`); b.onclick = () => { st.ch = c.n; save(); homeTab = 'path'; home(); window.scrollTo(0, 0); }; up.appendChild(b); }
+    else { const b = h('button', 'soonc', `<span class="soonk">🔒</span><span><b>Bài ${c.n}</b><small>Sắp ra mắt</small></span>`); b.onclick = () => toast('Bài ' + c.n + ' đang được xây dựng'); up.appendChild(b); }
+  });
   el.appendChild(up);
   const rs = revStatus(), rb = h('button', 'nd rev' + (rs.learned ? '' : ' lock'));
   rb.style.cssText = `left:18px;top:${TOP + 3}px;width:78px;height:78px`;
@@ -644,9 +742,9 @@ function logView(el) {
   el.appendChild(g);
   el.appendChild(h('div', 'h2', 'Số phút học mỗi ngày')); el.appendChild(h('p', 'sub', 'Mỗi cột là một ngày, hôm nay ở ngoài cùng bên phải (màu cam).'));
   const bars = h('div', 'bars'); S.week.forEach(x => bars.appendChild(h('div', 'bar' + (x.today ? ' today' : ''), `<em>${x.min ? x.min + 'p' : ''}</em><i style="height:${Math.max(4, Math.round(x.min / mx * 90))}px"></i>${x.today ? 'Nay' : x.lab}`))); el.appendChild(bars);
-  const done = STUDY().filter(s => !s.mix && !s.test && !s.reader && SS(s.id).done).length, allU = STUDY().filter(s => !s.mix && !s.test && !s.reader).length;
+  const done = STUDY().filter(s => isLearn(s) && SS(s.id).done).length, allU = STUDY().filter(isLearn).length;
   const g2 = h('div', 'stats'), card2 = (b, t) => g2.appendChild(h('div', 'stat', `<b>${b}</b><span>${t}</span>`));
-  card2(done + '/' + allU, 'tập đã hoàn thành'); card2(Object.keys(st.stk).length + '/' + STUDY().reduce((n, s) => n + s.words.length, 0), 'từ đã sưu tầm');
+  card2(done + '/' + allU, 'tập đã hoàn thành'); card2(STUDY().flatMap(s => s.words).filter(w => st.stk[w]).length + '/' + STUDY().reduce((n, s) => n + s.words.length, 0), 'từ đã sưu tầm');
   card2(Object.keys(st.wl).filter(i => W[i] && st.wl[i].box >= 2).length, 'từ đã vững (ôn đúng 2 lần liền)'); card2(st.test ? st.test.best + '/' + st.test.n : '–', 'điểm kiểm tra cao nhất');
   el.appendChild(h('div', 'h2', 'Tiến bộ')); el.appendChild(g2);
   const hard = Object.keys(st.wl).filter(i => W[i] && (st.wl[i].fail || (st.look[i] || 0) >= 3));
@@ -659,14 +757,18 @@ function logView(el) {
 /* ---- the word collection: only the hanzi; tap to see the meaning and everything else ---- */
 function wordsView(el, got, total) {
   el.appendChild(h('p', 'sub', `Đã sưu tầm ${got}/${total} từ. Chạm vào một từ để lật thẻ xem nghĩa.`));
-  const alb = h('div', 'alb');
-  STUDY().forEach(s => s.words.forEach(id => {
-    const g = st.stk[id], sz = id.length > 3 ? 15 : id.length > 2 ? 20 : 26, b = h('button', 'slot' + (g ? ' got' : ''), g ? id : '?');
-    b.style.fontSize = (g ? sz : 24) + 'px';
-    b.onclick = () => g ? wordDetail(id) : toast('Từ này bạn chưa học tới');
-    alb.appendChild(b);
-  }));
-  el.appendChild(alb);
+  const chs = CHAPTERS.filter(c => c.loaded && STUDY(c.n).some(s => s.words.length));
+  chs.forEach(c => {
+    if (chs.length > 1) el.appendChild(h('div', 'h2', `Bài ${c.n} · ${c.zh}`));
+    const alb = h('div', 'alb');
+    STUDY(c.n).forEach(s => s.words.forEach(id => {
+      const g = st.stk[id], sz = id.length > 3 ? 15 : id.length > 2 ? 20 : 26, b = h('button', 'slot' + (g ? ' got' : ''), g ? id : '?');
+      b.style.fontSize = (g ? sz : 24) + 'px';
+      b.onclick = () => g ? wordDetail(id) : toast('Từ này bạn chưa học tới');
+      alb.appendChild(b);
+    }));
+    el.appendChild(alb);
+  });
 }
 function wordDetail(id, openNow) {
   stopAudio(); $$('.wcov').forEach(e => e.remove());
@@ -794,16 +896,16 @@ function fbList() {
 /* ================= session player ================= */
 let sid = 0;
 function play(id) {
-  sid = id; const s = SESSIONS.find(x => x.id === id), x = SS(id);
-  if (s.mix || s.test) { s.screens = s.test ? buildTest() : buildMix(s); x.i = 0; x.done = 0; Object.keys(st.res).filter(k => k.startsWith(id + ':')).forEach(k => delete st.res[k]); st.rv = { miss: {} }; save(); }
+  sid = id; const s = SESSIONS.find(x => x.id === id), x = SS(id); if (chOf(s) >= 1) window.CUR_CH = chOf(s);
+  if (s.mix || s.test) { s.screens = s.test ? buildTest(s) : buildMix(s); x.i = 0; x.done = 0; Object.keys(st.res).filter(k => k.startsWith(id + ':')).forEach(k => delete st.res[k]); st.rv = { miss: {} }; save(); }
   else if (s.rev) { s.screens = buildRevision(REV.fixed); REV.fixed = null; x.i = 0; x.done = 0; Object.keys(st.res).filter(k => k.startsWith(id + ':')).forEach(k => delete st.res[k]); st.rv = { miss: {} }; save(); if (!s.screens.length) { toast('Học xong một tập rồi quay lại ôn nhé'); return; } }
   else { s.base = s.base || s.screens.slice(); s.screens = s.base.slice(); if (x.b != null) x.i = x.b; if (x.i >= s.screens.length) x.i = 0; }
-  preload(clipsFor(s)); const nx = STUDY().filter(q => !q.mix && !q.test && !q.reader), ni = nx.findIndex(q => q.id === id); if (ni >= 0 && nx[ni + 1] && !nx[ni + 1].locked) preload(clipsFor(nx[ni + 1]));
+  preload(clipsFor(s)); const nx = chOf(s) >= 1 ? STUDY(chOf(s)).filter(isLearn) : [], ni = nx.findIndex(q => q.id === id); if (ni >= 0 && nx[ni + 1] && !nx[ni + 1].locked) preload(clipsFor(nx[ni + 1]));
   renderScreen();
 }
 /* every clip a session can ask for (same rules the build uses to keep clips), so only this unit's voice is fetched */
 function clipsFor(S) {
-  const ks = new Set(), add = (z, v) => { const k = akey(z); if (!k) return; ks.add(v === 'm' ? 'M|' + k : k); };
+  const ks = new Set(), add = (z, v) => { const k = akey(z); if (!k) return; ks.add(v === 'm' ? 'M|' + k : k); }, BOOK = bookOf(S);
   (S.screens || []).forEach(c => {
     (c.lines || []).forEach(l => add(l.zh, l.v)); (c.ids || []).forEach(i => { const b = BOOK[i]; if (b) add(b.zh, 'm'); });
     if (c.t === 'pick') add(c.zh, 'f'); if (c.t === 'hear') add(c.s, 'f'); if (c.t === 'order' || c.t === 'type') add(c.zh, 'f'); if (c.t === 'mc') add(c.full, 'f'); if (c.t === 'tf') add(c.zh, 'f'); if (c.t === 'spot') add(c.full, 'f');
@@ -833,7 +935,7 @@ function renderScreen() {
     if (nb.disabled) return;
     if (sc.t === 'album' || sc.t === 'wrap' || (S.reader && sc.t === 'read')) {
       x.done = 1; x.i = 0; x.b = 0; S.words.forEach(w => st.stk[w] = 1); tickFlush(); const hit = todaySec() >= goalMin() * 60 && st.goalDay !== todayKey(); if (hit) st.goalDay = todayKey(); save(); home();
-      toast(hit ? 'Đủ mục tiêu hôm nay rồi! 🎉' : S.reader ? 'Bạn đã đọc xong cả câu chuyện!' : S.test ? 'Xong bài kiểm tra!' : S.mix || S.rev ? 'Xong buổi ôn!' : sid === LAST() ? 'Xong cả Bài 1!' : 'Xong tập ' + sid + '!'); confetti(); return;
+      toast(hit ? 'Đủ mục tiêu hôm nay rồi! 🎉' : S.reader ? 'Bạn đã đọc xong cả câu chuyện!' : S.test ? 'Xong bài kiểm tra!' : S.mix || S.rev ? 'Xong buổi ôn!' : S.comic ? 'Ghép xong truyện!' : lastLearn(S) ? 'Xong cả Bài ' + chOf(S) + '!' : 'Xong tập ' + unitNo(sid) + '!'); confetti(); return;
     }
     maybeRetry(S, x, sc);
     x.i++; x.b = S.screens.slice(0, x.i).filter(q => !q._retry).length; save(); renderScreen();
@@ -939,8 +1041,8 @@ function mc(sc, pane, ep, gate) {
 function read(sc, pane, ep, gate) {
   gate(true);
   pane.insertAdjacentHTML('beforeend', `<div class="h2">${sc.title || 'Bây giờ đọc cả hai đoạn'}</div><p class="vi" style="margin:0">Đọc từ đầu đến cuối. Chạm vào bất kỳ từ nào để xem nghĩa. Từ có gạch chân là những từ bạn vừa học.</p>`);
-  const items = sc.ids.map(B), els = [];
-  const SCN = {}; if (sc.pics) SESSIONS.forEach(S2 => (S2.screens || []).forEach(c2 => { if (c2.t === 'story') c2.lines.forEach(l2 => { const i2 = BOOK.findIndex(b2 => b2.zh === l2.zh); if (i2 >= 0 && !SCN[i2]) SCN[i2] = c2.scene; }); })); let lastSc = null;
+  const S0 = SESSIONS.find(x => x.id === sid), BOOK = bookOf(S0), items = sc.ids.map(i => ({ who: 'n', v: 'm', zh: BOOK[i].zh, vi: BOOK[i].vi })), els = [];
+  const SCN = {}; if (sc.pics) SESSIONS.filter(S2 => chOf(S2) === chOf(S0)).forEach(S2 => (S2.screens || []).forEach(c2 => { if (c2.t === 'story') c2.lines.forEach(l2 => { const i2 = BOOK.findIndex(b2 => b2.zh === l2.zh); if (i2 >= 0 && !SCN[i2]) SCN[i2] = c2.scene; }); })); let lastSc = null;
   const bar = h('div', 'row'), bp = h('button', 'ghost', '▶ Nghe cả bài'), bt = h('button', 'ghost', 'Hiện hết bản dịch');
   bp.onclick = () => { EP++; const e2 = EP; stopAudio(); chain(items, e2, k => els.forEach((e, j) => e.classList.toggle('now', j === k))); };
   bar.append(bp, bt); pane.appendChild(bar);
@@ -965,13 +1067,13 @@ function read(sc, pane, ep, gate) {
    Frames come from the story screens (the scene each BOOK line was shown with), never guessed; consecutive lines with the same scene share a frame (max 2).
    The microphone is only used to check that something was said for long enough (no pronunciation scoring). Recordings stay in memory for this screen only. */
 const COMIC = { thr: 0.012, perChar: 0.4, share: 0.5, maxFrames: 6 };
-function bookScenes() {
-  const m = {};
-  SESSIONS.forEach(S2 => (S2.base || S2.screens || []).forEach(c => { if (c.t === 'story') (c.lines || []).forEach(l => { const i = BOOK.findIndex(b => b.zh === l.zh); if (i >= 0 && !(i in m)) m[i] = c.scene; }); }));
+function bookScenes(n) {
+  const m = {}; n = n || chOf(SESSIONS.find(x => x.id === sid)) || 1; const BOOK = (CHN(n) || CHAPTERS[0]).BOOK || [];
+  SESSIONS.filter(S2 => chOf(S2) === n).forEach(S2 => (S2.base || S2.screens || []).forEach(c => { if (c.t === 'story') (c.lines || []).forEach(l => { const i = BOOK.findIndex(b => b.zh === l.zh); if (i >= 0 && !(i in m)) m[i] = c.scene; }); }));
   return m;
 }
-function comicFrames(ids) {
-  const m = bookScenes(), fr = [];
+function comicFrames(ids, n) {
+  const m = bookScenes(n), fr = [];
   ids.forEach(i => { const last = fr[fr.length - 1]; if (last && last.scene === m[i] && last.ids.length < 2) last.ids.push(i); else fr.push({ scene: m[i], ids: [i] }); });
   return fr;
 }
@@ -1013,7 +1115,8 @@ function playUrl(url, tag) {
 }
 function comic(sc, pane, ep, gate) {
   gate(false);
-  const key = sid + ':' + SS(sid).i, frames = comicFrames(sc.ids), V = {}; sc.ids.forEach(i => { V[i] = B(i).v; });
+  const BOOK = bookOf(SESSIONS.find(x => x.id === sid));   /* this chapter's sentences (shadows Bài 1's BOOK inside the comic) */
+  const key = sid + ':' + SS(sid).i, frames = comicFrames(sc.ids), V = {}; sc.ids.forEach(i => { V[i] = 'm'; });
   const C = { mode: micOK() ? 'mic' : 'tap', rec: {}, ready: {}, placed: {}, first: {}, hold: null, take: null, dragEnd: 0, done: false };
   window.__comic = C;
   const stage = $('#stage');
@@ -1269,12 +1372,12 @@ function hear(sc, pane, ep, gate) {
   top.append(sb, showB, pyB); pane.append(top, txt, pl);
   const box = h('div', 'opts'), fb = h('div', ''), btns = [];
   const done = () => { btns.forEach(x => { x.disabled = true; }); txt.hidden = true; pl.hidden = true; top.hidden = true; answerBlock(pane, sc.s, sc.opts[0]); finishQ(sc, pane, wrong, zh(fmtNew(sc.why))); };
-  shuffle(sc.opts.map((t, i) => ({ t, ok: i === 0 }))).forEach(o => {
+  shuffle(sc.opts.map((t, i) => ({ t, i, ok: i === 0 }))).forEach(o => {
     const b = h('button', 'opt vn', o.t); b.dataset.ok = o.ok ? 1 : 0; btns.push(b); box.appendChild(h('div', 'orow')).appendChild(b);
     b.onclick = () => {
       if (b.disabled) return;
       if (o.ok) { sfx.ok(); b.classList.add('good'); fb.className = ''; fb.innerHTML = ''; done(); }
-      else { wrong++; noteMiss(sc.w); sfx.bad(); b.classList.add('bad', 'shake'); b.disabled = true; setTimeout(() => b.classList.remove('shake'), 400); fb.className = 'fb bad'; fb.innerHTML = 'Chưa đúng. Nghe lại một lần nữa nhé.'; if (wrong >= 2) { btns.forEach(x => { if (x.dataset.ok === '1') x.classList.add('good'); }); fb.innerHTML = 'Đáp án đúng đã được tô xanh.'; done(); } }
+      else { wrong++; noteMiss(sc.w); sfx.bad(); b.classList.add('bad', 'shake'); b.disabled = true; setTimeout(() => b.classList.remove('shake'), 400); fb.className = 'fb bad'; const why = sc.whyNot && sc.whyNot[o.i]; fb.innerHTML = why ? `<div class="whyn">${zh(why)}</div>Nghe lại một lần nữa nhé.` : 'Chưa đúng. Nghe lại một lần nữa nhé.'; if (wrong >= 2) { btns.forEach(x => { if (x.dataset.ok === '1') x.classList.add('good'); }); fb.innerHTML = (why ? `<div class="whyn">${zh(why)}</div>` : '') + 'Đáp án đúng đã được tô xanh.'; done(); } }
     };
   });
   pane.append(box, fb);
@@ -1347,9 +1450,11 @@ function choose(sc, pane, ep, gate) {
 const szs = id => id.length > 3 ? ' style="font-size:24px"' : id.length > 2 ? ' style="font-size:30px"' : '';
 const pyOf = t => segs(t).filter(x => DICT[x.k]).map(x => DICT[x.k][0]).join(' ');
 /* ---- revision engine: which words are due, and which questions to ask ---- */
-const STUDY = () => SESSIONS.filter(s => !s.rev);
-const LAST = () => STUDY().filter(s => !s.mix && !s.test && !s.reader).slice(-1)[0].id;
-const REV = { id: 99, rev: 1, title: 'Ôn tập tổng hợp', sub: '', thumb: 'cup', words: [], screens: [], fixed: null };
+/* the playable sessions of one chapter in path order, or of every loaded chapter (n omitted) */
+const STUDY = n => n ? pathOf(n).filter(o => o.S).map(o => o.S) : CHAPTERS.filter(c => c.loaded).flatMap(c => STUDY(c.n));
+const LAST = () => { const L = CHAPTERS[0].PATH.filter(e => e.kind === 'learn'); return L[L.length - 1].id; };   /* Bài 1 (kept for old callers); use lastLearn(S) */
+SESSIONS.forEach(S => { S.ch = 1; });
+const REV = { id: 99, ch: 0, rev: 1, title: 'Ôn tập tổng hợp', sub: '', thumb: 'cup', words: [], screens: [], fixed: null };
 SESSIONS.push(REV);
 function revStatus() { const ids = Object.keys(st.wl).filter(i => W[i]), now = Date.now(); return { learned: ids.length, due: ids.filter(i => st.wl[i].due <= now).length }; }
 function pri(id, now) {
@@ -1381,13 +1486,7 @@ function buildRevision(fixed) {
   if (!ids.length) return [];
   const T = fixed ? shuffle(fixed) : ids.sort((x, y) => pri(y, now) - pri(x, now)).slice(0, 6);
   const Q = fixed ? Math.min(10, T.length + 1) : Math.max(3, Math.min(8, T.length * 2)), qs = [], usedNow = {};
-  for (let n = 0; n < Q; n++) {
-    const id = T[n % T.length], k = Math.floor(n / T.length), r = wrec(id), bank = QB[id] || [];
-    const pool = ['z2m', 'm2z', ...(id === '自杀' ? [] : ['tw']), ...bank.map((_, j) => 'b' + j)]   /* 自杀 stays recognition-only: never asked to type it */, hist = (r.hist = r.hist || []);
-    let fresh = pool.filter(p => !hist.slice(-3).includes(p) && !(usedNow[id] || []).includes(p)); if (!fresh.length) fresh = pool.filter(p => !(usedNow[id] || []).includes(p)); if (!fresh.length) fresh = pool;
-    const pick = fresh[Math.floor(Math.random() * fresh.length)]; (usedNow[id] = usedNow[id] || []).push(pick);
-    qs.push(pick[0] === 'b' ? Object.assign(JSON.parse(JSON.stringify(bank[+pick.slice(1)])), { _p: pick }) : Object.assign(genQ(id, pick), { _p: pick }));
-  }
+  for (let n = 0; n < Q; n++) qs.push(revQ(T[n % T.length], usedNow));
   ensureBoth(qs);
   for (let n = 1; n < qs.length; n++) if (qs[n].t === qs[n - 1].t) { const m = qs.findIndex((q, j) => j > n && q.t !== qs[n - 1].t && (j + 1 >= qs.length || q.t !== qs[j + 1].t)); if (m > 0) [qs[n], qs[m]] = [qs[m], qs[n]]; }
   const out = qs.slice(0, 3);
@@ -1395,13 +1494,36 @@ function buildRevision(fixed) {
   out.push(...qs.slice(3), { t: 'wrap' });
   return out;
 }
+function revQ(id, usedNow) {
+  const r = wrec(id), bank = QB[id] || [];
+  const pool = ['z2m', 'm2z', ...(id === '自杀' ? [] : ['tw']), ...bank.map((_, j) => 'b' + j)]   /* 自杀 stays recognition-only: never asked to type it */, hist = (r.hist = r.hist || []);
+  let fresh = pool.filter(p => !hist.slice(-3).includes(p) && !(usedNow[id] || []).includes(p)); if (!fresh.length) fresh = pool.filter(p => !(usedNow[id] || []).includes(p)); if (!fresh.length) fresh = pool;
+  const pick = fresh[Math.floor(Math.random() * fresh.length)]; (usedNow[id] = usedNow[id] || []).push(pick);
+  return pick[0] === 'b' ? Object.assign(JSON.parse(JSON.stringify(bank[+pick.slice(1)])), { _p: pick }) : Object.assign(genQ(id, pick), { _p: pick });
+}
+/* a short mixed review (later chapters, PATH stage {max}): about `max` screens incl. the match; `first` (older chapters' words) are always asked */
+function buildShortMix(own, first, max) {
+  const usedNow = {}, T = shuffle(own.slice()), mW = T.length + first.length >= 3 ? T.slice(0, 5) : [];
+  const qW = first.concat(T.filter(i => !mW.includes(i)), mW), Q = Math.max(1, max - (mW.length ? 1 : 0)), qs = [];
+  for (let n = 0; n < Q; n++) qs.push(revQ(qW[n % qW.length], usedNow));
+  ensureBoth(qs);
+  for (let n = 1; n < qs.length; n++) if (qs[n].t === qs[n - 1].t) { const m = qs.findIndex((q, j) => j > n && q.t !== qs[n - 1].t && (j + 1 >= qs.length || q.t !== qs[j + 1].t)); if (m > 0) [qs[n], qs[m]] = [qs[m], qs[n]]; }
+  const out = qs.slice(0, 2);
+  if (mW.length) out.push({ t: 'match', w: mW, prompt: 'Chạm một từ, rồi chạm nghĩa của nó:' });
+  out.push(...qs.slice(2), { t: 'wrap' });
+  return out;
+}
 /* ---- mixed review inside the study path: the words of the two units just finished, topped up with older ones ---- */
 function buildMix(s) {
-  const own = s.after.flatMap(id => SESSIONS.find(x => x.id === id).words).filter(i => W[i]);
-  const upto = STUDY().findIndex(x => x.id === s.id), before = STUDY().slice(0, upto).flatMap(x => x.words).filter(i => !own.includes(i) && st.wl[i]);
+  const n = chOf(s), own = s.after.flatMap(id => SESSIONS.find(x => x.id === id).words).filter(i => W[i]), L = STUDY(n);
+  const upto = L.findIndex(x => x.id === s.id), before = L.slice(0, upto).flatMap(x => x.words).filter(i => !own.includes(i) && st.wl[i]);
   const now = Date.now(), extra = before.sort((a, b) => pri(b, now) - pri(a, now)).slice(0, Math.max(0, Math.min(s.extra || 3, 9 - own.length)));
-  own.concat(extra).forEach(wrec);
-  return buildRevision(own.concat(extra));
+  if (n <= 1) { own.concat(extra).forEach(wrec); return buildRevision(own.concat(extra)); }   /* Bài 1: unchanged */
+  /* later chapters: ~20% words of earlier chapters the learner already met (weakest first): ch1 in the content, else a quarter of the own words */
+  const k = s.ch1 != null ? s.ch1 : Math.max(1, Math.round(own.length / 4));
+  const old = Object.keys(st.wl).filter(i => W[i] && wordCh(i) < n).sort((a, b) => pri(b, now) - pri(a, now)).slice(0, k);
+  own.concat(extra, old).forEach(wrec);
+  return s.max ? buildShortMix(own.concat(extra), old, s.max) : buildRevision(own.concat(extra, old));
 }
 
 /* ---- tf: true or false about the story ---- */
@@ -1458,8 +1580,8 @@ function predict(sc, pane, ep, gate) {
   pane.append(box, fb);
 }
 /* ---- chapter test: one question from every unit, plus story and usage checks ---- */
-function buildTest() {
-  const now = Date.now(), units = SESSIONS.filter(s => !s.mix && !s.test && !s.reader && !s.rev), qs = [];
+function buildTest(S) {
+  const C = CHN(chOf(S)) || CHAPTERS[0], TESTBANK = C.TESTBANK, now = Date.now(), units = STUDY(C.n).filter(isLearn), qs = [];
   units.forEach(s => {
     const id = s.words.slice().sort((a, b) => pri(b, now) - pri(a, now))[0], bank = QB[id] || [];
     const pool = ['z2m', 'm2z', ...(id === '自杀' ? [] : ['tw']), ...bank.map((_, j) => 'b' + j)], p = pool[Math.floor(Math.random() * pool.length)];
@@ -1478,12 +1600,18 @@ function wrap(sc, pane, ep, gate, nb) {
   gate(true); nb.textContent = 'Xong ✓';
   const keys = Object.keys(st.res).filter(k => k.startsWith(sid + ':')), ok = keys.filter(k => st.res[k]).length;
   const miss = Object.keys((st.rv || {}).miss || {}), S = SESSIONS.find(x => x.id === sid);
+  if (S.comic) {
+    const n = S.screens.filter(q => q.t === 'comic').length;
+    pane.insertAdjacentHTML('beforeend', art(S.thumb) + `<div class="h2">Ghép xong truyện!</div><p class="prompt" style="margin:0">Trang ghép đúng ngay lần đầu: <b>${ok}/${n}</b></p><p class="vi" style="margin:0">Câu nào đặt nhầm tranh thì các từ trong câu đó đã được xếp vào “Ôn tập tổng hợp”.</p>`);
+    return;
+  }
   if (S.test) {
-    const n = S.screens.length - 1, r = n ? ok / n : 0, weakU = [...new Set(S.screens.map((q, i) => (q.u && st.res[sid + ':' + i] === 0) ? q.u : 0).filter(Boolean))].sort((a, b) => a - b);
-    st.test = { last: ok, n, best: Math.max(ok, (st.test && st.test.best) || 0), at: Date.now() }; save();
+    const n = S.screens.length - 1, r = n ? ok / n : 0, weakU = [...new Set(S.screens.map((q, i) => (q.u && st.res[sid + ':' + i] === 0) ? q.u : 0).filter(Boolean))].sort((a, b) => parseFloat(unitNo(a)) - parseFloat(unitNo(b)));
+    const prev = S.id === 't1' ? st.test : (st.tests || {})[S.id], rec = { last: ok, n, best: Math.max(ok, (prev && prev.best) || 0), at: Date.now() };
+    if (S.id === 't1') st.test = rec; else (st.tests = st.tests || {})[S.id] = rec; save();
     const msg = r >= .88 ? 'Rất vững! Bạn nhớ và dùng được hầu hết số từ này.' : r >= .65 ? 'Khá tốt. Còn vài chỗ cần nhìn lại, mình liệt kê bên dưới.' : 'Còn nhiều từ chưa chắc. Không sao: ôn lại các từ bên dưới rồi làm lại bài kiểm tra.';
     pane.insertAdjacentHTML('beforeend', art('cup') + `<div class="h2">Kết quả kiểm tra</div><div class="bigq" style="padding:0">${ok}/${n}</div><p class="prompt" style="margin:0;font-weight:500">${msg}</p>`);
-    if (weakU.length) pane.insertAdjacentHTML('beforeend', `<p class="vi" style="margin:0">Nên xem lại: ${weakU.map(u => 'tập ' + u).join(', ')}.</p>`);
+    if (weakU.length) pane.insertAdjacentHTML('beforeend', `<p class="vi" style="margin:0">Nên xem lại: ${weakU.map(u => 'tập ' + unitNo(u)).join(', ')}.</p>`);
     if (miss.length) {
       pane.insertAdjacentHTML('beforeend', `<div class="h2">Những từ nên nhìn lại</div>`);
       const stk = h('div', 'stk'); miss.forEach(id => { const b = h('button', 'sticker', `<div class="s1"${szs(id)}>${zh(id)}</div><div class="s2">${MEAN[id] || ''}</div>`); b.onclick = () => speak(id); stk.appendChild(b); }); pane.appendChild(stk);
@@ -1502,7 +1630,8 @@ function wrap(sc, pane, ep, gate, nb) {
 
 /* ---- end of a session: stickers, sentences to take away, teaser ---- */
 function album(sc, pane, ep, gate, nb) {
-  gate(true); nb.textContent = sid === LAST() ? 'Hoàn thành Bài 1 ✓' : 'Xong tập ' + sid + ' ✓';
+  const S = SESSIONS.find(x => x.id === sid);
+  gate(true); nb.textContent = lastLearn(S) ? 'Hoàn thành Bài ' + chOf(S) + ' ✓' : 'Xong tập ' + unitNo(sid) + ' ✓';
   pane.insertAdjacentHTML('beforeend', `<div class="h2">Bạn vừa nhận được</div>`);
   const stk = h('div', 'stk');
   sc.words.forEach(id => { stk.appendChild(h('div', 'sticker', `<div class="s1"${szs(id)}>${zh(id)}</div><div class="s2">${W[id].vi.split(/[;(]/)[0]}</div>`)); });
@@ -1521,6 +1650,7 @@ function album(sc, pane, ep, gate, nb) {
   if (st.auto && sc.finale) setTimeout(() => chain(sc.finale.lines, ep), 900);
 }
 
+(window.__pendingCh || []).forEach(a => regChapter(a[0], a[1], a[2])); window.__pendingCh = [];
 initSheet();
 setPy(st.py);
 home();

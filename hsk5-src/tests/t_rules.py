@@ -14,7 +14,7 @@ one line "<word> không có nghĩa là …" without the right meaning, the word 
 "Lần đầu chưa đúng…" and the word really drops to box 0 in the revision list (st.wl).
 Comic (Ghép truyện) screens: Tiếp locked until done but always visible, each placed card shows Chinese (tappable, pinyin) +
 Vietnamese + 🔊 and is spoken (nothing when 'Tự đọc to' is off), a male clip exists for every sentence, no auto-advance, no 'Đúng!'."""
-import asyncio, sys
+import asyncio, sys, json
 from comic_util import solve_nomic, bank, frame_of, read_nomic, place_tap
 from playwright.async_api import async_playwright
 BASE = 'http://127.0.0.1:8765/index.html'
@@ -24,10 +24,10 @@ START = '''(qs)=>{const i=SESSIONS.findIndex(x=>x.id===98);if(i>=0)SESSIONS.spli
 COLLECT = '''()=>{const Q=new Set(%s),out=[];const add=(src,c)=>{if(c&&Q.has(c.t))out.push({src,q:JSON.parse(JSON.stringify(c))})};
   SESSIONS.filter(s=>!s.rev&&!s.mix&&!s.test&&!s.reader).forEach(s=>(s.base||s.screens).forEach((c,i)=>add('unit '+s.id+' #'+i,c)));
   Object.entries(QB).forEach(([k,a])=>a.forEach((c,i)=>add('QB '+k+' #'+i,c)));
-  TESTBANK.tf.forEach((c,i)=>add('TB tf #'+i,c)); TESTBANK.spot.forEach((c,i)=>add('TB spot #'+i,c));
+  CHAPTERS.filter(c=>c.loaded).forEach(C=>{C.TESTBANK.tf.forEach((c,i)=>add('TB'+C.n+' tf #'+i,c)); C.TESTBANK.spot.forEach((c,i)=>add('TB'+C.n+' spot #'+i,c));});
   Object.keys(MEAN).filter(k=>W[k]).forEach(k=>{st.wl[k]=st.wl[k]||{t:Date.now(),box:0,due:0,last:0,rev:0,n:0};});
   SESSIONS.filter(s=>s.mix).forEach(s=>buildMix(s).forEach((c,i)=>add('mix '+s.id+' #'+i,c)));
-  buildTest().forEach((c,i)=>add('test #'+i,c)); buildRevision().forEach((c,i)=>add('revision #'+i,c));
+  SESSIONS.filter(s=>s.test).forEach(s=>buildTest(s).forEach((c,i)=>add('test '+s.id+' #'+i,c))); buildRevision().forEach((c,i)=>add('revision #'+i,c));
   const ks=Object.keys(MEAN).filter(k=>DICT[k]&&W[k]); ks.slice(0,3).forEach(k=>['z2m','m2z','tw'].forEach(p=>add('genQ '+p+' '+k,genQ(k,p))));
   return out}''' % (str(QTYPES).replace("'", '"'))
 # solve the question on screen; wrong=True answers wrongly until the app reveals the answer
@@ -69,7 +69,7 @@ async def main():
         async def newpage(w, hgt):
             pg = await (await b.new_context(viewport={'width': w, 'height': hgt}, has_touch=True, is_mobile=w < 800)).new_page()
             pg.on('pageerror', lambda e: errs.append(str(e)))
-            await pg.goto(BASE); await pg.wait_for_timeout(500); return pg
+            await pg.goto(BASE); await pg.wait_for_timeout(500); await pg.evaluate('loadCh(2)'); return pg   # Bài 2 too (phiếu #9)
         async def run(pg, item, wrong=False, auto=1):
             q = item['q']
             await pg.evaluate(f'st.auto={auto}'); await pg.evaluate(START, [q]); await pg.wait_for_timeout(480)
@@ -146,7 +146,7 @@ async def main():
             for sid_, i, _ in cms:
                 for auto in (1, 0):
                     tag = f'[{lab}] comic unit {sid_} #{i} auto {auto}'
-                    await pgx.evaluate(f"st.auto={auto};st.sess[{sid_}]={{i:{i},b:{i},done:0}};play({sid_})"); await pgx.wait_for_timeout(400)
+                    await pgx.evaluate(f"st.auto={auto};st.sess[{json.dumps(sid_)}]={{i:{i},b:{i},done:0}};play({json.dumps(sid_)})"); await pgx.wait_for_timeout(400)
                     nx = await pgx.evaluate("(()=>{const nx=document.getElementById('next'),r=nx.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return [nx.disabled,r.top>=0&&r.bottom<=innerHeight&&(hit===nx||nx.contains(hit))]})()")
                     chk(nx[0] and nx[1], f'{tag}: Tiếp locked but visible before done {nx}')
                     spoke = []

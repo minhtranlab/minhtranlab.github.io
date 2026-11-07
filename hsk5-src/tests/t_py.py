@@ -39,7 +39,7 @@ async def run_browser(p, name, only):
     ctx = await b.new_context(viewport={'width':820,'height':1180}, has_touch=True)
     pg = await ctx.new_page(); errs=[]
     pg.on('pageerror', lambda e: errs.append(str(e)))
-    await pg.goto('http://127.0.0.1:8765/index.html'); await pg.wait_for_timeout(500)
+    await pg.goto('http://127.0.0.1:8765/index.html'); await pg.wait_for_timeout(500); await pg.evaluate('loadCh(2)')   # Bài 2 too
     order = await pg.evaluate('STUDY().map(s=>s.id)')
     seen = {}; visbad = {}; btnbad = {}; nscr = 0; nbtn = 0
     for sid in order:

@@ -7,7 +7,7 @@ VIS=src.split("VIS = '''")[1].split("'''")[0]
 async def run(p, name):
     b = await (p.webkit.launch() if name == 'webkit' else p.chromium.launch(executable_path='/opt/pw-browsers/chromium',args=['--no-sandbox']))
     pg=await (await b.new_context(viewport={'width':820,'height':1180})).new_page()
-    await pg.goto('http://127.0.0.1:8765/index.html'); await pg.wait_for_timeout(400)
+    await pg.goto('http://127.0.0.1:8765/index.html'); await pg.wait_for_timeout(400); await pg.evaluate('loadCh(2)')   # Bài 2 cards too
     await pg.evaluate('setPy(true)')
     bad=0; vbad=0
     for wid in await pg.evaluate('WORDS.map(w=>w.id)'):
