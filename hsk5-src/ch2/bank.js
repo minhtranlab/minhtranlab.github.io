@@ -3,7 +3,8 @@
    Pictures (scene) appear only after answering (HANDOFF §12.11) and show what the sentence says; never the answer's characters. ===== */
 var CH2 = window.CH2 || (window.CH2 = {});
 (function () {
-  CH2.MEAN = { '一辈子': 'suốt đời, cả đời', '农村': 'nông thôn', '屋': 'nhà, căn phòng', '断': 'cai, dứt, đứt', '以来': 'từ … đến nay', '姥姥': 'bà ngoại', '舅舅': 'cậu (anh/em trai của mẹ)', '姑姑': 'cô (chị/em gái của ba)', '坚决': 'kiên quyết' };
+  CH2.MEAN = { '一辈子': 'suốt đời, cả đời', '农村': 'nông thôn', '屋': 'nhà, căn phòng', '断': 'cai, dứt, đứt', '以来': 'từ … đến nay', '姥姥': 'bà ngoại', '舅舅': 'cậu (anh/em trai của mẹ)', '姑姑': 'cô (chị/em gái của ba)', '坚决': 'kiên quyết',
+    '打工': 'làm thuê, làm công', '挣': 'kiếm (tiền)', '县': 'huyện', '套': 'bộ, căn (lượng từ)', '装修': 'sửa sang (nhà)', '不得了': 'cực kỳ, vô cùng', '串': 'chùm, xâu (lượng từ)', '醉': 'say (rượu)', '强烈': 'mãnh liệt, gắt', '夜': 'ban đêm' };
   /* cloze: w word, scene, say = sentence with ___, vi, full, ok = right word, wrongs = [[word, why not]] */
   var cz = function (w, scene, say, vi, full, ok, wrongs, teach) {
     return { t: 'mc', w: [w], scene: scene, say: [say, vi], full: full, prompt: 'Chọn từ điền vào chỗ trống:',
@@ -71,6 +72,70 @@ var CH2 = window.CH2 || (window.CH2 = {});
           [['恩爱', '恩爱 chỉ vợ chồng thắm thiết, không nói về thái độ.'], ['以来', '以来 đứng sau một mốc thời gian, không đứng sau 很.']], '<b>态度很坚决</b> = thái độ rất kiên quyết. 坚决 cũng đứng trước động từ: 坚决反对.'),
         od(['坚决'], '他坚决反对这个计划。', 'Anh ấy kiên quyết phản đối kế hoạch này.', ['他', '坚决', '反对', '这个计划']),
         hr('坚决')
+      ],
+      /* ---------- tập 3 ---------- */
+      '打工': [
+        cz('打工', 'c2_work', '大学的时候，我在一家饭馆___，一个月挣的钱不多。', 'Hồi đại học mình làm thêm ở một quán ăn, mỗi tháng kiếm không nhiều.', '大学的时候，我在一家饭馆打工，一个月挣的钱不多。', '打工',
+          [['断', '断 là đứt, cai; không phải đi làm.'], ['坚决', '坚决 là kiên quyết, nói thái độ, không phải việc làm.']], '<b>在 + nơi + 打工</b> = làm thuê, làm thêm ở đâu.'),
+        od(['打工'], '他去城里打了三年工。', 'Anh ấy lên thành phố làm thuê ba năm.', ['他', '去城里', '打了三年', '工']),
+        hr('打工')
+      ],
+      '挣': [
+        cz('挣', 'c2_earn', '他每个月___的钱不多，可是很努力。', 'Mỗi tháng anh ấy kiếm không nhiều tiền, nhưng rất chịu khó.', '他每个月挣的钱不多，可是很努力。', '挣',
+          [['花', '花钱 = tiêu tiền. Vế sau 可是很努力 (nhưng rất chịu khó) cho thấy đang nói chuyện kiếm tiền.'], ['断', '断 là đứt, cai; không đi với 钱.']], '<b>挣钱</b> = kiếm tiền; <b>挣的钱</b> = số tiền kiếm được.'),
+        hr('挣'),
+        ty(['挣'], '挣钱', 'kiếm tiền')
+      ],
+      '县': [
+        cz('县', 'c2_county', '姥姥住在农村，看病要去___里的医院。', 'Bà ngoại sống ở nông thôn, đi khám bệnh phải lên bệnh viện trên huyện.', '姥姥住在农村，看病要去县里的医院。', '县',
+          [['屋', '屋里 là trong nhà; trong nhà không có bệnh viện.'], ['套', '套 là lượng từ (一套房子), không chỉ nơi chốn.']], '<b>县里</b> = trên huyện: lớn hơn làng, nhỏ hơn thành phố.'),
+        hr('县'),
+        od(['县'], '从我们村到县里要坐一个小时的车。', 'Từ làng mình lên huyện phải đi xe một tiếng.', ['从我们村', '到县里', '要坐', '一个小时的车'])
+      ],
+      '套': [
+        cz('套', 'c2_flat3', '这___房子有三个房间，很适合我们家。', 'Căn nhà này có ba phòng, rất hợp với nhà mình.', '这套房子有三个房间，很适合我们家。', '套',
+          [['间', '一间 là một gian phòng; một gian thì không có ba phòng bên trong.'], ['辆', '辆 là lượng từ của xe.']], '<b>一套房子</b> = một căn nhà gồm nhiều phòng. 一间 = một gian.'),
+        hr('套'),
+        cz('套', 'c2_sets', '他结婚的时候买了一___新西服。', 'Lúc cưới anh ấy mua một bộ com-lê mới.', '他结婚的时候买了一套新西服。', '套',
+          [['件', '一件 dùng cho một chiếc áo; com-lê gồm áo và quần nên là 一套.'], ['条', '一条 dùng cho quần, váy; cả bộ com-lê là 一套.']], '<b>一套</b> = trọn bộ: 一套西服, 一套家具, 一套邮票.')
+      ],
+      /* ---------- tập 4 ---------- */
+      '装修': [
+        cz('装修', 'c2_renovate', '房子___好了，我们下个月搬进去。', 'Nhà sửa sang xong rồi, tháng sau tụi mình dọn vào.', '房子装修好了，我们下个月搬进去。', '装修',
+          [['打工', '打工 là đi làm thuê, không đi với 房子…好了.'], ['挣', '挣 là kiếm (tiền).']], '<b>装修好 / 装修完</b> = sửa sang xong.'),
+        hr('装修'),
+        od(['装修'], '这家饭馆装修得很漂亮。', 'Quán ăn này trang trí rất đẹp.', ['这家饭馆', '装修得', '很', '漂亮'])
+      ],
+      '不得了': [
+        cz('不得了', 'c2_hot', '今天热得___，我们别出去了。', 'Hôm nay nóng kinh khủng, mình đừng ra ngoài.', '今天热得不得了，我们别出去了。', '不得了',
+          [['不错', '不错 = khá tốt; 热得不错 không ai nói.'], ['一样', '一样 = giống nhau, không chỉ mức độ.']], '<b>热得不得了</b> = nóng vô cùng: tính từ + 得 + 不得了.'),
+        hr('不得了'),
+        od(['不得了'], '听说儿子考上了大学，妈妈高兴得不得了。', 'Nghe tin con trai đậu đại học, mẹ mừng vô cùng.', ['听说儿子', '考上了大学', '妈妈', '高兴得不得了'])
+      ],
+      '串': [
+        hr('串'),
+        cz('串', 'c2_keyBunch', '他手里拿着一___钥匙，不知道哪把是大门的。', 'Anh ấy cầm một chùm chìa khoá, không biết chiếc nào là của cửa lớn.', '他手里拿着一串钥匙，不知道哪把是大门的。', '串',
+          [['套', '一套 là một bộ (房子, 家具); chìa khoá xâu chung một vòng là 一串.'], ['辆', '辆 là lượng từ của xe.']], '<b>一串钥匙</b> = một chùm chìa khoá. Từng chiếc thì đếm bằng 把: 一把钥匙.')
+      ],
+      /* ---------- tập 5 ---------- */
+      '醉': [
+        cz('醉', 'c2_tipsy', '他昨天喝___了，今天早上起来头很疼。', 'Hôm qua anh ấy uống say, sáng nay dậy đau đầu lắm.', '他昨天喝醉了，今天早上起来头很疼。', '醉',
+          [['饱', '喝饱 = uống no; uống no thì không đau đầu sáng hôm sau.'], ['断', '断 là đứt, cai; 喝断 không ai nói.']], '<b>喝醉了</b> = uống say rồi.'),
+        hr('醉'),
+        od(['醉'], '我从来没喝醉过。', 'Mình chưa từng uống say.', ['我', '从来', '没喝醉', '过'])
+      ],
+      '强烈': [
+        cz('强烈', 'c2_strongSun', '夏天中午的阳光非常___，出门要戴帽子。', 'Nắng trưa mùa hè rất gắt, ra ngoài phải đội mũ.', '夏天中午的阳光非常强烈，出门要戴帽子。', '强烈',
+          [['坚决', '坚决 nói về thái độ, ý chí của người; nắng thì 强烈.'], ['不得了', '不得了 đứng sau 得 (热得不得了), không đứng sau 非常.']], '<b>强烈的阳光</b> = nắng gắt.'),
+        hr('强烈'),
+        cz('强烈', 'c2_chat', '大家___要求他留下来，可他还是走了。', 'Mọi người hết lời yêu cầu anh ấy ở lại, nhưng anh ấy vẫn đi.', '大家强烈要求他留下来，可他还是走了。', '强烈',
+          [['醉', '醉 là say rượu.'], ['不得了', '不得了 không đứng trước động từ; nó đứng sau 得.']], '<b>强烈要求</b> = hết sức yêu cầu.')
+      ],
+      '夜': [
+        cz('夜', 'c2_night', '我们在姑姑家住了一___，第二天早上才回来。', 'Tụi mình ở lại nhà cô một đêm, sáng hôm sau mới về.', '我们在姑姑家住了一夜，第二天早上才回来。', '夜',
+          [['套', '套 là lượng từ cho bộ, căn.'], ['串', '串 là chùm, xâu.']], '<b>住了一夜</b> = ở lại một đêm.'),
+        hr('夜'),
+        od(['夜'], '昨天夜里下了很大的雨。', 'Đêm qua mưa rất to.', ['昨天', '夜里', '下了', '很大的雨'])
       ]
     };
   };

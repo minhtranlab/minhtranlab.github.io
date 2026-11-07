@@ -145,7 +145,7 @@ async def main():
         for pgx, lab in ((pg, 'phone'), (pg2, 'pad')):
             for sid_, i, _ in cms:
                 for auto in (1, 0):
-                    tag = f'[{lab}] comic unit {sid_} #{i} auto {auto}'
+                    tag = f'[{lab}] comic unit {sid_} #{i} auto {auto}'; J = json.dumps(sid_)   # Bài 2 ids are strings ('2-g1'); sentences come from that chapter's BOOK
                     await pgx.evaluate(f"st.auto={auto};st.sess[{json.dumps(sid_)}]={{i:{i},b:{i},done:0}};play({json.dumps(sid_)})"); await pgx.wait_for_timeout(400)
                     nx = await pgx.evaluate("(()=>{const nx=document.getElementById('next'),r=nx.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return [nx.disabled,r.top>=0&&r.bottom<=innerHeight&&(hit===nx||nx.contains(hit))]})()")
                     chk(nx[0] and nx[1], f'{tag}: Tiếp locked but visible before done {nx}')
@@ -153,16 +153,16 @@ async def main():
                     for c in await bank(pgx):
                         n = await frame_of(pgx, c); await read_nomic(pgx, c); await pgx.evaluate('window.__plays.length=0')
                         await place_tap(pgx, n); await pgx.wait_for_timeout(600)
-                        spoke.append(await pgx.evaluate(f"__plays.length?(__plays.includes('M:'+akey(BOOK[{c}].zh))?1:-1):0"))
+                        spoke.append(await pgx.evaluate(f"__plays.length?(__plays.includes('M:'+akey(bookOf(SESSIONS.find(x=>x.id==={J}))[{c}].zh))?1:-1):0"))
                     chk(all(x == 1 for x in spoke) if auto else all(x == 0 for x in spoke), f'{tag}: placed sentence spoken (auto {auto}): {spoke}')
-                    s2 = await pgx.evaluate(f"""(()=>{{const C=SESSIONS.find(x=>x.id==={sid_}).screens[{i}],pl=[...document.querySelectorAll('.cm-pl')],nx=document.getElementById('next'),r=nx.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
+                    s2 = await pgx.evaluate(f"""(()=>{{const C=SESSIONS.find(x=>x.id==={J}).screens[{i}],BK=bookOf(SESSIONS.find(x=>x.id==={J})),pl=[...document.querySelectorAll('.cm-pl')],nx=document.getElementById('next'),r=nx.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
                       return {{n:pl.length,want:C.ids.length,vi:pl.every(p=>p.querySelector('.cm-v').textContent.trim().length>3),spk:pl.every(p=>p.querySelector('.spk')),w:pl.every(p=>p.querySelector('.w')),
-                        clip:C.ids.filter(k=>!AUD['M|'+akey(BOOK[k].zh)]),on:!nx.disabled,vis:r.top>=0&&r.bottom<=innerHeight&&(hit===nx||nx.contains(hit)),dung:/Đúng!|Đúng rồi/.test(document.getElementById('stage').innerText),i:SS({sid_}).i}}}})()""")
+                        clip:C.ids.filter(k=>!AUD['M|'+akey(BK[k].zh)]),on:!nx.disabled,vis:r.top>=0&&r.bottom<=innerHeight&&(hit===nx||nx.contains(hit)),dung:/Đúng!|Đúng rồi/.test(document.getElementById('stage').innerText),i:SS({J}).i}}}})()""")
                     chk(s2['n'] == s2['want'] and s2['vi'] and s2['spk'] and s2['w'], f'{tag}: every placed card shows Chinese + Vietnamese + 🔊 {s2}')
                     chk(not s2['clip'], f'{tag}: male clip for every sentence {s2["clip"]}')
                     chk(s2['on'] and s2['vis'], f'{tag}: Tiếp open and visible when done')
                     chk(not s2['dung'], f'{tag}: no "Đúng!" text')
-                    await pgx.wait_for_timeout(800); chk(await pgx.evaluate(f'SS({sid_}).i') == i, f'{tag}: no auto-advance')
+                    await pgx.wait_for_timeout(800); chk(await pgx.evaluate(f'SS({J}).i') == i, f'{tag}: no auto-advance')
                     if auto and lab == 'phone':
                         await pgx.evaluate("setPy(1)"); vis = await pgx.evaluate("(()=>{const r=document.querySelector('.cm-pl .w rt');return r?getComputedStyle(r).display:'none'})()"); await pgx.evaluate("setPy(0)")
                         chk(vis != 'none', f'{tag}: pinyin over placed cards with 拼')

@@ -111,6 +111,109 @@ var CH2 = window.CH2 || (window.CH2 = {});
     person(90, 196, { s: .45, hs: 'short', shirt: C.navy, m: 'grin' }) + person(320, 196, { s: .45, hs: 'long', hair: C.hairD, shirt: C.pink, m: 'grin', flip: 1 }) + keyIcon(120, 226, -20, '#e2a83a') + heart(200, 24, 1.3, C.red, 'class="fl"');
   L.c2_newHouse = 'Hai vợ chồng trẻ vui mừng trước toà nhà mới';
 
+  /* ---- shared props for tập 3–11 ---- */
+  var wall = function (c, fl) { return R(0, 0, 400, 300, c || '#f6ead8') + R(0, 236, 400, 64, fl || '#d9b88a'); };
+  var win = function (x, y, w, h, sky) { return R(x, y, w, h, sky || C.sky, 6, 'stroke="#fff" stroke-width="6"') + Ln(x + w / 2, y, x + w / 2, y + h, '#fff', 4); };
+  var nightSky = function () { return R(0, 0, 400, 300, '#26304f') + Ci(334, 60, 26, '#fff3c0') + Ci(346, 54, 22, '#26304f') + [[40, 40], [100, 80], [170, 30], [240, 70], [290, 24], [380, 110]].map(([x, y]) => Ci(x, y, 2.4, '#fff')).join(''); };
+  var sofa = function (x, y, s, c) { return G(`translate(${x} ${y}) scale(${s || 1})`, R(-70, -20, 140, 44, c || '#bd6a5a', 14) + R(-70, -46, 140, 34, c || '#bd6a5a', 14) + R(-80, -30, 20, 54, '#a8584a', 10) + R(60, -30, 20, 54, '#a8584a', 10)); };
+  var bed = function (x, y, s, made) { return G(`translate(${x} ${y}) scale(${s || 1})`, R(-90, -40, 18, 70, C.brown, 4) + R(-90, -6, 180, 30, '#8a5a3b', 8) + R(-72, -22, 40, 18, '#fff', 8) + (made === false ? Pa('M-30 -12 Q20 -40 80 -10 L84 6 L-30 6Z', '#cfe0f0') : R(-30, -16, 116, 22, '#9fd3ee', 8) + Ln(-24, -6, 80, -6, 'rgba(255,255,255,.5)', 3))); };
+  var box = function (x, y, s) { return G(`translate(${x} ${y}) scale(${s || 1})`, R(-26, -22, 52, 44, '#d9a86a', 4) + Ln(-26, -6, 26, -6, '#b8864a', 3) + Ln(0, -22, 0, -6, '#b8864a', 3)); };
+  var bus = function (x, y, s, c, lit) { return G(`translate(${x} ${y}) scale(${s || 1})`, R(-110, -70, 220, 90, c || '#4f7f8f', 14) + [-86, -46, -6, 34].map(q => R(q, -58, 32, 28, lit ? '#ffe39a' : '#cfe3f2', 4)).join('') + R(74, -58, 26, 64, lit ? '#ffe39a' : '#cfe3f2', 4) + Ci(-66, 22, 15, '#333') + Ci(66, 22, 15, '#333') + Ci(-66, 22, 6, '#999') + Ci(66, 22, 6, '#999')); };
+  var hardhat = function () { return Pa('M-30 -14 Q-30 -46 0 -46 Q30 -46 30 -14Z', '#f2c230') + R(-36, -16, 72, 8, '#e0ad1c', 4); };
+  var money = function (x, y, s) { return G(`translate(${x} ${y}) scale(${s || 1})`, R(-30, -16, 60, 32, '#7fbf7a', 4, 'stroke="#4f8f4a" stroke-width="2"') + Ci(0, 0, 9, 'none', 'stroke="#4f8f4a" stroke-width="2"') + R(-22, -26, 60, 32, '#94cc8f', 4, 'stroke="#4f8f4a" stroke-width="2" opacity=".9"')); };
+  var sweat = function (x, y) { return tear(x, y) + tear(x + 12, y + 10); };
+  var dog = function (x, y, s, o) { o = o || {}; return G(`translate(${x} ${y}) scale(${s || 1}${o.flip ? ' ' : ''})`, R(-40, -16, 80, 34, '#c99a6a', 16) + Ci(44, -22, 22, '#c99a6a') + Pa('M30 -40 L22 -62 L40 -46Z', '#8a5a3b') + Ci(52, -26, 3, C.ink) + Ci(64, -18, 4, C.ink) + R(-34, 12, 10, 26, '#b8864a', 4) + R(24, 12, 10, 26, '#b8864a', 4) + Pa('M-40 -8 Q-62 -30 -56 -44', 'none', 'stroke="#c99a6a" stroke-width="7" stroke-linecap="round"') + (o.run ? Pa('M-80 -10 l-20 0 M-84 6 l-24 0', 'none', `stroke="${C.grey}" stroke-width="4" stroke-linecap="round"`) : '')); };
+  var keyring = function (x, y, s) { return G(`translate(${x} ${y}) scale(${s || 1})`, Ci(0, 0, 22, 'none', 'stroke="#c99a3e" stroke-width="6"') + keyIcon(4, 26, 80, '#e2a83a') + keyIcon(-6, 24, 105, '#c99a3e') + keyIcon(14, 22, 55, '#d9b45a') + keyIcon(-14, 20, 130, '#e8be6a')); };
+  var padlock = function (x, y, s, open) { return G(`translate(${x} ${y}) scale(${s || 1})`, Pa(open ? 'M-14 -10 L-14 -34 Q-14 -50 2 -50 Q18 -50 18 -34 L18 -26' : 'M-14 -10 L-14 -30 Q-14 -46 0 -46 Q14 -46 14 -30 L14 -10', 'none', 'stroke="#8a96ad" stroke-width="7"') + R(-22, -12, 44, 36, '#e2a83a', 6) + Ci(0, 4, 5, C.ink) + R(-2, 4, 4, 10, C.ink)); };
+  var door = function (x, y, s, state) { return G(`translate(${x} ${y}) scale(${s || 1})`, R(-40, -100, 80, 160, '#8a5a3b', 4) + (state === 'open' ? R(-36, -96, 72, 152, '#ffe39a') + Pa('M-36 -96 L-60 -86 L-60 50 L-36 56Z', C.brown) : R(-36, -96, 72, 152, C.brown, 2) + Ci(24, -20, 5, C.butter))); };
+
+  /* ---- tập 3 ---- */
+  S.c2_buyHouse = () => R(0, 0, 400, 300, '#eaf2f8') + R(0, 236, 400, 64, '#c9b79c') + R(196, 20, 8, 260, '#fff') +
+    person(64, 150, { s: .6, hs: 'short', shirt: C.org, hat: hardhat() }) + box(84, 200, .8) + person(150, 170, { s: .5, hs: 'pony', shirt: C.pink }) + money(100, 236, .7) +
+    Pa('M178 140 L222 140', 'none', `stroke="${C.org}" stroke-width="8" stroke-linecap="round"`) + Pa('M214 128 L232 140 L214 152Z', C.org) +
+    tower(250, 70, 110, 166, '#e2c9a8') + R(290, 196, 30, 40, C.brown, 3) + keyIcon(260, 260, -10, '#e2a83a') + heart(300, 46, 1.2, C.red, 'class="fl"');
+  L.c2_buyHouse = 'Hai vợ chồng đi làm thuê, dành tiền mua căn nhà mới';
+  S.c2_work = () => R(0, 0, 400, 300, '#eaf2f8') + R(0, 240, 400, 60, '#c9b79c') + R(250, 40, 10, 200, '#8a96ad') + R(330, 40, 10, 200, '#8a96ad') + [80, 140, 200].map(y => R(250, y, 90, 8, '#8a96ad')).join('') +
+    box(250, 228, .8) + box(296, 228, .8) + person(160, 140, { s: .85, hs: 'short', shirt: C.org, m: 'flat', hat: hardhat() }) + box(196, 112, 1.1) + sweat(126, 128);
+  L.c2_work = 'Một người đội mũ bảo hộ khuân hàng ở công trường';
+  S.c2_earn = () => R(0, 0, 400, 300, '#f3f7ea') + R(0, 240, 400, 60, '#cfe0b8') + person(150, 140, { s: .85, hs: 'short', shirt: C.teal, m: 'grin', hat: hardhat() }) + sweat(112, 126) +
+    money(260, 150, 1.4) + hand(226, 168, 10) + R(300, 210, 40, 30, '#e2b85c', 4) + R(300, 200, 40, 10, '#c99a3e', 3) + Tx(320, 232, '¥', 22, C.white);
+  L.c2_earn = 'Người thợ mồ hôi nhễ nhại, cầm xấp tiền vừa kiếm được';
+  S.c2_county = () => R(0, 0, 400, 300, '#e3f0f8') + Pa('M0 210 Q200 180 400 210 L400 300 L0 300Z', '#a8d48f') + Pa('M30 230 Q200 200 370 230', 'none', `stroke="#c9b79c" stroke-width="14" stroke-linecap="round"`) +
+    house(60, 190, .35) + house(100, 196, .3, { roof: '#6f5a8a' }) + Tx(80, 270, 'làng', 18, C.ink) +
+    Ci(200, 160, 62, 'rgba(255,209,102,.6)', `stroke="${C.org}" stroke-width="4"`) + tower(166, 120, 30, 70, '#e2c9a8') + tower(202, 106, 34, 84, '#d9b88a') + house(200, 196, .28) + Tx(200, 270, 'huyện', 20, C.org) +
+    G('', tower(296, 40, 30, 160, '#8fa3c0') + tower(330, 20, 34, 180, '#6f86aa') + tower(364, 60, 30, 140, '#a3b4cf')).replace('<g', '<g opacity=".55"') + Tx(340, 270, 'thành phố', 18, C.ink);
+  L.c2_county = 'Bản đồ: làng, huyện (vòng sáng) và thành phố';
+  S.c2_sets = () => R(0, 0, 400, 300, '#fbf3e6') +
+    G('translate(70 150)', Pa('M-40 -70 L40 -70 L48 20 L-48 20Z', '#3f4f7a') + Pa('M-8 -70 L0 -40 L8 -70Z', '#fff') + R(-40, 24, 34, 80, '#3f4f7a', 4) + R(6, 24, 34, 80, '#3f4f7a', 4)) +
+    G('translate(200 160)', Ci(0, 0, 48, '#fff', `stroke="${C.teal}" stroke-width="4"`) + Ci(0, 0, 30, 'none', `stroke="${C.teal}" stroke-width="2"`) + Pa('M-34 40 Q0 76 34 40Z', '#fff', `stroke="${C.teal}" stroke-width="4"`) + R(50, -30, 6, 80, C.grey, 3) + R(-58, -30, 6, 80, C.grey, 3)) +
+    G('translate(330 150)', R(-50, -50, 100, 100, '#fff', 4, `stroke="${C.ink}" stroke-width="4"`) + Ln(-50, 0, 10, 0, C.ink, 3) + Ln(10, -50, 10, 50, C.ink, 3) + Ln(10, 10, 50, 10, C.ink, 3)) +
+    [70, 200, 330].map(x => Pa(`M${x - 50} 262 Q${x - 50} 272 ${x - 40} 272 L${x + 40} 272 Q${x + 50} 272 ${x + 50} 262`, 'none', `stroke="${C.org}" stroke-width="4"`)).join('');
+  L.c2_sets = 'Ba thứ đi thành bộ: bộ com-lê, bộ chén đĩa, một căn hộ';
+  var plan = function (rooms) {
+    let g = R(0, 0, 400, 300, '#eef4fb') + R(60, 40, 280, 220, '#fff', 4, `stroke="${C.ink}" stroke-width="6"`);
+    if (rooms === 3) g += Ln(180, 40, 180, 260, C.ink, 5) + Ln(180, 150, 340, 150, C.ink, 5) + Ln(60, 170, 180, 170, C.ink, 5) + bed(120, 110, .45) + bed(260, 100, .45) + sofa(120, 230, .5) + R(250, 190, 60, 40, '#e8d3b0', 4) + R(170, 250, 30, 10, '#ffe39a');
+    else g += bed(200, 150, .9) + R(80, 210, 50, 40, '#e8d3b0', 4) + R(310, 60, 20, 30, '#ffe39a');
+    return g;
+  };
+  S.c2_flat3 = () => plan(3); L.c2_flat3 = 'Sơ đồ một căn nhà có ba phòng';
+  S.c2_room1 = () => plan(1); L.c2_room1 = 'Sơ đồ một gian phòng nhỏ có một cái giường';
+  S.c2_furniture = () => wall('#f3e6d3') + sofa(130, 200, 1) + R(230, 180, 110, 12, C.brown, 4) + R(238, 192, 10, 44, C.brown) + R(322, 192, 10, 44, C.brown) + chair(250, 196, '#a8584a') + R(150, 50, 100, 70, '#fff', 4, `stroke="${C.brown}" stroke-width="5"`);
+  L.c2_furniture = 'Một bộ đồ gỗ: ghế sofa, bàn, ghế';
+
+  /* ---- tập 4 ---- */
+  S.c2_newHome = () => wall('#fdf3e3', '#e2c9a8') + win(260, 40, 110, 80) + sofa(320, 214, .7, C.teal) + heart(200, 40, 1.3, C.red, 'class="fl"') +
+    dad(80, 140, { s: .7, m: 'grin' }) + hand(126, 150, 9) + mom(170, 140, { s: .7, m: 'grin' }) + person(270, 150, { s: .6, hs: 'long', hair: C.hairD, shirt: C.pink, m: 'smile', flip: 1 }) + keyring(226, 156, .6);
+  L.c2_newHome = 'Trong nhà mới: ba mẹ cười tươi, cô con dâu đưa chùm chìa khoá, ba xua tay';
+  S.c2_renovate = () => wall('#fdf7ee', '#cfc3b0') + R(40, 40, 160, 196, '#cfe8dc') + R(200, 40, 160, 196, '#fdf7ee') + Pa('M60 236 L100 40 M140 236 L100 40', 'none', `stroke="${C.brown}" stroke-width="6"`) + [90, 140, 190].map(y => Ln(70 + (236 - y) * 0, y, 130, y, C.brown, 5)).join('') +
+    person(260, 150, { s: .7, hs: 'short', shirt: C.butter, m: 'smile', hat: Pa('M-30 -20 Q0 -50 30 -20Z', '#fff') }) + Ln(214, 120, 200, 70, C.grey, 5) + R(186, 50, 30, 24, '#8fd0b0', 4) + R(300, 210, 40, 26, '#8fd0b0', 4) + Pa('M300 210 Q320 196 340 210', 'none', `stroke="${C.grey}" stroke-width="3"`);
+  L.c2_renovate = 'Thợ đang lăn sơn tường, có thang và thùng sơn';
+  S.c2_moveBoxes = () => wall('#fdf3e3') + door(310, 176, 1, 'open') + box(80, 214, 1) + box(80, 170, .9) + box(140, 214, 1) + person(220, 140, { s: .7, hs: 'short', shirt: C.navy, m: 'grin', flip: 1 }) + box(250, 160, 1.1);
+  L.c2_moveBoxes = 'Một người khuân thùng đồ vào nhà (dọn nhà)';
+  S.c2_fixCar = () => R(0, 0, 400, 300, '#eaf2f8') + R(0, 236, 400, 64, '#8a8f99') + car(220, 236, 1.6, C.red) + person(90, 150, { s: .7, hs: 'short', shirt: C.teal, m: 'flat', brows: 'worry' }) + Ln(130, 190, 160, 170, C.grey, 6) + Ci(162, 168, 8, 'none', `stroke="${C.grey}" stroke-width="4"`);
+  L.c2_fixCar = 'Một người cầm cờ lê sửa xe hơi';
+  S.c2_hot = () => R(0, 0, 400, 300, '#fff1d6') + sun(300, 70, 46) + R(0, 240, 400, 60, '#f2d29c') + person(150, 140, { s: .85, hs: 'short', shirt: C.red, m: 'open', brows: 'worry' }) + sweat(104, 120) + sweat(186, 110) +
+    R(40, 70, 18, 120, '#fff', 9, `stroke="${C.ink}" stroke-width="3"`) + R(44, 100, 10, 86, C.red, 5) + Ci(49, 194, 14, C.red);
+  L.c2_hot = 'Trời nắng gắt, một người nóng toát mồ hôi, nhiệt kế đỏ rực';
+  S.c2_keyBunch = () => R(0, 0, 400, 300, '#fff6e3') + keyring(80, 110, 1.3) +
+    G('translate(220 120)', [[0, 0], [-18, 0], [18, 0], [-9, 18], [9, 18], [0, 36], [-27, -18], [27, -18], [-9, -18], [9, -18]].map(([x, y]) => Ci(x, y, 11, '#8a4fa8')).join('') + R(-2, -46, 4, 26, C.green)) +
+    G('translate(330 150) rotate(20)', R(-3, -90, 6, 180, '#c99a6a', 3) + [-60, -30, 0, 30].map(y => R(-16, y, 32, 24, '#a8584a', 6)).join(''));
+  L.c2_keyBunch = 'Một chùm chìa khoá, một chùm nho và một xiên thịt';
+
+  S.c2_goodNews = () => wall('#fff3e3') + win(280, 40, 90, 70) + person(170, 140, { s: .85, hs: 'bob', hair: C.hairG, shirt: C.teal, m: 'grin', eyes: 'closed' }) + hand(110, 96, 10) + hand(230, 96, 10) +
+    R(234, 140, 60, 44, '#fff', 4, `stroke="${C.red}" stroke-width="3"`) + Pa('M234 140 L264 166 L294 140', 'none', `stroke="${C.red}" stroke-width="3"`) + conf(8);
+  L.c2_goodNews = 'Người mẹ giơ hai tay reo mừng, cầm lá thư báo tin vui';
+  /* ---- tập 5 ---- */
+  S.c2_drunkNight = () => wall('#e8e0f0', '#c9b79c') + win(40, 40, 110, 80, '#26304f') + Ci(118, 66, 12, '#fff3c0') + clockWall(210, 64, 28, 9, 40) + sofa(220, 210, 1, '#7a8fb2') +
+    person(220, 160, { s: .6, hs: 'short', hair: C.hairG, shirt: '#7a6a4f', m: 'smile', eyes: 'closed' }).replace(/opacity="\.5"/g, 'opacity=".95"') + Zs(262, 140, .7) + R(80, 220, 60, 10, C.brown, 3) + R(96, 196, 14, 26, '#7fbf7a', 4) + R(100, 186, 6, 12, '#7fbf7a');
+  L.c2_drunkNight = 'Trời tối, ba mặt đỏ ngủ trên ghế sofa, chai rượu trên bàn';
+  S.c2_tipsy = () => R(0, 0, 400, 300, '#f3eaf6') + R(0, 240, 400, 60, '#d8c6a8') + person(170, 140, { s: .85, hs: 'short', shirt: C.navy, m: 'grin', eyes: 'closed' }).replace(/opacity="\.5"/g, 'opacity=".95"') +
+    Pa('M110 60 q10 -14 20 0 q10 14 20 0 M210 50 q10 -14 20 0 q10 14 20 0', 'none', `stroke="${C.plum}" stroke-width="4" stroke-linecap="round"`) + R(290, 170, 26, 60, '#7fbf7a', 6) + R(296, 150, 14, 24, '#7fbf7a', 3) + R(250, 200, 24, 30, '#fff', 4, `stroke="${C.ink}" stroke-width="2"`);
+  L.c2_tipsy = 'Một người mặt đỏ, lâng lâng cạnh chai rượu';
+  S.c2_lastBus = () => nightSky() + R(0, 236, 400, 64, '#4a5068') + bus(270, 214, .9, '#4f7f8f', 1) + Ci(160, 120, 8, '#ffe39a') + R(158, 126, 4, 110, '#8a96ad') +
+    dad(170, 180, { s: .4, flip: 1 }) + mom(214, 180, { s: .4, flip: 1 }) + person(60, 176, { s: .42, hs: 'short', shirt: C.teal, m: 'open', brows: 'worry' }) + person(110, 176, { s: .42, hs: 'long', hair: C.hairD, shirt: C.pink, m: 'open', brows: 'worry' }) + hand(140, 196, 6);
+  L.c2_lastBus = 'Ban đêm, ba mẹ bước lên chuyến xe cuối, hai vợ chồng níu lại';
+  S.c2_strongSun = () => R(0, 0, 400, 300, '#fff1d6') + sun(310, 76, 56) + R(0, 236, 400, 64, '#f2d29c') + person(150, 140, { s: .85, hs: 'pony', shirt: C.teal, m: 'flat', eyes: 'closed' }) + hand(176, 112, 10) + Pa('M80 290 L220 290 L180 250 L120 250Z', 'rgba(0,0,0,.12)');
+  L.c2_strongSun = 'Nắng trưa chói chang, một người lấy tay che mắt';
+  S.c2_night = () => nightSky() + Pa('M0 220 Q200 200 400 222 L400 300 L0 300Z', '#2f3a5a') + house(100, 196, .55, {}) .replace(new RegExp(C.sky, 'g'), '#3b4766') + house(300, 200, .5, { lit: 1 });
+  L.c2_night = 'Ban đêm, trăng sao, một căn nhà còn sáng đèn';
+  var arrive = function (night, leave) {
+    return (night ? nightSky() : R(0, 0, 400, 300, '#cfe9f5') + sun(330, 60, 24)) + R(0, 236, 400, 64, night ? '#4a5068' : '#c9b79c') + R(200, 60, 200, 176, night ? '#3b4766' : '#f3e2c4') + door(260, 196, .8, 'open') +
+      clock(100, 70, 34, 12, 0) + person(leave ? 150 : 236, 150, { s: .55, hs: 'short', shirt: C.navy, m: 'smile', flip: leave ? 1 : 0 }) + (leave ? R(110, 200, 30, 36, C.red, 6) + Pa('M86 210 l-24 0 M90 226 l-28 0', 'none', `stroke="${C.grey}" stroke-width="4"`) : '');
+  };
+  S.c2_clockNight = () => arrive(1, 0); L.c2_clockNight = 'Ban đêm, đồng hồ chỉ 12 giờ, một người bước vào nhà';
+  S.c2_clockNoon = () => arrive(0, 0); L.c2_clockNoon = 'Ban ngày, đồng hồ chỉ 12 giờ, một người bước vào nhà';
+  S.c2_leaveNight = () => arrive(1, 1); L.c2_leaveNight = 'Ban đêm, đồng hồ chỉ 12 giờ, một người kéo vali ra khỏi nhà';
+  S.c2_dogBroke = () => R(0, 0, 400, 300, '#e9f4e3') + R(0, 236, 400, 64, '#a8d48f') + R(40, 120, 16, 120, C.brown, 4) + Pa('M56 160 Q90 170 110 168', 'none', `stroke="${C.brown}" stroke-width="5"`) + Pa('M110 168 l8 -8 l4 10', 'none', `stroke="${C.brown}" stroke-width="4"`) +
+    Pa('M160 176 l8 8 l-4 8', 'none', `stroke="${C.brown}" stroke-width="4"`) + Pa('M168 186 Q190 190 212 196', 'none', `stroke="${C.brown}" stroke-width="5"`) + dog(270, 200, 1, { run: 1 });
+  L.c2_dogBroke = 'Sợi dây buộc chó đứt làm hai, con chó chạy mất';
+  S.c2_dogTied = () => R(0, 0, 400, 300, '#e9f4e3') + R(0, 236, 400, 64, '#a8d48f') + R(40, 120, 16, 120, C.brown, 4) + Pa('M56 160 Q120 200 196 196', 'none', `stroke="${C.brown}" stroke-width="5"`) + dog(240, 200, 1) + Zs(300, 140, .6);
+  L.c2_dogTied = 'Con chó còn buộc dây vào cột, nằm ngủ';
+  /* ---- tập 6 (tease of tập 5) ---- */
+  S.c2_lockedHouse = () => R(0, 0, 400, 300, '#e3eef5') + R(0, 236, 400, 64, '#c9b79c') + tower(40, 40, 160, 196, '#e2c9a8') + R(102, 180, 36, 56, C.brown, 3) + padlock(120, 212, .7) +
+    person(270, 150, { s: .55, hs: 'short', shirt: C.teal, m: 'flat', flip: 1 }) + person(340, 150, { s: .55, hs: 'long', hair: C.hairD, shirt: C.pink, m: 'flat', flip: 1 }) + R(220, 196, 30, 40, C.red, 6) + R(366, 196, 30, 40, C.navy, 6);
+  L.c2_lockedHouse = 'Căn nhà mới khoá cửa, hai vợ chồng kéo vali đi xa';
+
   CH2.SC = S; CH2.SCENE_LABEL = L;
   if (typeof SC !== 'undefined') Object.assign(SC, S);
   if (typeof SCENE_LABEL !== 'undefined') Object.assign(SCENE_LABEL, L);

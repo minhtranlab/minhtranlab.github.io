@@ -128,7 +128,95 @@ var CH2 = window.CH2 || (window.CH2 = {});
         why: 'Ôn Bài 1: <b>抱怨</b> = phàn nàn. <b>从来不</b> = chưa bao giờ. <b>姑姑</b> = cô (bên ba).',
         whyNot: ['', '从来不 = chưa bao giờ, không phải “lúc nào cũng”.', 'Người nói là 姑姑 (cô), không phải 姥姥 (bà ngoại).'] },
       { t: 'wrap' }
-    ] }
+    ] },
+    /* ---------- Tập 3 · câu 3 ---------- */
+    { id: '2-3', title: 'Căn nhà mới trên huyện', sub: '4 từ mới', thumb: 'c2_buyHouse', words: ['打工', '挣', '县', '套'], screens: [
+      { t: 'story', scene: 'c2_buyHouse', lines: [B(2)] },
+      { t: 'word', id: '打工', scene: 'c2_work' },
+      { t: 'word', id: '挣', scene: 'c2_earn' },
+      { t: 'order', w: ['打工'], zh: '他在城里打了三年工。', vi: 'Anh ấy làm thuê ở thành phố ba năm.', chunks: ['他', '在城里', '打了三年', '工'],
+        teach: '<b>打工</b> tách được: 打 + (了 + bao lâu) + 工. Cũng vậy: 打过工 (từng làm thuê).' },
+      hearOf('挣'),
+      { t: 'word', id: '县', scene: 'c2_county' },
+      cl('县', 'c2_county', '我老家在农村，买东西要去___里。', 'Quê mình ở nông thôn, mua đồ phải lên huyện.', '我老家在农村，买东西要去县里。', '县',
+        [['屋', '屋里 là trong nhà; muốn mua đồ thì phải đi ra chỗ khác.'], ['一辈子', '一辈子 là “cả đời”, chỉ thời gian, không chỉ nơi chốn.']],
+        '<b>县里</b> = trên huyện. Làng (农村) → huyện (县) → thành phố (城市).'),
+      { t: 'word', id: '套', scene: 'c2_sets' },
+      { t: 'pick', w: ['套'], zh: '他们买了一套房子，有三个房间。', vi: 'Họ mua một căn nhà có ba phòng.', prompt: PK, opts: [
+        { sc: 'c2_flat3', ok: 1 },
+        { sc: 'c2_room1', why: 'Đây chỉ là một gian phòng (一间屋子). 一套房子 là cả căn có nhiều phòng: câu nói 三个房间.' },
+        { sc: 'c2_furniture', why: 'Đây là một bộ đồ gỗ (一套家具). Câu nói 房子 (nhà).' }],
+        teach: '<b>一套</b> + thứ gồm nhiều phần: 一套房子, 一套家具, 一套西服. <b>一间</b> chỉ một gian.' },
+      cl('套', 'c2_buyHouse', '我们终于用打工挣的钱，在县里买了一___新房。', 'Cuối cùng chúng tôi dùng tiền làm thuê kiếm được, mua một căn nhà mới trên huyện.', '我们终于用打工挣的钱，在县里买了一套新房。', '套',
+        [['间', '一间 là một gian, một phòng; mua cả căn nhà thì dùng 一套.'], ['辆', '辆 là lượng từ của xe.']],
+        '<b>一套新房</b> = một căn nhà mới. <b>用打工挣的钱</b> = dùng tiền làm thuê kiếm được.', 'Chọn từ điền vào chỗ trống (câu trong bài):'),
+      { t: 'tf', scene: 'c2_buyHouse', w: ['挣', '打工'], zh: '我们用父母的钱买了新房。', vi: 'Chúng tôi dùng tiền của ba mẹ mua nhà mới.', ok: false,
+        why: 'Trong bài: <b>用打工挣的钱</b> = dùng tiền tự đi làm thuê kiếm được, không phải tiền của ba mẹ.' },
+      { t: 'album', words: ['打工', '挣', '县', '套'], say: [B(2)],
+        tease: { scene: 'c2_newHome', vi: 'nhà mới sửa xong, ba mẹ lên xem lần đầu. Vợ mình muốn để lại cho ba mẹ một thứ…' } }
+    ] },
+    /* ---------- Tập 4 · câu 4–5 ---------- */
+    { id: '2-4', title: 'Chùm chìa khoá bị từ chối', sub: '3 từ mới, có một story word', thumb: 'c2_newHome', words: ['装修', '不得了', '串'], screens: [
+      { t: 'story', scene: 'c2_newHome', lines: [B(3)] },
+      { t: 'word', id: '装修', scene: 'c2_renovate' },
+      { t: 'word', id: '不得了', scene: 'c2_hot' },
+      { t: 'mc', w: ['不得了'], scene: 'c2_goodNews', say: ['听说儿子考上了大学，妈妈___。', 'Nghe tin con trai đậu đại học, mẹ mừng vô cùng.'], full: '听说儿子考上了大学，妈妈高兴得不得了。', prompt: 'Chọn cách nói đúng điền vào chỗ trống:',
+        opts: [{ t: '高兴得不得了', ok: 1 }, { t: '不得了高兴', note: '不得了 đứng SAU, nối bằng 得: 高兴得不得了.' }, { t: '高兴不得了', note: 'Thiếu 得. Phải nói 高兴<b>得</b>不得了.' }],
+        teach: '<b>tính từ + 得 + 不得了</b> = … vô cùng: 高兴得不得了, 热得不得了, 累得不得了, 急得不得了.' },
+      { t: 'pick', w: ['装修'], zh: '他们家正在装修，现在还不能住。', vi: 'Nhà họ đang sửa sang, bây giờ chưa ở được.', prompt: PK, opts: [
+        { sc: 'c2_renovate', ok: 1 },
+        { sc: 'c2_moveBoxes', why: 'Đây là dọn nhà (搬家): khuân thùng đồ vào. 装修 là sơn tường, lát sàn…' },
+        { sc: 'c2_fixCar', why: 'Đây là sửa xe (修车). 装修 chỉ dùng cho nhà, phòng, cửa hàng.' }],
+        teach: '<b>装修</b> = sửa sang bên trong nhà. <b>正在装修</b> = đang sửa.' },
+      { t: 'story', scene: 'c2_newHome', lines: [B(4)] },
+      { t: 'word', id: '串', scene: 'c2_keyBunch' },
+      hearOf('串'),
+      cl('装修', 'c2_renovate', '房子___好了，我们下个月搬进去。', 'Nhà sửa sang xong rồi, tháng sau tụi mình dọn vào.', '房子装修好了，我们下个月搬进去。', '装修',
+        [['打工', '打工 là đi làm thuê, không đi với 房子…好了.'], ['串', '串 là lượng từ (一串钥匙).']],
+        '<b>装修好 / 装修完</b> = sửa xong. Trong bài: <b>新房装修完</b>.'),
+      { t: 'tf', scene: 'c2_newHome', w: ['串'], zh: '父母很高兴地拿了新房的钥匙。', vi: 'Ba mẹ vui vẻ cầm chìa khoá nhà mới.', ok: false,
+        why: 'Trong bài: <b>可他们拒绝了</b> = nhưng ba mẹ từ chối. Ba mẹ mừng vì nhà mới, nhưng không nhận chùm chìa khoá.' },
+      { t: 'order', w: ['装修'], zh: '这家饭馆装修得很漂亮。', vi: 'Quán ăn này trang trí rất đẹp.', chunks: ['这家饭馆', '装修得', '很', '漂亮'] },
+      { t: 'album', words: ['装修', '不得了', '串'], say: [B(3), B(4)],
+        tease: { scene: 'c2_drunkNight', vi: 'tối hôm đó ba uống say. Vợ chồng mình giữ ba mẹ ở lại, ba mẹ có chịu không?' } }
+    ] },
+    /* ---------- Tập 5 · câu 6–7 ---------- */
+    { id: '2-5', title: 'Say rồi vẫn đòi về', sub: '3 từ mới', thumb: 'c2_lastBus', words: ['醉', '强烈', '夜'], screens: [
+      { t: 'story', scene: 'c2_drunkNight', lines: [B(5)] },
+      { t: 'word', id: '醉', scene: 'c2_tipsy' },
+      cl('醉', 'c2_tipsy', '他昨天喝___了，今天早上起来头很疼。', 'Hôm qua anh ấy uống say, sáng nay dậy đau đầu lắm.', '他昨天喝醉了，今天早上起来头很疼。', '醉',
+        [['饱', '喝饱 = uống no; uống no thì không đau đầu sáng hôm sau.'], ['断', '断 là đứt, cai; 喝断 không ai nói.']],
+        '<b>喝醉了</b> = uống say rồi. Trái nghĩa: <b>醒</b> (tỉnh), như 等他醒时 trong bài.'),
+      hearOf('醉'),
+      { t: 'story', scene: 'c2_lastBus', lines: [B(6)] },
+      { t: 'word', id: '强烈', scene: 'c2_strongSun' },
+      { t: 'word', id: '夜', scene: 'c2_night' },
+      { t: 'pick', w: ['夜'], zh: '他夜里十二点才回家。', vi: 'Mười hai giờ đêm anh ấy mới về nhà.', prompt: PK, opts: [
+        { sc: 'c2_clockNight', ok: 1 },
+        { sc: 'c2_clockNoon', why: '夜里十二点 = 12 giờ đêm. Tranh này là 12 giờ trưa (中午).' },
+        { sc: 'c2_leaveNight', why: '回家 = về nhà. Người trong tranh này đang kéo vali ra khỏi nhà.' }],
+        teach: '<b>夜里</b> = trong đêm, đêm khuya. <b>…才…</b> = mãi tới… mới…' },
+      cl('强烈', 'c2_lastBus', '我和妻子___留父母在新房住一夜，第二天再回。', 'Vợ chồng tôi hết lời giữ ba mẹ ở lại nhà mới một đêm, hôm sau hãy về.', '我和妻子强烈留父母在新房住一夜，第二天再回。', '强烈',
+        [['不得了', '不得了 đứng sau 得 (高兴得不得了), không đứng trước động từ.'], ['一辈子', '一辈子 = cả đời; câu chỉ nói giữ lại một đêm.']],
+        '<b>强烈 + động từ</b> = hết sức, hết lời…: 强烈留, 强烈要求. <b>住一夜</b> = ở lại một đêm.', 'Chọn từ điền vào chỗ trống (câu trong bài):'),
+      cl('强烈', 'c2_strongSun', '夏天中午的阳光非常___，出门要戴帽子。', 'Nắng trưa mùa hè rất gắt, ra ngoài phải đội mũ.', '夏天中午的阳光非常强烈，出门要戴帽子。', '强烈',
+        [['坚决', '坚决 nói về thái độ, ý chí của người; nắng thì 强烈.'], ['醉', '醉 là say rượu.']],
+        '<b>强烈的阳光</b> = nắng gắt. 强烈 dùng cho thứ rất mạnh: ánh nắng, tình cảm, sự tương phản (强烈的对比).'),
+      { t: 'tf', scene: 'c2_lastBus', w: ['夜'], zh: '那天父母在新房住了一夜。', vi: 'Hôm đó ba mẹ ở lại nhà mới một đêm.', ok: false,
+        why: 'Trong bài: <b>但他们仍坚持坐上了最后一趟回老家的车</b> = nhưng ba mẹ vẫn nhất định lên chuyến xe cuối cùng về quê.' },
+      { t: 'order', w: ['夜'], zh: '我们在姑姑家住了一夜。', vi: 'Tụi mình ở lại nhà cô một đêm.', chunks: ['我们', '在姑姑家', '住了', '一夜'] },
+      { t: 'album', words: ['醉', '强烈', '夜'], say: [B(5), B(6)],
+        tease: { scene: 'c2_lockedHouse', vi: 'vợ chồng mình lại phải đi làm xa, căn nhà mới đành khoá cửa để trống…' } }
+    ] },
+    /* ---------- Ôn tập 2 (sau tập 5): 10 từ của tập 3–5, từ yếu của tập 1–2, 2 từ Bài 1. ext = thẻ mở rộng (挣 “giãy”), chiếu trước các câu ôn ---------- */
+    { id: '2-m2', mix: 1, after: ['2-3', '2-4', '2-5'], extra: 2, ch1: 2, max: 9, title: 'Ôn tập', sub: 'Các từ của tập 3–5, thêm từ cũ', thumb: 'cup', words: [], screens: [],
+      ext: [
+        { t: 'pick', w: ['挣', '断'], zh: '小狗把绳子挣断了，跑了出去。', vi: 'Con chó giãy đứt dây, chạy mất.', prompt: 'Thẻ mở rộng · Nghe rồi chọn bức tranh đúng:', opts: [
+          { sc: 'c2_dogBroke', ok: 1 },
+          { sc: 'c2_dogTied', why: 'Dây vẫn còn nguyên. 挣断 = giãy mạnh làm đứt dây.' },
+          { sc: 'c2_cut', why: 'Đây là cắt đứt bằng kéo. 挣断 là tự giãy cho đứt.' }],
+          teach: '<b>động từ + 断</b> = làm cho đứt, gãy: <b>打断</b> (đánh gãy; ngắt lời), <b>挣断</b> (giãy đứt), 摔断 (ngã gãy). Ở đây 挣 nghĩa là <b>giãy</b>, khác 挣钱 (kiếm tiền); sách in cùng âm zhèng.' }
+      ] }
   ];
   /* screens written as {ref: ['HEAR', word]} or {ref: ['QB', word, index]} are copied from CH2.LEARN / CH2.QB.
      Every file that brings one of those (learn.js, bank.js, story.js) calls this at its end, so the load order does not matter. */

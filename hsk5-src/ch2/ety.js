@@ -19,6 +19,26 @@ var CH2 = window.CH2 || (window.CH2 = {});
     '姑姑': { parts: [['姑', 'cô', '女 (nữ) + 古 (cổ, chỉ âm gū). Người phụ nữ trong họ bên ba.']],
       hook: 'Bộ 女 + âm “gū” nghe gần “cô”: cô bên nội (chị em gái của ba).' },
     '坚决': { parts: [['坚', 'kiên', 'Bản phồn thể 堅 có 土 (đất) ở dưới: đất nện chắc. Cứng, vững. Như “kiên cố”, 坚持 (kiên trì).'], ['决', 'quyết', 'Bản gốc 決 có 氵 (nước) + 夬: nước phá bờ tràn ra, không gì cản nổi; sau thành “quyết định” (决定).']],
-      hook: 'Vững như đất nện (坚), dứt khoát như nước vỡ bờ (决): đã nói không là không.' }
+      hook: 'Vững như đất nện (坚), dứt khoát như nước vỡ bờ (决): đã nói không là không.' },
+    '打工': { parts: [['打', 'đả', '扌 (tay) + 丁: dùng tay mà làm, mà đánh. Như “ẩu đả”.'], ['工', 'công', 'Hình cây thước thợ: việc làm, người thợ. Như “công nhân”.']],
+      hook: 'Bỏ tay (打) ra làm công (工) cho người ta = làm thuê. Tiếng Việt cũng nói “làm công”.' },
+    '挣': { parts: [['挣', 'tranh', '扌 (tay) + 争 (tranh giành, chỉ âm).']],
+      hook: 'Dùng tay (扌) giành (争) lấy từng đồng = kiếm tiền vất vả.' },
+    '县': { parts: [['县', 'huyện', 'Chữ gốc 縣 vốn nghĩa là “treo”, sau dùng chỉ vùng đất lệ thuộc (treo vào) quận lớn: huyện.']],
+      hook: 'xiàn nghe gần “huyện”. 县里 = trên huyện, ở giữa làng và thành phố.' },
+    '套': { parts: [['套', 'sáo', '大 (lớn) ở trên + 镸 (dài) ở dưới: tấm bọc lớn và dài trùm ra ngoài, từ đó “trọn bộ”.']],
+      hook: 'Bọc trọn cả bộ: 一套房子 là trọn căn nhà, 一套西服 là trọn bộ com-lê.' },
+    '装修': { parts: [['装', 'trang', '衣 (áo) ở dưới: mặc vào, lắp vào. Như “trang phục”.'], ['修', 'tu', 'Sửa sang cho đẹp. Như “tu sửa”.']],
+      hook: 'Trang (装) điểm + tu (修) sửa cho căn nhà = 装修.' },
+    '不得了': { parts: [['不', 'bất', 'Không.'], ['得', 'đắc', 'Được.'], ['了', 'liễu', 'Xong, hết (đọc liǎo).']],
+      hook: '“Không thể (不得) xong (了)”: nhiều đến mức không dừng được = vô cùng.' },
+    '串': { parts: [['串', 'xuyến', 'Hai vật (口 口) xâu trên một cái que (丨): xâu, chuỗi.']],
+      hook: 'Nhìn chữ là thấy: hai cục xâu chung một que = xiên thịt, chùm chìa khoá.' },
+    '醉': { parts: [['醉', 'tuý', '酉 (bình rượu) + 卒 (hết, cạn): uống cạn bình thì say.']],
+      hook: 'Bình rượu (酉) uống cạn (卒) = say “tuý luý”.' },
+    '强烈': { parts: [['强', 'cường', '弓 (cây cung) bên trái: mạnh, khoẻ. Như “cường quốc”.'], ['烈', 'liệt', '灬 (lửa) ở dưới: lửa cháy dữ. Như “mãnh liệt”, “nhiệt liệt”.']],
+      hook: 'Mạnh (强) như lửa (烈 có 灬) = cường liệt, mãnh liệt.' },
+    '夜': { parts: [['夜', 'dạ', 'Có 夕 (buổi tối, vầng trăng khuyết) bên phải: trăng lên là trời đã tối.']],
+      hook: 'Trăng (夕) lên rồi là đêm: 夜. Như “dạ hội”; nửa đêm là 半夜.' }
   };
 })();

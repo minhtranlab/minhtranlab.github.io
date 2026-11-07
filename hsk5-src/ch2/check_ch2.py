@@ -225,6 +225,44 @@ for si, sid in enumerate(ORDER):
         old = [w for sc in s['screens'] for w in (sc.get('w') or []) if w in T1]
         new = [w for sc in s['screens'] for w in (sc.get('w') or []) if w in T2]
         if not s.get('ch1'): P(f'{sid}: mix needs ch1 (number of Bài 1 words)')
+        if not s.get('max'): P(f'{sid}: mix needs max (number of screens)')
+        for j, sc in enumerate(s.get('ext') or []):    # extension cards shown before the questions (phiếu #12)
+            check_screen(sc, allowed, f'{sid}.ext#{j + 1}({sc.get("t")})')
+
+# ---- comics: frames as the app makes them (story scene of each BOOK line; same scene in a row shares a frame, max 2) ----
+bscene = {}
+for sid in ORDER:
+    for sc in (SESS.get(sid) or {}).get('screens', []):
+        if sc.get('t') == 'story':
+            for l in sc['lines']:
+                i = next((k for k, b in enumerate(BOOK) if b['zh'] == l['zh']), None)
+                if i is not None and i not in bscene: bscene[i] = sc['scene']
+all_learn = all(p['id'] in SESS for p in PATH if p['kind'] == 'learn')
+comic_pages = {}
+for p in PATH:
+    if p['kind'] != 'comic': continue
+    ids = p['ids']
+    if not all(i in bscene for i in ids):
+        if all_learn: P(f'{p["id"]}: sentences without a story picture: {[i for i in ids if i not in bscene]}')
+        continue
+    fr = []
+    for i in ids:
+        if fr and fr[-1][0] == bscene[i] and len(fr[-1][1]) < 2: fr[-1][1].append(i)
+        else: fr.append([bscene[i], [i]])
+    pages = [fr[k:k + 6] for k in range(0, len(fr), 6)]
+    comic_pages[p['id']] = [len(x) for x in pages]
+    if len(ids) > 10: P(f'{p["id"]}: {len(ids)} cards (max 10)')
+    if len(pages) > 1 and min(len(x) for x in pages) < 2: P(f'{p["id"]}: a comic page with a single frame {comic_pages[p["id"]]}')
+
+# ---- test bank (Kiểm tra cuối bài): new sentences; allowed = every Bài 2 word taught so far ----
+TB = CH['TESTBANK']; allT = set(taught_at)
+for kind in ('tf', 'spot', 'hsk'):
+    for j, x in enumerate(TB.get(kind) or []):
+        if kind != 'hsk' and x.get('t') != kind: P(f'TESTBANK.{kind}[{j}]: t must be {kind}')
+        if x.get('u') and x['u'] not in ORDER: P(f'TESTBANK.{kind}[{j}]: unknown unit {x.get("u")}')
+        al = {w for w, (a, b) in taught_at.items() if a <= ORDER.index(x['u'])} if x.get('u') in ORDER else allT
+        check_screen(x, al, f'TESTBANK.{kind}[{j}]')
+        if kind == 'hsk' and x.get('t') not in ('hear', 'mc', 'order'): P(f'TESTBANK.hsk[{j}]: only hear / mc / order')
 
 # ---- per-word data ----
 for sid, s in SESS.items():
@@ -271,7 +309,8 @@ for n in X['newScenes']:
     if not SCN[n]['label']: P(f'scene {n}: SCENE_LABEL missing')
 
 if '-v' in sys.argv:
-    print('screens per session:', n_screens); print('questions per session:', n_q)
+    print('screens per session:', n_screens); print('questions per session:', n_q); print('comic frames per page:', comic_pages)
+    print('test bank:', {k: len(TB.get(k) or []) for k in ('tf', 'spot', 'hsk')})
     print('tap-only words used:', ' '.join(sorted(stats['tap'])))
     print('compounds of HSK1-4 chars:', ' '.join(sorted(stats['comp'])))
     print('Bài 2 taught words used:', ' '.join(f'{w}x{n}' for w, n in sorted(stats['taught'].items())))

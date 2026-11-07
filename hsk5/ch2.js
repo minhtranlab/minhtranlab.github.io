@@ -1,5 +1,5 @@
 /* HSK5 Bài 2: built by build.py from hsk5-src/ch2/ — do not edit */
-/* ===== Bài 2: taught words (same shape as Bài 1 WORDS). Bản thử: the 9 words of tập 1–2. story: 1 = word beyond the HSK5 syllabus (HSK6), lower exam priority ===== */
+/* ===== Bài 2: taught words (same shape as Bài 1 WORDS).  story: 1 = word beyond the HSK5 syllabus (HSK6), lower exam priority ===== */
 var CH2 = window.CH2 || (window.CH2 = {});
 (function () {
   CH2.WORDS = [
@@ -43,11 +43,64 @@ var CH2 = window.CH2 || (window.CH2 = {});
       'Hay đứng <b>trước động từ</b>: <b>坚决反对</b> (kiên quyết phản đối), <b>坚决不 + động từ</b> (nhất quyết không…), 坚决改正 (kiên quyết sửa).',
       'Cũng là tính từ: <b>态度很坚决</b> (thái độ rất kiên quyết).',
       'Trong bài: <b>坚决不在城里住</b> = nhất quyết không chịu ở thành phố.'],
-      ex: ['他坚决反对这个计划。', '我说了很多次，她还是坚决不同意。'] }
+      ex: ['他坚决反对这个计划。', '我说了很多次，她还是坚决不同意。'] },
+    /* ---------- tập 3 ---------- */
+    { id: '打工', ep: '2-3', vi: 'làm thuê, làm công', hv: 'đả công', facts: [
+      'Động từ ly hợp: chen được vào giữa: <b>打了三年工</b>, 打过工. Đi với nơi chốn: <b>在饭馆打工</b>, 去城里打工.',
+      'Làm thuê, làm công ăn lương (thường là việc tay chân, việc tạm). Sinh viên 打工 = đi làm thêm.',
+      'Trong bài: <b>用打工挣的钱</b> = dùng tiền đi làm thuê kiếm được.'],
+      ex: ['他大学的时候在饭馆打过工。', '他去城里打了三年工。'] },
+    { id: '挣', ep: '2-3', vi: 'kiếm (tiền)', hv: 'tranh', facts: [
+      'Hay đi với 钱: <b>挣钱</b> (kiếm tiền), 挣了不少钱, 挣得不多. <b>打工挣的钱</b> = tiền làm thuê kiếm được.',
+      'Nhấn vào <b>bỏ sức ra làm</b> mới có tiền. Đọc thanh 4: zhèng.',
+      'Chữ này còn nghĩa “giãy” (挣断 = giãy đứt), gặp ở Ôn tập.'],
+      ex: ['他每个月挣的钱不多，可是很努力。', '她一边学习一边打工挣钱。'] },
+    { id: '县', ep: '2-3', vi: 'huyện', hv: 'huyện', facts: [
+      'Đơn vị hành chính dưới tỉnh, trên làng xã. <b>县里</b> = trên huyện, 县城 = thị trấn huyện lỵ.',
+      'Trong bài: <b>在县里买了一套新房</b> = mua nhà mới trên huyện: gần quê hơn thành phố lớn.'],
+      ex: ['从我们村到县里要坐一个小时的车。', '他在县里的一家医院工作。'] },
+    { id: '套', ep: '2-3', vi: 'bộ, căn (lượng từ)', hv: 'sáo', facts: [
+      'Lượng từ cho <b>một bộ</b> gồm nhiều thứ đi với nhau: <b>一套房子</b> (một căn nhà, nhiều phòng), 一套家具 (một bộ đồ gỗ), 一套西服 (một bộ com-lê), 一套邮票.',
+      'Khác <b>一间</b>: 一间屋子 chỉ là một gian phòng; 一套房子 là cả căn.',
+      'Trong bài: <b>买了一套新房</b> = mua một căn nhà mới.'],
+      ex: ['这套家具是姥姥留给我们的。', '他结婚的时候买了一套新西服。'] },
+    /* ---------- tập 4 ---------- */
+    { id: '装修', ep: '2-4', vi: 'sửa sang, trang hoàng', hv: 'trang tu', facts: [
+      'Sửa sang <b>bên trong</b> nhà, phòng, cửa hàng (sơn tường, lát sàn, làm bếp…): <b>装修房子</b>, 正在装修.',
+      'Hay đi với kết quả: <b>装修完</b> (sửa xong, như trong bài), 装修好, 装修得很漂亮.',
+      'Khác <b>修</b>: 修车, 修电脑 = sửa đồ bị hỏng.'],
+      ex: ['我们的新房还在装修，下个月才能住。', '这家饭馆装修得很漂亮。'] },
+    { id: '不得了', ep: '2-4', vi: 'cực kỳ, vô cùng', hv: 'bất đắc liễu', facts: [
+      'Đứng sau <b>得</b> để nói mức độ rất cao: <b>高兴得不得了</b> (mừng vô cùng, như trong bài), 热得不得了, 累得不得了, 急得不得了, 热闹得不得了.',
+      'Đứng riêng: <b>不得了了！</b> = Gay rồi! (có chuyện lớn).',
+      'Pinyin: <b>bùdéliǎo</b>, chữ 了 ở đây đọc liǎo.'],
+      ex: ['今天热得不得了，我们别出去了。', '听说儿子考上了大学，妈妈高兴得不得了。'] },
+    { id: '串', ep: '2-4', story: 1, vi: 'xâu, chuỗi, chùm (lượng từ)', hv: 'xuyến', facts: [
+      'Lượng từ cho những thứ <b>xâu thành chuỗi</b>: <b>一串钥匙</b> (một chùm chìa khoá), 一串葡萄 (một chùm nho), 羊肉串 (xiên thịt cừu nướng).',
+      '<b>Story word</b> (từ HSK6): nhận ra mặt chữ và nghĩa là đủ.',
+      'Tên bài: <b>留串钥匙给父母</b> = để lại (一)串钥匙 cho ba mẹ.'],
+      ex: ['他手里拿着一串钥匙。', '妈妈买了一串葡萄。'] },
+    /* ---------- tập 5 ---------- */
+    { id: '醉', ep: '2-5', vi: 'say (rượu)', hv: 'tuý', facts: [
+      'Thường làm kết quả sau 喝: <b>喝醉了</b> (uống say rồi, như trong bài). Chưa say: 没喝醉.',
+      'Trái nghĩa: <b>醒</b> (tỉnh): 等他醒时 = đến lúc ông tỉnh.',
+      'Nghĩa bóng: say mê, làm say lòng (醉人).'],
+      ex: ['他昨天晚上喝醉了，今天头很疼。', '我从来没喝醉过。'] },
+    { id: '强烈', ep: '2-5', vi: 'mãnh liệt; hết mức', hv: 'cường liệt', facts: [
+      'Mức độ <b>rất mạnh</b>: <b>强烈的阳光</b> (nắng gắt), 强烈的感情, <b>强烈的对比</b> (tương phản rõ rệt: 对比 của Bài 1).',
+      'Đứng trước động từ: <b>强烈要求</b>, 强烈反对 (hết sức…, kịch liệt…). Trong bài: <b>强烈留父母</b> = hết lời giữ ba mẹ lại.'],
+      ex: ['夏天中午的阳光很强烈。', '大家强烈要求他留下来。'] },
+    { id: '夜', ep: '2-5', vi: 'ban đêm', hv: 'dạ', facts: [
+      '<b>一夜</b> = một đêm: <b>住一夜</b> (ở lại một đêm, như trong bài). <b>夜里</b> = trong đêm, <b>半夜</b> = nửa đêm (Bài 1).',
+      'Văn viết hơn 晚上. 晚上 thường tính từ chập tối; 夜里 là đêm khuya.'],
+      ex: ['我们在姑姑家住了一夜。', '昨天夜里下了很大的雨。'] }
   ];
   CH2.EP_META = {
     '2-1': { title: 'Tập 1 · Cả đời ở quê', sub: 'Bạn gặp 4 từ: 一辈子, 农村, 屋, 断', book: 'Mở sách, đọc câu đầu tiên của Bài 2. Bạn sẽ thấy 一辈子, 农村, 屋, 断 nằm trong đó.' },
-    '2-2': { title: 'Tập 2 · Ba mẹ không chịu lên phố', sub: 'Bạn gặp 5 từ: 以来, 姥姥, 舅舅, 姑姑, 坚决', book: 'Đọc câu thứ hai của bài. 以来, 姥姥, 舅舅, 姑姑, 坚决 đều ở đó.' }
+    '2-2': { title: 'Tập 2 · Ba mẹ không chịu lên phố', sub: 'Bạn gặp 5 từ: 以来, 姥姥, 舅舅, 姑姑, 坚决', book: 'Đọc câu thứ hai của bài. 以来, 姥姥, 舅舅, 姑姑, 坚决 đều ở đó.' },
+    '2-3': { title: 'Tập 3 · Căn nhà mới trên huyện', sub: 'Bạn gặp 4 từ: 打工, 挣, 县, 套', book: 'Đọc câu bắt đầu bằng “去年” ở đoạn thứ hai.' },
+    '2-4': { title: 'Tập 4 · Chùm chìa khoá bị từ chối', sub: 'Bạn gặp 3 từ: 装修, 不得了, 串', book: 'Đọc hai câu sau đó, tới “可他们拒绝了”.' },
+    '2-5': { title: 'Tập 5 · Say rồi vẫn đòi về', sub: 'Bạn gặp 3 từ: 醉, 强烈, 夜', book: 'Đọc hai câu cuối của đoạn thứ hai.' }
   };
 })();
 
@@ -92,7 +145,50 @@ var CH2 = window.CH2 || (window.CH2 = {});
     '坚决': { exv: ['Anh ấy kiên quyết phản đối kế hoạch này.', 'Mình nói bao nhiêu lần, cô ấy vẫn nhất quyết không đồng ý.'],
       hear: { s: '妈妈坚决不同意我一个人去旅游。', opts: ['Mẹ nhất quyết không đồng ý cho mình đi du lịch một mình.', 'Mẹ vui vẻ đồng ý cho mình đi du lịch một mình.', 'Mẹ nhất quyết không đồng ý cho mình đi du lịch với bạn.'],
         why: '<b>坚决不 + động từ</b> = nhất quyết không… <b>一个人</b> = một mình.',
-        whyNot: ['', '坚决不同意 = nhất quyết không đồng ý: có chữ 不.', '一个人 = một mình, không phải đi với bạn.'] } }
+        whyNot: ['', '坚决不同意 = nhất quyết không đồng ý: có chữ 不.', '一个人 = một mình, không phải đi với bạn.'] } },
+    /* ---------- tập 3 ---------- */
+    '打工': { exv: ['Hồi đại học anh ấy từng làm thêm ở quán ăn.', 'Anh ấy lên thành phố làm thuê ba năm.'],
+      hear: { s: '他在饭馆打了两年工。', opts: ['Anh ấy làm thuê ở quán ăn hai năm.', 'Anh ấy làm thuê ở quán ăn hai tháng.', 'Anh ấy ăn ở quán ăn đó hai năm.'],
+        why: '<b>打了两年工</b>: 打工 tách ra, chen 了两年 vào giữa = làm thuê hai năm.',
+        whyNot: ['', '两年 = hai năm, không phải hai tháng.', '打…工 = làm thuê, không phải đi ăn.'] } },
+    '挣': { exv: ['Mỗi tháng anh ấy kiếm không nhiều tiền, nhưng rất chịu khó.', 'Cô ấy vừa học vừa đi làm thêm kiếm tiền.'],
+      hear: { s: '他打工挣的钱都给了父母。', opts: ['Tiền anh ấy làm thuê kiếm được đều đưa cho ba mẹ.', 'Tiền ba mẹ làm thuê kiếm được đều đưa cho anh ấy.', 'Tiền anh ấy làm thuê kiếm được đều để mua nhà.'],
+        why: '<b>打工挣的钱</b> = tiền làm thuê kiếm được. <b>给了父母</b> = đưa cho ba mẹ.',
+        whyNot: ['', 'Người kiếm tiền là 他 (anh ấy); người nhận là 父母.', '给了父母 = đưa cho ba mẹ; câu không nói chuyện mua nhà.'] } },
+    '县': { exv: ['Từ làng mình lên huyện phải đi xe một tiếng.', 'Anh ấy làm ở một bệnh viện trên huyện.'],
+      hear: { s: '从农村到县里，坐车要一个小时。', opts: ['Từ nông thôn lên huyện, đi xe mất một tiếng.', 'Từ nông thôn lên huyện, đi bộ mất một tiếng.', 'Từ nông thôn lên huyện, đi xe mất nửa tiếng.'],
+        why: '<b>从…到县里</b> = từ … lên huyện. <b>坐车</b> = đi xe. <b>一个小时</b> = một tiếng.',
+        whyNot: ['', '坐车 = đi xe, không phải đi bộ.', '一个小时 = một tiếng, không phải nửa tiếng.'] } },
+    '套': { exv: ['Bộ đồ gỗ này là bà ngoại để lại cho nhà mình.', 'Lúc cưới anh ấy mua một bộ com-lê mới.'],
+      hear: { s: '他们在县里买了一套新房子。', opts: ['Họ mua một căn nhà mới trên huyện.', 'Họ thuê một căn nhà mới trên huyện.', 'Họ mua một căn nhà mới trên thành phố.'],
+        why: '<b>一套房子</b> = một căn nhà. <b>在县里</b> = trên huyện.',
+        whyNot: ['', '买 = mua, không phải thuê.', '县里 = trên huyện, không phải thành phố.'] } },
+    /* ---------- tập 4 ---------- */
+    '装修': { exv: ['Nhà mới của tụi mình vẫn đang sửa, tháng sau mới ở được.', 'Quán ăn này trang trí rất đẹp.'],
+      hear: { s: '新房还没装修完，我们下个月再搬。', opts: ['Nhà mới chưa sửa xong, tháng sau tụi mình mới dọn vào.', 'Nhà mới sửa xong rồi, tháng sau tụi mình dọn vào.', 'Nhà mới chưa sửa xong, tuần sau tụi mình mới dọn vào.'],
+        why: '<b>还没装修完</b> = vẫn chưa sửa xong. <b>下个月</b> = tháng sau. <b>搬</b> = dọn (nhà).',
+        whyNot: ['', '还没装修完 = vẫn CHƯA sửa xong.', '下个月 = tháng sau, không phải tuần sau.'] } },
+    '不得了': { exv: ['Hôm nay nóng kinh khủng, mình đừng ra ngoài.', 'Nghe tin con trai đậu đại học, mẹ mừng vô cùng.'],
+      hear: { s: '听到这个消息，她高兴得不得了。', opts: ['Nghe tin này, cô ấy mừng vô cùng.', 'Nghe tin này, cô ấy buồn vô cùng.', 'Nghe tin này, cô ấy hơi mừng một chút.'],
+        why: '<b>高兴得不得了</b> = mừng vô cùng: 不得了 đứng sau 得 nói mức độ rất cao.',
+        whyNot: ['', '高兴 = mừng, vui; không phải buồn.', '不得了 = vô cùng; không phải “hơi… một chút”.'] } },
+    '串': { exv: ['Anh ấy cầm một chùm chìa khoá trong tay.', 'Mẹ mua một chùm nho.'],
+      hear: { s: '我把一串钥匙给了姥姥。', opts: ['Mình đưa cho bà ngoại một chùm chìa khoá.', 'Bà ngoại đưa cho mình một chùm chìa khoá.', 'Mình đưa cho bà ngoại một chiếc chìa khoá.'],
+        why: '<b>一串钥匙</b> = một chùm chìa khoá. <b>我把…给了姥姥</b> = mình đưa … cho bà ngoại.',
+        whyNot: ['', '我把…给了姥姥: mình là người đưa, bà ngoại là người nhận.', '一串 = một chùm (nhiều chiếc xâu chung), không phải một chiếc.'] } },
+    /* ---------- tập 5 ---------- */
+    '醉': { exv: ['Tối qua anh ấy uống say, hôm nay đau đầu lắm.', 'Mình chưa từng uống say.'],
+      hear: { s: '爸爸没喝醉，他只喝了一杯。', opts: ['Ba không say, ba chỉ uống một ly.', 'Ba say rồi, ba chỉ uống một ly.', 'Ba không say, ba uống ba ly.'],
+        why: '<b>没喝醉</b> = không say (chưa say). <b>只喝了一杯</b> = chỉ uống một ly.',
+        whyNot: ['', '没喝醉 = KHÔNG say: có chữ 没.', '一杯 = một ly, không phải ba ly.'] } },
+    '强烈': { exv: ['Nắng trưa mùa hè rất gắt.', 'Mọi người hết lời yêu cầu anh ấy ở lại.'],
+      hear: { s: '他强烈要求父母住在城里。', opts: ['Anh ấy hết lời đòi ba mẹ ở thành phố.', 'Ba mẹ hết lời đòi anh ấy ở thành phố.', 'Anh ấy hết lời đòi ba mẹ ở nông thôn.'],
+        why: '<b>强烈要求</b> = hết sức yêu cầu, đòi bằng được. <b>住在城里</b> = ở thành phố.',
+        whyNot: ['', 'Người đòi là 他 (anh ấy), người bị đòi là 父母.', '住在城里 = ở thành phố, không phải nông thôn.'] } },
+    '夜': { exv: ['Tụi mình ở lại nhà cô một đêm.', 'Đêm qua mưa rất to.'],
+      hear: { s: '他们在县里住了一夜，第二天就回去了。', opts: ['Họ ở lại trên huyện một đêm, hôm sau là về.', 'Họ ở lại trên huyện hai đêm, rồi mới về.', 'Họ ở lại nông thôn một đêm, hôm sau là về.'],
+        why: '<b>住了一夜</b> = ở lại một đêm. <b>第二天就回去了</b> = hôm sau là về.',
+        whyNot: ['', '一夜 = một đêm; 第二天就回去了 = ngay hôm sau đã về.', '县里 = trên huyện, không phải nông thôn.'] } }
   };
   if (CH2.buildQB) { CH2.buildQB(); delete CH2.buildQB; }   /* bank.js loaded first */
   if (CH2.resolveRefs) CH2.resolveRefs();
@@ -119,7 +215,27 @@ var CH2 = window.CH2 || (window.CH2 = {});
     '姑姑': { parts: [['姑', 'cô', '女 (nữ) + 古 (cổ, chỉ âm gū). Người phụ nữ trong họ bên ba.']],
       hook: 'Bộ 女 + âm “gū” nghe gần “cô”: cô bên nội (chị em gái của ba).' },
     '坚决': { parts: [['坚', 'kiên', 'Bản phồn thể 堅 có 土 (đất) ở dưới: đất nện chắc. Cứng, vững. Như “kiên cố”, 坚持 (kiên trì).'], ['决', 'quyết', 'Bản gốc 決 có 氵 (nước) + 夬: nước phá bờ tràn ra, không gì cản nổi; sau thành “quyết định” (决定).']],
-      hook: 'Vững như đất nện (坚), dứt khoát như nước vỡ bờ (决): đã nói không là không.' }
+      hook: 'Vững như đất nện (坚), dứt khoát như nước vỡ bờ (决): đã nói không là không.' },
+    '打工': { parts: [['打', 'đả', '扌 (tay) + 丁: dùng tay mà làm, mà đánh. Như “ẩu đả”.'], ['工', 'công', 'Hình cây thước thợ: việc làm, người thợ. Như “công nhân”.']],
+      hook: 'Bỏ tay (打) ra làm công (工) cho người ta = làm thuê. Tiếng Việt cũng nói “làm công”.' },
+    '挣': { parts: [['挣', 'tranh', '扌 (tay) + 争 (tranh giành, chỉ âm).']],
+      hook: 'Dùng tay (扌) giành (争) lấy từng đồng = kiếm tiền vất vả.' },
+    '县': { parts: [['县', 'huyện', 'Chữ gốc 縣 vốn nghĩa là “treo”, sau dùng chỉ vùng đất lệ thuộc (treo vào) quận lớn: huyện.']],
+      hook: 'xiàn nghe gần “huyện”. 县里 = trên huyện, ở giữa làng và thành phố.' },
+    '套': { parts: [['套', 'sáo', '大 (lớn) ở trên + 镸 (dài) ở dưới: tấm bọc lớn và dài trùm ra ngoài, từ đó “trọn bộ”.']],
+      hook: 'Bọc trọn cả bộ: 一套房子 là trọn căn nhà, 一套西服 là trọn bộ com-lê.' },
+    '装修': { parts: [['装', 'trang', '衣 (áo) ở dưới: mặc vào, lắp vào. Như “trang phục”.'], ['修', 'tu', 'Sửa sang cho đẹp. Như “tu sửa”.']],
+      hook: 'Trang (装) điểm + tu (修) sửa cho căn nhà = 装修.' },
+    '不得了': { parts: [['不', 'bất', 'Không.'], ['得', 'đắc', 'Được.'], ['了', 'liễu', 'Xong, hết (đọc liǎo).']],
+      hook: '“Không thể (不得) xong (了)”: nhiều đến mức không dừng được = vô cùng.' },
+    '串': { parts: [['串', 'xuyến', 'Hai vật (口 口) xâu trên một cái que (丨): xâu, chuỗi.']],
+      hook: 'Nhìn chữ là thấy: hai cục xâu chung một que = xiên thịt, chùm chìa khoá.' },
+    '醉': { parts: [['醉', 'tuý', '酉 (bình rượu) + 卒 (hết, cạn): uống cạn bình thì say.']],
+      hook: 'Bình rượu (酉) uống cạn (卒) = say “tuý luý”.' },
+    '强烈': { parts: [['强', 'cường', '弓 (cây cung) bên trái: mạnh, khoẻ. Như “cường quốc”.'], ['烈', 'liệt', '灬 (lửa) ở dưới: lửa cháy dữ. Như “mãnh liệt”, “nhiệt liệt”.']],
+      hook: 'Mạnh (强) như lửa (烈 có 灬) = cường liệt, mãnh liệt.' },
+    '夜': { parts: [['夜', 'dạ', 'Có 夕 (buổi tối, vầng trăng khuyết) bên phải: trăng lên là trời đã tối.']],
+      hook: 'Trăng (夕) lên rồi là đêm: 夜. Như “dạ hội”; nửa đêm là 半夜.' }
   };
 })();
 
@@ -253,7 +369,95 @@ var CH2 = window.CH2 || (window.CH2 = {});
         why: 'Ôn Bài 1: <b>抱怨</b> = phàn nàn. <b>从来不</b> = chưa bao giờ. <b>姑姑</b> = cô (bên ba).',
         whyNot: ['', '从来不 = chưa bao giờ, không phải “lúc nào cũng”.', 'Người nói là 姑姑 (cô), không phải 姥姥 (bà ngoại).'] },
       { t: 'wrap' }
-    ] }
+    ] },
+    /* ---------- Tập 3 · câu 3 ---------- */
+    { id: '2-3', title: 'Căn nhà mới trên huyện', sub: '4 từ mới', thumb: 'c2_buyHouse', words: ['打工', '挣', '县', '套'], screens: [
+      { t: 'story', scene: 'c2_buyHouse', lines: [B(2)] },
+      { t: 'word', id: '打工', scene: 'c2_work' },
+      { t: 'word', id: '挣', scene: 'c2_earn' },
+      { t: 'order', w: ['打工'], zh: '他在城里打了三年工。', vi: 'Anh ấy làm thuê ở thành phố ba năm.', chunks: ['他', '在城里', '打了三年', '工'],
+        teach: '<b>打工</b> tách được: 打 + (了 + bao lâu) + 工. Cũng vậy: 打过工 (từng làm thuê).' },
+      hearOf('挣'),
+      { t: 'word', id: '县', scene: 'c2_county' },
+      cl('县', 'c2_county', '我老家在农村，买东西要去___里。', 'Quê mình ở nông thôn, mua đồ phải lên huyện.', '我老家在农村，买东西要去县里。', '县',
+        [['屋', '屋里 là trong nhà; muốn mua đồ thì phải đi ra chỗ khác.'], ['一辈子', '一辈子 là “cả đời”, chỉ thời gian, không chỉ nơi chốn.']],
+        '<b>县里</b> = trên huyện. Làng (农村) → huyện (县) → thành phố (城市).'),
+      { t: 'word', id: '套', scene: 'c2_sets' },
+      { t: 'pick', w: ['套'], zh: '他们买了一套房子，有三个房间。', vi: 'Họ mua một căn nhà có ba phòng.', prompt: PK, opts: [
+        { sc: 'c2_flat3', ok: 1 },
+        { sc: 'c2_room1', why: 'Đây chỉ là một gian phòng (一间屋子). 一套房子 là cả căn có nhiều phòng: câu nói 三个房间.' },
+        { sc: 'c2_furniture', why: 'Đây là một bộ đồ gỗ (一套家具). Câu nói 房子 (nhà).' }],
+        teach: '<b>一套</b> + thứ gồm nhiều phần: 一套房子, 一套家具, 一套西服. <b>一间</b> chỉ một gian.' },
+      cl('套', 'c2_buyHouse', '我们终于用打工挣的钱，在县里买了一___新房。', 'Cuối cùng chúng tôi dùng tiền làm thuê kiếm được, mua một căn nhà mới trên huyện.', '我们终于用打工挣的钱，在县里买了一套新房。', '套',
+        [['间', '一间 là một gian, một phòng; mua cả căn nhà thì dùng 一套.'], ['辆', '辆 là lượng từ của xe.']],
+        '<b>一套新房</b> = một căn nhà mới. <b>用打工挣的钱</b> = dùng tiền làm thuê kiếm được.', 'Chọn từ điền vào chỗ trống (câu trong bài):'),
+      { t: 'tf', scene: 'c2_buyHouse', w: ['挣', '打工'], zh: '我们用父母的钱买了新房。', vi: 'Chúng tôi dùng tiền của ba mẹ mua nhà mới.', ok: false,
+        why: 'Trong bài: <b>用打工挣的钱</b> = dùng tiền tự đi làm thuê kiếm được, không phải tiền của ba mẹ.' },
+      { t: 'album', words: ['打工', '挣', '县', '套'], say: [B(2)],
+        tease: { scene: 'c2_newHome', vi: 'nhà mới sửa xong, ba mẹ lên xem lần đầu. Vợ mình muốn để lại cho ba mẹ một thứ…' } }
+    ] },
+    /* ---------- Tập 4 · câu 4–5 ---------- */
+    { id: '2-4', title: 'Chùm chìa khoá bị từ chối', sub: '3 từ mới, có một story word', thumb: 'c2_newHome', words: ['装修', '不得了', '串'], screens: [
+      { t: 'story', scene: 'c2_newHome', lines: [B(3)] },
+      { t: 'word', id: '装修', scene: 'c2_renovate' },
+      { t: 'word', id: '不得了', scene: 'c2_hot' },
+      { t: 'mc', w: ['不得了'], scene: 'c2_goodNews', say: ['听说儿子考上了大学，妈妈___。', 'Nghe tin con trai đậu đại học, mẹ mừng vô cùng.'], full: '听说儿子考上了大学，妈妈高兴得不得了。', prompt: 'Chọn cách nói đúng điền vào chỗ trống:',
+        opts: [{ t: '高兴得不得了', ok: 1 }, { t: '不得了高兴', note: '不得了 đứng SAU, nối bằng 得: 高兴得不得了.' }, { t: '高兴不得了', note: 'Thiếu 得. Phải nói 高兴<b>得</b>不得了.' }],
+        teach: '<b>tính từ + 得 + 不得了</b> = … vô cùng: 高兴得不得了, 热得不得了, 累得不得了, 急得不得了.' },
+      { t: 'pick', w: ['装修'], zh: '他们家正在装修，现在还不能住。', vi: 'Nhà họ đang sửa sang, bây giờ chưa ở được.', prompt: PK, opts: [
+        { sc: 'c2_renovate', ok: 1 },
+        { sc: 'c2_moveBoxes', why: 'Đây là dọn nhà (搬家): khuân thùng đồ vào. 装修 là sơn tường, lát sàn…' },
+        { sc: 'c2_fixCar', why: 'Đây là sửa xe (修车). 装修 chỉ dùng cho nhà, phòng, cửa hàng.' }],
+        teach: '<b>装修</b> = sửa sang bên trong nhà. <b>正在装修</b> = đang sửa.' },
+      { t: 'story', scene: 'c2_newHome', lines: [B(4)] },
+      { t: 'word', id: '串', scene: 'c2_keyBunch' },
+      hearOf('串'),
+      cl('装修', 'c2_renovate', '房子___好了，我们下个月搬进去。', 'Nhà sửa sang xong rồi, tháng sau tụi mình dọn vào.', '房子装修好了，我们下个月搬进去。', '装修',
+        [['打工', '打工 là đi làm thuê, không đi với 房子…好了.'], ['串', '串 là lượng từ (一串钥匙).']],
+        '<b>装修好 / 装修完</b> = sửa xong. Trong bài: <b>新房装修完</b>.'),
+      { t: 'tf', scene: 'c2_newHome', w: ['串'], zh: '父母很高兴地拿了新房的钥匙。', vi: 'Ba mẹ vui vẻ cầm chìa khoá nhà mới.', ok: false,
+        why: 'Trong bài: <b>可他们拒绝了</b> = nhưng ba mẹ từ chối. Ba mẹ mừng vì nhà mới, nhưng không nhận chùm chìa khoá.' },
+      { t: 'order', w: ['装修'], zh: '这家饭馆装修得很漂亮。', vi: 'Quán ăn này trang trí rất đẹp.', chunks: ['这家饭馆', '装修得', '很', '漂亮'] },
+      { t: 'album', words: ['装修', '不得了', '串'], say: [B(3), B(4)],
+        tease: { scene: 'c2_drunkNight', vi: 'tối hôm đó ba uống say. Vợ chồng mình giữ ba mẹ ở lại, ba mẹ có chịu không?' } }
+    ] },
+    /* ---------- Tập 5 · câu 6–7 ---------- */
+    { id: '2-5', title: 'Say rồi vẫn đòi về', sub: '3 từ mới', thumb: 'c2_lastBus', words: ['醉', '强烈', '夜'], screens: [
+      { t: 'story', scene: 'c2_drunkNight', lines: [B(5)] },
+      { t: 'word', id: '醉', scene: 'c2_tipsy' },
+      cl('醉', 'c2_tipsy', '他昨天喝___了，今天早上起来头很疼。', 'Hôm qua anh ấy uống say, sáng nay dậy đau đầu lắm.', '他昨天喝醉了，今天早上起来头很疼。', '醉',
+        [['饱', '喝饱 = uống no; uống no thì không đau đầu sáng hôm sau.'], ['断', '断 là đứt, cai; 喝断 không ai nói.']],
+        '<b>喝醉了</b> = uống say rồi. Trái nghĩa: <b>醒</b> (tỉnh), như 等他醒时 trong bài.'),
+      hearOf('醉'),
+      { t: 'story', scene: 'c2_lastBus', lines: [B(6)] },
+      { t: 'word', id: '强烈', scene: 'c2_strongSun' },
+      { t: 'word', id: '夜', scene: 'c2_night' },
+      { t: 'pick', w: ['夜'], zh: '他夜里十二点才回家。', vi: 'Mười hai giờ đêm anh ấy mới về nhà.', prompt: PK, opts: [
+        { sc: 'c2_clockNight', ok: 1 },
+        { sc: 'c2_clockNoon', why: '夜里十二点 = 12 giờ đêm. Tranh này là 12 giờ trưa (中午).' },
+        { sc: 'c2_leaveNight', why: '回家 = về nhà. Người trong tranh này đang kéo vali ra khỏi nhà.' }],
+        teach: '<b>夜里</b> = trong đêm, đêm khuya. <b>…才…</b> = mãi tới… mới…' },
+      cl('强烈', 'c2_lastBus', '我和妻子___留父母在新房住一夜，第二天再回。', 'Vợ chồng tôi hết lời giữ ba mẹ ở lại nhà mới một đêm, hôm sau hãy về.', '我和妻子强烈留父母在新房住一夜，第二天再回。', '强烈',
+        [['不得了', '不得了 đứng sau 得 (高兴得不得了), không đứng trước động từ.'], ['一辈子', '一辈子 = cả đời; câu chỉ nói giữ lại một đêm.']],
+        '<b>强烈 + động từ</b> = hết sức, hết lời…: 强烈留, 强烈要求. <b>住一夜</b> = ở lại một đêm.', 'Chọn từ điền vào chỗ trống (câu trong bài):'),
+      cl('强烈', 'c2_strongSun', '夏天中午的阳光非常___，出门要戴帽子。', 'Nắng trưa mùa hè rất gắt, ra ngoài phải đội mũ.', '夏天中午的阳光非常强烈，出门要戴帽子。', '强烈',
+        [['坚决', '坚决 nói về thái độ, ý chí của người; nắng thì 强烈.'], ['醉', '醉 là say rượu.']],
+        '<b>强烈的阳光</b> = nắng gắt. 强烈 dùng cho thứ rất mạnh: ánh nắng, tình cảm, sự tương phản (强烈的对比).'),
+      { t: 'tf', scene: 'c2_lastBus', w: ['夜'], zh: '那天父母在新房住了一夜。', vi: 'Hôm đó ba mẹ ở lại nhà mới một đêm.', ok: false,
+        why: 'Trong bài: <b>但他们仍坚持坐上了最后一趟回老家的车</b> = nhưng ba mẹ vẫn nhất định lên chuyến xe cuối cùng về quê.' },
+      { t: 'order', w: ['夜'], zh: '我们在姑姑家住了一夜。', vi: 'Tụi mình ở lại nhà cô một đêm.', chunks: ['我们', '在姑姑家', '住了', '一夜'] },
+      { t: 'album', words: ['醉', '强烈', '夜'], say: [B(5), B(6)],
+        tease: { scene: 'c2_lockedHouse', vi: 'vợ chồng mình lại phải đi làm xa, căn nhà mới đành khoá cửa để trống…' } }
+    ] },
+    /* ---------- Ôn tập 2 (sau tập 5): 10 từ của tập 3–5, từ yếu của tập 1–2, 2 từ Bài 1. ext = thẻ mở rộng (挣 “giãy”), chiếu trước các câu ôn ---------- */
+    { id: '2-m2', mix: 1, after: ['2-3', '2-4', '2-5'], extra: 2, ch1: 2, max: 9, title: 'Ôn tập', sub: 'Các từ của tập 3–5, thêm từ cũ', thumb: 'cup', words: [], screens: [],
+      ext: [
+        { t: 'pick', w: ['挣', '断'], zh: '小狗把绳子挣断了，跑了出去。', vi: 'Con chó giãy đứt dây, chạy mất.', prompt: 'Thẻ mở rộng · Nghe rồi chọn bức tranh đúng:', opts: [
+          { sc: 'c2_dogBroke', ok: 1 },
+          { sc: 'c2_dogTied', why: 'Dây vẫn còn nguyên. 挣断 = giãy mạnh làm đứt dây.' },
+          { sc: 'c2_cut', why: 'Đây là cắt đứt bằng kéo. 挣断 là tự giãy cho đứt.' }],
+          teach: '<b>động từ + 断</b> = làm cho đứt, gãy: <b>打断</b> (đánh gãy; ngắt lời), <b>挣断</b> (giãy đứt), 摔断 (ngã gãy). Ở đây 挣 nghĩa là <b>giãy</b>, khác 挣钱 (kiếm tiền); sách in cùng âm zhèng.' }
+      ] }
   ];
   /* screens written as {ref: ['HEAR', word]} or {ref: ['QB', word, index]} are copied from CH2.LEARN / CH2.QB.
      Every file that brings one of those (learn.js, bank.js, story.js) calls this at its end, so the load order does not matter. */
@@ -275,7 +479,8 @@ var CH2 = window.CH2 || (window.CH2 = {});
    Pictures (scene) appear only after answering (HANDOFF §12.11) and show what the sentence says; never the answer's characters. ===== */
 var CH2 = window.CH2 || (window.CH2 = {});
 (function () {
-  CH2.MEAN = { '一辈子': 'suốt đời, cả đời', '农村': 'nông thôn', '屋': 'nhà, căn phòng', '断': 'cai, dứt, đứt', '以来': 'từ … đến nay', '姥姥': 'bà ngoại', '舅舅': 'cậu (anh/em trai của mẹ)', '姑姑': 'cô (chị/em gái của ba)', '坚决': 'kiên quyết' };
+  CH2.MEAN = { '一辈子': 'suốt đời, cả đời', '农村': 'nông thôn', '屋': 'nhà, căn phòng', '断': 'cai, dứt, đứt', '以来': 'từ … đến nay', '姥姥': 'bà ngoại', '舅舅': 'cậu (anh/em trai của mẹ)', '姑姑': 'cô (chị/em gái của ba)', '坚决': 'kiên quyết',
+    '打工': 'làm thuê, làm công', '挣': 'kiếm (tiền)', '县': 'huyện', '套': 'bộ, căn (lượng từ)', '装修': 'sửa sang (nhà)', '不得了': 'cực kỳ, vô cùng', '串': 'chùm, xâu (lượng từ)', '醉': 'say (rượu)', '强烈': 'mãnh liệt, gắt', '夜': 'ban đêm' };
   /* cloze: w word, scene, say = sentence with ___, vi, full, ok = right word, wrongs = [[word, why not]] */
   var cz = function (w, scene, say, vi, full, ok, wrongs, teach) {
     return { t: 'mc', w: [w], scene: scene, say: [say, vi], full: full, prompt: 'Chọn từ điền vào chỗ trống:',
@@ -343,6 +548,70 @@ var CH2 = window.CH2 || (window.CH2 = {});
           [['恩爱', '恩爱 chỉ vợ chồng thắm thiết, không nói về thái độ.'], ['以来', '以来 đứng sau một mốc thời gian, không đứng sau 很.']], '<b>态度很坚决</b> = thái độ rất kiên quyết. 坚决 cũng đứng trước động từ: 坚决反对.'),
         od(['坚决'], '他坚决反对这个计划。', 'Anh ấy kiên quyết phản đối kế hoạch này.', ['他', '坚决', '反对', '这个计划']),
         hr('坚决')
+      ],
+      /* ---------- tập 3 ---------- */
+      '打工': [
+        cz('打工', 'c2_work', '大学的时候，我在一家饭馆___，一个月挣的钱不多。', 'Hồi đại học mình làm thêm ở một quán ăn, mỗi tháng kiếm không nhiều.', '大学的时候，我在一家饭馆打工，一个月挣的钱不多。', '打工',
+          [['断', '断 là đứt, cai; không phải đi làm.'], ['坚决', '坚决 là kiên quyết, nói thái độ, không phải việc làm.']], '<b>在 + nơi + 打工</b> = làm thuê, làm thêm ở đâu.'),
+        od(['打工'], '他去城里打了三年工。', 'Anh ấy lên thành phố làm thuê ba năm.', ['他', '去城里', '打了三年', '工']),
+        hr('打工')
+      ],
+      '挣': [
+        cz('挣', 'c2_earn', '他每个月___的钱不多，可是很努力。', 'Mỗi tháng anh ấy kiếm không nhiều tiền, nhưng rất chịu khó.', '他每个月挣的钱不多，可是很努力。', '挣',
+          [['花', '花钱 = tiêu tiền. Vế sau 可是很努力 (nhưng rất chịu khó) cho thấy đang nói chuyện kiếm tiền.'], ['断', '断 là đứt, cai; không đi với 钱.']], '<b>挣钱</b> = kiếm tiền; <b>挣的钱</b> = số tiền kiếm được.'),
+        hr('挣'),
+        ty(['挣'], '挣钱', 'kiếm tiền')
+      ],
+      '县': [
+        cz('县', 'c2_county', '姥姥住在农村，看病要去___里的医院。', 'Bà ngoại sống ở nông thôn, đi khám bệnh phải lên bệnh viện trên huyện.', '姥姥住在农村，看病要去县里的医院。', '县',
+          [['屋', '屋里 là trong nhà; trong nhà không có bệnh viện.'], ['套', '套 là lượng từ (一套房子), không chỉ nơi chốn.']], '<b>县里</b> = trên huyện: lớn hơn làng, nhỏ hơn thành phố.'),
+        hr('县'),
+        od(['县'], '从我们村到县里要坐一个小时的车。', 'Từ làng mình lên huyện phải đi xe một tiếng.', ['从我们村', '到县里', '要坐', '一个小时的车'])
+      ],
+      '套': [
+        cz('套', 'c2_flat3', '这___房子有三个房间，很适合我们家。', 'Căn nhà này có ba phòng, rất hợp với nhà mình.', '这套房子有三个房间，很适合我们家。', '套',
+          [['间', '一间 là một gian phòng; một gian thì không có ba phòng bên trong.'], ['辆', '辆 là lượng từ của xe.']], '<b>一套房子</b> = một căn nhà gồm nhiều phòng. 一间 = một gian.'),
+        hr('套'),
+        cz('套', 'c2_sets', '他结婚的时候买了一___新西服。', 'Lúc cưới anh ấy mua một bộ com-lê mới.', '他结婚的时候买了一套新西服。', '套',
+          [['件', '一件 dùng cho một chiếc áo; com-lê gồm áo và quần nên là 一套.'], ['条', '一条 dùng cho quần, váy; cả bộ com-lê là 一套.']], '<b>一套</b> = trọn bộ: 一套西服, 一套家具, 一套邮票.')
+      ],
+      /* ---------- tập 4 ---------- */
+      '装修': [
+        cz('装修', 'c2_renovate', '房子___好了，我们下个月搬进去。', 'Nhà sửa sang xong rồi, tháng sau tụi mình dọn vào.', '房子装修好了，我们下个月搬进去。', '装修',
+          [['打工', '打工 là đi làm thuê, không đi với 房子…好了.'], ['挣', '挣 là kiếm (tiền).']], '<b>装修好 / 装修完</b> = sửa sang xong.'),
+        hr('装修'),
+        od(['装修'], '这家饭馆装修得很漂亮。', 'Quán ăn này trang trí rất đẹp.', ['这家饭馆', '装修得', '很', '漂亮'])
+      ],
+      '不得了': [
+        cz('不得了', 'c2_hot', '今天热得___，我们别出去了。', 'Hôm nay nóng kinh khủng, mình đừng ra ngoài.', '今天热得不得了，我们别出去了。', '不得了',
+          [['不错', '不错 = khá tốt; 热得不错 không ai nói.'], ['一样', '一样 = giống nhau, không chỉ mức độ.']], '<b>热得不得了</b> = nóng vô cùng: tính từ + 得 + 不得了.'),
+        hr('不得了'),
+        od(['不得了'], '听说儿子考上了大学，妈妈高兴得不得了。', 'Nghe tin con trai đậu đại học, mẹ mừng vô cùng.', ['听说儿子', '考上了大学', '妈妈', '高兴得不得了'])
+      ],
+      '串': [
+        hr('串'),
+        cz('串', 'c2_keyBunch', '他手里拿着一___钥匙，不知道哪把是大门的。', 'Anh ấy cầm một chùm chìa khoá, không biết chiếc nào là của cửa lớn.', '他手里拿着一串钥匙，不知道哪把是大门的。', '串',
+          [['套', '一套 là một bộ (房子, 家具); chìa khoá xâu chung một vòng là 一串.'], ['辆', '辆 là lượng từ của xe.']], '<b>一串钥匙</b> = một chùm chìa khoá. Từng chiếc thì đếm bằng 把: 一把钥匙.')
+      ],
+      /* ---------- tập 5 ---------- */
+      '醉': [
+        cz('醉', 'c2_tipsy', '他昨天喝___了，今天早上起来头很疼。', 'Hôm qua anh ấy uống say, sáng nay dậy đau đầu lắm.', '他昨天喝醉了，今天早上起来头很疼。', '醉',
+          [['饱', '喝饱 = uống no; uống no thì không đau đầu sáng hôm sau.'], ['断', '断 là đứt, cai; 喝断 không ai nói.']], '<b>喝醉了</b> = uống say rồi.'),
+        hr('醉'),
+        od(['醉'], '我从来没喝醉过。', 'Mình chưa từng uống say.', ['我', '从来', '没喝醉', '过'])
+      ],
+      '强烈': [
+        cz('强烈', 'c2_strongSun', '夏天中午的阳光非常___，出门要戴帽子。', 'Nắng trưa mùa hè rất gắt, ra ngoài phải đội mũ.', '夏天中午的阳光非常强烈，出门要戴帽子。', '强烈',
+          [['坚决', '坚决 nói về thái độ, ý chí của người; nắng thì 强烈.'], ['不得了', '不得了 đứng sau 得 (热得不得了), không đứng sau 非常.']], '<b>强烈的阳光</b> = nắng gắt.'),
+        hr('强烈'),
+        cz('强烈', 'c2_chat', '大家___要求他留下来，可他还是走了。', 'Mọi người hết lời yêu cầu anh ấy ở lại, nhưng anh ấy vẫn đi.', '大家强烈要求他留下来，可他还是走了。', '强烈',
+          [['醉', '醉 là say rượu.'], ['不得了', '不得了 không đứng trước động từ; nó đứng sau 得.']], '<b>强烈要求</b> = hết sức yêu cầu.')
+      ],
+      '夜': [
+        cz('夜', 'c2_night', '我们在姑姑家住了一___，第二天早上才回来。', 'Tụi mình ở lại nhà cô một đêm, sáng hôm sau mới về.', '我们在姑姑家住了一夜，第二天早上才回来。', '夜',
+          [['套', '套 là lượng từ cho bộ, căn.'], ['串', '串 là chùm, xâu.']], '<b>住了一夜</b> = ở lại một đêm.'),
+        hr('夜'),
+        od(['夜'], '昨天夜里下了很大的雨。', 'Đêm qua mưa rất to.', ['昨天', '夜里', '下了', '很大的雨'])
       ]
     };
   };
@@ -472,9 +741,112 @@ var CH2 = window.CH2 || (window.CH2 = {});
     person(90, 196, { s: .45, hs: 'short', shirt: C.navy, m: 'grin' }) + person(320, 196, { s: .45, hs: 'long', hair: C.hairD, shirt: C.pink, m: 'grin', flip: 1 }) + keyIcon(120, 226, -20, '#e2a83a') + heart(200, 24, 1.3, C.red, 'class="fl"');
   L.c2_newHouse = 'Hai vợ chồng trẻ vui mừng trước toà nhà mới';
 
+  /* ---- shared props for tập 3–11 ---- */
+  var wall = function (c, fl) { return R(0, 0, 400, 300, c || '#f6ead8') + R(0, 236, 400, 64, fl || '#d9b88a'); };
+  var win = function (x, y, w, h, sky) { return R(x, y, w, h, sky || C.sky, 6, 'stroke="#fff" stroke-width="6"') + Ln(x + w / 2, y, x + w / 2, y + h, '#fff', 4); };
+  var nightSky = function () { return R(0, 0, 400, 300, '#26304f') + Ci(334, 60, 26, '#fff3c0') + Ci(346, 54, 22, '#26304f') + [[40, 40], [100, 80], [170, 30], [240, 70], [290, 24], [380, 110]].map(([x, y]) => Ci(x, y, 2.4, '#fff')).join(''); };
+  var sofa = function (x, y, s, c) { return G(`translate(${x} ${y}) scale(${s || 1})`, R(-70, -20, 140, 44, c || '#bd6a5a', 14) + R(-70, -46, 140, 34, c || '#bd6a5a', 14) + R(-80, -30, 20, 54, '#a8584a', 10) + R(60, -30, 20, 54, '#a8584a', 10)); };
+  var bed = function (x, y, s, made) { return G(`translate(${x} ${y}) scale(${s || 1})`, R(-90, -40, 18, 70, C.brown, 4) + R(-90, -6, 180, 30, '#8a5a3b', 8) + R(-72, -22, 40, 18, '#fff', 8) + (made === false ? Pa('M-30 -12 Q20 -40 80 -10 L84 6 L-30 6Z', '#cfe0f0') : R(-30, -16, 116, 22, '#9fd3ee', 8) + Ln(-24, -6, 80, -6, 'rgba(255,255,255,.5)', 3))); };
+  var box = function (x, y, s) { return G(`translate(${x} ${y}) scale(${s || 1})`, R(-26, -22, 52, 44, '#d9a86a', 4) + Ln(-26, -6, 26, -6, '#b8864a', 3) + Ln(0, -22, 0, -6, '#b8864a', 3)); };
+  var bus = function (x, y, s, c, lit) { return G(`translate(${x} ${y}) scale(${s || 1})`, R(-110, -70, 220, 90, c || '#4f7f8f', 14) + [-86, -46, -6, 34].map(q => R(q, -58, 32, 28, lit ? '#ffe39a' : '#cfe3f2', 4)).join('') + R(74, -58, 26, 64, lit ? '#ffe39a' : '#cfe3f2', 4) + Ci(-66, 22, 15, '#333') + Ci(66, 22, 15, '#333') + Ci(-66, 22, 6, '#999') + Ci(66, 22, 6, '#999')); };
+  var hardhat = function () { return Pa('M-30 -14 Q-30 -46 0 -46 Q30 -46 30 -14Z', '#f2c230') + R(-36, -16, 72, 8, '#e0ad1c', 4); };
+  var money = function (x, y, s) { return G(`translate(${x} ${y}) scale(${s || 1})`, R(-30, -16, 60, 32, '#7fbf7a', 4, 'stroke="#4f8f4a" stroke-width="2"') + Ci(0, 0, 9, 'none', 'stroke="#4f8f4a" stroke-width="2"') + R(-22, -26, 60, 32, '#94cc8f', 4, 'stroke="#4f8f4a" stroke-width="2" opacity=".9"')); };
+  var sweat = function (x, y) { return tear(x, y) + tear(x + 12, y + 10); };
+  var dog = function (x, y, s, o) { o = o || {}; return G(`translate(${x} ${y}) scale(${s || 1}${o.flip ? ' ' : ''})`, R(-40, -16, 80, 34, '#c99a6a', 16) + Ci(44, -22, 22, '#c99a6a') + Pa('M30 -40 L22 -62 L40 -46Z', '#8a5a3b') + Ci(52, -26, 3, C.ink) + Ci(64, -18, 4, C.ink) + R(-34, 12, 10, 26, '#b8864a', 4) + R(24, 12, 10, 26, '#b8864a', 4) + Pa('M-40 -8 Q-62 -30 -56 -44', 'none', 'stroke="#c99a6a" stroke-width="7" stroke-linecap="round"') + (o.run ? Pa('M-80 -10 l-20 0 M-84 6 l-24 0', 'none', `stroke="${C.grey}" stroke-width="4" stroke-linecap="round"`) : '')); };
+  var keyring = function (x, y, s) { return G(`translate(${x} ${y}) scale(${s || 1})`, Ci(0, 0, 22, 'none', 'stroke="#c99a3e" stroke-width="6"') + keyIcon(4, 26, 80, '#e2a83a') + keyIcon(-6, 24, 105, '#c99a3e') + keyIcon(14, 22, 55, '#d9b45a') + keyIcon(-14, 20, 130, '#e8be6a')); };
+  var padlock = function (x, y, s, open) { return G(`translate(${x} ${y}) scale(${s || 1})`, Pa(open ? 'M-14 -10 L-14 -34 Q-14 -50 2 -50 Q18 -50 18 -34 L18 -26' : 'M-14 -10 L-14 -30 Q-14 -46 0 -46 Q14 -46 14 -30 L14 -10', 'none', 'stroke="#8a96ad" stroke-width="7"') + R(-22, -12, 44, 36, '#e2a83a', 6) + Ci(0, 4, 5, C.ink) + R(-2, 4, 4, 10, C.ink)); };
+  var door = function (x, y, s, state) { return G(`translate(${x} ${y}) scale(${s || 1})`, R(-40, -100, 80, 160, '#8a5a3b', 4) + (state === 'open' ? R(-36, -96, 72, 152, '#ffe39a') + Pa('M-36 -96 L-60 -86 L-60 50 L-36 56Z', C.brown) : R(-36, -96, 72, 152, C.brown, 2) + Ci(24, -20, 5, C.butter))); };
+
+  /* ---- tập 3 ---- */
+  S.c2_buyHouse = () => R(0, 0, 400, 300, '#eaf2f8') + R(0, 236, 400, 64, '#c9b79c') + R(196, 20, 8, 260, '#fff') +
+    person(64, 150, { s: .6, hs: 'short', shirt: C.org, hat: hardhat() }) + box(84, 200, .8) + person(150, 170, { s: .5, hs: 'pony', shirt: C.pink }) + money(100, 236, .7) +
+    Pa('M178 140 L222 140', 'none', `stroke="${C.org}" stroke-width="8" stroke-linecap="round"`) + Pa('M214 128 L232 140 L214 152Z', C.org) +
+    tower(250, 70, 110, 166, '#e2c9a8') + R(290, 196, 30, 40, C.brown, 3) + keyIcon(260, 260, -10, '#e2a83a') + heart(300, 46, 1.2, C.red, 'class="fl"');
+  L.c2_buyHouse = 'Hai vợ chồng đi làm thuê, dành tiền mua căn nhà mới';
+  S.c2_work = () => R(0, 0, 400, 300, '#eaf2f8') + R(0, 240, 400, 60, '#c9b79c') + R(250, 40, 10, 200, '#8a96ad') + R(330, 40, 10, 200, '#8a96ad') + [80, 140, 200].map(y => R(250, y, 90, 8, '#8a96ad')).join('') +
+    box(250, 228, .8) + box(296, 228, .8) + person(160, 140, { s: .85, hs: 'short', shirt: C.org, m: 'flat', hat: hardhat() }) + box(196, 112, 1.1) + sweat(126, 128);
+  L.c2_work = 'Một người đội mũ bảo hộ khuân hàng ở công trường';
+  S.c2_earn = () => R(0, 0, 400, 300, '#f3f7ea') + R(0, 240, 400, 60, '#cfe0b8') + person(150, 140, { s: .85, hs: 'short', shirt: C.teal, m: 'grin', hat: hardhat() }) + sweat(112, 126) +
+    money(260, 150, 1.4) + hand(226, 168, 10) + R(300, 210, 40, 30, '#e2b85c', 4) + R(300, 200, 40, 10, '#c99a3e', 3) + Tx(320, 232, '¥', 22, C.white);
+  L.c2_earn = 'Người thợ mồ hôi nhễ nhại, cầm xấp tiền vừa kiếm được';
+  S.c2_county = () => R(0, 0, 400, 300, '#e3f0f8') + Pa('M0 210 Q200 180 400 210 L400 300 L0 300Z', '#a8d48f') + Pa('M30 230 Q200 200 370 230', 'none', `stroke="#c9b79c" stroke-width="14" stroke-linecap="round"`) +
+    house(60, 190, .35) + house(100, 196, .3, { roof: '#6f5a8a' }) + Tx(80, 270, 'làng', 18, C.ink) +
+    Ci(200, 160, 62, 'rgba(255,209,102,.6)', `stroke="${C.org}" stroke-width="4"`) + tower(166, 120, 30, 70, '#e2c9a8') + tower(202, 106, 34, 84, '#d9b88a') + house(200, 196, .28) + Tx(200, 270, 'huyện', 20, C.org) +
+    G('', tower(296, 40, 30, 160, '#8fa3c0') + tower(330, 20, 34, 180, '#6f86aa') + tower(364, 60, 30, 140, '#a3b4cf')).replace('<g', '<g opacity=".55"') + Tx(340, 270, 'thành phố', 18, C.ink);
+  L.c2_county = 'Bản đồ: làng, huyện (vòng sáng) và thành phố';
+  S.c2_sets = () => R(0, 0, 400, 300, '#fbf3e6') +
+    G('translate(70 150)', Pa('M-40 -70 L40 -70 L48 20 L-48 20Z', '#3f4f7a') + Pa('M-8 -70 L0 -40 L8 -70Z', '#fff') + R(-40, 24, 34, 80, '#3f4f7a', 4) + R(6, 24, 34, 80, '#3f4f7a', 4)) +
+    G('translate(200 160)', Ci(0, 0, 48, '#fff', `stroke="${C.teal}" stroke-width="4"`) + Ci(0, 0, 30, 'none', `stroke="${C.teal}" stroke-width="2"`) + Pa('M-34 40 Q0 76 34 40Z', '#fff', `stroke="${C.teal}" stroke-width="4"`) + R(50, -30, 6, 80, C.grey, 3) + R(-58, -30, 6, 80, C.grey, 3)) +
+    G('translate(330 150)', R(-50, -50, 100, 100, '#fff', 4, `stroke="${C.ink}" stroke-width="4"`) + Ln(-50, 0, 10, 0, C.ink, 3) + Ln(10, -50, 10, 50, C.ink, 3) + Ln(10, 10, 50, 10, C.ink, 3)) +
+    [70, 200, 330].map(x => Pa(`M${x - 50} 262 Q${x - 50} 272 ${x - 40} 272 L${x + 40} 272 Q${x + 50} 272 ${x + 50} 262`, 'none', `stroke="${C.org}" stroke-width="4"`)).join('');
+  L.c2_sets = 'Ba thứ đi thành bộ: bộ com-lê, bộ chén đĩa, một căn hộ';
+  var plan = function (rooms) {
+    let g = R(0, 0, 400, 300, '#eef4fb') + R(60, 40, 280, 220, '#fff', 4, `stroke="${C.ink}" stroke-width="6"`);
+    if (rooms === 3) g += Ln(180, 40, 180, 260, C.ink, 5) + Ln(180, 150, 340, 150, C.ink, 5) + Ln(60, 170, 180, 170, C.ink, 5) + bed(120, 110, .45) + bed(260, 100, .45) + sofa(120, 230, .5) + R(250, 190, 60, 40, '#e8d3b0', 4) + R(170, 250, 30, 10, '#ffe39a');
+    else g += bed(200, 150, .9) + R(80, 210, 50, 40, '#e8d3b0', 4) + R(310, 60, 20, 30, '#ffe39a');
+    return g;
+  };
+  S.c2_flat3 = () => plan(3); L.c2_flat3 = 'Sơ đồ một căn nhà có ba phòng';
+  S.c2_room1 = () => plan(1); L.c2_room1 = 'Sơ đồ một gian phòng nhỏ có một cái giường';
+  S.c2_furniture = () => wall('#f3e6d3') + sofa(130, 200, 1) + R(230, 180, 110, 12, C.brown, 4) + R(238, 192, 10, 44, C.brown) + R(322, 192, 10, 44, C.brown) + chair(250, 196, '#a8584a') + R(150, 50, 100, 70, '#fff', 4, `stroke="${C.brown}" stroke-width="5"`);
+  L.c2_furniture = 'Một bộ đồ gỗ: ghế sofa, bàn, ghế';
+
+  /* ---- tập 4 ---- */
+  S.c2_newHome = () => wall('#fdf3e3', '#e2c9a8') + win(260, 40, 110, 80) + sofa(320, 214, .7, C.teal) + heart(200, 40, 1.3, C.red, 'class="fl"') +
+    dad(80, 140, { s: .7, m: 'grin' }) + hand(126, 150, 9) + mom(170, 140, { s: .7, m: 'grin' }) + person(270, 150, { s: .6, hs: 'long', hair: C.hairD, shirt: C.pink, m: 'smile', flip: 1 }) + keyring(226, 156, .6);
+  L.c2_newHome = 'Trong nhà mới: ba mẹ cười tươi, cô con dâu đưa chùm chìa khoá, ba xua tay';
+  S.c2_renovate = () => wall('#fdf7ee', '#cfc3b0') + R(40, 40, 160, 196, '#cfe8dc') + R(200, 40, 160, 196, '#fdf7ee') + Pa('M60 236 L100 40 M140 236 L100 40', 'none', `stroke="${C.brown}" stroke-width="6"`) + [90, 140, 190].map(y => Ln(70 + (236 - y) * 0, y, 130, y, C.brown, 5)).join('') +
+    person(260, 150, { s: .7, hs: 'short', shirt: C.butter, m: 'smile', hat: Pa('M-30 -20 Q0 -50 30 -20Z', '#fff') }) + Ln(214, 120, 200, 70, C.grey, 5) + R(186, 50, 30, 24, '#8fd0b0', 4) + R(300, 210, 40, 26, '#8fd0b0', 4) + Pa('M300 210 Q320 196 340 210', 'none', `stroke="${C.grey}" stroke-width="3"`);
+  L.c2_renovate = 'Thợ đang lăn sơn tường, có thang và thùng sơn';
+  S.c2_moveBoxes = () => wall('#fdf3e3') + door(310, 176, 1, 'open') + box(80, 214, 1) + box(80, 170, .9) + box(140, 214, 1) + person(220, 140, { s: .7, hs: 'short', shirt: C.navy, m: 'grin', flip: 1 }) + box(250, 160, 1.1);
+  L.c2_moveBoxes = 'Một người khuân thùng đồ vào nhà (dọn nhà)';
+  S.c2_fixCar = () => R(0, 0, 400, 300, '#eaf2f8') + R(0, 236, 400, 64, '#8a8f99') + car(220, 236, 1.6, C.red) + person(90, 150, { s: .7, hs: 'short', shirt: C.teal, m: 'flat', brows: 'worry' }) + Ln(130, 190, 160, 170, C.grey, 6) + Ci(162, 168, 8, 'none', `stroke="${C.grey}" stroke-width="4"`);
+  L.c2_fixCar = 'Một người cầm cờ lê sửa xe hơi';
+  S.c2_hot = () => R(0, 0, 400, 300, '#fff1d6') + sun(300, 70, 46) + R(0, 240, 400, 60, '#f2d29c') + person(150, 140, { s: .85, hs: 'short', shirt: C.red, m: 'open', brows: 'worry' }) + sweat(104, 120) + sweat(186, 110) +
+    R(40, 70, 18, 120, '#fff', 9, `stroke="${C.ink}" stroke-width="3"`) + R(44, 100, 10, 86, C.red, 5) + Ci(49, 194, 14, C.red);
+  L.c2_hot = 'Trời nắng gắt, một người nóng toát mồ hôi, nhiệt kế đỏ rực';
+  S.c2_keyBunch = () => R(0, 0, 400, 300, '#fff6e3') + keyring(80, 110, 1.3) +
+    G('translate(220 120)', [[0, 0], [-18, 0], [18, 0], [-9, 18], [9, 18], [0, 36], [-27, -18], [27, -18], [-9, -18], [9, -18]].map(([x, y]) => Ci(x, y, 11, '#8a4fa8')).join('') + R(-2, -46, 4, 26, C.green)) +
+    G('translate(330 150) rotate(20)', R(-3, -90, 6, 180, '#c99a6a', 3) + [-60, -30, 0, 30].map(y => R(-16, y, 32, 24, '#a8584a', 6)).join(''));
+  L.c2_keyBunch = 'Một chùm chìa khoá, một chùm nho và một xiên thịt';
+
+  S.c2_goodNews = () => wall('#fff3e3') + win(280, 40, 90, 70) + person(170, 140, { s: .85, hs: 'bob', hair: C.hairG, shirt: C.teal, m: 'grin', eyes: 'closed' }) + hand(110, 96, 10) + hand(230, 96, 10) +
+    R(234, 140, 60, 44, '#fff', 4, `stroke="${C.red}" stroke-width="3"`) + Pa('M234 140 L264 166 L294 140', 'none', `stroke="${C.red}" stroke-width="3"`) + conf(8);
+  L.c2_goodNews = 'Người mẹ giơ hai tay reo mừng, cầm lá thư báo tin vui';
+  /* ---- tập 5 ---- */
+  S.c2_drunkNight = () => wall('#e8e0f0', '#c9b79c') + win(40, 40, 110, 80, '#26304f') + Ci(118, 66, 12, '#fff3c0') + clockWall(210, 64, 28, 9, 40) + sofa(220, 210, 1, '#7a8fb2') +
+    person(220, 160, { s: .6, hs: 'short', hair: C.hairG, shirt: '#7a6a4f', m: 'smile', eyes: 'closed' }).replace(/opacity="\.5"/g, 'opacity=".95"') + Zs(262, 140, .7) + R(80, 220, 60, 10, C.brown, 3) + R(96, 196, 14, 26, '#7fbf7a', 4) + R(100, 186, 6, 12, '#7fbf7a');
+  L.c2_drunkNight = 'Trời tối, ba mặt đỏ ngủ trên ghế sofa, chai rượu trên bàn';
+  S.c2_tipsy = () => R(0, 0, 400, 300, '#f3eaf6') + R(0, 240, 400, 60, '#d8c6a8') + person(170, 140, { s: .85, hs: 'short', shirt: C.navy, m: 'grin', eyes: 'closed' }).replace(/opacity="\.5"/g, 'opacity=".95"') +
+    Pa('M110 60 q10 -14 20 0 q10 14 20 0 M210 50 q10 -14 20 0 q10 14 20 0', 'none', `stroke="${C.plum}" stroke-width="4" stroke-linecap="round"`) + R(290, 170, 26, 60, '#7fbf7a', 6) + R(296, 150, 14, 24, '#7fbf7a', 3) + R(250, 200, 24, 30, '#fff', 4, `stroke="${C.ink}" stroke-width="2"`);
+  L.c2_tipsy = 'Một người mặt đỏ, lâng lâng cạnh chai rượu';
+  S.c2_lastBus = () => nightSky() + R(0, 236, 400, 64, '#4a5068') + bus(270, 214, .9, '#4f7f8f', 1) + Ci(160, 120, 8, '#ffe39a') + R(158, 126, 4, 110, '#8a96ad') +
+    dad(170, 180, { s: .4, flip: 1 }) + mom(214, 180, { s: .4, flip: 1 }) + person(60, 176, { s: .42, hs: 'short', shirt: C.teal, m: 'open', brows: 'worry' }) + person(110, 176, { s: .42, hs: 'long', hair: C.hairD, shirt: C.pink, m: 'open', brows: 'worry' }) + hand(140, 196, 6);
+  L.c2_lastBus = 'Ban đêm, ba mẹ bước lên chuyến xe cuối, hai vợ chồng níu lại';
+  S.c2_strongSun = () => R(0, 0, 400, 300, '#fff1d6') + sun(310, 76, 56) + R(0, 236, 400, 64, '#f2d29c') + person(150, 140, { s: .85, hs: 'pony', shirt: C.teal, m: 'flat', eyes: 'closed' }) + hand(176, 112, 10) + Pa('M80 290 L220 290 L180 250 L120 250Z', 'rgba(0,0,0,.12)');
+  L.c2_strongSun = 'Nắng trưa chói chang, một người lấy tay che mắt';
+  S.c2_night = () => nightSky() + Pa('M0 220 Q200 200 400 222 L400 300 L0 300Z', '#2f3a5a') + house(100, 196, .55, {}) .replace(new RegExp(C.sky, 'g'), '#3b4766') + house(300, 200, .5, { lit: 1 });
+  L.c2_night = 'Ban đêm, trăng sao, một căn nhà còn sáng đèn';
+  var arrive = function (night, leave) {
+    return (night ? nightSky() : R(0, 0, 400, 300, '#cfe9f5') + sun(330, 60, 24)) + R(0, 236, 400, 64, night ? '#4a5068' : '#c9b79c') + R(200, 60, 200, 176, night ? '#3b4766' : '#f3e2c4') + door(260, 196, .8, 'open') +
+      clock(100, 70, 34, 12, 0) + person(leave ? 150 : 236, 150, { s: .55, hs: 'short', shirt: C.navy, m: 'smile', flip: leave ? 1 : 0 }) + (leave ? R(110, 200, 30, 36, C.red, 6) + Pa('M86 210 l-24 0 M90 226 l-28 0', 'none', `stroke="${C.grey}" stroke-width="4"`) : '');
+  };
+  S.c2_clockNight = () => arrive(1, 0); L.c2_clockNight = 'Ban đêm, đồng hồ chỉ 12 giờ, một người bước vào nhà';
+  S.c2_clockNoon = () => arrive(0, 0); L.c2_clockNoon = 'Ban ngày, đồng hồ chỉ 12 giờ, một người bước vào nhà';
+  S.c2_leaveNight = () => arrive(1, 1); L.c2_leaveNight = 'Ban đêm, đồng hồ chỉ 12 giờ, một người kéo vali ra khỏi nhà';
+  S.c2_dogBroke = () => R(0, 0, 400, 300, '#e9f4e3') + R(0, 236, 400, 64, '#a8d48f') + R(40, 120, 16, 120, C.brown, 4) + Pa('M56 160 Q90 170 110 168', 'none', `stroke="${C.brown}" stroke-width="5"`) + Pa('M110 168 l8 -8 l4 10', 'none', `stroke="${C.brown}" stroke-width="4"`) +
+    Pa('M160 176 l8 8 l-4 8', 'none', `stroke="${C.brown}" stroke-width="4"`) + Pa('M168 186 Q190 190 212 196', 'none', `stroke="${C.brown}" stroke-width="5"`) + dog(270, 200, 1, { run: 1 });
+  L.c2_dogBroke = 'Sợi dây buộc chó đứt làm hai, con chó chạy mất';
+  S.c2_dogTied = () => R(0, 0, 400, 300, '#e9f4e3') + R(0, 236, 400, 64, '#a8d48f') + R(40, 120, 16, 120, C.brown, 4) + Pa('M56 160 Q120 200 196 196', 'none', `stroke="${C.brown}" stroke-width="5"`) + dog(240, 200, 1) + Zs(300, 140, .6);
+  L.c2_dogTied = 'Con chó còn buộc dây vào cột, nằm ngủ';
+  /* ---- tập 6 (tease of tập 5) ---- */
+  S.c2_lockedHouse = () => R(0, 0, 400, 300, '#e3eef5') + R(0, 236, 400, 64, '#c9b79c') + tower(40, 40, 160, 196, '#e2c9a8') + R(102, 180, 36, 56, C.brown, 3) + padlock(120, 212, .7) +
+    person(270, 150, { s: .55, hs: 'short', shirt: C.teal, m: 'flat', flip: 1 }) + person(340, 150, { s: .55, hs: 'long', hair: C.hairD, shirt: C.pink, m: 'flat', flip: 1 }) + R(220, 196, 30, 40, C.red, 6) + R(366, 196, 30, 40, C.navy, 6);
+  L.c2_lockedHouse = 'Căn nhà mới khoá cửa, hai vợ chồng kéo vali đi xa';
+
   CH2.SC = S; CH2.SCENE_LABEL = L;
   if (typeof SC !== 'undefined') Object.assign(SC, S);
   if (typeof SCENE_LABEL !== 'undefined') Object.assign(SCENE_LABEL, L);
 })();
 
-(typeof regChapter === 'function' ? regChapter : (n, d, a) => (window.__pendingCh = window.__pendingCh || []).push([n, d, a]))(2, CH2, {"我爷爷一辈子都在农村种地": "audio/e551f31afc6e.mp3", "外面太冷了我们进屋里去吧": "audio/1ebf327eecf5.mp3", "孩子一岁多就断奶了现在每天吃饭": "audio/f6c8fe43c422.mp3", "毕业以后我们就断了联系": "audio/cb790ccf5fe1.mp3", "她一辈子住在农村没去过大城市": "audio/f158d929bcd8.mp3", "父母一辈子都住在城市里": "audio/1c76316a02df.mp3", "M|因此长年以来父母很少离开老屋尽管姥姥舅舅和姑姑都在城里父母也坚决不在城里住": "audio/ff32f0219f5b.mp3", "搬到城里以来他很少回农村": "audio/1cb8ee350493.mp3", "一直以来她都很爱护这辆车": "audio/0f6a8ac6ec1b.mp3", "我姥姥一个人住在农村": "audio/51caa0bf5ca9.mp3", "周末我去舅舅家玩": "audio/ed9bc1a9781b.mp3", "尽管姥姥舅舅和姑姑都在城里父母也坚决不在城里住": "audio/d1d0ae322212.mp3", "坚决不同意": "audio/7cc5c368f7e7.mp3", "舅舅比我妈妈大三岁": "audio/3d7a40099f49.mp3", "学汉语以来我每天都听中文歌": "audio/b6f7ddcb38c5.mp3", "爸爸妈妈结婚三十年了还是很恩爱": "audio/7e5af35b2487.mp3", "外面太冷了我们进屋吧": "audio/ff37b938d423.mp3", "姑姑从来不抱怨农村的生活": "audio/615ef0f93139.mp3", "我爷爷一辈子都在农村种地从来没去过外国": "audio/5fcb428ec929.mp3", "这件事我会记住一辈子": "audio/16a5b07400fa.mp3", "我会记住你一辈子": "audio/badbdb4ebcd5.mp3", "我是在农村长大的小时候每天都跟爷爷去地里": "audio/8c0f269d96d3.mp3", "现在很多年轻人离开农村去城市工作": "audio/f0ebfea7c968.mp3", "在农村": "audio/a26adbc48123.mp3", "这间屋子不大可是很干净": "audio/d6eea706d5ce.mp3", "屋里很暖和外面很冷": "audio/fb1600aa0a32.mp3", "大学毕业以后我们就断了联系十年没见面了": "audio/ab4c7a482b75.mp3", "毕业以后我跟他断了联系": "audio/56fc79633178.mp3", "昨天晚上我们这儿断电了": "audio/53548736529d.mp3", "工作以来他很少回老家": "audio/b9347c936f83.mp3", "上大学以来我很少回家": "audio/3536acfd052c.mp3", "我妈妈的妈妈是我的姥姥": "audio/2551001bf684.mp3", "小时候我常常住在姥姥家": "audio/89037761ec6b.mp3", "我舅舅是我妈妈的弟弟今年三十岁": "audio/afcdf8de0d55.mp3", "舅舅家": "audio/8cc94e6a06c9.mp3", "爸爸有一个妹妹她是我的姑姑": "audio/470467b3df9f.mp3", "姑姑每年春节都回来看我们": "audio/57c9a7d7007d.mp3", "我姑姑是我爸爸的妹妹": "audio/54e0eb3137ac.mp3", "他的态度很坚决谁说也没用": "audio/204442304b4e.mp3", "他坚决反对这个计划": "audio/ab9290aa2f21.mp3", "妈妈坚决不同意我一个人去旅游": "audio/1e81840d968f.mp3", "M|一辈子": "audio/eabbeb3c299f.mp3", "MS|一辈子": "audio/7615c019467a.mp3", "M|我爷爷一辈子没离开过农村": "audio/1ec8add4bf81.mp3", "M|这件事我会记住一辈子": "audio/3a191b9b302b.mp3", "M|农村": "audio/66cfe9c2d9b7.mp3", "MS|农村": "audio/e8c9969343a6.mp3", "M|他在农村长大很熟悉农村的生活": "audio/362766802f93.mp3", "M|现在很多年轻人离开农村去城市工作": "audio/552aedac7dd8.mp3", "M|屋": "audio/fde13d04cf59.mp3", "MS|屋": "audio/0c3cbed9ff2e.mp3", "M|外面太冷了我们进屋吧": "audio/5afdcff6504a.mp3", "M|这间屋子不大可是很干净": "audio/857e7e505bf1.mp3", "M|断": "audio/e08d010b0691.mp3", "MS|断": "audio/6523f8dbc0c2.mp3", "M|大学毕业以后我们就断了联系": "audio/ce8a4c740345.mp3", "M|昨天晚上我们这儿断电了": "audio/789614e15879.mp3", "M|以来": "audio/58a076a96506.mp3", "MS|以来": "audio/0bf4cd85360f.mp3", "M|工作以来他很少回老家": "audio/5e4b992588ec.mp3", "M|一直以来她都很爱护这辆车": "audio/8aaadee7bf05.mp3", "M|姥姥": "audio/35d75c5c1067.mp3", "MS|姥姥": "audio/2f41e846dc77.mp3", "M|我姥姥今年八十岁了身体还很好": "audio/1ba4c7b248f9.mp3", "M|小时候我常常住在姥姥家": "audio/f49d8604f8ae.mp3", "M|舅舅": "audio/d433ce53bb8e.mp3", "MS|舅舅": "audio/5038ed79a887.mp3", "M|我舅舅是我妈妈的哥哥": "audio/4962fb9029df.mp3", "M|周末我们去舅舅家吃饭": "audio/95a0a6db93d5.mp3", "M|姑姑": "audio/0e225ce4ea75.mp3", "MS|姑姑": "audio/b615101f52b0.mp3", "M|我姑姑是我爸爸的妹妹": "audio/698e249810c5.mp3", "M|姑姑每年春节都回来看我们": "audio/8baab3a7145f.mp3", "M|坚决": "audio/c24079e512bd.mp3", "MS|坚决": "audio/ae9341ee0bf3.mp3", "M|他坚决反对这个计划": "audio/28502251a5d4.mp3", "M|我说了很多次她还是坚决不同意": "audio/e7c18f2cc356.mp3", "一辈子": "audio/f8a7e016d9e0.mp3", "农村": "audio/f7478d01dcb1.mp3", "老家": "audio/8078f6d1880b.mp3", "屋": "audio/e55080606f91.mp3", "感情": "audio/c851120d071f.mp3", "像": "audio/15876c3c09b8.mp3", "断奶": "audio/19c3fda80408.mp3", "母亲": "audio/50274b554e98.mp3", "一样": "audio/6c0a233c60d0.mp3", "种": "audio/c7cf5ec164a8.mp3", "岁": "audio/b1187f9a06fb.mp3", "吃": "audio/fd252d703291.mp3", "毕业": "audio/ddffeafb97d3.mp3", "断": "audio/9adf3bcbc228.mp3", "联系": "audio/3b0a12ad1828.mp3", "因此": "audio/0d9c665e983e.mp3", "长年": "audio/002e02ce2a32.mp3", "以来": "audio/eab425ab2724.mp3", "离开": "audio/820671e39dbf.mp3", "尽管": "audio/56f2c49f04a4.mp3", "姥姥": "audio/41a3edfe4b35.mp3", "舅舅": "audio/f63cccac7494.mp3", "姑姑": "audio/55cbd7fd6863.mp3", "城": "audio/354de14daeb3.mp3", "坚决": "audio/60f6f52d1355.mp3", "搬": "audio/8195f210b435.mp3", "回": "audio/57635deb7064.mp3", "辆": "audio/e10ae9c1f973.mp3", "周末": "audio/d5142a658f15.mp3", "玩": "audio/7f1fc740c425.mp3", "中文": "audio/c0b60a8ea6a4.mp3", "歌": "audio/feaa3f49f8c5.mp3", "国": "audio/1da5c62355e2.mp3", "件": "audio/d0324c16bf4a.mp3", "记": "audio/86e036edeb03.mp3", "候": "audio/7e322444cbeb.mp3", "年轻": "audio/d5f9c6af5d35.mp3", "间": "audio/51cf7f0cfd17.mp3", "屋子": "audio/acf9e282d03b.mp3", "干净": "audio/f4a312ad7597.mp3", "暖和": "audio/f9947da91ae2.mp3", "常常": "audio/4c74de1ddb0e.mp3", "弟弟": "audio/7ca48f07bbeb.mp3", "今": "audio/8d9ef6ae8af9.mp3", "妹妹": "audio/72ffb4b2ab82.mp3", "每": "audio/dbc6ddad9f3e.mp3", "春节": "audio/5fe030a2d578.mp3", "态度": "audio/2d87718ac63a.mp3", "反对": "audio/cda9bc177d6e.mp3", "旅游": "audio/a3887d22e8fd.mp3", "熟悉": "audio/9ee628a265f1.mp3", "八": "audio/aa757c76e2fc.mp3", "哥哥": "audio/aaafef034cf8.mp3", "房间": "audio/290c5f247d25.mp3", "外婆": "audio/d169b2373289.mp3", "叔叔": "audio/e5a85c5eabe8.mp3", "伯伯": "audio/ba058e447969.mp3", "舅妈": "audio/1de7bfd50ad7.mp3", "阿姨": "audio/b7d73eeb1259.mp3", "姨": "audio/b383cfecda14.mp3", "男": "audio/b6af977a0f1c.mp3", "改正": "audio/e750578199a6.mp3", "M|父母一辈子住在农村老家对老屋的感情就像没断奶的孩子对母亲一样": "audio/8185747aba17.mp3"});
+(typeof regChapter === 'function' ? regChapter : (n, d, a) => (window.__pendingCh = window.__pendingCh || []).push([n, d, a]))(2, CH2, {"我爷爷一辈子都在农村种地": "audio/e551f31afc6e.mp3", "外面太冷了我们进屋里去吧": "audio/1ebf327eecf5.mp3", "孩子一岁多就断奶了现在每天吃饭": "audio/f6c8fe43c422.mp3", "毕业以后我们就断了联系": "audio/cb790ccf5fe1.mp3", "她一辈子住在农村没去过大城市": "audio/f158d929bcd8.mp3", "父母一辈子都住在城市里": "audio/1c76316a02df.mp3", "M|因此长年以来父母很少离开老屋尽管姥姥舅舅和姑姑都在城里父母也坚决不在城里住": "audio/ff32f0219f5b.mp3", "搬到城里以来他很少回农村": "audio/1cb8ee350493.mp3", "一直以来她都很爱护这辆车": "audio/0f6a8ac6ec1b.mp3", "我姥姥一个人住在农村": "audio/51caa0bf5ca9.mp3", "周末我去舅舅家玩": "audio/ed9bc1a9781b.mp3", "尽管姥姥舅舅和姑姑都在城里父母也坚决不在城里住": "audio/d1d0ae322212.mp3", "坚决不同意": "audio/7cc5c368f7e7.mp3", "舅舅比我妈妈大三岁": "audio/3d7a40099f49.mp3", "学汉语以来我每天都听中文歌": "audio/b6f7ddcb38c5.mp3", "爸爸妈妈结婚三十年了还是很恩爱": "audio/7e5af35b2487.mp3", "外面太冷了我们进屋吧": "audio/ff37b938d423.mp3", "姑姑从来不抱怨农村的生活": "audio/615ef0f93139.mp3", "我爷爷一辈子都在农村种地从来没去过外国": "audio/5fcb428ec929.mp3", "这件事我会记住一辈子": "audio/16a5b07400fa.mp3", "我会记住你一辈子": "audio/badbdb4ebcd5.mp3", "我是在农村长大的小时候每天都跟爷爷去地里": "audio/8c0f269d96d3.mp3", "现在很多年轻人离开农村去城市工作": "audio/f0ebfea7c968.mp3", "在农村": "audio/a26adbc48123.mp3", "这间屋子不大可是很干净": "audio/d6eea706d5ce.mp3", "屋里很暖和外面很冷": "audio/fb1600aa0a32.mp3", "大学毕业以后我们就断了联系十年没见面了": "audio/ab4c7a482b75.mp3", "毕业以后我跟他断了联系": "audio/56fc79633178.mp3", "昨天晚上我们这儿断电了": "audio/53548736529d.mp3", "工作以来他很少回老家": "audio/b9347c936f83.mp3", "上大学以来我很少回家": "audio/3536acfd052c.mp3", "我妈妈的妈妈是我的姥姥": "audio/2551001bf684.mp3", "小时候我常常住在姥姥家": "audio/89037761ec6b.mp3", "我舅舅是我妈妈的弟弟今年三十岁": "audio/afcdf8de0d55.mp3", "舅舅家": "audio/8cc94e6a06c9.mp3", "爸爸有一个妹妹她是我的姑姑": "audio/470467b3df9f.mp3", "姑姑每年春节都回来看我们": "audio/57c9a7d7007d.mp3", "我姑姑是我爸爸的妹妹": "audio/54e0eb3137ac.mp3", "他的态度很坚决谁说也没用": "audio/204442304b4e.mp3", "他坚决反对这个计划": "audio/ab9290aa2f21.mp3", "妈妈坚决不同意我一个人去旅游": "audio/1e81840d968f.mp3", "M|一辈子": "audio/eabbeb3c299f.mp3", "MS|一辈子": "audio/7615c019467a.mp3", "M|我爷爷一辈子没离开过农村": "audio/1ec8add4bf81.mp3", "M|这件事我会记住一辈子": "audio/3a191b9b302b.mp3", "M|农村": "audio/66cfe9c2d9b7.mp3", "MS|农村": "audio/e8c9969343a6.mp3", "M|他在农村长大很熟悉农村的生活": "audio/362766802f93.mp3", "M|现在很多年轻人离开农村去城市工作": "audio/552aedac7dd8.mp3", "M|屋": "audio/fde13d04cf59.mp3", "MS|屋": "audio/0c3cbed9ff2e.mp3", "M|外面太冷了我们进屋吧": "audio/5afdcff6504a.mp3", "M|这间屋子不大可是很干净": "audio/857e7e505bf1.mp3", "M|断": "audio/e08d010b0691.mp3", "MS|断": "audio/6523f8dbc0c2.mp3", "M|大学毕业以后我们就断了联系": "audio/ce8a4c740345.mp3", "M|昨天晚上我们这儿断电了": "audio/789614e15879.mp3", "M|以来": "audio/58a076a96506.mp3", "MS|以来": "audio/0bf4cd85360f.mp3", "M|工作以来他很少回老家": "audio/5e4b992588ec.mp3", "M|一直以来她都很爱护这辆车": "audio/8aaadee7bf05.mp3", "M|姥姥": "audio/35d75c5c1067.mp3", "MS|姥姥": "audio/2f41e846dc77.mp3", "M|我姥姥今年八十岁了身体还很好": "audio/1ba4c7b248f9.mp3", "M|小时候我常常住在姥姥家": "audio/f49d8604f8ae.mp3", "M|舅舅": "audio/d433ce53bb8e.mp3", "MS|舅舅": "audio/5038ed79a887.mp3", "M|我舅舅是我妈妈的哥哥": "audio/4962fb9029df.mp3", "M|周末我们去舅舅家吃饭": "audio/95a0a6db93d5.mp3", "M|姑姑": "audio/0e225ce4ea75.mp3", "MS|姑姑": "audio/b615101f52b0.mp3", "M|我姑姑是我爸爸的妹妹": "audio/698e249810c5.mp3", "M|姑姑每年春节都回来看我们": "audio/8baab3a7145f.mp3", "M|坚决": "audio/c24079e512bd.mp3", "MS|坚决": "audio/ae9341ee0bf3.mp3", "M|他坚决反对这个计划": "audio/28502251a5d4.mp3", "M|我说了很多次她还是坚决不同意": "audio/e7c18f2cc356.mp3", "一辈子": "audio/f8a7e016d9e0.mp3", "农村": "audio/f7478d01dcb1.mp3", "老家": "audio/8078f6d1880b.mp3", "屋": "audio/e55080606f91.mp3", "感情": "audio/c851120d071f.mp3", "像": "audio/15876c3c09b8.mp3", "断奶": "audio/19c3fda80408.mp3", "母亲": "audio/50274b554e98.mp3", "一样": "audio/6c0a233c60d0.mp3", "种": "audio/c7cf5ec164a8.mp3", "岁": "audio/b1187f9a06fb.mp3", "吃": "audio/fd252d703291.mp3", "毕业": "audio/ddffeafb97d3.mp3", "断": "audio/9adf3bcbc228.mp3", "联系": "audio/3b0a12ad1828.mp3", "因此": "audio/0d9c665e983e.mp3", "长年": "audio/002e02ce2a32.mp3", "以来": "audio/eab425ab2724.mp3", "离开": "audio/820671e39dbf.mp3", "尽管": "audio/56f2c49f04a4.mp3", "姥姥": "audio/41a3edfe4b35.mp3", "舅舅": "audio/f63cccac7494.mp3", "姑姑": "audio/55cbd7fd6863.mp3", "城": "audio/354de14daeb3.mp3", "坚决": "audio/60f6f52d1355.mp3", "搬": "audio/8195f210b435.mp3", "回": "audio/57635deb7064.mp3", "辆": "audio/e10ae9c1f973.mp3", "周末": "audio/d5142a658f15.mp3", "玩": "audio/7f1fc740c425.mp3", "中文": "audio/c0b60a8ea6a4.mp3", "歌": "audio/feaa3f49f8c5.mp3", "国": "audio/1da5c62355e2.mp3", "件": "audio/d0324c16bf4a.mp3", "记": "audio/86e036edeb03.mp3", "候": "audio/7e322444cbeb.mp3", "年轻": "audio/d5f9c6af5d35.mp3", "间": "audio/51cf7f0cfd17.mp3", "屋子": "audio/acf9e282d03b.mp3", "干净": "audio/f4a312ad7597.mp3", "暖和": "audio/f9947da91ae2.mp3", "常常": "audio/4c74de1ddb0e.mp3", "弟弟": "audio/7ca48f07bbeb.mp3", "今": "audio/8d9ef6ae8af9.mp3", "妹妹": "audio/72ffb4b2ab82.mp3", "每": "audio/dbc6ddad9f3e.mp3", "春节": "audio/5fe030a2d578.mp3", "态度": "audio/2d87718ac63a.mp3", "反对": "audio/cda9bc177d6e.mp3", "旅游": "audio/a3887d22e8fd.mp3", "熟悉": "audio/9ee628a265f1.mp3", "八": "audio/aa757c76e2fc.mp3", "哥哥": "audio/aaafef034cf8.mp3", "房间": "audio/290c5f247d25.mp3", "外婆": "audio/d169b2373289.mp3", "叔叔": "audio/e5a85c5eabe8.mp3", "伯伯": "audio/ba058e447969.mp3", "舅妈": "audio/1de7bfd50ad7.mp3", "阿姨": "audio/b7d73eeb1259.mp3", "姨": "audio/b383cfecda14.mp3", "男": "audio/b6af977a0f1c.mp3", "改正": "audio/e750578199a6.mp3", "M|父母一辈子住在农村老家对老屋的感情就像没断奶的孩子对母亲一样": "audio/8185747aba17.mp3", "M|去年在我和妻子的努力下我们终于用打工挣的钱在县里买了一套新房": "audio/a3512fe734a8.mp3", "他在城里打了三年工": "audio/7769b1731475.mp3", "他打工挣的钱都给了父母": "audio/08d6c362ca5f.mp3", "我老家在农村买东西要去县里": "audio/e29f7ca1e24f.mp3", "他们买了一套房子有三个房间": "audio/931d0319b3b5.mp3", "我们终于用打工挣的钱在县里买了一套新房": "audio/c078aa254925.mp3", "我们用父母的钱买了新房": "audio/6f0118903f6d.mp3", "M|新房装修完父母第一次走进新房时高兴得不得了": "audio/65653076504e.mp3", "听说儿子考上了大学妈妈高兴得不得了": "audio/24d7c29ea912.mp3", "他们家正在装修现在还不能住": "audio/0dd83325999a.mp3", "M|妻子提出留一串钥匙给父母可他们拒绝了": "audio/63fa923984c4.mp3", "我把一串钥匙给了姥姥": "audio/4a5548a68067.mp3", "房子装修好了我们下个月搬进去": "audio/9a037f13df9e.mp3", "父母很高兴地拿了新房的钥匙": "audio/fb243a754eaf.mp3", "这家饭馆装修得很漂亮": "audio/b58daea4d4f6.mp3", "M|那天父亲喝醉了等他醒时天色已晚": "audio/170fe136011e.mp3", "他昨天喝醉了今天早上起来头很疼": "audio/bbfa1f59de5b.mp3", "爸爸没喝醉他只喝了一杯": "audio/1be289789a01.mp3", "M|我和妻子强烈留父母在新房住一夜第二天再回但他们仍坚持坐上了最后一趟回老家的车": "audio/92d424f97a6c.mp3", "他夜里十二点才回家": "audio/cacd58788a75.mp3", "我和妻子强烈留父母在新房住一夜第二天再回": "audio/03b7b26545c0.mp3", "夏天中午的阳光非常强烈出门要戴帽子": "audio/013d26a89a50.mp3", "那天父母在新房住了一夜": "audio/0c09ee8f3912.mp3", "我们在姑姑家住了一夜": "audio/add0c30bbbdf.mp3", "大学的时候我在一家饭馆打工一个月挣的钱不多": "audio/5a3db02c3375.mp3", "他去城里打了三年工": "audio/d106a948bd37.mp3", "他在饭馆打了两年工": "audio/8f38be08fb0c.mp3", "他每个月挣的钱不多可是很努力": "audio/f481deca61ac.mp3", "挣钱": "audio/da41f8626cfd.mp3", "姥姥住在农村看病要去县里的医院": "audio/d5498082e516.mp3", "从农村到县里坐车要一个小时": "audio/6c03d60e7ddb.mp3", "从我们村到县里要坐一个小时的车": "audio/34580b028b24.mp3", "这套房子有三个房间很适合我们家": "audio/d6b7d9136e48.mp3", "他们在县里买了一套新房子": "audio/1a06595fdb0f.mp3", "他结婚的时候买了一套新西服": "audio/e8ef549fdade.mp3", "新房还没装修完我们下个月再搬": "audio/0a013d20eed0.mp3", "今天热得不得了我们别出去了": "audio/f6b0723b1a8c.mp3", "听到这个消息她高兴得不得了": "audio/7a1a664d6c19.mp3", "他手里拿着一串钥匙不知道哪把是大门的": "audio/e48ad9246456.mp3", "我从来没喝醉过": "audio/4f965819e77a.mp3", "他强烈要求父母住在城里": "audio/c8543ea97cbd.mp3", "大家强烈要求他留下来可他还是走了": "audio/685a1b30f100.mp3", "我们在姑姑家住了一夜第二天早上才回来": "audio/cc38951cc66c.mp3", "他们在县里住了一夜第二天就回去了": "audio/a8d933f90344.mp3", "昨天夜里下了很大的雨": "audio/7119d0c640b3.mp3", "M|打工": "audio/b8cb32b4a914.mp3", "MS|打工": "audio/2d0808cb697d.mp3", "M|他大学的时候在饭馆打过工": "audio/72ba15ca9fa5.mp3", "M|他去城里打了三年工": "audio/0734395a83be.mp3", "M|挣": "audio/3774a2011113.mp3", "MS|挣": "audio/a547b76ea325.mp3", "M|他每个月挣的钱不多可是很努力": "audio/621de06697f7.mp3", "M|她一边学习一边打工挣钱": "audio/0a1b2e487f5e.mp3", "M|县": "audio/7912b14337d5.mp3", "MS|县": "audio/9ba8f9a6c269.mp3", "M|从我们村到县里要坐一个小时的车": "audio/7a4d3f7a5c67.mp3", "M|他在县里的一家医院工作": "audio/09f7ea1508da.mp3", "M|套": "audio/c160599e0186.mp3", "MS|套": "audio/42a1ec42ca26.mp3", "M|这套家具是姥姥留给我们的": "audio/136e3db117e4.mp3", "M|他结婚的时候买了一套新西服": "audio/3e03113fbc2c.mp3", "M|装修": "audio/4f281ee03e26.mp3", "MS|装修": "audio/60892411a206.mp3", "M|我们的新房还在装修下个月才能住": "audio/6d037088c074.mp3", "M|这家饭馆装修得很漂亮": "audio/33ee964b8b81.mp3", "M|不得了": "audio/26a31d456b6c.mp3", "MS|不得了": "audio/b669fc88cd3c.mp3", "M|今天热得不得了我们别出去了": "audio/1c29afae86c7.mp3", "M|听说儿子考上了大学妈妈高兴得不得了": "audio/40997baeba7d.mp3", "M|他手里拿着一串钥匙": "audio/f53325c8188a.mp3", "M|妈妈买了一串葡萄": "audio/d2c128ae03a5.mp3", "M|醉": "audio/1d01046d1826.mp3", "MS|醉": "audio/35cc4f7f8d72.mp3", "M|他昨天晚上喝醉了今天头很疼": "audio/d45b862de956.mp3", "M|我从来没喝醉过": "audio/e5ee9156c446.mp3", "M|强烈": "audio/2a84fd6c55e1.mp3", "MS|强烈": "audio/f8f12f0b909c.mp3", "M|夏天中午的阳光很强烈": "audio/417b04be9b14.mp3", "M|大家强烈要求他留下来": "audio/e8cc511fb8be.mp3", "M|我们在姑姑家住了一夜": "audio/cc91e4382194.mp3", "M|昨天夜里下了很大的雨": "audio/699144dcc1f1.mp3", "打工": "audio/0345cec18d96.mp3", "挣": "audio/9a5f48373c6e.mp3", "钱": "audio/bd3d68681d15.mp3", "县": "audio/13e23514b0d9.mp3", "套": "audio/447910701651.mp3", "新房": "audio/6d6cd3e33563.mp3", "东西": "audio/50379588f78a.mp3", "房": "audio/e2449bfe5a5f.mp3", "装修": "audio/15ba9fc51b05.mp3", "完": "audio/238814682432.mp3", "时": "audio/f69b6db08004.mp3", "不得了": "audio/6acc95ac0e65.mp3", "儿子": "audio/697e2199c0c7.mp3", "正在": "audio/1895c66faf9a.mp3", "提": "audio/799aded32914.mp3", "拒绝": "audio/36816386e25d.mp3", "饭馆": "audio/5a887e458f47.mp3", "父亲": "audio/a5c6d60218ad.mp3", "喝": "audio/ddef0eea3de9.mp3", "醉": "audio/b8daf2829344.mp3", "天色已晚": "audio/7ee0b03c123d.mp3", "疼": "audio/29ec1c1fe07b.mp3", "强烈": "audio/e8640fd69af2.mp3", "仍": "audio/fbe3eb3789d6.mp3", "坚持": "audio/50c83e1ae186.mp3", "趟": "audio/cc447e6ae65b.mp3", "二": "audio/6c5af8fe53bc.mp3", "中午": "audio/ab54a9f397b3.mp3", "阳光": "audio/770f335ed1f0.mp3", "非常": "audio/5de0696e512f.mp3", "门": "audio/b90d4ff492a1.mp3", "戴": "audio/548da63347be.mp3", "帽子": "audio/5eb02da15257.mp3", "村": "audio/1a00e0219ed5.mp3", "适合": "audio/f4656eff8207.mp3", "西服": "audio/3c36d0e19d5e.mp3", "热": "audio/046be4e74f33.mp3", "知道": "audio/227a9d1d9f6f.mp3", "要求": "audio/6efc20da6df3.mp3", "一边": "audio/af783764c6a6.mp3", "学习": "audio/b06bdee78fc5.mp3", "家具": "audio/4563bd744422.mp3", "葡萄": "audio/4ed7415b43c2.mp3", "邮票": "audio/afc3c02dc200.mp3", "修": "audio/72b7ce37a349.mp3", "急": "audio/889faef7c74f.mp3", "热闹": "audio/2305a4d591b3.mp3", "羊肉": "audio/2c597dd418b3.mp3"});

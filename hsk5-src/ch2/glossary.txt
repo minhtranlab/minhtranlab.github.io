@@ -164,3 +164,37 @@
 阿姨|dì; cô (gọi phụ nữ lớn tuổi)|a di
 新房|nhà mới|tân phòng
 外婆|bà ngoại (cách nói miền Nam Trung Quốc)|ngoại bà|s
+縣|huyện (chữ phồn thể, nghĩa gốc “treo”)|huyện|s
+镸|dài (bộ phận chữ, như 长)|trường|s
+装|lắp, mặc vào; giả vờ|trang|s
+丨|nét sổ (cái que)|cổn|s
+酉|bình rượu (bộ dậu)|dậu|s
+卒|hết, xong; lính|tốt|s
+强|mạnh|cường|s
+弓|cây cung|cung|s
+烈|mãnh liệt, dữ dội|liệt|s
+灬|lửa (bộ hoả viết dưới chân chữ)|hoả|s
+夕|buổi chiều tối|tịch|s
+绳子|sợi dây|thằng tử|s
+摔|ngã, té|suất|s
+饭馆|quán ăn|phạn quán
+西服|bộ com-lê|tây phục
+邮票|tem thư|bưu phiếu
+争|tranh giành|tranh
+修|sửa|tu
+急|vội, gấp, sốt ruột|cấp
+适合|hợp, phù hợp|thích hợp
+西|tây|tây
+家具|đồ gỗ, đồ đạc trong nhà|gia cụ
+疼|đau|đông
+饱|no|bão
+中午|buổi trưa|trung ngọ
+阳光|ánh nắng|dương quang
+戴|đội, đeo|đái
+帽子|cái mũ|mạo tử
+要求|yêu cầu|yêu cầu
+正在|đang|chính tại
+狗|con chó|cẩu
+热闹|náo nhiệt, đông vui|nhiệt náo
+葡萄|quả nho|bồ đào|py:pútao
+羊肉|thịt cừu|dương nhục
