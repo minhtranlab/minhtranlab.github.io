@@ -22,7 +22,7 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;-webkit-tap-highl
 .py{color:var(--mut);font-size:15px}
 .row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .col{display:flex;flex-direction:column;gap:6px}
-.play{padding:14px 4px;font-weight:700;font-size:15px;background:var(--sel);color:var(--fg);min-height:52px}
+.play{padding:8px 4px;font-weight:700;font-size:14px;line-height:1.25;background:var(--sel);color:var(--fg);height:58px;display:flex;align-items:center;justify-content:center;text-align:center}
 .play.old{background:transparent;border:1px dashed var(--line);color:var(--mut)}
 .play.on{outline:3px solid var(--acc)}
 .mark{padding:7px 4px;font-size:13px;background:transparent;border:1px solid var(--line);color:var(--mut)}
@@ -67,7 +67,7 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;-webkit-tap-highl
     var row = card.querySelector('.row');
     KINDS.forEach(function (k) {
       var col = document.createElement('div'); col.className = 'col';
-      var b = document.createElement('button'); b.className = 'play ' + k[2]; b.textContent = '▶ ' + k[1];
+      var b = document.createElement('button'); b.className = 'play ' + k[2]; b.textContent = k[1];
       b.onclick = function () {
         stop(); audio.pause(); audio.src = 'voicetest/' + k[0] + nn(i) + '.mp3'; audio.currentTime = 0;
         cur = b; b.classList.add('on');
