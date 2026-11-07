@@ -70,7 +70,7 @@ async def place_drag(pg, i, n, finger):
     for k in range(1, 5): await finger.move(x, y - 10 * k); await pg.wait_for_timeout(16)
     cx, cy = x, y - 40
     for _ in range(120):
-        r = await pg.evaluate(f'''(()=>{{const f=document.querySelector('.cm-fr[data-f="{n}"]').getBoundingClientRect(),s=document.getElementById('stage').getBoundingClientRect(),ft=document.querySelector('footer').getBoundingClientRect().top;
+        r = await pg.evaluate(f'''(()=>{{const f=document.querySelector('.cm-fr[data-f="{n}"]').getBoundingClientRect(),s=document.getElementById('stage').getBoundingClientRect(),ft=Math.min(document.querySelector('footer').getBoundingClientRect().top,(document.querySelector('.cm-tray .cm-bank')?document.querySelector('.cm-tray'):document.querySelector('footer')).getBoundingClientRect().top);   /* the sticky card tray covers the bottom of the stage */
           return {{x:f.left+f.width/2,y:f.top+Math.min(f.height/2,90),t:s.top,b:ft}}}})()''')
         if r['t'] + 80 <= r['y'] <= r['b'] - 80:
             for k in range(1, 5): await finger.move(cx + (r['x'] - cx) * k / 4, cy + (r['y'] - cy) * k / 4); await pg.wait_for_timeout(16)

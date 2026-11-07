@@ -260,54 +260,104 @@ button:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){.fl,.wv,.rn,.sticker,.pane,.panel,.new{animation:none!important}}
 .acct{display:block;margin:8px 0 2px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;font:600 13px var(--body);color:var(--mut)}.acct.ok{color:var(--ok)}.acct.warn{color:#b45309;border-color:#f59e0b}
 .acin{width:100%;font:600 20px var(--body);letter-spacing:.06em;text-transform:uppercase;padding:12px 14px;border:2px solid var(--line);border-radius:14px;background:var(--bg);color:var(--ink)}
-/* comic — "Ghép truyện" screen (t:'comic'). Shapes only, colours from the theme tokens above; chat Minh họa may restyle everything in this block. */
+/* comic — "Ghép truyện" screen (t:'comic'). Styled as a comic page (phiếu Minh họa #2): ink-bordered panels on a halftone page, caption boxes,
+   a sticky card tray above Tiếp (scrolls sideways on the phone) so the frames and the cards are on screen together. Colours from the theme tokens. */
+:root{--cm-ink:#1d2733;--cm-paper:#fffdf6;--cm-dot:rgba(29,39,51,.07);--cm-cap:#fff8dc}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--cm-ink:#6f8696;--cm-paper:#16212b;--cm-dot:rgba(255,255,255,.05);--cm-cap:#2a2a1c}}
+:root[data-theme="dark"]{--cm-ink:#6f8696;--cm-paper:#16212b;--cm-dot:rgba(255,255,255,.05);--cm-cap:#2a2a1c}
 .cm-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
-.cm-pg{font-size:13px;font-weight:600;color:var(--mut);white-space:nowrap}
-.cm-frames{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-@media (min-width:600px){.cm-frames{grid-template-columns:repeat(3,minmax(0,1fr))}}
-.cm-fr{position:relative;display:flex;flex-direction:column;gap:6px;padding:6px;border-radius:16px;background:var(--card);border:2px solid var(--line);transition:border-color .15s,transform .2s,box-shadow .2s,opacity .2s;outline:0}
-.cm-pic{aspect-ratio:4/3;border-radius:11px;overflow:hidden;background:var(--chip)}
-.cm-pic svg{width:100%;height:100%;display:block}
-.cm-n{position:absolute;left:11px;top:11px;min-width:24px;height:24px;padding:0 6px;border-radius:99px;background:var(--card);color:var(--ink);font:700 13px/24px var(--disp);text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.cm-slots{display:flex;flex-direction:column;gap:6px}
-.cm-ph{min-height:30px;border-radius:10px;border:2px dashed var(--line)}
-body.cm-holding .cm-fr:not(.full){border-color:var(--acc);border-style:dashed}
-.cm-fr.hov{border-color:var(--acc);border-style:solid;background:var(--accsoft)}
-.cm-fr.bad{border-color:var(--bad);animation:sh .35s}
-.cm-fr.play{border-color:var(--acc);border-style:solid;box-shadow:0 0 0 4px var(--accsoft);transform:scale(1.02)}
-.cm-fr.dim{opacity:.45}
-.cm-pl{display:grid;grid-template-columns:minmax(0,1fr) 34px;gap:0 4px;align-items:center;padding:4px 4px 4px 8px;border-radius:10px;background:var(--okbg);border:1px solid var(--ok);animation:in .25s both}
-.cm-pl .cm-z{font:500 15px/1.75 var(--han)}
-.cm-pl .cm-v{grid-column:1/2;font-size:12.5px;line-height:1.35;color:var(--mut)}
-.cm-pl .spk{grid-column:2;grid-row:1/3;width:34px;height:34px;font-size:15px}
-.cm-pl.now{outline:3px solid var(--acc);outline-offset:1px}
-.cm-bank{display:flex;flex-direction:column;gap:8px}
-.cm-card{position:relative;text-align:left;padding:8px 14px 10px;border-radius:14px;background:var(--card);border:2px solid var(--line);color:var(--ink);font:500 20px/1.75 var(--han);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.cm-pg{flex:none;padding:2px 10px;border-radius:99px;border:2px solid var(--cm-ink);background:var(--butter);color:#1d2733;font:700 13px/1.4 var(--disp);white-space:nowrap}
+.cm-head + .prompt{font-size:14.5px;line-height:1.45;color:var(--mut);margin-top:-4px}
+/* the page and its panels */
+.cm-frames{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:8px;border:3px solid var(--cm-ink);border-radius:10px;background-color:var(--cm-paper);background-image:radial-gradient(var(--cm-dot) 1.2px,transparent 1.4px);background-size:9px 9px}
+.cm-frames[data-n="1"]{grid-template-columns:minmax(0,1fr)}
+@media (max-width:599px){.cm-frames[data-n="3"] .cm-fr:last-child,.cm-frames[data-n="5"] .cm-fr:last-child{grid-column:1/-1;justify-self:center;width:calc(50% - 4px)}}
+@media (min-width:600px){.cm-frames{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:12px}.cm-frames[data-n="2"],.cm-frames[data-n="4"]{grid-template-columns:repeat(2,minmax(0,1fr))}.cm-frames[data-n="4"]{padding:12px 40px}}
+.cm-fr{position:relative;display:flex;flex-direction:column;gap:0;padding:0;border-radius:4px;background:var(--card);border:2.5px solid var(--cm-ink);box-shadow:3px 3px 0 var(--cm-ink);overflow:hidden;cursor:pointer;
+  transition:border-color .2s,transform .45s cubic-bezier(.2,.8,.3,1),box-shadow .45s,opacity .45s,filter .45s;outline:0}
+.cm-fr:focus-visible{box-shadow:3px 3px 0 var(--cm-ink),0 0 0 4px var(--accsoft)}
+.cm-pic{aspect-ratio:4/3;overflow:hidden;background:var(--chip);border-bottom:2.5px solid var(--cm-ink)}
+.cm-pic svg{width:100%;height:100%;display:block;transform-origin:50% 55%}
+.cm-n{position:absolute;left:6px;top:6px;min-width:24px;height:24px;padding:0 6px;border-radius:99px;background:var(--butter);color:#1d2733;border:2px solid var(--cm-ink);font:700 13px/20px var(--disp);text-align:center;transition:background .25s,color .25s}
+.cm-fr.full .cm-n{background:var(--ok);color:#fff}
+.cm-slots{display:flex;flex-direction:column;gap:6px;padding:6px;flex:1}
+.cm-ph{min-height:34px;border-radius:6px;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s}
+.cm-ph::after{content:'thả câu vào đây';font-size:11px;color:var(--mut);opacity:.75}
+/* holding a card: the free panels call for it */
+body.cm-holding .cm-fr:not(.full) .cm-ph{border-color:var(--acc);background:var(--accsoft);animation:cm-call 1.2s ease-in-out infinite}
+body.cm-holding .cm-fr:not(.full){border-color:var(--acc)}
+@keyframes cm-call{50%{background:transparent}}
+.cm-fr.hov{border-color:var(--acc);transform:translateY(-3px);box-shadow:5px 6px 0 var(--acc)}
+.cm-fr.hov .cm-ph{border-color:var(--acc);border-style:solid;background:var(--accsoft)}
+.cm-fr.bad{border-color:var(--bad);box-shadow:3px 3px 0 var(--bad);animation:sh .35s}
+/* a placed sentence = the panel's caption box: Chinese only (pinyin by 拼), "Dịch" opens the full Vietnamese, 🔊 replays */
+.cm-pl{display:flex;flex-direction:column;gap:2px;padding:4px 6px 5px 8px;border-radius:5px;background:var(--cm-cap);border:2px solid var(--cm-ink);animation:cm-drop .5s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes cm-drop{0%{transform:translateY(-14px) scale(.92);opacity:0;box-shadow:0 0 0 0 var(--ok)}60%{opacity:1;box-shadow:0 0 0 6px var(--okbg)}100%{transform:none;box-shadow:0 0 0 0 transparent}}
+.cm-pl .cm-z{font:500 15.5px/1.7 var(--han);word-break:normal;overflow-wrap:anywhere}
+.cm-tl{display:flex;justify-content:flex-end;align-items:center;gap:6px}
+.cm-tr{min-height:30px;padding:0 10px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:600 12.5px var(--body)}
+.cm-tr[aria-expanded="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cm-pl .spk{width:30px;height:30px;font-size:13px;flex:none}
+.cm-pl .cm-v{font-size:13px;line-height:1.4;color:var(--ink);padding:4px 2px 2px;border-top:1px dashed var(--line);animation:in .2s both}
+.cm-pl .cm-v[hidden]{display:none}
+.cm-pl.now{background:var(--butter);color:#1d2733;box-shadow:0 0 0 3px var(--acc)}
+/* the film: the panel playing comes forward, the others fade */
+.cm-fr.play{z-index:2;border-color:var(--acc);transform:scale(1.035);box-shadow:5px 5px 0 var(--cm-ink),0 0 0 5px var(--accsoft)}
+.cm-fr.play .cm-pic svg{animation:cm-kb 5s ease-out both}
+@keyframes cm-kb{from{transform:scale(1)}to{transform:scale(1.07)}}
+.cm-fr.dim{opacity:.38;filter:grayscale(.7);transform:scale(.97)}
+/* the card tray: sticky above Tiếp; on the phone one row that scrolls sideways */
+.cm-tray{position:sticky;bottom:-14px;z-index:5;display:flex;flex-direction:column;gap:6px;margin:0 -16px;padding:8px 16px 10px;background:var(--bg);border-top:2px solid var(--cm-ink);box-shadow:0 -8px 18px rgba(0,0,0,.08)}
+.cm-tray:not(:has(.cm-bank)){position:static;margin:0;padding:0;border:0;box-shadow:none;background:none}
+.cm-tray .fb:empty{display:none}
+.cm-tray .fb{font-size:14px;padding:8px 12px}
+.cm-bank{display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;padding:6px 2px 4px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.cm-bank::before{content:'Thẻ câu · vuốt ngang để xem hết';position:absolute;top:-1px;left:16px;transform:translateY(-50%);padding:1px 8px;border-radius:99px;background:var(--bg);color:var(--mut);font:700 11px/1.5 var(--body);letter-spacing:.02em}
+body.cm-holding .cm-bank{display:none}
+body.cm-holding .cm-tray:not(:has(.fb:not(:empty))){padding:0;border:0;box-shadow:none}
+.cm-card{position:relative;flex:0 0 auto;width:min(70vw,260px);scroll-snap-align:start;text-align:left;padding:5px 12px 7px;border-radius:12px;background:var(--card);border:2px solid var(--line);color:var(--ink);font:500 16.5px/1.6 var(--han);
+  box-shadow:0 3px 0 var(--line);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:transform .2s,border-color .2s,box-shadow .2s,background .2s,opacity .2s}
+@media (min-width:600px){.cm-bank{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;max-height:none}.cm-bank::before{content:'Thẻ câu'}.cm-card{width:auto}}
 .cm-card .w{pointer-events:none}
-.cm-tag{display:block;font:600 12.5px/1.4 var(--body);color:var(--mut)}
-.cm-card.rdy{border-color:var(--teal);box-shadow:0 0 0 3px rgba(23,128,138,.18),0 4px 14px rgba(23,128,138,.18);touch-action:none;cursor:grab}
+.cm-tag{display:flex;align-items:center;gap:4px;font:600 12px/1.5 var(--body);color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cm-card:not(.rdy) .cm-tag{color:var(--acc2)}
+.cm-card.rdy{border-color:var(--teal);background:linear-gradient(var(--card),var(--card)) padding-box;box-shadow:0 3px 0 var(--teal),0 0 0 3px rgba(23,128,138,.15);touch-action:pan-x;cursor:grab;animation:cm-lit .6s ease-out}
 .cm-card.rdy .cm-tag{color:var(--teal)}
-.cm-card.sel{border-color:var(--acc);background:var(--new)}
-.cm-card.drag{opacity:.3}
-.cm-card.shake{animation:sh .35s}
-.cm-ghost{position:fixed;z-index:70;pointer-events:none;width:min(80vw,420px);margin:0;transform:translate(-50%,-70%) rotate(-2deg);box-shadow:0 14px 34px rgba(0,0,0,.3)}
-.cm-hold{position:fixed;left:16px;right:16px;bottom:calc(var(--fh) + 8px);z-index:41;max-width:648px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:6px 6px 6px 14px;border-radius:16px;background:var(--ink);color:var(--bg);font-size:14.5px;box-shadow:0 8px 24px rgba(0,0,0,.25);animation:in .2s both}
+@keyframes cm-lit{0%{transform:scale(1)}35%{transform:scale(1.05);box-shadow:0 3px 0 var(--teal),0 0 0 8px rgba(23,128,138,.25)}100%{transform:none}}
+.cm-card.sel{border-color:var(--acc);background:var(--new);transform:translateY(-6px);box-shadow:0 8px 0 var(--acc2)}
+.cm-card.drag{opacity:.25;transform:scale(.95)}
+.cm-card.shake{animation:cm-back .45s;border-color:var(--bad)}
+@keyframes cm-back{0%{transform:translateY(-30px) scale(.9);opacity:.4}45%{transform:translateY(4px)}65%{transform:translateX(-6px)}85%{transform:translateX(5px)}100%{transform:none}}
+.cm-ghost{position:fixed;z-index:70;pointer-events:none;width:min(70vw,300px);margin:0;transform:translate(-50%,-70%) rotate(-3deg);box-shadow:0 16px 34px rgba(0,0,0,.3);animation:none;border-color:var(--acc)}
+.cm-hold{position:fixed;left:16px;right:16px;bottom:calc(var(--fh) + 8px);z-index:41;max-width:648px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:6px 6px 6px 14px;border-radius:14px;border:2px solid var(--cm-ink);background:var(--butter);color:#1d2733;font-size:14.5px;font-weight:600;box-shadow:3px 3px 0 var(--cm-ink);animation:in .2s both}
 .cm-hold span{flex:1}
-.cm-hold button{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.18);color:inherit;font-size:16px}
+.cm-hold span::before{content:'✋ '}
+.cm-hold button{width:40px;height:40px;border-radius:12px;background:rgba(0,0,0,.08);color:inherit;font-size:16px;border:0}
 body.cm-holding.ins #stage{padding-bottom:calc(var(--fh) + 80px)}
+/* the big card */
 .cm-big{display:flex;flex-direction:column;gap:12px}
 .cm-bt{font:700 18px/1.2 var(--disp)}
-.cm-bz{font:500 27px/1.85 var(--han)}
-.cm-mic{width:100%;min-height:66px;border-radius:18px;background:var(--acc);color:#fff;font:700 18px var(--disp);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
-.cm-mic.on{background:var(--bad)}
-.cm-mic.on.loud{box-shadow:0 0 0 6px var(--badbg)}
+.cm-bz{font:500 27px/1.85 var(--han);padding:8px 12px;border-radius:10px;background:var(--cm-cap);border:2px solid var(--cm-ink)}
+/* 🎤 hold-to-speak button (Ghép truyện and Nhắc lại): rings of sound while recording, stronger when a voice is heard */
+.cm-mic{position:relative;isolation:isolate;width:100%;min-height:66px;border-radius:18px;border:0;background:var(--acc);color:#fff;font:700 18px var(--disp);box-shadow:0 5px 0 var(--acc2);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:background .2s,transform .1s,box-shadow .1s}
+.cm-mic:active{transform:translateY(3px);box-shadow:0 2px 0 var(--acc2)}
+.cm-mic::before,.cm-mic::after{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;border:3px solid var(--bad);opacity:0;pointer-events:none}
+.cm-mic.on{background:var(--bad);box-shadow:0 2px 0 rgba(0,0,0,.25);transform:translateY(3px)}
+.cm-mic.on::before{animation:cm-ring 1.6s ease-out infinite}
+.cm-mic.on::after{animation:cm-ring 1.6s ease-out .8s infinite}
+.cm-mic.on.loud::before,.cm-mic.on.loud::after{border-width:4px;animation-duration:.7s}
+.cm-mic.on.loud::after{animation-delay:.35s}
+@keyframes cm-ring{0%{opacity:.75;transform:scale(1)}100%{opacity:0;transform:scale(1.12,1.5)}}
 .cm-mic[disabled]{opacity:.6}
-.cm-meter{height:10px;border-radius:99px;background:var(--chip);overflow:hidden}
+.cm-meter{position:relative;height:12px;border-radius:99px;background:var(--chip);overflow:hidden}
 .cm-meter i{display:block;width:0;height:100%;border-radius:99px;background:var(--ok);transition:width .1s}
+.cm-mic.on ~ .cm-meter i{background:repeating-linear-gradient(-45deg,var(--ok) 0 8px,color-mix(in srgb,var(--ok) 70%,#fff) 8px 16px);background-size:23px 100%;animation:cm-stripe .6s linear infinite}
+.cm-mic.on ~ .cm-meter::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 6px,var(--bg) 6px 8px);opacity:.35}
+@keyframes cm-stripe{to{background-position:23px 0}}
 .cm-msg{min-height:22px;font-size:15px;line-height:1.45;color:var(--mut)}
 .cm-msg.good{color:var(--ok);font-weight:600}
 .cm-note{font-size:13.5px;line-height:1.45;color:var(--mut);margin:0}
-@media (prefers-reduced-motion:reduce){.cm-fr,.cm-pl,.cm-hold{transition:none;animation:none}}
+@media (prefers-reduced-motion:reduce){.cm-fr,.cm-pl,.cm-hold,.cm-card,.cm-ph,.cm-pic svg,.cm-mic::before,.cm-mic::after{transition:none!important;animation:none!important}}
 /* end comic */
 /* say ("Nhắc lại", phiếu #5): reuses .cm-mic / .cm-meter / .cm-msg / .cm-note */
 .sy-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -1162,8 +1212,9 @@ function comic(sc, pane, ep, gate) {
   const C = { mode: micOK() ? 'mic' : 'tap', rec: {}, ready: {}, placed: {}, first: {}, hold: null, take: null, dragEnd: 0, done: false };
   window.__comic = C;
   const stage = $('#stage');
-  pane.insertAdjacentHTML('beforeend', `<div class="cm-head"><div class="h2">Ghép truyện tranh</div>${sc.page ? `<span class="cm-pg">Trang ${sc.page[0]}/${sc.page[1]}</span>` : ''}</div><div class="prompt" style="font-weight:500">Chạm một thẻ và đọc to câu trên thẻ. Đọc xong thì kéo thẻ vào đúng khung tranh, hoặc chạm thẻ rồi chạm khung.</div>`);
-  const grid = h('div', 'cm-frames'), bank = h('div', 'cm-bank'), fb = h('div', ''), end = h('div', '');
+  pane.insertAdjacentHTML('beforeend', `<div class="cm-head"><div class="h2">Ghép truyện tranh</div>${sc.page ? `<span class="cm-pg">Trang ${sc.page[0]}/${sc.page[1]}</span>` : ''}</div><div class="prompt" style="font-weight:500">Chạm thẻ ở dưới và đọc to. Đọc xong thì kéo thẻ lên đúng khung tranh (hoặc chạm thẻ rồi chạm khung).</div>`);
+  const grid = h('div', 'cm-frames'), bank = h('div', 'cm-bank'), fb = h('div', ''), end = h('div', ''), tray = h('div', 'cm-tray');   /* tray = sticky card tray above Tiếp (hint line + cards) */
+  grid.dataset.n = frames.length;
   end.style.cssText = 'display:flex;flex-direction:column;gap:10px';
   const fEls = frames.map((f, n) => {
     const d = h('div', 'cm-fr', `<div class="cm-pic">${scene(f.scene)}</div><span class="cm-n">${n + 1}</span><div class="cm-slots">${f.ids.map(() => '<div class="cm-ph"></div>').join('')}</div>`);
@@ -1182,7 +1233,7 @@ function comic(sc, pane, ep, gate) {
     b.oncontextmenu = e => e.preventDefault();
     bank.appendChild(b);
   });
-  pane.append(grid, bank, fb, end);
+  tray.append(fb, bank); pane.append(grid, tray, end);
 
   /* holding a card (tap-then-tap placement) */
   let holdEl = null;
@@ -1213,8 +1264,8 @@ function comic(sc, pane, ep, gate) {
       D.on = true; setHold(null); D.el.classList.add('drag');
       D.ghost = D.el.cloneNode(true); D.ghost.classList.remove('drag', 'sel'); D.ghost.classList.add('cm-ghost'); document.body.appendChild(D.ghost);
       scT = setInterval(() => {
-        if (!D || !D.on) return; const sr = stage.getBoundingClientRect(), f = $('footer'), bot = f ? f.getBoundingClientRect().top : innerHeight;
-        const dy = D.y < sr.top + 70 ? -14 : D.y > bot - 70 ? 14 : 0; if (dy) { stage.scrollTop += dy; hover(frameAt(D.x, D.y)); }
+        if (!D || !D.on) return; const sr = stage.getBoundingClientRect(), f = $('footer'), bot = Math.min(f ? f.getBoundingClientRect().top : innerHeight, tray.getBoundingClientRect().top);   /* the band just above the card tray scrolls down; a finger still in the tray does not */
+        const dy = D.y < sr.top + 70 ? -14 : D.y > bot - 70 && D.y < bot ? 14 : 0; if (dy) { stage.scrollTop += dy; hover(frameAt(D.x, D.y)); }
       }, 30);
     }
     if (e.cancelable) e.preventDefault();
@@ -1244,8 +1295,9 @@ function comic(sc, pane, ep, gate) {
       return;
     }
     sfx.ok(); C.placed[i] = n; fb.className = ''; fb.textContent = '';
-    const pl = h('div', 'cm-pl', `<div class="cm-z">${zh(BOOK[i].zh)}</div><div class="cm-v">${BOOK[i].vi}</div><button class="spk" aria-label="Nghe">🔊</button>`); pl.dataset.i = i;
+    const pl = h('div', 'cm-pl', `<div class="cm-z">${zh(BOOK[i].zh)}</div><div class="cm-tl"><button class="cm-tr" aria-expanded="false">Dịch</button><button class="spk" aria-label="Nghe">🔊</button></div><div class="cm-v" hidden>${BOOK[i].vi}</div>`); pl.dataset.i = i;
     $('.spk', pl).onclick = ev => { ev.stopPropagation(); EP++; stopAudio(); vox(BOOK[i].zh, V[i]); };
+    $('.cm-tr', pl).onclick = ev => { ev.stopPropagation(); const v = $('.cm-v', pl), on = v.hidden; v.hidden = !on; ev.currentTarget.textContent = on ? 'Ẩn dịch' : 'Dịch'; ev.currentTarget.setAttribute('aria-expanded', on); };   /* Vietnamese on demand, never cut */
     $$('.cm-slots > *', fEls[n])[f.ids.indexOf(i)].replaceWith(pl);
     if (f.ids.every(k => C.placed[k] != null)) fEls[n].classList.add('full');
     cEls[i].remove();
