@@ -35,15 +35,15 @@ var CH2 = window.CH2 || (window.CH2 = {});
     ],
     hsk: [
       /* nghe: một đoạn hội thoại ngắn */
-      { t: 'hear', kind: 'nghe', w: ['装修'], u: '2-4', s: '你的新房装修完了吗？还没呢，下个月才能住。',
+      { t: 'hear', kind: 'nghe', w: ['装修'], u: '2-4', lines: [{ v: 'f', zh: '你的新房装修完了吗？' }, { v: 'm', zh: '还没呢，下个月才能住。' }],
         opts: ['Nhà mới chưa sửa xong, tháng sau mới ở được.', 'Nhà mới sửa xong rồi, tháng sau mới ở được.', 'Nhà mới chưa sửa xong, tuần sau mới ở được.'],
         why: 'Người hỏi: <b>装修完了吗？</b> (sửa xong chưa?). Người đáp: <b>还没呢</b> (chưa), <b>下个月才能住</b> (tháng sau mới ở được).',
         whyNot: ['', '还没呢 = vẫn chưa (xong).', '下个月 = tháng sau, không phải tuần sau.'] },
-      { t: 'hear', kind: 'nghe', w: ['冻', '姥姥'], u: '2-8', s: '你姥姥怎么没来？她昨天晚上冻着了，今天在家休息。',
+      { t: 'hear', kind: 'nghe', w: ['冻', '姥姥'], u: '2-8', lines: [{ v: 'f', zh: '你姥姥怎么没来？' }, { v: 'm', zh: '她昨天晚上冻着了，今天在家休息。' }],
         opts: ['Bà ngoại không đến vì tối qua bị nhiễm lạnh, hôm nay nghỉ ở nhà.', 'Bà ngoại không đến vì tối qua uống say, hôm nay nghỉ ở nhà.', 'Bà nội không đến vì tối qua bị nhiễm lạnh, hôm nay nghỉ ở nhà.'],
         why: '<b>冻着了</b> = bị lạnh, nhiễm lạnh. <b>在家休息</b> = nghỉ ở nhà.',
         whyNot: ['', '冻着了 = bị nhiễm lạnh, không phải say (醉).', '姥姥 = bà ngoại, không phải bà nội.'] },
-      { t: 'hear', kind: 'nghe', w: ['临', '锁'], u: '2-6', s: '临走的时候别忘了锁门。放心吧，钥匙在我这儿。',
+      { t: 'hear', kind: 'nghe', w: ['临', '锁'], u: '2-6', lines: [{ v: 'f', zh: '临走的时候别忘了锁门。' }, { v: 'm', zh: '放心吧，钥匙在我这儿。' }],
         opts: ['Lúc sắp đi nhớ khoá cửa; chìa khoá đang ở chỗ người trả lời.', 'Lúc sắp đi nhớ khoá cửa; chìa khoá không ở chỗ người trả lời.', 'Lúc về tới nhà nhớ khoá cửa; chìa khoá đang ở chỗ người trả lời.'],
         why: '<b>临走的时候</b> = lúc sắp đi. <b>钥匙在我这儿</b> = chìa khoá ở chỗ mình.',
         whyNot: ['', '钥匙在我这儿 = chìa khoá đang ở chỗ mình (người trả lời).', '临走的时候 = lúc sắp đi, không phải lúc về.'] },

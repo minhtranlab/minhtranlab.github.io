@@ -140,6 +140,49 @@ async def main():
         chk(not pg.errs, f'no page errors {pg.errs[:3]}')
         await ctx.close()
 
+        # 3b) phiếu #13: two-voice dialogue (hear + lines), "Thẻ mở rộng" cards before a mixed review, HSK5-style items in the chapter test
+        ctx, pg = await fresh(b, st2)
+        await pg.evaluate('loadCh(2)')
+        q = await pg.evaluate("CHN(2).TESTBANK.hsk.filter(x=>x.kind==='nghe'&&x.lines)[0]")
+        chk(bool(q) and [l['v'] for l in q['lines']] == ['f', 'm'], f'nghe items are dialogues f → m: {q and q["lines"]}')
+        await pg.evaluate("(q)=>{st.auto=1;SESSIONS.push({id:'2-zz',ch:2,title:'thử',words:[],screens:[q,{t:'wrap'}]});st.sess['2-zz']={i:0,done:0};window.__plays.length=0;play('2-zz')}", q)
+        k1, k2 = await pg.evaluate("(q)=>q.lines.map(l=>(l.v==='m'?'M:':'F:')+akey(l.zh))", q)
+        await pg.wait_for_function("(k)=>window.__plays.includes(k)", arg=k2, timeout=15000)
+        p1 = await pg.evaluate("window.__plays.slice()")
+        chk(p1.index(k1) < p1.index(k2), f'auto: female turn then male turn {p1}')
+        pr = await pg.evaluate("[document.querySelector('#stage .prompt').textContent, [...document.querySelectorAll('#stage .ln.dlg .dwho')].map(e=>e.textContent).join(',')]")
+        chk(pr[0] == 'Nghe đoạn hội thoại rồi chọn ý đúng:' and pr[1].startswith('Nữ,Nam'), f'dialogue prompt and hidden turns marked Nữ/Nam {pr}')
+        await pg.evaluate("window.__plays.length=0"); await pg.click('#stage .lr .sb')
+        await pg.wait_for_function("(k)=>window.__plays.includes(k)", arg=k2, timeout=15000)
+        chk(await pg.evaluate("window.__plays.slice()") == [k1, k2], 'the 🔊 button replays the whole exchange')
+        bad = await pg.evaluate("[...document.querySelectorAll('.opt')].filter(x=>x.dataset.ok==='0').map(x=>x.textContent)")
+        await pg.click(f'.opt[data-ok="0"] >> nth=0'); await pg.wait_for_timeout(150)
+        fb = await pg.evaluate("document.querySelector('.fb.bad').innerText")
+        wn = q['whyNot'][q['opts'].index(bad[0])]
+        chk(wn[:4] in fb or wn.replace('<b>', '')[:4] in fb, f'wrong option shows its whyNot: {fb[:60]!r}')
+        await pg.evaluate("window.__plays.length=0"); await pg.click('.opt[data-ok="1"]')
+        await pg.wait_for_function("(k)=>window.__plays.includes(k)", arg=k2, timeout=15000)
+        rb = await pg.evaluate("[[...document.querySelectorAll('.reveal .dl')].map(d=>d.querySelector('.dwho').textContent+':'+d.querySelector('.zh').innerText.replace(/[a-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜü\\s]/g,'')).join(' | '), document.querySelector('.reveal .rvv2').textContent, window.__plays.slice()]")
+        chk(rb[0] == f"Nữ:{q['lines'][0]['zh']} | Nam:{q['lines'][1]['zh']}" and rb[1] == q['opts'][0] and rb[2][:2] == [k1, k2],
+            f'answer block: each turn on its own line with who speaks, the meaning, and the exchange read again: {rb}')
+        await pg.evaluate('home()')
+        # ext cards first in Ôn tập 2, 3, 5; not counted in max
+        for sid in ('2-m2', '2-m3', '2-m5'):
+            r = await pg.evaluate(f'''(()=>{{const S=SESSIONS.find(s=>s.id==='{sid}');Object.keys(MEAN).filter(k=>W[k]).forEach(wrec);play('{sid}');
+              return [S.ext.length,S.max,S.screens.length,JSON.stringify(S.screens.slice(0,S.ext.length).map(c=>c.zh||c.full))===JSON.stringify(S.ext.map(c=>c.zh||c.full)),S.ext.map(c=>c.t).join(',')]}})()''')
+            chk(r[0] >= 1 and r[3] and r[2] == r[0] + r[1] + 1, f'{sid}: {r[0]} "Thẻ mở rộng" card(s) ({r[4]}) first, then {r[1]} review screens + end ({r[2]} screens)')
+            await pg.evaluate('home()')
+        # chapter test: one item of each kind, random each time
+        seen = {'nghe': set(), 'doc': set(), 'viet': set()}; okk = True
+        for n in range(12):
+            ks = await pg.evaluate("buildTest(SESSIONS.find(s=>s.id==='2-t')).filter(q=>q.kind).map(q=>q.kind+'|'+(q.full||q.zh||q.lines[0].zh))")
+            okk = okk and sorted(k.split('|')[0] for k in ks) == ['doc', 'nghe', 'viet']
+            for k in ks: seen[k.split('|')[0]].add(k)
+        chk(okk and all(len(v) >= 2 for v in seen.values()), f'2-t: exactly one nghe / doc / viet item each time, chosen at random ({ {k: len(v) for k, v in seen.items()} } different items in 12 tests)')
+        chk(await pg.evaluate("buildTest(SESSIONS.find(s=>s.id==='t1')).every(q=>!q.kind)"), 'Bài 1 test unchanged (no HSK items)')
+        chk(not pg.errs, f'no page errors {pg.errs[:3]}')
+        await ctx.close()
+
         # 4) standalone file (audio and Bài 2 inlined, no network): Bài 2 works offline
         out = '/tmp/hsk5_standalone_test.html'
         r = subprocess.run([sys.executable, '../build.py', '--standalone', out], capture_output=True, text=True)

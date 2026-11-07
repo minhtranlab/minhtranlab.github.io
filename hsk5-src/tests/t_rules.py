@@ -24,7 +24,8 @@ START = '''(qs)=>{const i=SESSIONS.findIndex(x=>x.id===98);if(i>=0)SESSIONS.spli
 COLLECT = '''()=>{const Q=new Set(%s),out=[];const add=(src,c)=>{if(c&&Q.has(c.t))out.push({src,q:JSON.parse(JSON.stringify(c))})};
   SESSIONS.filter(s=>!s.rev&&!s.mix&&!s.test&&!s.reader).forEach(s=>(s.base||s.screens).forEach((c,i)=>add('unit '+s.id+' #'+i,c)));
   Object.entries(QB).forEach(([k,a])=>a.forEach((c,i)=>add('QB '+k+' #'+i,c)));
-  CHAPTERS.filter(c=>c.loaded).forEach(C=>{C.TESTBANK.tf.forEach((c,i)=>add('TB'+C.n+' tf #'+i,c)); C.TESTBANK.spot.forEach((c,i)=>add('TB'+C.n+' spot #'+i,c));});
+  CHAPTERS.filter(c=>c.loaded).forEach(C=>{C.TESTBANK.tf.forEach((c,i)=>add('TB'+C.n+' tf #'+i,c)); C.TESTBANK.spot.forEach((c,i)=>add('TB'+C.n+' spot #'+i,c)); (C.TESTBANK.hsk||[]).forEach((c,i)=>add('TB'+C.n+' hsk '+c.kind+' #'+i,c));});
+  SESSIONS.filter(s=>s.ext).forEach(s=>s.ext.forEach((c,i)=>add('ext '+s.id+' #'+i,c)));
   Object.keys(MEAN).filter(k=>W[k]).forEach(k=>{st.wl[k]=st.wl[k]||{t:Date.now(),box:0,due:0,last:0,rev:0,n:0};});
   SESSIONS.filter(s=>s.mix).forEach(s=>buildMix(s).forEach((c,i)=>add('mix '+s.id+' #'+i,c)));
   SESSIONS.filter(s=>s.test).forEach(s=>buildTest(s).forEach((c,i)=>add('test '+s.id+' #'+i,c))); buildRevision().forEach((c,i)=>add('revision #'+i,c));
@@ -51,7 +52,7 @@ PRE = '''([q])=>{const han=x=>String(x||'').replace(/[^\u4e00-\u9fff]/g,''),ans=
   const svgs=[...document.querySelectorAll('#stage svg')].filter(vis),txt=svgs.map(v=>[...v.querySelectorAll('text')].map(t=>t.textContent).join('')).join('|');
   return {leak:[...ans].filter(a=>txt.includes(a)),arts:[...document.querySelectorAll('#stage .artbox')].filter(vis).length}}'''
 # what the screen looks like after answering
-STATE = '''([q])=>{const ans=q.t==='pick'||q.t==='order'||q.t==='type'||q.t==='tf'?[q.zh]:q.t==='mc'||q.t==='spot'?[q.full]:q.t==='hear'?[q.s]:q.t==='choose'?[q.w[0]]:q.w;
+STATE = '''([q])=>{const ans=q.t==='pick'||q.t==='order'||q.t==='type'||q.t==='tf'?[q.zh]:q.t==='mc'||q.t==='spot'?[q.full]:q.t==='hear'?(q.lines?q.lines.filter(l=>l.v!=='m').map(l=>l.zh):[q.s]):q.t==='choose'?[q.w[0]]:q.w;
   const keys=ans.map(a=>'F:'+akey(a)), plays=window.__plays.slice(), nx=document.getElementById('next'), r=nx.getBoundingClientRect();
   const hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2), rv=document.querySelector('.reveal'), ft=document.querySelector('footer').getBoundingClientRect().top;
   const rr=rv?rv.getBoundingClientRect():null, st0=document.getElementById('stage').getBoundingClientRect().top;

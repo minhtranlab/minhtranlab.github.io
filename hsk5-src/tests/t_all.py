@@ -54,8 +54,8 @@ async def main():
         await pg.evaluate('loadCh(2)')   # phiếu #9: play Bài 1 and every stage of Bài 2 that exists
         await pg.screenshot(path='a_home.png')
         miss = await pg.evaluate('''()=>{const m=[];const chk=(z,v)=>{const k=akey(z);if(!k)return;const key=v==='m'?'M|'+k:k;if(!AUD[key])m.push(key)};
-          const scan=s=>s.screens.forEach(c=>{(c.lines||[]).forEach(l=>chk(l.zh,l.v));if(c.t==='pick')chk(c.zh,'f');if(c.t==='hear')chk(c.s,'f');if(c.t==='order'||c.t==='type')chk(c.zh,'f');if(c.t==='mc')chk(c.full,'f');if(c.t==='tf')chk(c.zh,'f');if(c.t==='spot')chk(c.full,'f');if(c.t==='album')(c.say||[]).forEach(x=>chk(x.zh,'m'))});
-          SESSIONS.forEach(scan); Object.values(QB).flat().concat(TESTBANK.tf,TESTBANK.spot).forEach(c=>scan({screens:[c]}));
+          const scan=s=>s.screens.forEach(c=>{(c.lines||[]).forEach(l=>chk(l.zh,l.v));if(c.t==='pick')chk(c.zh,'f');if(c.t==='hear'&&c.s)chk(c.s,'f');if(c.t==='order'||c.t==='type')chk(c.zh,'f');if(c.t==='mc')chk(c.full,'f');if(c.t==='tf')chk(c.zh,'f');if(c.t==='spot')chk(c.full,'f');if(c.t==='album')(c.say||[]).forEach(x=>chk(x.zh,'m'))});
+          SESSIONS.forEach(scan); SESSIONS.filter(s=>s.ext).forEach(s=>scan({screens:s.ext})); Object.values(QB).flat().concat(...CHAPTERS.filter(C=>C.loaded).map(C=>C.TESTBANK.tf.concat(C.TESTBANK.spot,C.TESTBANK.hsk||[]))).forEach(c=>scan({screens:[c]}));
           WORDS.forEach(w=>{chk(w.id,'m');if(!AUD['MS|'+akey(w.id)])m.push('MS|'+w.id);w.ex.forEach(e=>chk(e,'m'))});
           return [...new Set(m)]}''')
         print('missing clips', len(miss), miss[:40])

@@ -25,7 +25,7 @@ for s in data:
         if sc['t'] == 'mc': add(sc['full'], 'f'); texts.append(sc['full'])
         if sc['t'] == 'tf': add(sc['zh'], 'f'); texts.append(sc['zh'])
         if sc['t'] == 'spot': add(sc['full'], 'f'); texts.append(sc['full'])
-        if sc['t'] == 'hear': add(sc['s'], 'f'); texts.append(sc['s'])
+        if sc['t'] == 'hear' and sc.get('s'): add(sc['s'], 'f'); texts.append(sc['s'])   # a dialogue (lines) is covered by the lines loop above
         if sc['t'] == 'hear' and sc.get('whyNot'): texts += [x for x in sc['whyNot'] if x]
         if sc['t'] in ('order', 'type'): add(sc['zh'], 'f'); texts.append(sc['zh'])
         if sc['t'] == 'album':
