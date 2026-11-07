@@ -1,69 +1,77 @@
 """Make the missing clips: female = Matcha (sid 0), male = Kokoro v1.1 (sid 70). Writes hsk5/audio/<hash>.mp3 and updates audio_manifest.json.
     python3 hsk5-src/tools/synth.py            # everything missing
     python3 hsk5-src/tools/synth.py --only 测试一下,M|测试一下     # just these keys (testing)
-Needs: pip install sherpa-onnx soundfile ; ffmpeg ; the models (tools/get_models.sh). Models folder: $HSK5_MODELS (default ~/hsk5-models)."""
-import sherpa_onnx, soundfile as sf, json, os, hashlib, subprocess, sys, re, tempfile, time
+    python3 hsk5-src/tools/synth.py --fix      # phiếu #14: run audit_voice.py and remake every male clip it flags (+ its MS| clip)
+    python3 hsk5-src/tools/synth.py --redo M|屋,M|冻     # remake these male clips even if they exist (MS| follows its M|)
+Male clips go through voicefix.py (clean edges, verified by audit_voice.check). A slow MS| clip is always the clean M| clip
+stretched with ffmpeg atempo 0.68. If no clean version can be made, the old clip is kept and listed at the end.
+Needs: pip install sherpa-onnx soundfile pypinyin scipy ; ffmpeg ; the models (tools/get_models.sh, incl. the recogniser).
+Models folder: $HSK5_MODELS (default ~/hsk5-models)."""
+import soundfile as sf, json, os, hashlib, subprocess, sys, re, tempfile, time
+import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); SRC = os.path.dirname(HERE); sys.path.insert(0, SRC)
 import build as B
 sys.path.insert(0, HERE)
-import clipfix, numpy as np
+import voicefix as V, audit_voice as A
 os.chdir(SRC); AUD = os.path.join(os.path.dirname(SRC), 'hsk5', 'audio'); os.makedirs(AUD, exist_ok=True)
-M = os.environ.get('HSK5_MODELS', os.path.expanduser('~/hsk5-models'))
 man = json.load(open('audio_manifest.json', encoding='utf-8')); J = {j['k']: j for j in json.load(open('tts_jobs.json', encoding='utf-8'))}
-only = sys.argv[sys.argv.index('--only') + 1].split(',') if '--only' in sys.argv else None
+arg = lambda f: sys.argv[sys.argv.index(f) + 1].split(',') if f in sys.argv else None
+only, redo = arg('--only'), arg('--redo') or []
 need = B.needed_keys()
-redo = '--redo-male-words' in sys.argv      # regenerate every male WORD clip (<=4 characters) with the clean-edge method
 def is_word(k): return k.startswith(('M|', 'MS|')) and len(k.split('|')[-1]) <= 4
 todo = [k for k in (only or list(J)) if (k not in man and (only or k.split('|')[-1] in need))]
-if redo: todo = sorted(set(todo) | {k for k in man if is_word(k) and k.split('|')[-1] in need})
+if '--fix' in sys.argv:
+    print('auditing male clips…', flush=True)
+    _, bad = A.main(); redo = sorted(set(redo) | set(bad))
+for k in redo:                                       # an M| that is remade drags its MS| along (and an MS| needs its M| clean)
+    t = k.split('|')[-1]
+    if k.startswith('M|') and 'MS|' + t in man: redo.append('MS|' + t)
+todo = list(dict.fromkeys(todo + [k for k in redo if k.split('|')[-1] in need]))
+todo.sort(key=lambda k: k.startswith('MS|'))        # M| before MS|
 if not todo: print('nothing to do'); sys.exit()
-def mk(kind):
-    if kind == 'f':
-        d = f'{M}/matcha-icefall-zh-baker'
-        return sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(matcha=sherpa_onnx.OfflineTtsMatchaModelConfig(acoustic_model=f'{d}/model-steps-3.onnx', vocoder=f'{M}/vocos-22khz-univ.onnx', lexicon=f'{d}/lexicon.txt', tokens=f'{d}/tokens.txt', dict_dir=f'{d}/dict'), num_threads=2), rule_fsts=f'{d}/date.fst,{d}/number.fst,{d}/phone.fst')), 0
-    d = f'{M}/kokoro-multi-lang-v1_1'
-    return sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(vits=sherpa_onnx.OfflineTtsVitsModelConfig(), kokoro=sherpa_onnx.OfflineTtsKokoroModelConfig(model=f'{d}/model.onnx', voices=f'{d}/voices.bin', tokens=f'{d}/tokens.txt', data_dir=f'{d}/espeak-ng-data', dict_dir=f'{d}/dict', lexicon=f'{d}/lexicon-zh.txt,{d}/lexicon-us-en.txt'), num_threads=2), rule_fsts=f'{d}/phone-zh.fst,{d}/date-zh.fst,{d}/number-zh.fst')), 70
 engines = {}; n = 0; t0 = time.time(); failed = []; clean = {}
-def clean_word(tts, sid, han):
-    """Kokoro adds a stray hum before/after short utterances. Multi-syllable words: say the word 3 times and keep the middle copy.
-    Fallbacks (and one-syllable words): trim a single utterance by its 0.9-5 kHz energy (the hums have none)."""
-    if han in clean: return clean[han]
-    ok = lambda y, sr: y is not None and 0.22 <= len(y) / sr / len(han) <= 0.55
-    if len(han) >= 2:
-        for t in (f'{han}，{han}，{han}。', f'{han}。{han}。{han}。'):
-            a = tts.generate(t, sid=sid, speed=0.88); y, info = clipfix.cut_middle(np.array(a.samples), a.sample_rate)
-            if ok(y, a.sample_rate): clean[han] = (y, a.sample_rate); return clean[han]
-    a = tts.generate(han + '。' if len(han) < 2 else han, sid=sid, speed=0.88)
-    for thr in (-14, -10, -8):
-        y, info = clipfix.band_trim(np.array(a.samples), a.sample_rate, thr)
-        if y is not None and 0.2 <= len(y) / a.sample_rate <= 0.45 * len(han) + 0.15: clean[han] = (y, a.sample_rate); return clean[han]
-    y, info = clipfix.main_segment(np.array(a.samples), a.sample_rate)
-    if y is not None and 0.2 <= len(y) / a.sample_rate <= 0.45 * len(han) + 0.15: clean[han] = (y, a.sample_rate); return clean[han]
-    clean[han] = (None, 24000); return clean[han]
+def eng(kind):
+    if kind not in engines: engines[kind] = V.engine(kind)
+    return engines[kind]
+def female_dur(t):
+    return len(A.load(os.path.join(os.path.dirname(SRC), 'hsk5', man[t]))) / 24000 if t in man else None
 def stretch(y, sr, f, td):
     sf.write(td + '/p.wav', y, sr)
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', td + '/p.wav', '-af', f'atempo={f}', td + '/q.wav'], check=True)
     return sf.read(td + '/q.wav')[0]
+def male_clean(k):
+    """Clean samples of the NORMAL male clip of k's text: remade now, or (for an MS| whose M| is fine) the existing M| clip."""
+    t = k.split('|')[-1]
+    if t in clean: return clean[t]
+    if 'M|' + t in man and 'M|' + t not in todo:
+        clean[t] = (A.load(os.path.join(os.path.dirname(SRC), 'hsk5', man['M|' + t])), 24000, {'from': 'existing M|'}); return clean[t]
+    tts, sid = eng('m'); j = J.get('M|' + t)
+    if len(t) <= 4: clean[t] = V.make_word(tts, sid, t, female_dur(t), 'M|' + t)
+    else: clean[t] = V.make_sentence(tts, sid, j['t'] if j else t + '。', j['sp'] if j else 0.88, 'M|' + t)
+    return clean[t]
 for k in todo:
     kind = 'm' if k.startswith(('M|', 'MS|')) else 'f'
-    if kind not in engines: engines[kind] = mk(kind)
-    tts, sid = engines[kind]
     j = J.get(k); han = k.split('|')[-1]
-    t, sp = (j['t'], j['sp']) if j else (han, 0.6 if k.startswith('MS|') else 0.88)
-    if len(re.findall(r'[一-鿿]', t)) < 2 and not t.endswith('。'): t += '。'
-    with tempfile.TemporaryDirectory() as td:
-        wv, mp = td + '/a.wav', td + '/a.mp3'
-        if kind == 'm' and is_word(k):
-            y, sr_ = clean_word(tts, sid, han)
-            if y is None: failed.append(k); continue
-            if k.startswith('MS|'): y = stretch(y, sr_, 0.68, td)
-            sf.write(wv, y, sr_); af = 'loudnorm=I=-16:TP=-1.5'
-        else:
+    if kind == 'm':
+        y, sr_, info = male_clean(k)
+        if y is None: failed.append(k); print('  could not clean', k, info.get('why'), flush=True); continue
+        if k.startswith('MS|'):
+            with tempfile.TemporaryDirectory() as td: ys = stretch(y, sr_, A.SLOW, td)
+            raw = V.encode(ys, sr_)
+            fl, r = A.check(k, V.decode(raw), 24000, normal=len(clean[han][0]) / sr_, asr=A.has_asr())
+            if fl: failed.append(k); print('  slow clip flagged', k, fl, flush=True); continue
+        else: raw = info['raw'] if 'raw' in info else V.encode(y, sr_)
+    else:
+        tts, sid = eng('f')
+        t, sp = (j['t'], j['sp']) if j else (han, 0.88)
+        if len(re.findall(r'[一-鿿]', t)) < 2 and not t.endswith('。'): t += '。'
+        with tempfile.TemporaryDirectory() as td:
+            wv, mp = td + '/a.wav', td + '/a.mp3'
             a = tts.generate(t, sid=sid, speed=sp); sf.write(wv, a.samples, a.sample_rate)
             af = 'silenceremove=start_periods=1:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_threshold=-45dB,areverse,loudnorm=I=-16:TP=-1.5'
-        subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', wv, '-af', af, '-ac', '1', '-ar', '24000', '-b:a', '32k', mp], check=True)
-        raw = open(mp, 'rb').read()
+            subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', wv, '-af', af, '-ac', '1', '-ar', '24000', '-b:a', '32k', mp], check=True)
+            raw = open(mp, 'rb').read()
     h = hashlib.sha1(raw).hexdigest()[:12]; open(f'{AUD}/{h}.mp3', 'wb').write(raw); man[k] = f'audio/{h}.mp3'; n += 1
-    if n % 25 == 0: json.dump(man, open('audio_manifest.json', 'w', encoding='utf-8'), ensure_ascii=False); print(n, '/', len(todo), int(time.time() - t0), 's', flush=True)
+    if n % 10 == 0: json.dump(man, open('audio_manifest.json', 'w', encoding='utf-8'), ensure_ascii=False); print(n, '/', len(todo), int(time.time() - t0), 's', flush=True)
 json.dump(man, open('audio_manifest.json', 'w', encoding='utf-8'), ensure_ascii=False)
 print('made', n, 'clips.', ('COULD NOT CLEAN (kept old): ' + ','.join(failed)) if failed else '', '\nNow run: python3 hsk5-src/build.py')
