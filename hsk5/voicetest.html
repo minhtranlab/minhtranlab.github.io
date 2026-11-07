@@ -4,93 +4,81 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>Nghe thử giọng nam</title>
-<!-- Phiếu #14: trang nghe thử, không thuộc app (không build, không có trong tools.json). Âm thanh nằm ở voicetest/:
-     cNN = clip cũ (lỗi "ơ"), dNN = clip mới giọng D (đang dùng trong app), eNN = giọng E (sid 90), cùng cách cắt mới. -->
+<title>Nghe kiểm giọng nam</title>
+<!-- Phiếu #16: trang nghe kiểm lần 2, không thuộc app (không build, không có trong tools.json). Âm thanh ở voicetest/:
+     tNN = clip trước phiếu #16 (bị đọc ngược thứ tự âm tiết), sNN = clip sau khi làm lại (giọng D, đang dùng trong app). -->
 <style>
-:root{--bg:#fff8f0;--fg:#2b2118;--mut:#7a6a5c;--ok:#1f8a4c;--bad:#c0392b;--acc:#f07a2a;--card:#fff;--line:#eadbcc;--sel:#fde7d4}
-@media (prefers-color-scheme:dark){:root{--bg:#1d1814;--fg:#f3ebe3;--mut:#b5a597;--ok:#4cc07f;--bad:#ff7b6b;--acc:#ff9a52;--card:#2a231d;--line:#43382f;--sel:#4a3424}}
+:root{--bg:#fff8f0;--fg:#2b2118;--mut:#7a6a5c;--bad:#c0392b;--acc:#f07a2a;--card:#fff;--line:#eadbcc;--sel:#fde7d4}
+@media (prefers-color-scheme:dark){:root{--bg:#1d1814;--fg:#f3ebe3;--mut:#b5a597;--bad:#ff7b6b;--acc:#ff9a52;--card:#2a231d;--line:#43382f;--sel:#4a3424}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 -apple-system,system-ui,sans-serif;padding:calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
+body{margin:0 auto;background:var(--bg);color:var(--fg);font:16px/1.45 -apple-system,system-ui,sans-serif;padding:calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));max-width:560px}
 h1{font-size:22px;margin:0 0 4px}
-p.sub{margin:0 0 6px;color:var(--mut);font-size:14px}
-ol.how{margin:0 0 16px;padding-left:20px;color:var(--mut);font-size:14px}
+p.sub{margin:0 0 8px;color:var(--mut);font-size:14px}
 button{font:inherit;border:0;border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:12px}
 .hd{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
 .zh{font-size:30px;font-weight:700;letter-spacing:2px}
 .py{color:var(--mut);font-size:15px}
-.row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.col{display:flex;flex-direction:column;gap:6px}
-.play{padding:8px 4px;font-weight:700;font-size:14px;line-height:1.25;background:var(--sel);color:var(--fg);height:58px;display:flex;align-items:center;justify-content:center;text-align:center}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.play{height:56px;font-weight:700;font-size:16px;background:var(--sel);color:var(--fg)}
 .play.old{background:transparent;border:1px dashed var(--line);color:var(--mut)}
 .play.on{outline:3px solid var(--acc)}
-.mark{padding:7px 4px;font-size:13px;background:transparent;border:1px solid var(--line);color:var(--mut)}
-.mark.on{background:var(--bad);border-color:var(--bad);color:#fff}
-.q{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin:16px 0 12px}
-.q b{display:block;margin-bottom:8px}
-.pick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.pick button{padding:14px 4px;font-weight:700;background:transparent;border:1px solid var(--line);color:var(--fg)}
-.pick button.on{background:var(--acc);border-color:var(--acc);color:#fff}
-#copy{width:100%;padding:16px;font-size:18px;font-weight:700;background:var(--acc);color:#fff}
+.err{margin-top:8px;width:100%;padding:9px;font-size:14px;background:transparent;border:1px solid var(--line);color:var(--mut)}
+.err.on{border-color:var(--bad);color:var(--bad)}
+.kinds{display:none;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.kinds.show{display:grid}
+.kinds button{padding:9px 2px;font-size:14px;background:transparent;border:1px solid var(--line);color:var(--fg)}
+.kinds button.on{background:var(--bad);border-color:var(--bad);color:#fff}
+#copy{width:100%;padding:16px;font-size:18px;font-weight:700;background:var(--acc);color:#fff;margin-top:4px}
 #out{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;font:13px/1.5 ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-word}
 </style>
 </head>
 <body>
-<h1>🔊 Nghe thử giọng nam</h1>
-<p class="sub">12 từ từng bị thừa “ơ” ở cuối. Mỗi từ có 3 bản:</p>
-<ol class="how">
-<li><b>Cũ</b>: bản đang lỗi, để so sánh.</li>
-<li><b>Mới (giọng D)</b>: bản đã sửa, giọng nam hiện tại của app.</li>
-<li><b>Giọng E</b>: một giọng nam khác, cắt cùng cách.</li>
-</ol>
-<p class="sub">Bản nào vẫn còn “ơ” ở cuối thì bấm <b>Còn “ơ”</b> ngay dưới nó. Không nghe thấy gì: gạt tắt chế độ im lặng và tăng âm lượng.</p>
+<h1>🔊 Nghe kiểm giọng nam (lần 2)</h1>
+<p class="sub">3 từ từng bị đọc ngược (老婆 nghe thành “pó lǎo”), nay đã làm lại. Bấm <b>Trước</b> rồi <b>Sau</b> để so.</p>
+<p class="sub">Nếu bản <b>Sau</b> vẫn chưa đúng, bấm <b>Còn lỗi</b> rồi chọn: <b>Ngược</b>, <b>Thừa “ơ”</b> hoặc <b>Khác</b>. Không nghe thấy gì: gạt tắt chế độ im lặng và tăng âm lượng.</p>
 <div id="list"></div>
-<div class="q"><b>Bạn thích giọng nào hơn?</b>
-  <div class="pick" id="pick"><button data-v="D">Giọng D</button><button data-v="E">Giọng E</button><button data-v="=">Như nhau</button></div>
-</div>
 <button id="copy">📋 Sao chép kết quả</button>
-<div id="out">Chưa chọn gì.</div>
+<div id="out">Chưa đánh dấu gì: cả 3 bản Sau đều ổn.</div>
 <script>
 (function () {
-  var W = [["屋","wū"],["冻","dòng"],["老婆","lǎo pó"],["被子","bèi zi"],["立刻","lì kè"],["打工","dǎ gōng"],["爱护","ài hù"],
-           ["女士","nǚ shì"],["夜","yè"],["临","lín"],["农村","nóng cūn"],["相敬如宾","xiāng jìng rú bīn"]];
-  var KINDS = [["c","Cũ","old"],["d","Mới (giọng D)",""],["e","Giọng E",""]];
-  var marks = {d:{}, e:{}}, like = '', cur = null, list = document.getElementById('list'), out = document.getElementById('out');
+  var W = [["老婆", "lǎo pó"], ["爱护", "ài hù"], ["以来", "yǐ lái"]];
+  var KINDS = ["Ngược", "Thừa “ơ”", "Khác"];
+  var marks = {}, cur = null, list = document.getElementById('list'), out = document.getElementById('out');
   var audio = new Audio(); audio.preload = 'auto';
-  function nn(i) { return (i < 9 ? '0' : '') + (i + 1); }
   function stop() { if (cur) cur.classList.remove('on'); cur = null; }
   audio.addEventListener('ended', stop); audio.addEventListener('error', stop);
   W.forEach(function (w, i) {
-    var card = document.createElement('div'); card.className = 'card';
-    card.innerHTML = '<div class="hd"><span class="zh">' + w[0] + '</span><span class="py">' + w[1] + '</span></div><div class="row"></div>';
-    var row = card.querySelector('.row');
-    KINDS.forEach(function (k) {
-      var col = document.createElement('div'); col.className = 'col';
-      var b = document.createElement('button'); b.className = 'play ' + k[2]; b.textContent = k[1];
+    var n = '0' + (i + 1), card = document.createElement('div'); card.className = 'card'; marks[w[0]] = {};
+    card.innerHTML = '<div class="hd"><span class="zh">' + w[0] + '</span><span class="py">' + w[1] + '</span></div>' +
+      '<div class="row"><button class="play old" data-f="t' + n + '">Trước</button><button class="play" data-f="s' + n + '">Sau</button></div>' +
+      '<button class="err">Còn lỗi?</button><div class="kinds"></div>';
+    [].forEach.call(card.querySelectorAll('.play'), function (b) {
       b.onclick = function () {
-        stop(); audio.pause(); audio.src = 'voicetest/' + k[0] + nn(i) + '.mp3'; audio.currentTime = 0;
+        stop(); audio.pause(); audio.src = 'voicetest/' + b.getAttribute('data-f') + '.mp3'; audio.currentTime = 0;
         cur = b; b.classList.add('on');
         var p = audio.play(); if (p && p.catch) p.catch(function () { stop(); out.textContent = 'Chưa phát được âm thanh. Kiểm tra gạt im lặng và âm lượng rồi bấm lại.'; });
       };
-      col.appendChild(b);
-      if (k[0] !== 'c') {
-        var m = document.createElement('button'); m.className = 'mark'; m.textContent = 'Còn “ơ”';
-        m.onclick = function () { var on = !marks[k[0]][w[0]]; marks[k[0]][w[0]] = on; m.classList.toggle('on', on); m.textContent = on ? '⚠️ Còn “ơ”' : 'Còn “ơ”'; show(); };
-        col.appendChild(m);
-      }
-      row.appendChild(col);
+    });
+    var err = card.querySelector('.err'), box = card.querySelector('.kinds');
+    err.onclick = function () { box.classList.toggle('show'); };
+    KINDS.forEach(function (k) {
+      var b = document.createElement('button'); b.textContent = k;
+      b.onclick = function () {
+        marks[w[0]][k] = !marks[w[0]][k]; b.classList.toggle('on', marks[w[0]][k]);
+        var any = KINDS.some(function (x) { return marks[w[0]][x]; });
+        err.classList.toggle('on', any); err.textContent = any ? '⚠️ Còn lỗi' : 'Còn lỗi?'; show();
+      };
+      box.appendChild(b);
     });
     list.appendChild(card);
   });
-  [].forEach.call(document.querySelectorAll('#pick button'), function (b) {
-    b.onclick = function () { like = b.getAttribute('data-v'); [].forEach.call(document.querySelectorAll('#pick button'), function (x) { x.classList.toggle('on', x === b); }); show(); };
-  });
-  function bad(k) { var r = W.map(function (w) { return w[0]; }).filter(function (z) { return marks[k][z]; }); return r.length ? r.join(' ') : 'không'; }
   function text() {
-    return 'Nghe thử giọng nam (phiếu #14)\n' +
-      'Thích: ' + (like === 'D' ? 'giọng D' : like === 'E' ? 'giọng E' : like === '=' ? 'như nhau' : 'chưa chọn') + '\n' +
-      'Mới (giọng D) còn ơ: ' + bad('d') + '\n' + 'Giọng E còn ơ: ' + bad('e') + '\n' + navigator.userAgent;
+    var bad = W.map(function (w) {
+      var k = KINDS.filter(function (x) { return marks[w[0]][x]; });
+      return k.length ? w[0] + ': ' + k.join(', ') : null;
+    }).filter(Boolean);
+    return 'Nghe kiểm giọng nam lần 2 (phiếu #16)\n' + (bad.length ? 'Bản Sau còn lỗi:\n' + bad.join('\n') : 'Cả 3 bản Sau đều ổn.') + '\n' + navigator.userAgent;
   }
   function show() { out.textContent = text(); }
   var cp = document.getElementById('copy');

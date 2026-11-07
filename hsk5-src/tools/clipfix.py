@@ -273,3 +273,65 @@ def cut_copy(x, sr, n_syll, pause_db=-30.0, pause_ms=70):
     if y is None: return None, dict(info, **i2)
     info.update(i2); info.update({'copy': k, 'from': s0 / sr, 'nuclei': n})
     return y, info
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# Phiếu #16 (2026-11-07): syllable ORDER. Minh heard 老婆 as "pó lǎo": in "老婆，老婆，老婆。" the p-closure inside the word is as
+# deep and as long as the comma pause, so cut_copy kept "婆，老" (last syllable of one copy + first of the next).
+
+def split_by_nuclei(x, sr, n_syll, copies=3):
+    """Copies of a word said `copies` times = groups of exactly n_syll vowel nuclei, in order. Boundaries = the quietest frame
+    between the last nucleus of one group and the first of the next (NOT simply the longest pauses). Only when the clip has
+    copies*n_syll nuclei, or one more at the very end (the 'ơ'), and no group holds >= 150 ms of silence between its
+    syllables. -> list of (start, end) sample ranges, or [] ."""
+    x = np.asarray(x, dtype=np.float32); db, fr = envelope(x, sr); hb, cen = band_env(x, sr); pk = nuclei(db, cen=cen)
+    if len(pk) not in (copies * n_syll, copies * n_syll + 1): return []
+    live = np.where(db > -40)[0]; on, off = live[0], live[-1] + 1
+    cut = [pk[k * n_syll - 1] + int(np.argmin(db[pk[k * n_syll - 1]:pk[k * n_syll]])) for k in range(1, copies)]
+    raw, _ = envelope(x, sr, smooth=1)
+    for k in range(copies):                    # a copy may not hold a real pause between its syllables: then the nuclei were
+        g = r = 0                              # miscounted (glides of 歪歪扭扭) and the groups straddle the comma pause
+        for v in raw[pk[k * n_syll]:pk[(k + 1) * n_syll - 1]]:
+            r = r + 1 if v < -40 else 0; g = max(g, r)
+        if g >= 15: return []
+    edges = [on] + cut + [off]
+    return [(edges[k] * fr, edges[k + 1] * fr) for k in range(copies)]
+
+
+def _mel_fb(sr, n_fft, n_mels=26, fmin=80, fmax=7600):
+    m = lambda f: 2595 * np.log10(1 + f / 700); im = lambda v: 700 * (10 ** (v / 2595) - 1)
+    b = np.floor((n_fft + 1) * im(np.linspace(m(fmin), m(fmax), n_mels + 2)) / sr).astype(int); fb = np.zeros((n_mels, n_fft // 2 + 1))
+    for i in range(n_mels):
+        a, c, d = b[i], b[i + 1], b[i + 2]
+        fb[i, a:c] = (np.arange(a, c) - a) / max(c - a, 1); fb[i, c:d] = (d - np.arange(c, d)) / max(d - c, 1)
+    return fb
+
+
+def mfcc(x, sr):
+    """13 MFCC (without c0) per 10 ms, mean/variance normalised per clip (speaker and level independent enough for DTW)."""
+    from scipy.fft import dct
+    x = np.asarray(x, np.float64); x = np.append(x[:1], x[1:] - 0.97 * x[:-1])
+    h, w, nf = int(sr * .01), int(sr * .025), 1 << int(np.ceil(np.log2(sr * .025)))
+    if len(x) < w: x = np.pad(x, (0, w - len(x)))
+    fr = 1 + (len(x) - w) // h; idx = np.arange(w)[None, :] + h * np.arange(fr)[:, None]
+    S = np.abs(np.fft.rfft(x[idx] * np.hamming(w), nf)) ** 2
+    c = dct(np.log(S @ _mel_fb(sr, nf).T + 1e-10), type=2, axis=1, norm='ortho')[:, 1:13]
+    return (c - c.mean(0)) / (c.std(0) + 1e-6)
+
+
+def dtw_cost(a, b, sr):
+    """Length-normalised DTW distance between the MFCC of two clips (lower = more alike)."""
+    A, B = mfcc(a, sr), mfcc(b, sr)
+    D = np.sqrt(((A[:, None, :] - B[None, :, :]) ** 2).sum(2)); n, m = D.shape
+    acc = np.full((n + 1, m + 1), np.inf); acc[0, 0] = 0
+    for i in range(1, n + 1):
+        row = acc[i]; prev = acc[i - 1]; d = D[i - 1]
+        best = np.minimum(prev[1:], prev[:-1])                    # from above / diagonal
+        for j in range(1, m + 1):
+            row[j] = d[j - 1] + min(best[j - 1], row[j - 1])
+    return acc[n, m] / (n + m)
+
+
+def trim_level(y, sr, level=-35):
+    db, fr = envelope(y, sr, smooth=1); live = np.where(db > level)[0]
+    return y[live[0] * fr:(live[-1] + 1) * fr] if len(live) else y

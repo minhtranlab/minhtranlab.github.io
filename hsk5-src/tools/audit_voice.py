@@ -7,6 +7,8 @@
                      The male/female length ratio is printed but is not a flag: Matcha itself ranges 0.20-0.37 s per syllable on 2-4 character words.
              DOUBLE  the speech recogniser hears the word twice (老婆 -> 老婆老婆)
   sentences  ASR+    the recogniser hears extra syllables after the last character (…相敬如宾 -> …相敬如宾啊)
+  words      GAP     >= 150 ms of near-silence (< -40 dB) between two syllables of the word (slow clips 220 ms)
+  words      ORDER   syllables in the wrong order (老婆 heard as "婆老"): see order_check (phiếu #16)
   slow MS|   SLOW    not the normal clip stretched by atempo 0.68 (length ratio outside 1.32-1.62), or its M| clip is bad.
                      A slow clip that IS its M| clip stretched has the same syllables, so it is judged by its M| clip;
                      any other slow clip also gets the checks of its kind.
@@ -83,21 +85,126 @@ def asr_double(y, sr, text):
     got, _ = recognise(y, sr); a, b = pys(text), pys(got); n = len(a)
     return any(b[i:i + n] == a and b[i + n:i + 2 * n] == a for i in range(len(b) - 2 * n + 1)), got
 
+# --- phiếu #16: syllable ORDER of word clips ------------------------------------------------------------------------------
+# A wrong cut keeps the end of one copy + the start of the next: 老婆 -> "婆老" (a ROTATION of the word). Three judges vote:
+#  ASR  the recogniser, biased toward the word AND all its rotations equally (hotwords), so it picks the order it hears;
+#       on isolated words it often adds a syllable at an edge (我老婆), so "the word inside what it heard" counts as good.
+#  REF1, REF2  DTW on MFCC against two other takes of Kokoro D saying the word 3 times (order_refs): is the clip closer to
+#       the right copy than to the rotated stretches of the same take? (Kokoro saying the text "婆老" is NOT a good
+#       reference: its single words have odd lead-ins, and it missed the real 婆老 clip.)
+# Flag ORDER when the votes for a rotation outnumber the votes for the word (a tie counts as ORDER). On 95 known cuts
+# (43 right, 52 rotated) REF1 alone was right 91 times, the biased recogniser 73 times. A cross-voice check against the
+# female clip did not separate right from rotated (Matcha and Kokoro differ more than 老婆 and 婆老), so it is not used.
+_hot = None; _refs = {}; _tts = None
+def recogniser_hot():
+    global _hot
+    if _hot is None:
+        import sherpa_onnx
+        d = ASR_DIR
+        _hot = sherpa_onnx.OfflineRecognizer.from_transducer(encoder=f'{d}/encoder-epoch-20-avg-1.int8.onnx', decoder=f'{d}/decoder-epoch-20-avg-1.onnx',
+                                                             joiner=f'{d}/joiner-epoch-20-avg-1.int8.onnx', tokens=f'{d}/tokens.txt', num_threads=2,
+                                                             decoding_method='modified_beam_search', max_active_paths=8, hotwords_score=1.5)
+    return _hot
+
+def rotations(w): return list(dict.fromkeys(w[i:] + w[:i] for i in range(1, len(w)) if w[i:] + w[:i] != w))
+
+_tok = None
+def hot_spell(w):
+    """Hotwords must be tokens of the recogniser; a rare character (姥, 卧…) is replaced by a common one with the same pinyin."""
+    global _tok
+    from pypinyin import pinyin, lazy_pinyin, Style
+    if _tok is None:
+        _tok = {'set': set(), 'by': {}}
+        for line in open(f'{ASR_DIR}/tokens.txt', encoding='utf-8'):
+            t = line.split()[0] if line.split() else ''
+            if len(t) == 1 and '一' <= t <= '鿿':
+                _tok['set'].add(t)
+                for key in (pinyin(t, style=Style.TONE3)[0][0], lazy_pinyin(t)[0]): _tok['by'].setdefault(key, t)
+    t3, t0 = pinyin(w, style=Style.TONE3), lazy_pinyin(w)
+    return ''.join(c if c in _tok['set'] else _tok['by'].get(t3[i][0], _tok['by'].get(t0[i], c)) for i, c in enumerate(w))
+
+def asr_order(y, sr, w):
+    """-> ('good' | 'rot' | None, heard text)."""
+    hw = '/'.join(' '.join(v) for v in [hot_spell(w)] + [hot_spell(r) for r in rotations(w)])
+    p = np.zeros(4800, np.float32); z = np.concatenate([p, to16(y, sr), p])
+    s = recogniser_hot().create_stream(hotwords=hw); s.accept_waveform(16000, z); recogniser_hot().decode_stream(s)
+    got = han(s.result.text); a, b = pys(w), pys(got)
+    has = lambda x: any(b[i:i + len(x)] == x for i in range(len(b) - len(x) + 1))
+    good = has(a); rot = any(has(pys(r)) for r in rotations(w))
+    return ('good' if good and not rot else 'rot' if rot and not good else None), got
+
+REF_TAKES = [('{0}，{0}，{0}。', 0.95), ('{0}、{0}、{0}。', 0.90), ('{0}，{0}，{0}。', 0.80), ('{0}、{0}、{0}。', 0.97),
+             ('{0}，{0}，{0}。', 1.0), ('{0}、{0}、{0}。', 0.84), ('{0}，{0}，{0}。', 0.78), ('{0}、{0}、{0}。', 1.03),
+             ('{0}；{0}；{0}。', 0.93), ('{0}；{0}；{0}。', 0.80), ('{0}！{0}！{0}！', 0.90), ('{0}？{0}？{0}？', 0.90)]   # no WORD_TRIES take
+
+def order_refs(w, want=2):
+    """Same-voice references, made the way a clip is made: Kokoro D says the word 3 times (takes NOT used by voicefix), the
+    copies are split by nucleus groups (clipfix.split_by_nuclei). Right = the middle copy; rotated = the same stretch shifted
+    by k syllables (= exactly what a wrong cut keeps: end of one copy + start of the next). Up to 4 takes; with 3+, takes that
+    disagree with the majority are dropped. -> list of (right, [rotated…]), at most `want`."""
+    global _tts
+    if w in _refs: return _refs[w]
+    import voicefix as V
+    from scipy.signal import resample_poly
+    if _tts is None: _tts = V.engine('m')
+    tts, sid = _tts; n = len(w); out = []
+    for tpl, sp in REF_TAKES:
+        a = tts.generate(tpl.format(w), sid=sid, speed=sp)
+        y = resample_poly(V.highpass(a.samples, a.sample_rate), 24000, a.sample_rate).astype(np.float32)
+        db, fr = C.envelope(y, 24000); hb, cen = C.band_env(y, 24000); pk = C.nuclei(db, cen=cen)
+        if not C.split_by_nuclei(y, 24000, n): continue           # same validity rules as the cut itself
+        cut = [pk[i] + int(np.argmin(db[pk[i]:pk[i + 1]])) for i in range(len(pk) - 1)]
+        seg = lambda a_, b_: C.trim_level(y[a_ * fr:b_ * fr], 24000)
+        right = seg(cut[n - 1], cut[2 * n - 1])
+        rot = [seg(cut[n - 1 + k], cut[2 * n - 1 + k]) for k in range(1, n) if w[k:] + w[:k] != w]
+        out.append((right, rot))
+        if len(out) >= 4: break
+    if len(out) >= 3:
+        # a take can split at the wrong nuclei and still have 3n of them (歪歪扭扭): keep the takes whose right copy is closer
+        # to the other takes' right copies than to their rotated stretches
+        def agree(i, j): return C.dtw_cost(out[i][0], out[j][0], 24000) < min(C.dtw_cost(out[i][0], r, 24000) for r in out[j][1])
+        score = [sum(agree(i, j) for j in range(len(out)) if j != i) for i in range(len(out))]
+        out = [o for o, sc in sorted(zip(out, score), key=lambda t: -t[1]) if sc * 2 >= len(out) - 1]
+    out = out[:want]; _refs[w] = out; return out
+
+def order_check(y, sr, w, asr=True):
+    """-> (True when the syllable order is wrong, info). Words of 2+ characters whose rotations differ (姑姑 has none)."""
+    if not rotations(w): return False, {}
+    from scipy.signal import resample_poly
+    y = np.asarray(y, np.float32); y24 = C.trim_level(y if sr == 24000 else resample_poly(y, 24000, sr).astype(np.float32), 24000)
+    votes = []; info = {}
+    for i, (right, rot) in enumerate(order_refs(w)):
+        d0 = C.dtw_cost(y24, right, 24000); dr = min(C.dtw_cost(y24, r, 24000) for r in rot)
+        info[f'ref{i + 1}'] = (round(d0, 2), round(dr, 2)); votes.append('rot' if dr < d0 else 'good')
+    if asr:
+        v, got = asr_order(y24, 24000, w); info['asr_order'] = got
+        if v: votes.append(v)
+    info['votes'] = ''.join('+' if v == 'good' else '-' for v in votes)
+    if not votes: info['order'] = 'unchecked'                     # no reference take and the recogniser was unsure
+    return (votes.count('rot') >= votes.count('good')) if votes else False, info
+
 def measure(y, sr):
     db, fr = C.envelope(y, sr); pk = C.nuclei(db, cen=C.band_env(y, sr)[1])
-    return {'dur': round(len(y) / sr, 3), 'nuc': len(pk), 'tail': C.tail_ms(db, pk)}
+    raw, _ = C.envelope(y, sr, smooth=1); gap = run = 0
+    for v in (raw[pk[0]:pk[-1]] if len(pk) >= 2 else []):           # longest near-silence BETWEEN the syllables (ms)
+        run = run + 1 if v < -40 else 0; gap = max(gap, run)
+    return {'dur': round(len(y) / sr, 3), 'nuc': len(pk), 'tail': C.tail_ms(db, pk), 'gap': gap * 10}
 
-def check(key, y, sr, female=None, normal=None, asr=True):
+def check(key, y, sr, female=None, normal=None, asr=True, order=True):
     """Flags for one male clip. female = duration (s) of the female clip of the same text, normal = duration of its M| clip
     (for MS|). Returns (flags list, numbers dict)."""
     text = key.split('|')[-1]; n = len(text); r = measure(y, sr); f = []
     slow = key.startswith('MS|')
+    if order and is_word(key) and n >= 2:                 # phiếu #16: every word clip, slow ones too (DTW/ASR do not mind tempo)
+        bad, oi = order_check(y, sr, text, asr=asr); r.update(oi)
+        if bad: f.append('ORDER')
     if slow and normal:
         r['slow'] = round(r['dur'] / normal, 2)
         if 1.32 <= r['slow'] <= 1.62: return f, r      # = its M| clip stretched: same syllables, judged on the M| clip
     if is_word(key):
         if r['nuc'] > n: f.append('EXTRA')
         if r['tail'] >= (90 if slow else 60): f.append('TAIL')        # a slow clip stretches the natural decay too
+        if r['gap'] >= (220 if slow else 150): f.append('GAP')        # a break inside the word (不耐…烦); female max is 100 ms
         per = r['dur'] / n / (1 / SLOW if slow else 1)            # seconds per syllable (slow clips scaled back)
         if (n == 1 and per > 0.55) or (n >= 2 and per > 0.46): f.append('LONG')
         if female and not slow:
@@ -140,6 +247,8 @@ def main():
         extra += f" asr '{r['asr']}'" if 'asr' in r else ''
         print(f"{k:24s} {' '.join(r['flags']):18s} {r['dur']:.2f}s nuclei {r['nuc']} tail {r['tail']}ms{extra}")
     if '--json' in sys.argv: json.dump(out, open(sys.argv[sys.argv.index('--json') + 1], 'w', encoding='utf-8'), ensure_ascii=False, indent=0)
+    unc = [k for k in keys if out[k].get('order') == 'unchecked']
+    if unc: print('order not checkable (no reference, recogniser unsure):', ' '.join(unc))
     nw = sum(is_word(k) for k in keys)
     print(f'checked {len(keys)} male clips ({nw} words, {len(keys) - nw} sentences; recogniser {"on" if asr else "off"})')
     print(f'AUDIT: {len(bad)} bad clips')

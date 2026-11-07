@@ -1,7 +1,8 @@
 """Clean male (Kokoro) clips, verified (phiếu #14). Used by synth.py for every male clip.
 
-WORDS (<= 4 characters, also one-syllable words): say "X，X，X。" and keep the middle copy (clipfix.cut_copy: pauses chosen so
-the copies have equal length and the same number of syllable nuclei), cut right after the last syllable dies away + 40 ms
+WORDS (<= 4 characters, also one-syllable words): say "X，X，X。" and keep one copy. Phiếu #16: copies are split by nucleus
+GROUPS first (each copy = the next n syllables; a pause inside a word, like the p of 老婆, can be as long as the comma pause, and
+the #14 pause-only cut kept "婆，老"), then the #14 pause cut. The copy is cut right after the last syllable dies away + 40 ms
 fade-out. Several wordings/speeds are tried until audit_voice.check() finds nothing on the ENCODED clip (no extra nucleus, no
 tail, not too long, not heard twice). Kokoro audio is high-passed at 70 Hz first (it leaves low thumps where copies join).
 
@@ -41,18 +42,43 @@ def highpass(x, sr, f=70):
 WORD_TRIES = [('{w}，{w}，{w}。', 0.88), ('{w}。{w}。{w}。', 0.88), ('{w}；{w}；{w}。', 0.88), ('{w}，{w}，{w}。', 0.85),
               ('{w}，{w}，{w}。', 0.92), ('{w}，{w}，{w}。', 0.75), ('{w}。{w}。{w}。', 0.82), ('{w}，{w}，{w}，{w}。', 0.88)]
 
+def word_candidates(y, sr, n):
+    """Ways to cut ONE copy out of "X，X，X。" (phiếu #16). First by nucleus groups (each copy = the next n syllables, so a
+    copy can never be "end of one + start of the next"): the middle copy, then the first. Then the #14 pause-based cut_copy.
+    -> list of (samples, info)."""
+    out = []
+    for k in (1, 0):
+        seg = C.split_by_nuclei(y, sr, n)
+        if not seg: break
+        a, b = seg[k]; a0 = max(0, a - int(.03 * sr))
+        z, info = C.end_cut(y[a0:b], sr, n)
+        if z is not None: out.append((z, dict(info, cut='nuclei', copy=k)))
+    z, info = C.cut_copy(y, sr, n)
+    if z is not None: out.append((z, dict(info, cut='pause')))
+    return out
+
 def make_word(tts, sid, w, female=None, key=None):
-    """-> (samples, sr, info) or (None, sr, info). female = duration (s) of the female clip of w."""
+    """-> (samples, sr, info) or (None, sr, info). female = duration (s) of the female clip of w.
+    Every candidate is encoded and checked (audit_voice.check: no 'ơ', not long, syllables in the RIGHT ORDER). If no take
+    gives a clean copy, last resort: say the word once and cut right after its last syllable."""
     key = key or 'M|' + w; tried = []
-    for tpl, sp in WORD_TRIES:
-        a = tts.generate(tpl.format(w=w), sid=sid, speed=sp); sr = a.sample_rate
-        y, info = C.cut_copy(highpass(a.samples, sr), sr, len(w))
-        if y is None: tried.append((tpl, sp, info.get('why'))); continue
+    def ok(y, sr, extra):
         y = np.concatenate([y, np.zeros(int(sr * .02), np.float32)])
         raw = encode(y, sr); fl, r = A.check(key, decode(raw), 24000, female=female, asr=A.has_asr())   # judge what ships
         if len(y) / sr < 0.22 * len(w): fl.append('SHORT')                 # a syllable was cut off
-        if not fl: return y, sr, dict(info, tpl=tpl, sp=sp, raw=raw, **r)
-        tried.append((tpl, sp, fl, round(len(y) / sr, 2)))
+        if not fl: return y, dict(extra, raw=raw, **r)
+        tried.append((extra.get('tpl'), extra.get('sp'), extra.get('cut'), fl, r.get('votes'))); return None, None
+    for tpl, sp in WORD_TRIES:
+        a = tts.generate(tpl.format(w=w), sid=sid, speed=sp); sr = a.sample_rate
+        for z, info in word_candidates(highpass(a.samples, sr), sr, len(w)):
+            y, r = ok(z, sr, dict(info, tpl=tpl, sp=sp))
+            if y is not None: return y, sr, r
+    for sp in (0.88, 0.82, 0.95):                                       # last resort: one utterance, tail cut
+        a = tts.generate(w + '。', sid=sid, speed=sp); sr = a.sample_rate
+        z, info = C.end_cut(highpass(a.samples, sr), sr, len(w))
+        if z is None: continue
+        y, r = ok(z, sr, dict(info, tpl='{w}。', sp=sp, cut='once'))
+        if y is not None: return y, sr, r
     return None, 24000, {'why': 'no clean variant', 'tried': tried}
 
 def trim_start(y, sr, level=-45):
