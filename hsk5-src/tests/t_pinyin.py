@@ -1,0 +1,138 @@
+"""Pinyin on screen = the textbook reading (phiếu #18, HANDOFF §11).
+The app shows pinyin word by word: zh() cuts a sentence by longest match in DICT (glossary.txt + chN/glossary.txt) and puts
+each word's DICT pinyin over it, whatever the sentence around it. This script cuts EVERY Chinese run of every chapter the same
+way and compares each word's pinyin with the reference reading of that word in that sentence:
+  reference = pypinyin (in context) corrected by
+    - TEXTBOOK: words whose reading pypinyin gets wrong here, or that the textbook writes with a neutral tone (each with a reason);
+    - the tone change of 一 and 不 (一: yí before a 4th/neutral tone, yì before 1st/2nd/3rd, yī when counting/ordinal or last;
+      不: bú before a 4th tone; X一X / X不X in the middle: neutral);
+    - one-syllable particles keep one reading (得/地 de, 着 zhe, 只 zhǐ, 个 ge…); a sentence that needs another reading
+      (得 děi/dé, 地 dì, 只 zhī, 着 zháo, 了 liǎo, 儿 -r) must give that word its own DICT entry (得听, 种地, 一只, 睡不着, 点儿…).
+      CONTEXT below flags such places when they are still cut as the one-syllable particle;
+    - r-hoá written joined (zhèr, yíhuìr), apostrophe before a/o/e inside a word (dì'èr, àn'àn); 3rd-tone change is never written.
+  A multi-syllable word that CC-CEDICT reads with a neutral tone must be in TEXTBOOK (with the neutral tone, or kept full with a
+  reason), so a new chapter cannot slip a 妻子 qīzǐ through.
+Lone 一 / 不 (a word of their own: 一套, 不会…): DICT cannot know the next word, so zh() itself must change the tone (App);
+until common.js does it (APP_SANDHI below) those places are only counted, not failed.
+Run from hsk5-src/tests:  python3 t_pinyin.py     (pip install pypinyin pypinyin-dict)  → must end with "PY-CHECK 0"."""
+import os, re, sys, collections
+HERE = os.path.dirname(os.path.abspath(__file__)); SRC = os.path.dirname(HERE); sys.path.insert(0, SRC)
+import build as B
+from pypinyin import lazy_pinyin, pinyin, Style
+try:
+    from pypinyin_dict.phrase_pinyin_data.cc_cedict import phrases_dict as CC
+except ImportError:
+    sys.exit('needs: pip install pypinyin-dict')
+
+APP_SANDHI = 'sandhi' in open(os.path.join(SRC, 'common.js'), encoding='utf-8').read()   # common.js zh() changes lone 一/不 (App)
+
+N = 'thanh nhẹ (cách ghi của giáo trình)'
+TEXTBOOK = {   # word -> reading shown (syllables joined; spaces ignored). Reason after #.
+    # one-syllable words: the one reading DICT gives them (other readings get their own entry, see CONTEXT)
+    '得': 'de',      # trợ từ bổ ngữ 高兴得…; děi (phải) / dé (được) chỉ trong từ riêng: 得听, 得走, 得早, 得了
+    '地': 'de',      # trợ từ trạng ngữ 悄悄地…; dì (đất) chỉ trong từ riêng: 种地, 地里, 外地
+    '只': 'zhǐ',     # chỉ; zhī (lượng từ con vật) chỉ trong 一只
+    '着': 'zhe',     # đang; zháo trong 睡着, 睡不着, 冻着
+    '个': 'ge',      # lượng từ đứng riêng: yí ge, liǎng ge, zhège (giáo trình ghi thanh nhẹ)
+    '了': 'le', '的': 'de',   # pypinyin đôi khi đọc liǎo / dī theo cụm từ của nó
+    '头': 'tóu',     # cái đầu; pypinyin dính cụm 来头 (láitou) trong 起来头很疼
+    '铺': 'pū',      # trải (động từ); pù = cửa hàng
+    '挣': 'zhèng',   # kiếm (tiền), giằng ra; zhēng chỉ trong 挣扎
+    '没': 'méi',     # không; mò (chìm) không dùng
+    '空': 'kòng',    # 空着 = để trống
+    '干': 'gàn',     # làm (干活); 干净 gānjìng là từ riêng
+    # neutral tone (giáo trình HSK / Từ điển Hiện đại)
+    '妈妈': 'māma', '爸爸': 'bàba', '哥哥': 'gēge', '弟弟': 'dìdi', '妹妹': 'mèimei', '爷爷': 'yéye', '奶奶': 'nǎinai',
+    '叔叔': 'shūshu', '伯伯': 'bóbo', '姑姑': 'gūgu', '姥姥': 'lǎolao', '舅舅': 'jiùjiu', '谢谢': 'xièxie',
+    '妻子': 'qīzi', '丈夫': 'zhàngfu', '老婆': 'lǎopo', '东西': 'dōngxi', '告诉': 'gàosu', '喜欢': 'xǐhuan', '朋友': 'péngyou',
+    '好朋友': 'hǎopéngyou', '时候': 'shíhou', '衣服': 'yīfu', '舒服': 'shūfu', '休息': 'xiūxi', '消息': 'xiāoxi',
+    '漂亮': 'piàoliang', '热闹': 'rènao', '还是': 'háishi', '要是': 'yàoshi', '晚上': 'wǎnshang', '早上': 'zǎoshang',
+    '名字': 'míngzi', '事情': 'shìqing', '认识': 'rènshi', '学生': 'xuésheng', '客气': 'kèqi', '态度': 'tàidu', '任务': 'rènwu',
+    '脑袋': 'nǎodai', '葡萄': 'pútao', '暖和': 'nuǎnhuo', '钥匙': 'yàoshi', '觉得': 'juéde', '不好意思': 'bùhǎoyìsi',
+    '对不起': 'duìbuqǐ', '起来': 'qǐlai', '走出来': 'zǒuchūlai', '心里发寒': 'xīnlifāhán',
+    # kept with full tones although CC-CEDICT reads them neutral: the HSK textbook writes them so
+    '太阳': 'tàiyáng', '别人': 'biérén', '不是': 'búshì', '照顾': 'zhàogù', '学习': 'xuéxí', '照片': 'zhàopiàn',
+    # pypinyin wrong here
+    '不得了': 'bùdéliǎo',   # liǎo (không phải le)
+    '长途': 'chángtú', '长得': 'zhǎngde', '等得': 'děngde', '评为': 'píngwéi',   # 长 cháng/zhǎng, 得 de, 为 wéi (được bầu là)
+    '一行': 'yìháng',       # một dòng (chữ)
+    '冻着': 'dòngzháo',     # bị nhiễm lạnh
+    '睡着': 'shuìzháo', '睡不着': 'shuìbuzháo', '看不清': 'kànbuqīng', '打不开': 'dǎbukāi', '听不懂': 'tīngbudǒng',
+    '站不起来': 'zhànbuqǐlai',   # bổ ngữ khả năng: 不 đọc nhẹ
+    '得听': 'děitīng', '得走': 'děizǒu', '得早': 'děizǎo',   # 得 = phải
+    '得了': 'déle',         # 他得了一项大奖: 得 = được (giải)
+    '一只': 'yìzhī',        # lượng từ con vật
+    '种地': 'zhòngdì', '地里': 'dìli',
+    '干干净净': 'gāngānjìngjìng',
+}
+NUM = set('一二两三四五六七八九十百千万几这那每哪半')
+CONTEXT = {   # one-syllable word -> (what comes before / after it that means another reading) — such a place needs its own word
+    '得': (lambda p, n: p in ('我', '你', '他', '她', '我们', '你们', '他们', '咱们', '大家', '今天', '明天', '现在', '也', '还', '就', '都', '又', '必须'),
+           'sau chủ ngữ/trạng từ: 得 = phải (děi) hoặc được (dé)'),
+    '只': (lambda p, n: p[-1:] in NUM, 'sau số/这/那: lượng từ zhī'),
+    '地': (lambda p, n: p in ('种', '去', '在', '到', '扫', '满') or n[:1] in ('里', '上', '下'), 'danh từ: đất (dì)'),
+    '着': (lambda p, n: p in ('睡', '不', '冻', '找', '猜'), 'zháo (睡着, 冻着…)'),
+    '了': (lambda p, n: p in ('不', '得'), 'bổ ngữ khả năng: liǎo'),
+    '儿': (lambda p, n: p != '', 'r-hoá: viết liền với chữ trước (点儿, 这儿…)'),
+}
+TL = {c: t for t, cs in enumerate(['āēīōūǖ', 'áéíóúǘ', 'ǎěǐǒǔǚ', 'àèìòùǜ'], 1) for c in cs}
+def tone(syl): return next((TL[c] for c in syl if c in TL), 5)
+def base_tone(ch): return tone(pinyin(ch, style=Style.TONE)[0][0])
+def ref_syllables(run):
+    """pypinyin in context, then the tone change of 一 and 不 (on the underlying tone of the next character)"""
+    s = lazy_pinyin(run, style=Style.TONE)
+    for i, ch in enumerate(run):
+        if ch not in '一不': continue
+        p = run[i - 1] if i else ''; n = run[i + 1] if i + 1 < len(run) else ''
+        if ch == '一':
+            if not n or (p and p in '第十初统唯万') or n in '一二三四五六七八九十〇零月号楼': s[i] = 'yī'
+            elif p and p == n: s[i] = 'yi'
+            else: s[i] = 'yí' if base_tone(n) in (4, 5) else 'yì'
+        else:
+            if p and p == n: s[i] = 'bu'
+            elif n and base_tone(n) == 4: s[i] = 'bú'
+            else: s[i] = 'bù'
+    return s
+def join(word, syls):
+    out = ''
+    for k, (ch, y) in enumerate(zip(word, syls)):
+        if ch == '儿' and k: out += 'r'; continue
+        out += ("'" if k and y[:1] in 'aoeāáǎàēéěèōóǒò' else '') + y
+    return out
+norm = lambda p: p.replace(' ', '').lower()
+
+txt = '\n'.join([B.content] + list(B.CHC.values()))
+runs = re.findall(r'[一-鿿]+', txt)
+fails = collections.OrderedDict(); app = collections.Counter(); ctxf = collections.OrderedDict(); used = collections.Counter()
+for run in runs:
+    ref = ref_syllables(run); cut = B.seg(run); i = 0
+    for j, (k, known) in enumerate(cut):
+        n = len(k); r = ref[i:i + n]; i += n
+        if not known: continue
+        used[k] += 1
+        shown = norm(B.D[k][0])
+        if k in TEXTBOOK and k not in ('一', '不'): want = TEXTBOOK[k]
+        else: want = join(k, r)
+        p = cut[j - 1][0] if j else ''; nx = cut[j + 1][0] if j + 1 < len(cut) else ''
+        if k in CONTEXT and p and CONTEXT[k][0](p, nx):
+            ctxf.setdefault((k, p, nx), (run, CONTEXT[k][1])); continue
+        if shown == want: continue
+        if k in ('一', '不'):
+            if APP_SANDHI: fails.setdefault((k, shown, want), run)
+            else: app[k + want] += 1
+            continue
+        fails.setdefault((k, shown, want), run)
+# words that CC-CEDICT reads with a neutral tone must be decided in TEXTBOOK
+neutral = []
+for k in sorted(used):
+    if len(k) < 2 or k in TEXTBOOK or k not in CC: continue
+    syl = [x[0] if isinstance(x, list) else x for x in CC[k]]; dflt = lazy_pinyin(k, style=Style.TONE)
+    if len(syl) == len(k) and any(tone(y) == 5 and tone(d) != 5 and c != '儿' for y, d, c in zip(syl, dflt, k)): neutral.append((k, B.D[k][0], ' '.join(syl)))
+for (k, shown, want), run in fails.items(): print(f'✗ {k}: shown {shown}, textbook {want}   ({run[:24]})')
+for (k, p, n), (run, why) in ctxf.items(): print(f'✗ {p}[{k}]{n}: {why} — cut as the particle   ({run[:24]})')
+for k, py, cc in neutral: print(f'✗ {k}: {py} — CC-CEDICT reads "{cc}" (neutral tone?): add it to TEXTBOOK')
+print(f'Chinese runs: {len(runs)}, words checked: {sum(used.values())} ({len(used)} different)')
+if app: print('lone 一/不 waiting for zh() tone change (App):', sum(app.values()), 'places,', ', '.join(f'{k}×{v}' for k, v in app.most_common()))
+bad = len(fails) + len(ctxf) + len(neutral)
+print(f'PY-CHECK {bad}')
+sys.exit(1 if bad else 0)

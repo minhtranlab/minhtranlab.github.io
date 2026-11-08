@@ -84,7 +84,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
       ],
       '挣': [
         cz('挣', 'c2_earn', '他每个月___的钱不多，可是很努力。', 'Mỗi tháng anh ấy kiếm không nhiều tiền, nhưng rất chịu khó.', '他每个月挣的钱不多，可是很努力。', '挣',
-          [['花', '花钱 = tiêu tiền. Vế sau 可是很努力 (nhưng rất chịu khó) cho thấy đang nói chuyện kiếm tiền.'], ['断', '断 là đứt, cai; không đi với 钱.']], '<b>挣钱</b> = kiếm tiền; <b>挣的钱</b> = số tiền kiếm được.'),
+          [['套', '套 là lượng từ (一套房子), không phải động từ; kiếm tiền là 挣钱.'], ['断', '断 là đứt, cai; không đi với 钱.']], '<b>挣钱</b> = kiếm tiền; <b>挣的钱</b> = số tiền kiếm được.'),
         hr('挣'),
         ty(['挣'], '挣钱', 'kiếm tiền')
       ],
@@ -99,7 +99,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
           [['间', '一间 là một gian phòng; một gian thì không có ba phòng bên trong.'], ['辆', '辆 là lượng từ của xe.']], '<b>一套房子</b> = một căn nhà gồm nhiều phòng. 一间 = một gian.'),
         hr('套'),
         cz('套', 'c2_sets', '他结婚的时候买了一___新西服。', 'Lúc cưới anh ấy mua một bộ com-lê mới.', '他结婚的时候买了一套新西服。', '套',
-          [['件', '一件 dùng cho một chiếc áo; com-lê gồm áo và quần nên là 一套.'], ['条', '一条 dùng cho quần, váy; cả bộ com-lê là 一套.']], '<b>一套</b> = trọn bộ: 一套西服, 一套家具, 一套邮票.')
+          [['张', '张 dùng cho vật mỏng, phẳng (一张纸, 一张床); com-lê gồm áo và quần nên là 一套.'], ['条', '一条 dùng cho quần, váy; cả bộ com-lê là 一套.']], '<b>一套</b> = trọn bộ: 一套西服, 一套家具, 一套邮票.')
       ],
       /* ---------- tập 4 ---------- */
       '装修': [
@@ -161,7 +161,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
       ],
       '晒': [
         cz('晒', 'c2_dry', '姥姥喜欢坐在门口___太阳。', 'Bà ngoại thích ngồi trước cửa sưởi nắng.', '姥姥喜欢坐在门口晒太阳。', '晒',
-          [['看', '看太阳 = nhìn mặt trời; ngồi cho nắng chiếu vào người là 晒太阳.'], ['锁', '锁 là khoá; không đi với 太阳.']], '<b>晒太阳</b> = sưởi nắng.'),
+          [['挣', '挣 = kiếm (tiền), không đi với 太阳; ngồi cho nắng chiếu vào người là 晒太阳.'], ['锁', '锁 là khoá; không đi với 太阳.']], '<b>晒太阳</b> = sưởi nắng.'),
         hr('晒'),
         od(['晒'], '今天天气好，我们晒晒被子吧。', 'Hôm nay trời đẹp, mình phơi chăn đi.', ['今天天气好', '我们', '晒晒', '被子吧'])
       ],
@@ -174,7 +174,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
       /* ---------- tập 8 ---------- */
       '长途': [
         cz('长途', 'c2_longBus', '坐了十个小时的___汽车，大家都很累。', 'Ngồi xe khách đường dài mười tiếng, ai cũng mệt.', '坐了十个小时的长途汽车，大家都很累。', '长途',
-          [['公共', '公共汽车 là xe buýt trong phố; đi mười tiếng là xe đường dài.'], ['夜', 'Không ai nói 夜汽车; xe khách đi xa là 长途汽车.']], '<b>长途汽车</b> = xe khách đường dài.'),
+          [['套', '套 là lượng từ (一套房子), không đứng trước 汽车; xe đi xa là 长途汽车.'], ['夜', 'Không ai nói 夜汽车; xe khách đi xa là 长途汽车.']], '<b>长途汽车</b> = xe khách đường dài.'),
         hr('长途'),
         od(['长途'], '这是一次长途旅行，要带的东西很多。', 'Đây là một chuyến đi xa, phải mang nhiều đồ.', ['这是', '一次长途旅行', '要带的', '东西很多'])
       ],
@@ -211,7 +211,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
       ],
       '温暖': [
         cz('温暖', 'c2_warm', '朋友的一句话，让我觉得很___。', 'Một câu nói của bạn khiến mình thấy rất ấm lòng.', '朋友的一句话，让我觉得很温暖。', '温暖',
-          [['暖和', '暖和 nói thời tiết, đồ vật (天气很暖和); cảm giác ấm trong lòng là 温暖.'], ['强烈', '强烈 = mãnh liệt; một câu nói nhẹ nhàng làm lòng ấm lên.']], '<b>温暖</b> dùng được cho tình cảm; <b>暖和</b> chủ yếu cho thời tiết.'),
+          [['热闹', '热闹 = náo nhiệt, đông vui; một câu nói làm lòng ấm lên là 温暖.'], ['强烈', '强烈 = mãnh liệt; một câu nói nhẹ nhàng làm lòng ấm lên.']], '<b>温暖</b> dùng được cho tình cảm; <b>暖和</b> chủ yếu cho thời tiết.'),
         hr('温暖'),
         od(['温暖'], '春天来了，天气越来越温暖。', 'Mùa xuân đến rồi, trời càng ngày càng ấm.', ['春天来了', '天气', '越来越', '温暖'])
       ],
@@ -236,7 +236,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
       '铺': [
         hr('铺'),
         cz('铺', 'c2_makeBed', '妈妈已经把床上的被子___好了。', 'Mẹ đã trải chăn trên giường xong rồi.', '妈妈已经把床上的被子铺好了。', '铺',
-          [['扑', '扑 (bộ 扌 tay) = vồ tới, phả vào; cùng đọc pū nhưng trải chăn là 铺 (bộ 钅).'], ['晒', '晒 = phơi ngoài nắng; trên giường thì trải: 铺好.']], '<b>铺好</b> = trải xong. Bẫy cùng âm: 扑 ≠ 铺.')
+          [['扑', '扑 (bộ 扌 tay) = vồ tới, phả vào; cùng đọc pū nhưng trải chăn là 铺 (bộ 钅).'], ['锁', '锁 = khoá; chăn trên giường thì trải: 铺好.']], '<b>铺好</b> = trải xong. Bẫy cùng âm: 扑 ≠ 铺.')
       ],
       '飘': [
         cz('飘', 'c2_float', '从厨房里___来了饭菜的香味。', 'Từ bếp thoảng ra mùi cơm canh thơm.', '从厨房里飘来了饭菜的香味。', '飘',

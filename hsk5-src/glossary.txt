@@ -44,23 +44,23 @@
 今天|hôm nay
 昨天|hôm qua
 明天|ngày mai
-晚上|buổi tối
+晚上|buổi tối|py:wǎnshang
 以后|sau này, sau khi
 天|ngày|thiên
 夫妻|vợ chồng|phu thê||s
-爸爸|bố
-妈妈|mẹ
-爷爷|ông nội
-奶奶|bà nội
+爸爸|bố|py:bàba
+妈妈|mẹ|py:māma
+爷爷|ông nội|py:yéye
+奶奶|bà nội|py:nǎinai
 结婚|kết hôn|kết hôn
 年|năm|niên
-朋友|bạn bè|bằng hữu
+朋友|bạn bè|bằng hữu|py:péngyou
 公司|công ty|công ti
 老师|thầy cô giáo|lão sư
 觉得|cảm thấy, thấy rằng
-认识|quen biết|nhận thức
+认识|quen biết|nhận thức|py:rènshi
 请问|xin hỏi|thỉnh vấn
-谢谢|cảm ơn
+谢谢|cảm ơn|py:xièxie
 问|hỏi|vấn
 问题|câu hỏi; vấn đề|vấn đề
 说|nói|thuyết
@@ -74,7 +74,7 @@
 来|đến; (đi cùng động từ) lại|lai
 出|ra; (说出 = nói ra)|xuất
 要|muốn; sẽ; phải|yếu
-得|phải (děi); (说得 = nói đến mức) de|đắc|py:děi
+得|(trợ từ nối bổ ngữ: 高兴得…, đọc de); phải (đọc děi: 得听); được (đọc dé: 得了)|đắc|py:de
 应该|nên, phải|ưng cai
 当|làm, đóng vai|đương
 打开|mở ra, bật lên
@@ -85,14 +85,14 @@
 也|cũng|dã
 都|đều|đô|py:dōu
 还|còn; vẫn|hoàn|py:hái
-还是|vẫn là; hay là
+还是|vẫn là; hay là|py:háishi
 就|liền, sẽ
 才|mới, chỉ mới|tài
 又|lại (lần nữa, đã xảy ra)|hựu
 再|lại (lần nữa, sẽ xảy ra)|tái
 先|trước|tiên
 快|nhanh|khoái
-一下|một chút (làm thử)|nhất hạ
+一下|một chút (làm thử)|nhất hạ|py:yíxià
 一起|cùng nhau|nhất khởi
 放|đặt, để|phóng
 这|này|giá
@@ -117,8 +117,8 @@
 白色|màu trắng
 新|mới|tân
 旧|cũ|cựu
-照片|bức ảnh|chiếu phiến
-喜欢|thích|hỉ hoan
+照片|bức ảnh|chiếu phiến|py:zhàopiàn
+喜欢|thích|hỉ hoan|py:xǐhuan
 面条|mì
 米饭|cơm
 饭|cơm, bữa ăn|phạn
@@ -126,7 +126,7 @@
 做|làm|tố
 想|muốn; nghĩ|tưởng
 练习|luyện tập|luyện tập
-名字|tên|danh tự
+名字|tên|danh tự|py:míngzi
 叫|gọi; tên là|khiếu
 报名|đăng ký tham gia|báo danh
 声音|âm thanh|thanh âm
@@ -153,7 +153,7 @@
 奇怪|lạ, kỳ quặc|kỳ quái
 会|sẽ; có thể|hội
 第|thứ (số thứ tự)|đệ
-一样|giống nhau; như nhau|nhất dạng
+一样|giống nhau; như nhau|nhất dạng|py:yíyàng
 一共|tổng cộng|nhất cộng
 法院|tòa án|pháp viện|s
 法官|thẩm phán|pháp quan|s
@@ -164,7 +164,7 @@
 评委老师|(cách thí sinh gọi giám khảo trên TV)||s
 评审委员|ủy viên chấm xét (dạng đầy đủ của 评委)|bình thẩm ủy viên|s
 秀|khoe, trình diễn (tiếng lóng mạng)|tú|s
-秀恩爱|khoe tình cảm đôi (tiếng lóng mạng)||s
+秀恩爱|khoe tình cảm đôi (tiếng lóng mạng)||s|py:xiù'ēn'ài
 决赛|trận chung kết|quyết tái|s
 电视台|đài truyền hình|điện thị đài|s
 糟|hỏng, tệ (糟了 = chết rồi)|tao|s
@@ -177,7 +177,7 @@
 张|(lượng từ cho tờ, tấm)|trương
 两|hai|lưỡng
 句|câu, lời|cú
-个|(lượng từ chung)|cá
+个|(lượng từ chung)|cá|py:ge
 人|người|nhân
 见|thấy, gặp|kiến
 现在|bây giờ|hiện tại
@@ -229,8 +229,8 @@
 一定|nhất định, chắc chắn|nhất định
 一直|suốt, luôn luôn|nhất trực
 七|bảy|thất
-丈夫|chồng|trượng phu
-东西|đồ, đồ vật|đông tây
+丈夫|chồng|trượng phu|py:zhàngfu
+东西|đồ, đồ vật|đông tây|py:dōngxi
 严重|nghiêm trọng|nghiêm trọng
 中间|ở giữa|trung gian
 久|lâu|cửu
@@ -274,12 +274,12 @@
 吵|cãi, ồn ào|sảo|t
 吵架|cãi nhau|sảo giá|t
 呀|(trợ từ cảm thán)||s
-告诉|nói cho biết|cáo tố
+告诉|nói cho biết|cáo tố|py:gàosu
 哎|ôi, ấy (cảm thán)||s
 哪|nào|nã
 哭|khóc|khốc
 嗯|ừm||s
-地|(trợ từ nối trạng ngữ: 简单地…); đất|địa
+地|(trợ từ nối trạng ngữ: 简单地…, đọc de); đất, ruộng (đọc dì: 种地, 地里)|địa|py:de
 地方|nơi, chỗ|địa phương
 坏|hỏng, xấu|hoại
 多|nhiều|đa
@@ -291,17 +291,17 @@
 夸奖|khen ngợi|khoa tưởng|s
 女|nữ|nữ
 好吃|ngon|hảo cật
-妻子|vợ|thê tử
+妻子|vợ|thê tử|py:qīzi
 婚|hôn|hôn
 嫉妒|ghen tị|tật đố|s
 字|chữ|tự
 学|học|học
 学习|học tập|học tập
 学校|trường học|học hiệu
-学生|học sinh|học sinh
+学生|học sinh|học sinh|py:xuésheng
 孩子|đứa trẻ, con|hài tử
 它|nó (vật)
-对不起|xin lỗi|đối bất khởi
+对不起|xin lỗi|đối bất khởi|py:duìbuqǐ
 小心|cẩn thận|tiểu tâm
 小时|giờ (khoảng thời gian)|tiểu thời
 工作|công việc; làm việc|công tác
@@ -337,7 +337,7 @@
 新闻|tin tức|tân văn
 旅游|du lịch|lữ du
 早|sớm|tảo
-早上|buổi sáng|tảo thượng
+早上|buổi sáng|tảo thượng|py:zǎoshang
 更|hơn, càng|cánh
 最后|cuối cùng|tối hậu
 最好|tốt nhất|tối hảo
@@ -351,7 +351,7 @@
 水|nước|thủy
 氵|bộ thủy (nước)||s
 法|pháp, cách|pháp
-消息|tin, tin nhắn|tiêu tức
+消息|tin, tin nhắn|tiêu tức|py:xiāoxi
 满|đầy|mãn
 满意|hài lòng|mãn ý
 火|lửa|hỏa
@@ -392,7 +392,7 @@
 结|kết|kết
 继续|tiếp tục|kế tục
 网|mạng|võng
-老婆|vợ (thân mật)|lão bà|t
+老婆|vợ (thân mật)|lão bà|t|py:lǎopo
 老板|ông chủ, sếp|lão bản|s
 聊|trò chuyện|liêu
 能|có thể|năng
@@ -419,7 +419,7 @@
 课|bài học, tiết học|khóa
 走|đi bộ, đi|tẩu
 起|dậy, lên|khởi
-起来|đứng lên, dậy|khởi lai
+起来|đứng lên, dậy|khởi lai|py:qǐlai
 跑步|chạy bộ|bào bộ
 跟|với, cùng
 路|đường|lộ
@@ -442,7 +442,7 @@
 鼓励|động viên|cổ lệ
 非常|rất, vô cùng|phi thường
 人|người|nhân
-个|(lượng từ chung)|cá
+个|(lượng từ chung)|cá|py:ge
 接|nối; đón|tiếp
 直|thẳng|trực
 直接|trực tiếp|trực tiếp
@@ -461,7 +461,7 @@
 跑|chạy|bào
 陪|ở bên cạnh, đi cùng|bồi
 吵过架|từng cãi nhau|s
-休息|nghỉ ngơi|hưu tức
+休息|nghỉ ngơi|hưu tức|py:xiūxi
 几|mấy; vài|kỷ
 响|kêu, reo|hưởng
 真正|thật sự|chân chính
@@ -502,7 +502,7 @@
 感动|cảm động; xúc động|cảm động
 感人|làm người ta cảm động|cảm nhân|s
 可能性|khả năng, xác suất|khả năng tính|s
-几年如一日|nhiều năm như một ngày (thành ngữ)|s
+几年如一日|nhiều năm như một ngày (thành ngữ)|s|py:jǐniánrúyírì
 日|ngày|nhật
 知|biết|tri
 他俩|hai người họ|s
@@ -512,8 +512,8 @@
 以前|trước đây|dĩ tiền
 音乐|âm nhạc|âm nhạc
 价格|giá cả|giá cách
-时候|lúc, khi|thời hậu
-哪儿|ở đâu
+时候|lúc, khi|thời hậu|py:shíhou
+哪儿|ở đâu|py:nǎr
 参加|tham gia|tham gia
 唱|hát|xướng
 四十|bốn mươi|tứ thập
@@ -530,18 +530,18 @@
 那么|như vậy, thế
 随后|sau đó|tùy hậu
 进来|đi vào, vào đây|tiến lai
-第二|thứ hai|đệ nhị
+第二|thứ hai|đệ nhị|py:dì'èr
 十几年|hơn mười năm|thập kỷ niên
 生活|cuộc sống; đời sống|sinh hoạt
 中|trong, giữa|trung
 任何|bất cứ, bất kỳ|nhiệm hà
 红脸|đỏ mặt; nổi nóng, to tiếng|hồng kiểm
-相亲相爱|thương yêu gần gũi nhau|tương thân tương ái
+相亲相爱|thương yêu gần gũi nhau|tương thân tương ái|py:xiāngqīnxiāng'ài
 点头|gật đầu|điểm đầu
 轮到|đến lượt|luân đáo|s
 却|nhưng lại, thế mà|khước
 不见|không thấy|bất kiến
-走出来|đi ra|tẩu xuất lai
+走出来|đi ra|tẩu xuất lai|py:zǒuchūlai
 究竟|rốt cuộc, thực chất|cứu cánh
 只见|chỉ thấy|chỉ kiến|py:zhǐ jiàn
 仍然|vẫn, vẫn còn|nhưng nhiên
@@ -573,9 +573,9 @@
 放弃|từ bỏ, bỏ cuộc|phóng khí
 机会|cơ hội|cơ hội
 而是|mà là|nhi thị
-一段|một đoạn, một quãng|nhất đoạn
-一会儿|một lúc, một lát|nhất hội nhi
-不好意思|ngại, ngượng|bất hảo ý tư
+一段|một đoạn, một quãng|nhất đoạn|py:yíduàn
+一会儿|một lúc, một lát|nhất hội nhi|py:yíhuìr
+不好意思|ngại, ngượng|bất hảo ý tư|py:bùhǎoyìsi
 后半夜|nửa đêm sau, gần sáng|hậu bán dạ|s
 赶|đuổi, xua; vội|cản
 一楼|tầng một|nhất lâu
@@ -585,8 +585,8 @@
 评为|bình chọn là|bình vi|py:píng wéi
 婚姻|hôn nhân|hôn nhân|t
 相敬如宾|vợ chồng kính trọng nhau như khách quý|tương kính như tân|t
-暗暗|thầm, ngấm ngầm|ám ám|t
-不耐烦|sốt ruột, bực mình|bất nại phiền|t
+暗暗|thầm, ngấm ngầm|ám ám|t|py:àn'àn
+不耐烦|sốt ruột, bực mình|bất nại phiền|t|py:búnàifán
 靠|dựa, tựa|kháo|t
 肩膀|bờ vai, vai|kiên bảng|t
 喊|kêu, gọi|hảm|t
@@ -594,7 +594,7 @@
 手指|ngón tay|thủ chỉ|t
 歪歪扭扭|xiêu vẹo, nguệch ngoạc|oai oai nữu nữu|t
 递|đưa, chuyển|đệ|t
-脑袋|đầu|não đại|t
+脑袋|đầu|não đại|t|py:nǎodai
 女士|bà (cách gọi lịch sự với phụ nữ)|nữ sĩ|t
 叙述|thuật lại|tự thuật|t
 居然|lại có thể (bất ngờ)|cư nhiên|t
@@ -611,11 +611,11 @@
 串|xâu, chuỗi|xuyến|s
 仑|(phần chỉ âm trong 轮)|luân|s
 代|đời; thay thế; (phần chỉ âm trong 袋)|đại|s
-任务|nhiệm vụ|nhiệm vụ
+任务|nhiệm vụ|nhiệm vụ|py:rènwu
 任|(trong 任务, 任何)|nhiệm
 受伤|bị thương|thụ thương
 俩|hai (người)|lưỡng
-这儿|ở đây|giá nhi
+这儿|ở đây|giá nhi|py:zhèr
 兴奋|phấn khích, hào hứng|hưng phấn
 决定|quyết định|quyết định
 计划|kế hoạch|kế hoạch
@@ -625,7 +625,7 @@
 运动|vận động, thể thao|vận động
 技术|kỹ thuật|kỹ thuật
 完全|hoàn toàn|hoàn toàn
-客气|khách sáo, lịch sự|khách khí
+客气|khách sáo, lịch sự|khách khí|py:kèqi
 座位|chỗ ngồi|tòa vị
 飞机|máy bay|phi cơ
 夏天|mùa hè|hạ thiên
@@ -651,9 +651,9 @@
 经过|diễn biến; đi qua|kinh quá
 特别|đặc biệt, rất|đặc biệt
 碰到|gặp, đụng phải|bính đáo|s
-漂亮|đẹp|phiêu lượng
+漂亮|đẹp|phiêu lượng|py:piàoliang
 父母|cha mẹ|phụ mẫu
-好朋友|bạn tốt|hảo bằng hữu
+好朋友|bạn tốt|hảo bằng hữu|py:hǎopéngyou
 患难|hoạn nạn, khó khăn|hoạn nạn|s
 叮嘱|dặn dò|đinh chúc|s
 嘴边|bên miệng, môi|chủy biên
@@ -668,7 +668,7 @@
 睡着|ngủ thiếp đi|thụy trước|py:shuì zháo
 长得|mọc, trông|trưởng đắc|py:zhǎng de
 等得|đợi đến mức|đẳng đắc|py:děng de
-只|(lượng từ cho con vật: 一只蚊子)|chỉ|py:zhī
+只|chỉ (đọc zhǐ); con (lượng từ con vật, đọc zhī: 一只蚊子)|chỉ|py:zhǐ
 将|đem, đưa (将…评为…)|tương|py:jiāng
 号|số, ngày|hiệu|py:hào
 头|đầu|đầu
@@ -687,7 +687,7 @@
 马上|ngay lập tức|mã thượng
 医院门口|cổng bệnh viện|y viện môn khẩu
 感情|tình cảm|cảm tình
-事情|sự việc, chuyện|sự tình
+事情|sự việc, chuyện|sự tình|py:shìqing
 部|bộ, phần; (lượng từ cho phim)|bộ
 这部|bộ này|giá bộ
 伤|thương, vết thương|thương
@@ -768,3 +768,14 @@
 认|nhận, biết|nhận
 试|thử, thi|thí
 语|lời, tiếng|ngữ
+一只|một con (一只蚊子; 只 đọc zhī)|nhất chích|py:yìzhī
+睡不着|không ngủ được (着 đọc zháo)|thụy bất trước|py:shuìbuzháo
+看不清|nhìn không rõ|khán bất thanh|py:kànbuqīng
+听不懂|nghe không hiểu|thính bất đổng|py:tīngbudǒng
+站不起来|không đứng dậy được|trạm bất khởi lai|py:zhànbuqǐlai
+得听|phải nghe (得 = phải, đọc děi)|đắc thính|py:děitīng
+得走|phải đi (得 = phải, đọc děi)|đắc tẩu|py:děizǒu
+得早|phải … sớm (得 = phải, đọc děi)|đắc tảo|py:děizǎo
+得了|giành được, được (得 đọc dé)|đắc liễu|py:déle
+点儿|một chút|điểm nhi|py:diǎnr
+有点儿|hơi, có chút|hữu điểm nhi|py:yǒudiǎnr

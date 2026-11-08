@@ -54,7 +54,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
         why: '<b>从…到县里</b> = từ … lên huyện. <b>坐车</b> = đi xe. <b>一个小时</b> = một tiếng.',
         whyNot: ['', '坐车 = đi xe, không phải đi bộ.', '一个小时 = một tiếng, không phải nửa tiếng.'] } },
     '套': { exv: ['Bộ đồ gỗ này là bà ngoại để lại cho nhà mình.', 'Lúc cưới anh ấy mua một bộ com-lê mới.'],
-      hear: { s: '他们在县里买了一套新房子。', opts: ['Họ mua một căn nhà mới trên huyện.', 'Họ thuê một căn nhà mới trên huyện.', 'Họ mua một căn nhà mới trên thành phố.'],
+      hear: { s: '他们在县里买了一套新房子。', opts: ['Họ mua một căn nhà mới trên huyện.', 'Họ thuê một căn nhà mới trên huyện.', 'Họ mua một căn nhà mới ở thành phố.'],
         why: '<b>一套房子</b> = một căn nhà. <b>在县里</b> = trên huyện.',
         whyNot: ['', '买 = mua, không phải thuê.', '县里 = trên huyện, không phải thành phố.'] } },
     /* ---------- tập 4 ---------- */

@@ -260,8 +260,9 @@ for kind in ('tf', 'spot', 'hsk'):
     for j, x in enumerate(TB.get(kind) or []):
         if kind != 'hsk' and x.get('t') != kind: P(f'TESTBANK.{kind}[{j}]: t must be {kind}')
         if x.get('u') and x['u'] not in ORDER: P(f'TESTBANK.{kind}[{j}]: unknown unit {x.get("u")}')
-        al = {w for w, (a, b) in taught_at.items() if a <= ORDER.index(x['u'])} if x.get('u') in ORDER else allT
-        check_screen(x, al, f'TESTBANK.{kind}[{j}]')
+        check_screen(x, allT, f'TESTBANK.{kind}[{j}]')   # the test comes after every unit: all Bài 2 words are taught
+        # u = the unit the result screen sends a wrong answer back to (phiếu #18): for spot, the unit that teaches the right word w[0]
+        if kind == 'spot' and x.get('w') and x.get('u') and WORDS.get(x['w'][0], {}).get('ep') != x['u']: P(f'TESTBANK.spot[{j}]: u {x["u"]} is not the unit of the right word {x["w"][0]} ({WORDS.get(x["w"][0], {}).get("ep")})')
         if kind == 'hsk' and x.get('t') not in ('hear', 'mc', 'order'): P(f'TESTBANK.hsk[{j}]: only hear / mc / order')
 
 # ---- per-word data ----

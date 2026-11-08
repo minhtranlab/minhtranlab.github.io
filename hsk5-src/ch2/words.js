@@ -55,7 +55,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
       'Chữ này còn nghĩa “giãy” (挣断 = giãy đứt), gặp ở Ôn tập.'],
       ex: ['他每个月挣的钱不多，可是很努力。', '她一边学习一边打工挣钱。'] },
     { id: '县', ep: '2-3', vi: 'huyện', hv: 'huyện', facts: [
-      'Đơn vị hành chính dưới tỉnh, trên làng xã. <b>县里</b> = trên huyện, 县城 = thị trấn huyện lỵ.',
+      'Đơn vị hành chính dưới tỉnh (thường thuộc một thành phố cấp địa khu), trên xã/thị trấn. <b>县里</b> = trên huyện, 县城 = thị trấn huyện lỵ.',
       'Trong bài: <b>在县里买了一套新房</b> = mua nhà mới trên huyện: gần quê hơn thành phố lớn.'],
       ex: ['从我们村到县里要坐一个小时的车。', '他在县里的一家医院工作。'] },
     { id: '套', ep: '2-3', vi: 'bộ, căn (lượng từ)', hv: 'sáo', facts: [
@@ -102,7 +102,7 @@ var CH2 = window.CH2 || (window.CH2 = {});
     { id: '临', ep: '2-6', vi: 'sắp, gần (lúc)', hv: 'lâm', facts: [
       '<b>临 + động từ (+ 时 / 前 / 那天)</b> = lúc sắp…: <b>临走那天</b> (hôm sắp đi, như trong bài), 临睡前 (trước lúc ngủ), 临出门的时候.',
       'Còn là động từ “kề, sát”: <b>临街</b> (giáp đường), 临江 (sát sông).',
-      'Hán Việt “lâm” như “lâm thời”, “lâm chung”: sắp tới lúc…'],
+      'Hán Việt “lâm” như “lâm chung”, “lâm nguy”, “lâm bồn”: sắp tới lúc…'],
       ex: ['临睡前，她总是给姥姥打个电话。', '这家饭馆临街，有点儿吵。'] },
     /* ---------- tập 7 ---------- */
     { id: '悄悄', ep: '2-7', vi: 'lặng lẽ, nhẹ nhàng', hv: 'tiễu tiễu', facts: [
