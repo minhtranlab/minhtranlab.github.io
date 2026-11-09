@@ -7,6 +7,10 @@
   - a quiet room: 3 failed holds -> 'Mình đã nói' (never stuck); microphone denied -> fallback with the error code; no microphone API -> fallback
     from the start; 'Bỏ qua (không tiện nói)' always works; iOS-like audio session goes back to 'playback' after a take;
   - leaving the screen drops the recording. Every 'say' screen of every chapter points to a book sentence with a male clip.
+  - phiếu #24 (Minh: "cứ cho mình thời gian"): TAP 🎤 to start, TAP "⏹ Dừng" to stop (no holding); while recording a seconds counter and the
+    sound rings; a pointercancel in the middle (iOS: finger moves / gesture) does NOT stop it; it goes on past the old time limit
+    (6 s + 0.9 s per character); only a safety stop at 60 s; after the take ONLY the learner's voice plays (no model, echo and read alike),
+    the model on '▶ Nghe câu mẫu'; '🎤 Thu lại' records again and the new take replaces the old one.
 Run from hsk5-src/tests with serve.py on :8765. Prints SAY OK."""
 import asyncio, os, sys, json
 from playwright.async_api import async_playwright
@@ -27,16 +31,22 @@ async def goto_say(pg, sid, ch=1):
     await pg.evaluate(f"st.auto=1; st.openAll=1; window.__plays.length=0; (()=>{{const S=SESSIONS.find(s=>s.id==={json.dumps(sid)});const i=S.screens.findIndex(c=>c.t==='say');st.sess[S.id]={{i,b:i,done:0}};play(S.id)}})()")
     await pg.wait_for_timeout(1500)
 
-async def hold(pg, ms, touch=None):
-    r = await pg.evaluate("(()=>{const e=document.querySelector('.sy-mic');e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2]})()")
-    await pg.wait_for_timeout(150)
-    x, y = r
+async def micxy(pg, sel='.sy-mic'):
+    r = await pg.evaluate("(s)=>{const e=document.querySelector(s);e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2]}", sel)
+    await pg.wait_for_timeout(120); return r
+async def tap(pg, touch=None, sel='.sy-mic'):
+    """one quick tap (a finger on a phone, the mouse elsewhere)"""
+    x, y = await micxy(pg, sel)
     if touch:
-        await touch.send('Input.dispatchTouchEvent', {'type': 'touchStart', 'touchPoints': [{'x': x, 'y': y}]}); await pg.wait_for_timeout(ms)
+        await touch.send('Input.dispatchTouchEvent', {'type': 'touchStart', 'touchPoints': [{'x': x, 'y': y}]}); await pg.wait_for_timeout(60)
         await touch.send('Input.dispatchTouchEvent', {'type': 'touchEnd', 'touchPoints': []})
     else:
-        await pg.mouse.move(x, y); await pg.mouse.down(); await pg.wait_for_timeout(ms); await pg.mouse.up()
-    await pg.wait_for_timeout(600)
+        await pg.mouse.move(x, y); await pg.mouse.down(); await pg.wait_for_timeout(60); await pg.mouse.up()
+REC_ON = "document.querySelector('.sy-mic')&&document.querySelector('.sy-mic').textContent==='⏹ Dừng'"
+async def rec(pg, ms, touch=None):
+    """tap 🎤, speak for ms, tap ⏹ Dừng (phiếu #24: no holding)"""
+    await tap(pg, touch); await pg.wait_for_function(REC_ON, timeout=6000)
+    await pg.wait_for_timeout(ms); await tap(pg, touch); await pg.wait_for_timeout(600)
 
 async def need(pg):
     return await pg.evaluate("Math.max(1,COMIC.perChar*COMIC.share*akey(sayLine(SESSIONS.find(x=>x.id===sid).screens[SS(sid).i]).zh).length)")
@@ -74,14 +84,30 @@ async def run_mic(b, lab, vp, mobile):
     chk(v[0] and v[1] == 0 and v[2], f'{lab} echo: Hiện chữ shows the text, pinyin now as ruby over it {v}')
     await pg.click('.sy-show'); await pg.click('.sy-py')
     n = await need(pg)
-    await hold(pg, 650, touch)
-    chk(not await pg.evaluate('__say.done'), f'{lab} echo: a 0.65 s hold does not count')
-    m = await pg.inner_text('.pane .cm-msg'); chk('Giữ nút' in m or 'Chưa nghe' in m, f'{lab} echo: message after a short hold ({m})')
+    chk(await pg.inner_text('.sy-mic') == '🎤 Chạm để nói', f'{lab} echo: mic button says "Chạm để nói"')
+    await rec(pg, 650, touch)
+    chk(not await pg.evaluate('__say.done'), f'{lab} echo: a 0.65 s take does not count')
+    m = await pg.inner_text('.pane .cm-msg'); chk('Chạm' in m or 'Chưa nghe' in m, f'{lab} echo: message after a short take ({m})')
     await pg.evaluate('window.__plays.length=0')
-    await hold(pg, int(n * 1000) + 900, touch)
+    # one tap starts; the finger moving / an iOS gesture (pointercancel) in the middle does not stop it; nothing stops it before Dừng
+    x, y0 = await micxy(pg)
+    if touch:
+        await touch.send('Input.dispatchTouchEvent', {'type': 'touchStart', 'touchPoints': [{'x': x, 'y': y0}]}); await pg.wait_for_function(REC_ON, timeout=6000)
+        await pg.wait_for_timeout(400); await touch.send('Input.dispatchTouchEvent', {'type': 'touchCancel', 'touchPoints': []})   # finger slid off: the browser cancels
+    else:
+        await tap(pg); await pg.wait_for_function(REC_ON, timeout=6000)
+    await pg.evaluate("(()=>{const m=document.querySelector('.sy-mic');for(const t of [m,window,document])t.dispatchEvent(new PointerEvent('pointercancel',{bubbles:true,pointerId:1}));m.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerId:1}));})()")
+    old = await pg.evaluate("Math.min(30000,(akey(sayLine(SESSIONS.find(x=>x.id===sid).screens[SS(sid).i]).zh).length*0.9+6)*1000)")
+    wait = int(old) + 1500 if lab == 'phone' else int(n * 1000) + 900
+    await pg.wait_for_timeout(wait)
+    r = await pg.evaluate("[document.querySelector('.sy-mic').textContent, document.querySelector('.sy-time').textContent, !document.querySelector('.sy-rec').hidden, getComputedStyle(document.querySelector('.sy-mic'),'::before').animationName, __say.takes.length, __say.done]")
+    secs = int(r[1].split(':')[0]) * 60 + int(r[1].split(':')[1])
+    chk(r[0] == '⏹ Dừng' and r[4] == 1 and not r[5], f'{lab} echo: still recording after a pointercancel{" and past the old limit of %.1f s" % (old / 1000) if lab == "phone" else ""} {r}')
+    chk(r[2] and abs(secs - wait / 1000) <= 2 and r[3] == 'cm-ring', f'{lab} echo: seconds counter ({r[1]}) and sound rings while recording')
+    await tap(pg, touch); await pg.wait_for_timeout(600)
     await pg.wait_for_function('window.__say.done', timeout=5000)
     y = await pg.evaluate("JSON.stringify([__say.how, !!__say.url, __say.takes.map(t=>t.ok)])")
-    chk(json.loads(y)[:2] == ['rec', True], f'{lab} echo: a long enough hold passes and is recorded {y}')
+    chk(json.loads(y)[:2] == ['rec', True], f'{lab} echo: tapping "⏹ Dừng" ends the take, recorded {y}')
     await pg.wait_for_timeout(1500)
     pl = await pg.evaluate('__plays.slice()')
     chk('REC:say' in pl, f'{lab} echo: the take is played back automatically {pl[:4]}')
@@ -106,12 +132,22 @@ async def run_mic(b, lab, vp, mobile):
         chk(rb, f'{lab} read {sid}: Pinyin button shows ruby over the text')
         await pg.evaluate("document.querySelector('.sy-hints .sy-py').click()")
         n = await need(pg); await pg.evaluate('window.__plays.length=0')
-        await hold(pg, int(n * 1000) + 900, touch)
+        await rec(pg, int(n * 1000) + 900, touch)
         await pg.wait_for_function('window.__say.done', timeout=5000)
-        await pg.wait_for_function(f"__plays.includes('M:{key}')", timeout=20000)
+        await pg.wait_for_timeout(3000)
         pl = await pg.evaluate('__plays.slice()')
-        chk(pl.index('REC:say') < pl.index('M:' + key), f'{lab} read {sid}: own voice first, then the model {pl[:4]}')
+        chk('REC:say' in pl and not any(p.startswith('M:') for p in pl), f'{lab} read {sid}: own voice played, the model NOT played by itself {pl[:4]}')
+        b2 = await pg.evaluate("[...document.querySelectorAll('.sy-after button')].map(b=>b.textContent)")
+        chk(b2 == ['▶ Giọng của bạn', '▶ Nghe câu mẫu', '🎤 Thu lại'], f'{lab} read {sid}: buttons after the take {b2}')
+        await pg.evaluate('window.__plays.length=0'); await pg.click('.sy-model'); await pg.wait_for_timeout(500)
+        chk(('M:' + key) in await pg.evaluate('__plays'), f'{lab} read {sid}: the model plays when "▶ Nghe câu mẫu" is tapped')
         await check_answer(pg, f'{lab} read {sid}')
+        if sid == '2-1':   # Thu lại: a new take replaces the old one
+            u1 = await pg.evaluate('__say.url'); await pg.evaluate('window.__plays.length=0')
+            await pg.click('.sy-again'); await pg.wait_for_function(REC_ON, timeout=6000); await pg.wait_for_timeout(int(n * 1000) + 900)
+            await tap(pg, touch); await pg.wait_for_function("__say.takes.filter(t=>t.ok).length>=2", timeout=6000); await pg.wait_for_timeout(1500)
+            r = await pg.evaluate("[__say.url, __say.takes.length, __plays.slice(), document.querySelectorAll('.pane .reveal').length, document.querySelector('.sy-act').hidden]")
+            chk(r[0] and r[0] != u1 and 'REC:say' in r[2] and not any(p.startswith('M:') for p in r[2]) and r[3] == 1 and r[4], f'{lab} read {sid}: "🎤 Thu lại" records a new take that replaces the old one, plays it, one answer block {r[1:]}')
         if sid == 6: await pg.screenshot(path=f'n_say_read_{lab}.png')
     chk(not errs, f'{lab}: page errors {errs[:3]}')
     await ctx.close()
@@ -140,7 +176,7 @@ async def main():
         b = await p.chromium.launch(executable_path='/opt/pw-browsers/chromium', args=common + fake + ['--use-file-for-fake-audio-capture=' + room])
         ctx = await b.new_context(viewport={'width': 820, 'height': 1180}, has_touch=True, permissions=['microphone']); pg = await ctx.new_page()
         await goto_say(pg, 2); n = await need(pg)
-        for _ in range(3): await hold(pg, int(n * 1000) + 600)
+        for _ in range(3): await rec(pg, int(n * 1000) + 600)
         chk(not await pg.evaluate('__say.done'), 'quiet room: speaking is not accepted')
         chk(await pg.query_selector('.sy-act .sy-did') is not None, 'quiet room: "Mình đã nói" after 3 tries')
         await pg.click('.sy-act .sy-did'); await pg.wait_for_timeout(300)
@@ -180,10 +216,15 @@ async def main():
           const g=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);navigator.mediaDevices.getUserMedia=c=>as.type==='playback'?Promise.reject(new DOMException('capture refused in playback session','NotAllowedError')):g(c);})()''')
         pg = await ctx.new_page(); errs = []; pg.on('pageerror', lambda e: errs.append(str(e)))
         await goto_say(pg, 4); n = await need(pg)
-        await hold(pg, int(n * 1000) + 900); await pg.wait_for_function('window.__say.done', timeout=5000)
+        await rec(pg, int(n * 1000) + 900); await pg.wait_for_function('window.__say.done', timeout=5000)
         chk(await pg.evaluate("!window.__sayMicErr && __say.how==='rec'"), 'ios-session: recorded, no mic error')
         chk(await pg.evaluate("navigator.audioSession.type") == 'playback' and 'play-and-record' in await pg.evaluate('__asLog'), 'ios-session: play-and-record to record, back to playback after')
         chk(not errs, f'ios-session: page errors {errs[:3]}')
+        # 7) safety stop: a take left running stops by itself after 60 s (and still counts when a voice was heard)
+        await goto_say(pg, 5); await tap(pg); await pg.wait_for_function(REC_ON, timeout=6000)
+        await pg.wait_for_function('window.__say.takes.length>0', timeout=70000)
+        r = await pg.evaluate("[__say.takes[0].auto, Math.round(__say.takes[0].dur), __say.done, document.querySelector('.cm-msg').textContent]")
+        chk(r[0] and 59 <= r[1] <= 62 and r[2] and 'tự dừng sau 60 giây' in r[3], f'safety stop after 60 s {r}')
         await b.close()
     print('SAY', 'FAIL' if fails else 'OK', len(fails), 'failures', fails[:20])
     sys.exit(1 if fails else 0)
