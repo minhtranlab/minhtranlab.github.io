@@ -21,19 +21,49 @@ function segs(s) { // -> [{k, known}] for every Chinese word in s
 }
 /* a taught word (flag t) counts as "new word of the lesson" only from the chapter that teaches it on (DICT 5th item = that chapter; CUR_CH = chapter on screen) */
 const isT = d => d[3] === 't' && !(d[4] > (window.CUR_CH || 1));
-function zh(s) {
-  let out = '', i = 0;
+/* ===== tone change of a LONE 一 / 不 (phiếu #20, HANDOFF §6/§11). Inside a DICT word (一下 yíxià, 不是 búshì, 睡不着 shuìbuzháo) the
+   glossary already has the textbook reading; a lone 一 / 不 (一套, 不会…) takes its tone from the word right after it:
+   不: next syllable 4th tone → bú, else bù; X不X → bu.
+   一: next 4th tone (or neutral from a 4th: 一个 yí ge) → yí; next 1st/2nd/3rd → yì; counting / ordinal (第一, 十一, 一楼, 一号, 一月,
+   一九八五), last of a phrase / before punctuation, 一一 → yī; V一V (看一看) → yi.
+   "Tone of the next word" = first syllable of its pinyin AS SHOWN (glossary py: first, pypinyin after; neutral → the character's own
+   tone), precomputed by build.py as DT1 {tone: 'word|word'}. HTML tags (<b>…</b> around new words) are looked through. ===== */
+const TONEV = {}; ['āēīōūǖ', 'áéíóúǘ', 'ǎěǐǒǔǚ', 'àèìòùǜ'].forEach((cs, t) => [...cs].forEach(c => { TONEV[c] = t + 1; }));
+const T1 = {}; if (typeof DT1 !== 'undefined') Object.keys(DT1).forEach(t => DT1[t].split('|').forEach(w => { T1[w] = +t; }));
+const t1Of = k => T1[k] || [...((DICT[k] || [''])[0])].map(c => TONEV[c]).find(Boolean) || 5;
+function sandhi(k, p, n, nk) {   // p / n = Han character just before / after (''), nk = the next word ('' if none)
+  if (k === '不') { if (!nk) return 'bù'; if (p && p === n) return 'bu'; return t1Of(nk) === 4 ? 'bú' : 'bù'; }
+  if (!nk || (p && '第十初统唯万'.includes(p)) || '一二三四五六七八九十〇零月号楼'.includes(n)) return 'yī';
+  if (p && p === n) return 'yi';
+  const t = t1Of(nk); return t === 4 || t === 5 ? 'yí' : 'yì';
+}
+/* a string cut like zh() does it: Han words (known: DICT word, py = pinyin to show), other characters, HTML tags */
+function pySegs(s) {
+  s = String(s); const out = []; let i = 0;
   while (i < s.length) {
     const c = s[i];
-    if (isHan(c)) {
-      let m = 0;
-      for (let L = Math.min(MAXL, s.length - i); L >= 1; L--) { if (DICT[s.substr(i, L)]) { m = L; break; } }
-      if (!m) { out += `<span class="w unk" data-k="${c}">${c}</span>`; i++; continue; }
-      const k = s.substr(i, m), d = DICT[k];
-      out += `<span class="w${isT(d) ? ' t' : ''}" data-k="${k}"><ruby>${k}<rt>${d[0]}</rt></ruby></span>`;
-      i += m;
-    } else { out += c; i++; }
+    if (c === '<') { const e = s.indexOf('>', i); if (e > i) { out.push({ k: s.slice(i, e + 1), tag: 1 }); i = e + 1; continue; } }
+    if (!isHan(c)) { out.push({ k: c }); i++; continue; }
+    let m = 0;
+    for (let L = Math.min(MAXL, s.length - i); L >= 1; L--) { if (DICT[s.substr(i, L)]) { m = L; break; } }
+    if (!m) { out.push({ k: c, han: 1 }); i++; continue; }
+    const k = s.substr(i, m); out.push({ k, han: 1, known: 1, py: DICT[k][0] }); i += m;
   }
+  out.forEach((x, j) => {
+    if (!x.known || (x.k !== '一' && x.k !== '不')) return;
+    let a = j - 1, b = j + 1; while (a >= 0 && out[a].tag) a--; while (b < out.length && out[b].tag) b++;
+    const P = out[a], N = out[b], p = P && P.han ? P.k.slice(-1) : '', nk = N && N.han ? N.k : '';
+    x.py = sandhi(x.k, p, nk.slice(0, 1), nk);
+  });
+  return out;
+}
+function zh(s) {
+  let out = '';
+  pySegs(s).forEach(x => {
+    if (!x.han) out += x.k;
+    else if (!x.known) out += `<span class="w unk" data-k="${x.k}">${x.k}</span>`;
+    else out += `<span class="w${isT(DICT[x.k]) ? ' t' : ''}" data-k="${x.k}"><ruby>${x.k}<rt>${x.py}</rt></ruby></span>`;
+  });
   return out;
 }
 /* option row: the text selects; 🔊 plays it; the lens lists every word of that option */

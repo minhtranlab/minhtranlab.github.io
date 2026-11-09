@@ -12,8 +12,13 @@ way and compares each word's pinyin with the reference reading of that word in t
     - r-hoá written joined (zhèr, yíhuìr), apostrophe before a/o/e inside a word (dì'èr, àn'àn); 3rd-tone change is never written.
   A multi-syllable word that CC-CEDICT reads with a neutral tone must be in TEXTBOOK (with the neutral tone, or kept full with a
   reason), so a new chapter cannot slip a 妻子 qīzǐ through.
-Lone 一 / 不 (a word of their own: 一套, 不会…): DICT cannot know the next word, so zh() itself must change the tone (App);
-until common.js does it (APP_SANDHI below) those places are only counted, not failed.
+Lone 一 / 不 (a word of their own: 一套, 不会…): zh() changes their tone from the word right after it (phiếu #20). This script
+gets what the APP really shows — every chunk goes through zh() of the built page in a browser (HTML tags such as <b> around new words
+are kept, zh() looks through them) — and checks it against the rules, written here on their own:
+    不: next syllable 4th tone → bú, else bù; X不X → bu.
+    一: next 4th tone (or neutral from a 4th: 一个 yí ge) → yí; next 1st/2nd/3rd → yì; counting / ordinal (第一, 十一, 一楼, 一号,
+        一月, 一九八五), last of a phrase / before punctuation, 一一 → yī; V一V (看一看) → yi.
+    tone of the next word = first syllable of its pinyin as shown (glossary py: first); neutral → that character's own tone.
 Run from hsk5-src/tests:  python3 t_pinyin.py     (pip install pypinyin pypinyin-dict)  → must end with "PY-CHECK 0"."""
 import os, re, sys, collections
 HERE = os.path.dirname(os.path.abspath(__file__)); SRC = os.path.dirname(HERE); sys.path.insert(0, SRC)
@@ -24,7 +29,6 @@ try:
 except ImportError:
     sys.exit('needs: pip install pypinyin-dict')
 
-APP_SANDHI = 'sandhi' in open(os.path.join(SRC, 'common.js'), encoding='utf-8').read()   # common.js zh() changes lone 一/不 (App)
 
 N = 'thanh nhẹ (cách ghi của giáo trình)'
 TEXTBOOK = {   # word -> reading shown (syllables joined; spaces ignored). Reason after #.
@@ -101,27 +105,62 @@ def join(word, syls):
     return out
 norm = lambda p: p.replace(' ', '').lower()
 
+def first_tone_shown(w):
+    """tone of the first syllable of word w as the app shows it (DICT pinyin); neutral → the character's own tone"""
+    import unicodedata
+    plain = lambda x: ''.join(c for c in unicodedata.normalize('NFD', x) if not unicodedata.combining(c)).replace('ü', 'v')
+    disp = B.D[w][0].replace(' ', '').replace("'", '') if w in B.D else ''; syl = lazy_pinyin(w, style=Style.TONE)
+    if not disp: t = tone(syl[0])
+    elif len(w) == 1: t = tone(disp)
+    elif plain(disp) == ''.join(plain(x) for x in syl): t = tone(disp[:len(syl[0])])
+    else: t = tone(syl[0])
+    return t if t != 5 else base_tone(w[0])
+def lone_rule(k, p, nk):
+    n = nk[:1]
+    if k == '不':
+        if not nk: return 'bù'
+        if p and p == n: return 'bu'
+        return 'bú' if first_tone_shown(nk) == 4 else 'bù'
+    if not nk or (p and p in '第十初统唯万') or (n and n in '一二三四五六七八九十〇零月号楼'): return 'yī'
+    if p and p == n: return 'yi'
+    return 'yí' if first_tone_shown(nk) in (4, 5) else 'yì'
+
+# chunks as the app gets them: Han text up to punctuation, HTML tags kept (they cut words but not the context of 一/不)
 txt = '\n'.join([B.content] + list(B.CHC.values()))
-runs = re.findall(r'[一-鿿]+', txt)
-fails = collections.OrderedDict(); app = collections.Counter(); ctxf = collections.OrderedDict(); used = collections.Counter()
-for run in runs:
-    ref = ref_syllables(run); cut = B.seg(run); i = 0
-    for j, (k, known) in enumerate(cut):
-        n = len(k); r = ref[i:i + n]; i += n
+chunks = sorted(set(re.findall(r'(?:[一-鿿]|<[^<>\n]{1,40}>)+', txt)))
+chunks = [c for c in chunks if re.search(r'[一-鿿]', c)]
+runs = [r for c in chunks for r in re.split(r'<[^<>]*>', c) if r]
+# what the app shows: zh() of the built page, word by word
+from playwright.sync_api import sync_playwright
+PAGE = 'file://' + os.path.join(os.path.dirname(SRC), 'hsk5', 'index.html')
+with sync_playwright() as pw:
+    br = pw.chromium.launch(); pg = br.new_page(); pg.goto(PAGE); pg.wait_for_timeout(300)
+    shown_all = pg.evaluate("(cs)=>cs.map(c=>[...zh(c).matchAll(/<ruby>(.*?)<rt>(.*?)<\\/rt><\\/ruby>/g)].map(m=>[m[1],m[2]]))", chunks)
+    br.close()
+fails = collections.OrderedDict(); lone = collections.Counter(); lone_bad = collections.OrderedDict(); ctxf = collections.OrderedDict(); used = collections.Counter(); cutbad = []
+for chunk, shown_words in zip(chunks, shown_all):
+    parts = [r for r in re.split(r'<[^<>]*>', chunk) if r]
+    words = []   # (word, known, reference syllables) over the whole chunk
+    for part in parts:
+        ref = ref_syllables(part); i = 0
+        for k, known in B.seg(part): words.append((k, known, ref[i:i + len(k)])); i += len(k)
+    known_words = [w for w in words if w[1]]
+    if [w[0] for w in known_words] != [x[0] for x in shown_words]: cutbad.append(chunk); continue
+    sh = iter(shown_words)
+    for j, (k, known, r) in enumerate(words):
         if not known: continue
-        used[k] += 1
-        shown = norm(B.D[k][0])
-        if k in TEXTBOOK and k not in ('一', '不'): want = TEXTBOOK[k]
-        else: want = join(k, r)
-        p = cut[j - 1][0] if j else ''; nx = cut[j + 1][0] if j + 1 < len(cut) else ''
-        if k in CONTEXT and p and CONTEXT[k][0](p, nx):
-            ctxf.setdefault((k, p, nx), (run, CONTEXT[k][1])); continue
-        if shown == want: continue
+        used[k] += 1; shown = norm(next(sh)[1])
+        p = words[j - 1][0] if j else ''; nx = words[j + 1][0] if j + 1 < len(words) else ''
         if k in ('一', '不'):
-            if APP_SANDHI: fails.setdefault((k, shown, want), run)
-            else: app[k + want] += 1
+            want = lone_rule(k, p[-1:], nx); lone[k + want] += 1
+            if shown != want: lone_bad.setdefault((k, shown, want), chunk)
             continue
-        fails.setdefault((k, shown, want), run)
+        if k in TEXTBOOK: want = TEXTBOOK[k]
+        else: want = join(k, r)
+        if k in CONTEXT and p and CONTEXT[k][0](p, nx):
+            ctxf.setdefault((k, p, nx), (chunk, CONTEXT[k][1])); continue
+        if shown == want: continue
+        fails.setdefault((k, shown, want), chunk)
 # words that CC-CEDICT reads with a neutral tone must be decided in TEXTBOOK
 neutral = []
 for k in sorted(used):
@@ -129,10 +168,12 @@ for k in sorted(used):
     syl = [x[0] if isinstance(x, list) else x for x in CC[k]]; dflt = lazy_pinyin(k, style=Style.TONE)
     if len(syl) == len(k) and any(tone(y) == 5 and tone(d) != 5 and c != '儿' for y, d, c in zip(syl, dflt, k)): neutral.append((k, B.D[k][0], ' '.join(syl)))
 for (k, shown, want), run in fails.items(): print(f'✗ {k}: shown {shown}, textbook {want}   ({run[:24]})')
+for (k, shown, want), run in lone_bad.items(): print(f'✗ lone {k}: app shows {shown}, rule says {want}   ({run[:30]})')
+for c in cutbad[:10]: print(f'✗ the app cuts this differently from build.seg: {c[:30]}')
 for (k, p, n), (run, why) in ctxf.items(): print(f'✗ {p}[{k}]{n}: {why} — cut as the particle   ({run[:24]})')
 for k, py, cc in neutral: print(f'✗ {k}: {py} — CC-CEDICT reads "{cc}" (neutral tone?): add it to TEXTBOOK')
-print(f'Chinese runs: {len(runs)}, words checked: {sum(used.values())} ({len(used)} different)')
-if app: print('lone 一/不 waiting for zh() tone change (App):', sum(app.values()), 'places,', ', '.join(f'{k}×{v}' for k, v in app.most_common()))
-bad = len(fails) + len(ctxf) + len(neutral)
+print(f'Chinese chunks: {len(chunks)}, words checked: {sum(used.values())} ({len(used)} different)')
+print(f'lone 一/不 checked in the app: {sum(lone.values())} places —', ', '.join(f'{k}×{v}' for k, v in lone.most_common()), f'— wrong: {len(lone_bad)}')
+bad = len(fails) + len(ctxf) + len(neutral) + len(lone_bad) + len(cutbad)
 print(f'PY-CHECK {bad}')
 sys.exit(1 if bad else 0)

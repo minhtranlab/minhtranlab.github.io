@@ -1,6 +1,6 @@
 import re, json, os, sys, hashlib, base64, subprocess
 HERE = os.path.dirname(os.path.abspath(__file__)); os.chdir(HERE); SITE = os.path.join(os.path.dirname(HERE), 'hsk5')
-from pypinyin import pinyin, Style
+from pypinyin import pinyin, lazy_pinyin, Style
 FL = {'t','s','n'}
 hsk = json.load(open('hsk.json'))
 W14 = set(); [W14.update(hsk['words'][k]) for k in '1234']
@@ -63,6 +63,25 @@ bad = dict(r1[1]); bad.update(rA[1]); [bad.update(r[1]) for r in rC.values()]
 tap = dict(r1[2]); tap.update(rA[2]); [tap.update(r[2]) for r in rC.values()]
 comp = dict(r1[4]); comp.update(rA[4]); [comp.update(r[4]) for r in rC.values()]
 taught = r1[3]
+_TL = {c: t for t, cs in enumerate(['āēīōūǖ', 'áéíóúǘ', 'ǎěǐǒǔǚ', 'àèìòùǜ'], 1) for c in cs}
+def _tone(syl): return next((_TL[c] for c in syl if c in _TL), 5)
+def _plain(x):
+    import unicodedata
+    return ''.join(c for c in unicodedata.normalize('NFD', x) if not unicodedata.combining(c)).replace('ü', 'v')
+def first_tone(w):
+    """tone of the first syllable of a DICT word AS SHOWN (glossary py: first, pypinyin after); a neutral first syllable -> the tone of
+    that character on its own (个 ge -> 4). Used by zh() for lone 一 / 不 (phiếu #20)."""
+    disp = D[w][0].replace(' ', '').replace("'", ''); syl = [x for x in lazy_pinyin(w, style=Style.TONE)]
+    if len(w) == 1: t = _tone(disp)
+    elif _plain(disp) == ''.join(_plain(x) for x in syl): t = _tone(disp[:len(syl[0])])
+    else: t = _tone(syl[0])
+    if t == 5: t = _tone(pinyin(w[0], style=Style.TONE)[0][0])
+    return t
+def first_tones():
+    """{tone: 'word|word|…'} for every DICT word (compact; common.js turns it into T1[word])"""
+    g = {}
+    for w in D: g.setdefault(str(first_tone(w)), []).append(w)
+    return {t: '|'.join(ws) for t, ws in sorted(g.items())}
 def word_chapters():
     """taught word -> chapter, from each chapter's WORDS ids"""
     m = {}
@@ -123,7 +142,7 @@ if __name__ == '__main__':
     print('audio clips in manifest: %d, shipped inline: %d, %s, unused: %d' % (len(manifest), len(keep), ', '.join(f'Bài {n}: {len(x)}' for n, x in keepC.items()), len(manifest) - len(alln)))
     missing_files = [k for k in alln if not os.path.exists(os.path.join(SITE, manifest[k]))]
     if missing_files: print('MISSING AUDIO FILES for', len(missing_files), 'manifest keys, e.g.', missing_files[:5])
-    dict_js = 'const DICT = ' + json.dumps(D, ensure_ascii=False) + ';'
+    dict_js = 'const DICT = ' + json.dumps(D, ensure_ascii=False) + ';' + '\nconst DT1 = ' + json.dumps(first_tones(), ensure_ascii=False) + ';'
     # chapter bundles: content files + its audio manifest, registered by regChapter() in the app
     REG = "(typeof regChapter === 'function' ? regChapter : (n, d, a) => (window.__pendingCh = window.__pendingCh || []).push([n, d, a]))"
     def bundle(n, aud):

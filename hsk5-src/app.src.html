@@ -562,13 +562,9 @@ async function chain(items, ep, mark) { // play several lines one after another
 }
 const whoH = l => WHO[l.who] ? `<div class="who ${l.who === 'n' ? 'n' : ''}">${WHO[l.who]}</div>` : '';
 const PUNC = { '，': ',', '。': '.', '！': '!', '？': '?', '：': ':', '；': ';', '、': ',' };
-function pyL(t) {   // one pinyin line for a Chinese sentence, punctuation kept
-  t = String(t).replace(/<[^>]+>/g, ''); let out = '', i = 0;
-  while (i < t.length) {
-    const c = t[i];
-    if (isHan(c)) { let m = 0; for (let L = Math.min(MAXL, t.length - i); L >= 1; L--) if (DICT[t.substr(i, L)]) { m = L; break; } if (!m) { i++; continue; } out += (out && !/[\s]$/.test(out) ? ' ' : '') + DICT[t.substr(i, m)][0]; i += m; }
-    else { if (PUNC[c]) out += PUNC[c]; i++; }
-  }
+function pyL(t) {   // one pinyin line for a Chinese sentence, punctuation kept (lone 一 / 不 with their tone change, see pySegs)
+  t = String(t).replace(/<[^>]+>/g, ''); let out = '';
+  pySegs(t).forEach(x => { if (x.known) out += (out && !/[\s]$/.test(out) ? ' ' : '') + x.py; else if (!x.han && PUNC[x.k]) out += PUNC[x.k]; });
   return out.replace(/\s+([,.!?:;])/g, '$1').trim();
 }
 const pyDiv = () => '';   /* pinyin now comes only from the 拼 button (ruby over the characters) */
@@ -1645,7 +1641,7 @@ function choose(sc, pane, ep, gate) {
   if (sc.audio && st.auto) setTimeout(() => { if (ep === EP) speak(sc.audio); }, 400);
 }
 const szs = id => id.length > 3 ? ' style="font-size:24px"' : id.length > 2 ? ' style="font-size:30px"' : '';
-const pyOf = t => segs(t).filter(x => DICT[x.k]).map(x => DICT[x.k][0]).join(' ');
+const pyOf = t => pySegs(t).filter(x => x.known).map(x => x.py).join(' ');
 /* ---- revision engine: which words are due, and which questions to ask ---- */
 /* the playable sessions of one chapter in path order, or of every loaded chapter (n omitted) */
 const STUDY = n => n ? pathOf(n).filter(o => o.S).map(o => o.S) : CHAPTERS.filter(c => c.loaded).flatMap(c => STUDY(c.n));
