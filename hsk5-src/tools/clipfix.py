@@ -335,3 +335,45 @@ def dtw_cost(a, b, sr):
 def trim_level(y, sr, level=-35):
     db, fr = envelope(y, sr, smooth=1); live = np.where(db > level)[0]
     return y[live[0] * fr:(live[-1] + 1) * fr] if len(live) else y
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# Phiếu #25 (2026-11-09): pitch. Kokoro said 以来 as "yí lǎi" (以 rising +7.7 semitones, 来 low and flat); nothing above looked
+# at pitch, and the order check passed it (same syllables, same order).
+
+def pitch(y, sr, hop=0.01, win=0.04, fmin=60, fmax=420):
+    """Per 10 ms: (harmonicity 0..1, F0 Hz) from the normalised autocorrelation of a 40 ms window."""
+    y = np.asarray(y, np.float64); h, n = int(sr * hop), int(sr * win); lo, hi = int(sr / fmax), int(sr / fmin); out = []
+    for i in range(0, max(0, len(y) - n), h):
+        x = y[i:i + n] - y[i:i + n].mean()
+        if (x * x).sum() < 1e-6: out.append((0.0, 0.0)); continue
+        X = np.fft.rfft(x, 2 * n); ac = np.fft.irfft(X * np.conj(X))[:hi + 1]
+        cum = np.cumsum(x[::-1] ** 2)[::-1]; r = ac / np.sqrt(cum[0] * cum[:hi + 1] + 1e-12)
+        j = lo + int(np.argmax(r[lo:hi + 1])); out.append((float(r[j]), sr / j))
+    return np.array(out).reshape(-1, 2)
+
+
+def f0_track(y, sr):
+    """F0 per 10 ms (NaN where unvoiced or quiet), octave jumps removed, and the clip's median F0."""
+    p = pitch(y, sr); db, _ = envelope(y, sr, smooth=1); n = min(len(p), len(db)); p, db = p[:n], db[:n]
+    f = np.where((p[:, 0] > 0.6) & (db > -32), p[:, 1], np.nan)
+    if not np.isfinite(f).any(): return f, np.nan
+    med = float(np.nanmedian(f)); f[(f > 1.8 * med) | (f < 0.55 * med)] = np.nan
+    return f, med
+
+
+def syllable_pitch(y, sr, n_syll):
+    """Per syllable: start / end / rise / fall of the pitch in semitones from the clip median (None when too little voicing).
+    Syllables = the voiced stretch cut at the energy dips between vowel nuclei (equal parts if the nuclei do not count n)."""
+    f, med = f0_track(y, sr); v = np.where(np.isfinite(f))[0]
+    if len(v) < 4: return None
+    a, b = v[0], v[-1] + 1; db, _ = envelope(y, sr); pk = [p for p in nuclei(db, cen=band_env(y, sr)[1]) if a <= p < b]
+    cuts = [pk[i] + int(np.argmin(db[pk[i]:pk[i + 1]])) for i in range(n_syll - 1)] if len(pk) == n_syll else [a + (b - a) * i // n_syll for i in range(1, n_syll)]
+    edges = [a] + cuts + [b]; out = []
+    for i in range(n_syll):
+        s = f[edges[i]:edges[i + 1]]; s = s[np.isfinite(s)]
+        if len(s) < 3: out.append(None); continue
+        st = 12 * np.log2(s / med); k = max(1, len(st) // 4); h = max(1, len(st) // 2)
+        out.append({'start': float(np.mean(st[:k])), 'end': float(np.mean(st[-k:])),
+                    'rise': float(np.max(st[h:]) - np.min(st[:len(st) - h + 1])), 'fall': float(np.max(st[:len(st) - h + 1]) - np.min(st[h:]))})
+    return out

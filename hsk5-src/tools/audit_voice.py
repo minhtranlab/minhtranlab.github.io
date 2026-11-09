@@ -11,6 +11,7 @@
   all clips  READ    the engine read a character unlike the pinyin on screen (地 dì for de, 着 zhe for zháo…): the reading
                      stored for the clip in tools/clip_readings.json vs the screen (readcheck.py) — phiếu #19, female too
              STALE   the engine would now read the clip differently (lexicon_extra.txt changed since it was made): remake
+  words      TONE    a syllable's pitch moves against its tone (以来 said "yí lǎi") — see tone_check, phiếu #25
   words      GAP     >= 150 ms of near-silence (< -40 dB) between two syllables of the word (slow clips 220 ms)
   words      ORDER   syllables in the wrong order (老婆 heard as "婆老"): see order_check (phiếu #16)
   slow MS|   SLOW    not the normal clip stretched by atempo 0.68 (length ratio outside 1.32-1.62), or its M| clip is bad.
@@ -194,13 +195,33 @@ def order_check(y, sr, w, asr=True):
     votes = []; info = {}
     for i, (right, rot) in enumerate(order_refs(w)):
         d0 = C.dtw_cost(y24, right, 24000); dr = min(C.dtw_cost(y24, r, 24000) for r in rot)
-        info[f'ref{i + 1}'] = (round(d0, 2), round(dr, 2)); votes.append('rot' if dr < d0 else 'good')
+        info[f'ref{i + 1}'] = (round(d0, 2), round(dr, 2))
+        if abs(dr - d0) >= 0.1: votes.append('rot' if dr < d0 else 'good')    # phiếu #25: a near tie is no vote (以来: 0.05)
     if asr:
         v, got = asr_order(y24, 24000, w); info['asr_order'] = got
         if v: votes.append(v)
     info['votes'] = ''.join('+' if v == 'good' else '-' for v in votes)
     if not votes: info['order'] = 'unchecked'                     # no reference take and the recogniser was unsure
     return (votes.count('rot') >= votes.count('good')) if votes else False, info
+
+def tone_check(y, sr, w):
+    """Words: a syllable whose pitch moves AGAINST its tone (phiếu #25; tones from the pinyin on screen). Only clear
+    inversions are flagged, so the natural spread of both voices passes (0 of 757 female word clips flagged):
+      T2 that only falls (rise < -0.5 semitone), T4 that only rises (fall < -0.5),
+      a half-3rd tone (3rd before a 1st/2nd/4th tone) that rises more than 5 semitones (以来 said "yí lǎi": +7.7).
+    Not checked: 一/不, neutral tones, a 3rd tone before a 3rd (it changes to rising), 1st tones, final 3rd tones."""
+    import readcheck as R
+    t = [x[1] for x in R.screen_syllables(w)]
+    for i in range(len(t) - 1):
+        if t[i] == 3 and t[i + 1] == 3: t[i] = -2
+    sp = C.syllable_pitch(y, sr, len(w)); bad = []
+    for i, (c, tone, s) in enumerate(zip(w, t, sp or [])):
+        if s is None or c in '一不': continue
+        if tone == 2 and s['rise'] < -0.5: bad.append(f'{c}: 2nd tone falls')
+        if tone == 4 and s['fall'] < -0.5: bad.append(f'{c}: 4th tone rises')
+        if tone == 3 and i + 1 < len(w) and t[i + 1] in (1, 2, 4) and s['end'] - s['start'] > 5:
+            bad.append(f'{c}: 3rd tone rises {s["end"] - s["start"]:+.1f} st')
+    return bad
 
 def measure(y, sr):
     db, fr = C.envelope(y, sr); pk = C.nuclei(db, cen=C.band_env(y, sr)[1])
@@ -217,6 +238,9 @@ def check(key, y, sr, female=None, normal=None, asr=True, order=True, say=None):
     if order and is_word(key) and n >= 2:                 # phiếu #16: every word clip, slow ones too (DTW/ASR do not mind tempo)
         bad, oi = order_check(y, sr, text, asr=asr); r.update(oi)
         if bad: f.append('ORDER')
+    if is_word(key):                                      # phiếu #25: pitch of each syllable vs its tone
+        bad = tone_check(y, sr, text); r['tone'] = bad
+        if bad: f.append('TONE')
     if slow and normal:
         r['slow'] = round(r['dur'] / normal, 2)
         if 1.32 <= r['slow'] <= 1.62: return f, r      # = its M| clip stretched: same syllables, judged on the M| clip
@@ -290,6 +314,7 @@ def main():
         r = out[k]; extra = f" ratio {r['ratio']}" if 'ratio' in r else ''
         extra += f" asr '{r['asr']}'" if 'asr' in r else ''
         extra += ''.join(f" | {c}: reads {g}, screen {w}" for _, c, w, g in r.get('read', []))
+        extra += ''.join(f" | {x}" for x in r.get('tone', []))
         extra += ''.join(f" | extra '{x}' at a pause after character {i}" for i, x in r.get('mid', []))
         print(f"{k:24s} {' '.join(r['flags']):18s} {r['dur']:.2f}s nuclei {r['nuc']} tail {r['tail']}ms{extra}")
     if '--json' in sys.argv: json.dump(out, open(sys.argv[sys.argv.index('--json') + 1], 'w', encoding='utf-8'), ensure_ascii=False, indent=0)
