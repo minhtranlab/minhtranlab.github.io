@@ -115,7 +115,7 @@ SENT_SPEEDS = [None, 0.85, 0.92, 0.82, 0.95]
 
 def make_sentence(tts, sid, text, sp=0.88, key=None):
     """text = what Kokoro reads (with punctuation). -> (samples, sr, info) or (None, sr, info)."""
-    key = key or 'M|' + A.han(text); tried = []
+    key = key or 'M|' + A.han(text); tried = []; parts_tried = False
     if not A.has_asr():                                           # no recogniser: plain clip, silence trimmed (old behaviour)
         a = tts.generate(text, sid=sid, speed=sp); z = end_trim(trim_start(np.array(a.samples, np.float32), a.sample_rate), a.sample_rate)
         return z, a.sample_rate, {'why': 'unverified', 'raw': encode(z, a.sample_rate)}
@@ -129,17 +129,48 @@ def make_sentence(tts, sid, text, sp=0.88, key=None):
         else:                                                     # no extra syllable heard: only trim silence
             z = end_trim(y, sr); info = {}
         z = np.concatenate([z, np.zeros(int(sr * .02), np.float32)])
-        raw = encode(z, sr); fl, r = A.check(key, decode(raw), 24000, asr=True)                  # judge what ships
+        raw = encode(z, sr); fl, r = A.check(key, decode(raw), 24000, asr=True, say=text)        # judge what ships
         if not fl and r['acc'] >= r0['acc'] - 0.02: return z, sr, dict(info, sp=s2 or sp, before=r0, raw=raw, **r)
         tried.append((s2 or sp, fl, r['acc'], r0['acc']))
+        if fl == ['MID'] and not parts_tried:                     # phiếu #19: an 'ơ' at a comma inside the sentence
+            parts_tried = True; z, info = by_parts(tts, sid, text, s2 or sp)
+            if z is None: tried.append(('parts', info.get('why'))); continue
+            raw = encode(z, sr); fl, r = A.check(key, decode(raw), 24000, asr=True, say=text)
+            if not fl and r['acc'] >= r0['acc'] - 0.05: return z, sr, dict(info, sp=s2 or sp, before=r0, raw=raw, **r)
+            tried.append(('parts', fl, r['acc'], r0['acc']))
     return None, 24000, {'why': 'no clean variant', 'tried': tried}
 
-def engine(kind, models=None):
-    """kind 'f' = Matcha female (sid 0), 'm' = Kokoro v1.1 (male D = sid 70, E = sid 90). -> (tts, default sid)."""
-    import os, sherpa_onnx
-    M = models or A.M
+PAUSE = {'，': .22, '、': .16, '；': .3, '：': .26}
+
+def by_parts(tts, sid, text, sp):
+    """Say each piece between the inner commas (，、；：) on its own, cut each piece's extra ending the way a sentence end is
+    cut (the 'ơ' Kokoro adds at a comma is the same as at the end), and join them with a short pause. -> (samples, info)."""
+    import re as _re
+    bits = [b for b in _re.split(r'([，、；：])', text) if b]
+    pieces = []; i = 0
+    while i < len(bits):
+        t = bits[i]; mark = bits[i + 1] if i + 1 < len(bits) and bits[i + 1] in PAUSE else None
+        pieces.append((t + ('。' if mark else ''), mark)); i += 2 if mark else 1
+    out = []; sr = None
+    for t, mark in pieces:
+        if not A.han(t): continue
+        a = tts.generate(t, sid=sid, speed=sp); sr = a.sample_rate
+        y = trim_start(highpass(a.samples, sr), sr)
+        if A.asr_check(y, sr, A.han(t))['extra']:
+            y, info = cut_after_text(y, sr, A.han(t))
+            if y is None: return None, {'why': 'piece ' + t + ': ' + str(info.get('why'))}
+        else: y = end_trim(y, sr)
+        out.append(y)
+        if mark: out.append(np.zeros(int(sr * PAUSE[mark]), np.float32))
+    return np.concatenate(out), {'parts': len(pieces)}
+
+def engine(kind, models=None, debug=False):
+    """kind 'f' = Matcha female (sid 0), 'm' = Kokoro v1.1 (male D = sid 70). -> (tts, default sid).
+    Phiếu #19: the project lexicon (tools/lexicon_extra.txt, via readcheck.lexicon_paths) is loaded LAST so its readings win."""
+    import sherpa_onnx, readcheck as R
+    M = models or A.M; xm, xk, xd, xkd = R.lexicon_paths()
     if kind == 'f':
         d = f'{M}/matcha-icefall-zh-baker'
-        return sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(matcha=sherpa_onnx.OfflineTtsMatchaModelConfig(acoustic_model=f'{d}/model-steps-3.onnx', vocoder=f'{M}/vocos-22khz-univ.onnx', lexicon=f'{d}/lexicon.txt', tokens=f'{d}/tokens.txt', dict_dir=f'{d}/dict'), num_threads=2), rule_fsts=f'{d}/date.fst,{d}/number.fst,{d}/phone.fst')), 0
+        return sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(matcha=sherpa_onnx.OfflineTtsMatchaModelConfig(acoustic_model=f'{d}/model-steps-3.onnx', vocoder=f'{M}/vocos-22khz-univ.onnx', lexicon=f'{d}/lexicon.txt' + (f',{xm}' if xm else ''), tokens=f'{d}/tokens.txt', dict_dir=xd or f'{d}/dict'), num_threads=2, debug=debug), rule_fsts=f'{d}/date.fst,{d}/number.fst,{d}/phone.fst')), 0
     d = f'{M}/kokoro-multi-lang-v1_1'
-    return sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(vits=sherpa_onnx.OfflineTtsVitsModelConfig(), kokoro=sherpa_onnx.OfflineTtsKokoroModelConfig(model=f'{d}/model.onnx', voices=f'{d}/voices.bin', tokens=f'{d}/tokens.txt', data_dir=f'{d}/espeak-ng-data', dict_dir=f'{d}/dict', lexicon=f'{d}/lexicon-zh.txt,{d}/lexicon-us-en.txt'), num_threads=2), rule_fsts=f'{d}/phone-zh.fst,{d}/date-zh.fst,{d}/number-zh.fst')), 70
+    return sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(vits=sherpa_onnx.OfflineTtsVitsModelConfig(), kokoro=sherpa_onnx.OfflineTtsKokoroModelConfig(model=f'{d}/model.onnx', voices=f'{d}/voices.bin', tokens=f'{d}/tokens.txt', data_dir=f'{d}/espeak-ng-data', dict_dir=xkd or f'{d}/dict', lexicon=f'{d}/lexicon-zh.txt,{d}/lexicon-us-en.txt' + (f',{xk}' if xk else '')), num_threads=2, debug=debug), rule_fsts=f'{d}/phone-zh.fst,{d}/date-zh.fst,{d}/number-zh.fst')), 70

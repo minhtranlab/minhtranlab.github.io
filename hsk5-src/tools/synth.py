@@ -3,6 +3,8 @@
     python3 hsk5-src/tools/synth.py --only 测试一下,M|测试一下     # just these keys (testing)
     python3 hsk5-src/tools/synth.py --fix      # phiếu #14: run audit_voice.py and remake every male clip it flags (+ its MS| clip)
     python3 hsk5-src/tools/synth.py --redo M|屋,M|冻     # remake these male clips even if they exist (MS| follows its M|)
+Both engines read with the project lexicon (tools/lexicon_extra.txt, readcheck.py); what each clip says is recorded in
+tools/clip_readings.json, and --fix also remakes clips the audit flags READ / STALE (phiếu #19).
 Male clips go through voicefix.py (clean edges, verified by audit_voice.check). A slow MS| clip is always the clean M| clip
 stretched with ffmpeg atempo 0.68. If no clean version can be made, the old clip is kept and listed at the end.
 Needs: pip install sherpa-onnx soundfile pypinyin scipy ; ffmpeg ; the models (tools/get_models.sh, incl. the recogniser).
@@ -12,7 +14,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); SRC = os.path.dirname(HERE); sys.path.insert(0, SRC)
 import build as B
 sys.path.insert(0, HERE)
-import voicefix as V, audit_voice as A
+import voicefix as V, audit_voice as A, readcheck as R
 os.chdir(SRC); AUD = os.path.join(os.path.dirname(SRC), 'hsk5', 'audio'); os.makedirs(AUD, exist_ok=True)
 man = json.load(open('audio_manifest.json', encoding='utf-8')); J = {j['k']: j for j in json.load(open('tts_jobs.json', encoding='utf-8'))}
 arg = lambda f: sys.argv[sys.argv.index(f) + 1].split(',') if f in sys.argv else None
@@ -54,7 +56,7 @@ for k in todo:
     j = J.get(k); han = k.split('|')[-1]
     if kind == 'm':
         y, sr_, info = male_clean(k)
-        if y is None: failed.append(k); print('  could not clean', k, info.get('why'), flush=True); continue
+        if y is None: failed.append(k); print('  could not clean', k, info.get('why'), info.get('tried'), flush=True); continue
         if k.startswith('MS|'):
             with tempfile.TemporaryDirectory() as td: ys = stretch(y, sr_, A.SLOW, td)
             raw = V.encode(ys, sr_)
@@ -72,6 +74,7 @@ for k in todo:
             subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', wv, '-af', af, '-ac', '1', '-ar', '24000', '-b:a', '32k', mp], check=True)
             raw = open(mp, 'rb').read()
     h = hashlib.sha1(raw).hexdigest()[:12]; open(f'{AUD}/{h}.mp3', 'wb').write(raw); man[k] = f'audio/{h}.mp3'; n += 1
+    sent = R.job_text(k, j); R.record({k: R.engine_readings(kind, [sent])[sent]})   # phiếu #19: what this clip says
     if n % 10 == 0: json.dump(man, open('audio_manifest.json', 'w', encoding='utf-8'), ensure_ascii=False); print(n, '/', len(todo), int(time.time() - t0), 's', flush=True)
 json.dump(man, open('audio_manifest.json', 'w', encoding='utf-8'), ensure_ascii=False)
 print('made', n, 'clips.', ('COULD NOT CLEAN (kept old): ' + ','.join(failed)) if failed else '', '\nNow run: python3 hsk5-src/build.py')

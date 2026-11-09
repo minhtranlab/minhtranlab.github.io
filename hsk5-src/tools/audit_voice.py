@@ -7,6 +7,10 @@
                      The male/female length ratio is printed but is not a flag: Matcha itself ranges 0.20-0.37 s per syllable on 2-4 character words.
              DOUBLE  the speech recogniser hears the word twice (老婆 -> 老婆老婆)
   sentences  ASR+    the recogniser hears extra syllables after the last character (…相敬如宾 -> …相敬如宾啊)
+             MID     it hears an extra syllable at a comma INSIDE the sentence (…一酸着，流下…) — phiếu #19
+  all clips  READ    the engine read a character unlike the pinyin on screen (地 dì for de, 着 zhe for zháo…): the reading
+                     stored for the clip in tools/clip_readings.json vs the screen (readcheck.py) — phiếu #19, female too
+             STALE   the engine would now read the clip differently (lexicon_extra.txt changed since it was made): remake
   words      GAP     >= 150 ms of near-silence (< -40 dB) between two syllables of the word (slow clips 220 ms)
   words      ORDER   syllables in the wrong order (老婆 heard as "婆老"): see order_check (phiếu #16)
   slow MS|   SLOW    not the normal clip stretched by atempo 0.68 (length ratio outside 1.32-1.62), or its M| clip is bad.
@@ -72,13 +76,28 @@ def pys(t):
     from pypinyin import lazy_pinyin
     return lazy_pinyin(han(t))
 
-def asr_check(y, sr, text):
-    """Sentences: how many extra syllables the recogniser hears AFTER the expected text, and how well the rest matches."""
+def pauses(say):
+    """Positions (count of Han characters before it) of the punctuation marks inside `say`."""
+    out = set(); n = 0
+    for c in say or '':
+        if '一' <= c <= '鿿': n += 1
+        elif c in '，。！？；：、,.!?;:…—“”"' and n: out.add(n)
+    return out
+
+def asr_check(y, sr, text, say=None):
+    """Sentences: how many extra syllables the recogniser hears AFTER the expected text, how well the rest matches, and
+    (phiếu #19, MID) where it hears an extra syllable at a pause INSIDE the sentence (…一酸**着**，流下…): Kokoro says an
+    'ơ' at a comma the way it does at the end. Only inserts exactly at a punctuation mark of `say` count (0 of 128 female
+    sentences have one; the recogniser's other slips fall elsewhere)."""
     got, ts = recognise(y, sr); a, b = pys(text), pys(got)
     sm = difflib.SequenceMatcher(a=a, b=b, autojunk=False); ops = sm.get_opcodes(); last = ops[-1]; extra = 0
     if last[0] == 'insert': extra = last[4] - last[3]
     if last[0] == 'replace' and (last[4] - last[3]) > (last[2] - last[1]): extra = (last[4] - last[3]) - (last[2] - last[1])
-    return {'asr': got, 'acc': round(sm.ratio(), 3), 'extra': extra, 'ts': [round(t, 2) for t in ts]}
+    P = pauses(say); mid = []
+    for op, i1, i2, j1, j2 in ops:
+        if op == 'insert' and 0 < i1 < len(a) and i1 in P: mid.append((i1, got[j1:j2]))
+        if op == 'replace' and (j2 - j1) > (i2 - i1) and 0 < i2 < len(a) and i2 in P: mid.append((i2, got[j1 + (i2 - i1):j2]))
+    return {'asr': got, 'acc': round(sm.ratio(), 3), 'extra': extra, 'mid': mid, 'ts': [round(t, 2) for t in ts]}
 
 def asr_double(y, sr, text):
     """Words of 2+ syllables: True when the recogniser hears the whole word twice in a row."""
@@ -190,7 +209,7 @@ def measure(y, sr):
         run = run + 1 if v < -40 else 0; gap = max(gap, run)
     return {'dur': round(len(y) / sr, 3), 'nuc': len(pk), 'tail': C.tail_ms(db, pk), 'gap': gap * 10}
 
-def check(key, y, sr, female=None, normal=None, asr=True, order=True):
+def check(key, y, sr, female=None, normal=None, asr=True, order=True, say=None):
     """Flags for one male clip. female = duration (s) of the female clip of the same text, normal = duration of its M| clip
     (for MS|). Returns (flags list, numbers dict)."""
     text = key.split('|')[-1]; n = len(text); r = measure(y, sr); f = []
@@ -214,10 +233,30 @@ def check(key, y, sr, female=None, normal=None, asr=True, order=True):
             d, got = asr_double(y, sr, text); r['asr'] = got
             if d: f.append('DOUBLE')
     elif asr:
-        r.update(asr_check(y, sr, text))
+        r.update(asr_check(y, sr, text, say))
         if r['extra']: f.append('ASR+')
+        if r['mid']: f.append('MID')
     if slow and normal: f.append('SLOW')                # not made from its M| clip (old Kokoro speed-0.6 clips)
     return f, r
+
+def read_flags(texts):
+    """{key: (['READ'] and/or ['STALE'], misreads)} for every clip: the reading stored when the clip was made
+    (tools/clip_readings.json) vs the screen, and vs what the engine reads now."""
+    import readcheck as R
+    stored = R.stored_readings(); out = {}
+    now = {}
+    for kind in 'fm':
+        ks = [k for k in texts if R.kind_of(k) == kind]
+        now.update({k: v for k, v in zip(ks, (lambda rd: [rd[texts[k]] for k in ks])(R.engine_readings(kind, [texts[k] for k in ks])))})
+    for k, t in texts.items():
+        st = stored.get(k); fl = []; mis = []
+        if st is None: fl.append('STALE')                          # made before readings were recorded and never checked
+        else:
+            mis = R.compare(k.split('|')[-1], st, t)
+            if mis: fl.append('READ')
+            if R.flat(st) != R.flat(now[k]): fl.append('STALE')
+        if fl: out[k] = (fl, mis)
+    return out
 
 def main():
     sys.path.insert(0, SRC); os.chdir(SRC)
@@ -227,6 +266,8 @@ def main():
     aud = os.path.join(os.path.dirname(SRC), 'hsk5')
     asr = '--no-asr' not in sys.argv and has_asr()
     if not asr and '--no-asr' not in sys.argv: print('(no recogniser model: energy checks only — run tools/get_models.sh)')
+    import readcheck as R
+    texts = R.clip_texts(); readf = read_flags(texts)
     keys = sorted(k for k in man if k.startswith(('M|', 'MS|')) and k.split('|')[-1] in need)
     if '--keys' in sys.argv: keys = sys.argv[sys.argv.index('--keys') + 1].split(',')
     dur = {}
@@ -237,20 +278,26 @@ def main():
     order = sorted(keys, key=lambda k: k.startswith('MS|'))      # M| first, so an MS| knows whether its source is bad
     for k in order:
         y = load(os.path.join(aud, man[k])); t = k.split('|')[-1]
-        fl, r = check(k, y, 24000, female=d(t) if is_word(k) else None, normal=d('M|' + t) if k.startswith('MS|') else None, asr=asr)
+        fl, r = check(k, y, 24000, female=d(t) if is_word(k) else None, normal=d('M|' + t) if k.startswith('MS|') else None, asr=asr, say=texts.get(k))
+        if k in readf: fl += readf[k][0]; r['read'] = readf[k][1]
         if k.startswith('MS|') and out.get('M|' + t, {}).get('flags') and 'SLOW' not in fl: fl.append('SLOW')
         r['flags'] = fl; out[k] = r
         if fl: bad.append(k)
+    for k, (fl, rd) in readf.items():                             # female clips: reading checks only
+        if k not in out: out[k] = {'flags': fl, 'read': rd, 'dur': 0, 'nuc': 0, 'tail': 0}; bad.append(k)
     sev = lambda k: (-len(out[k]['flags']), -out[k].get('ratio', 0), -out[k].get('tail', 0))
     for k in sorted(bad, key=sev):
         r = out[k]; extra = f" ratio {r['ratio']}" if 'ratio' in r else ''
         extra += f" asr '{r['asr']}'" if 'asr' in r else ''
+        extra += ''.join(f" | {c}: reads {g}, screen {w}" for _, c, w, g in r.get('read', []))
+        extra += ''.join(f" | extra '{x}' at a pause after character {i}" for i, x in r.get('mid', []))
         print(f"{k:24s} {' '.join(r['flags']):18s} {r['dur']:.2f}s nuclei {r['nuc']} tail {r['tail']}ms{extra}")
     if '--json' in sys.argv: json.dump(out, open(sys.argv[sys.argv.index('--json') + 1], 'w', encoding='utf-8'), ensure_ascii=False, indent=0)
     unc = [k for k in keys if out[k].get('order') == 'unchecked']
     if unc: print('order not checkable (no reference, recogniser unsure):', ' '.join(unc))
     nw = sum(is_word(k) for k in keys)
-    print(f'checked {len(keys)} male clips ({nw} words, {len(keys) - nw} sentences; recogniser {"on" if asr else "off"})')
+    print(f'checked {len(keys)} male clips ({nw} words, {len(keys) - nw} sentences; recogniser {"on" if asr else "off"}) '
+          f'+ the reading of all {len(texts)} clips (lexicon {R.lex_hash()})')
     print(f'AUDIT: {len(bad)} bad clips')
     return out, bad
 

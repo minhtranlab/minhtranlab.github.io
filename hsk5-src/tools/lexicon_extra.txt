@@ -1,0 +1,31 @@
+# Project lexicon (phiếu #19): readings the voice engines must use. "word py1 py2 …", numbered pinyin, 5 = neutral tone.
+# Loaded LAST by Matcha and Kokoro (the last lexicon wins on a duplicate) and added to both engines' jieba user dict.
+# Made by `python3 hsk5-src/tools/readcheck.py --fix` from the pinyin on screen; edit by hand only with a reason (# …).
+# After ANY change: python3 hsk5-src/tools/synth.py --fix  (remakes every clip whose reading changed; audit READ/STALE).
+地 de5
+得 de5
+照片 zhao4 pian4
+没入围 mei2 ru4 wei2
+拉着手 la1 zhe5 shou3   # 手拉着手: not 着手 zhuóshǒu
+得走 dei3 zou3
+睡不着 shui4 bu5 zhao2
+等得 deng3 de5
+长得 zhang3 de5
+只见 zhi3 jian4
+一行 yi4 hang2
+评为 ping2 wei2
+弹 tan2
+得早 dei3 zao3
+挣 zheng4
+不得了 bu4 de2 liao3
+空 kong4
+铺 pu1
+次长途 ci4 chang2 tu2
+冻着 dong4 zhao2
+床铺好 chuang2 pu1 hao3   # 把床铺好: not 床铺 chuángpù (noun)
+得听 dei3 ting1
+小心地 xiao3 xin1 de5
+的哥哥 de5 ge1 ge5
+地里 di4 li5
+干干净净 gan1 gan1 jing4 jing4
+晚上冻着 wan3 shang5 dong4 zhao2

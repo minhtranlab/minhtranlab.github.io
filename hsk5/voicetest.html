@@ -4,23 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>Nghe kiểm giọng nam</title>
-<!-- Phiếu #16: trang nghe kiểm lần 2, không thuộc app (không build, không có trong tools.json). Âm thanh ở voicetest/:
-     tNN = clip trước phiếu #16 (bị đọc ngược thứ tự âm tiết), sNN = clip sau khi làm lại (giọng D, đang dùng trong app). -->
+<title>Nghe kiểm cách đọc</title>
+<!-- Phiếu #19: trang nghe kiểm lần 3, không thuộc app (không build, không có trong tools.json). Âm thanh ở voicetest/:
+     tNN = clip trước phiếu #19 (đọc sai chữ đa âm / thừa "ơ" giữa câu), sNN = clip sau khi làm lại (đang dùng trong app). -->
 <style>
-:root{--bg:#fff8f0;--fg:#2b2118;--mut:#7a6a5c;--bad:#c0392b;--acc:#f07a2a;--card:#fff;--line:#eadbcc;--sel:#fde7d4}
-@media (prefers-color-scheme:dark){:root{--bg:#1d1814;--fg:#f3ebe3;--mut:#b5a597;--bad:#ff7b6b;--acc:#ff9a52;--card:#2a231d;--line:#43382f;--sel:#4a3424}}
+:root{--bg:#fff8f0;--fg:#2b2118;--mut:#7a6a5c;--bad:#c0392b;--acc:#f07a2a;--card:#fff;--line:#eadbcc;--sel:#fde7d4;--hint:#f6efe6}
+@media (prefers-color-scheme:dark){:root{--bg:#1d1814;--fg:#f3ebe3;--mut:#b5a597;--bad:#ff7b6b;--acc:#ff9a52;--card:#2a231d;--line:#43382f;--sel:#4a3424;--hint:#332a22}}
 *{box-sizing:border-box}
 body{margin:0 auto;background:var(--bg);color:var(--fg);font:16px/1.45 -apple-system,system-ui,sans-serif;padding:calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));max-width:560px}
 h1{font-size:22px;margin:0 0 4px}
 p.sub{margin:0 0 8px;color:var(--mut);font-size:14px}
 button{font:inherit;border:0;border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:12px}
-.hd{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
-.zh{font-size:30px;font-weight:700;letter-spacing:2px}
-.py{color:var(--mut);font-size:15px}
+.hd{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.zh{font-size:21px;font-weight:600;letter-spacing:1px;line-height:1.35}
+.who{flex:none;font-size:12px;color:var(--mut);border:1px solid var(--line);border-radius:999px;padding:1px 8px}
+.hint{background:var(--hint);border-radius:10px;padding:6px 10px;font-size:14px;margin-bottom:10px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.play{height:56px;font-weight:700;font-size:16px;background:var(--sel);color:var(--fg)}
+.play{height:52px;font-weight:700;font-size:16px;background:var(--sel);color:var(--fg)}
 .play.old{background:transparent;border:1px dashed var(--line);color:var(--mut)}
 .play.on{outline:3px solid var(--acc)}
 .err{margin-top:8px;width:100%;padding:9px;font-size:14px;background:transparent;border:1px solid var(--line);color:var(--mut)}
@@ -34,23 +35,37 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;-webkit-tap-highl
 </style>
 </head>
 <body>
-<h1>🔊 Nghe kiểm giọng nam (lần 2)</h1>
-<p class="sub">3 từ từng bị đọc ngược (老婆 nghe thành “pó lǎo”), nay đã làm lại. Bấm <b>Trước</b> rồi <b>Sau</b> để so.</p>
-<p class="sub">Nếu bản <b>Sau</b> vẫn chưa đúng, bấm <b>Còn lỗi</b> rồi chọn: <b>Ngược</b>, <b>Thừa “ơ”</b> hoặc <b>Khác</b>. Không nghe thấy gì: gạt tắt chế độ im lặng và tăng âm lượng.</p>
+<h1>🔊 Nghe kiểm cách đọc (lần 3)</h1>
+<p class="sub">12 câu tiêu biểu (trong 115 clip đã làm lại): máy từng đọc sai chữ đa âm (地 dì, 得 dé, 着 zhe…) hoặc thừa “ơ” ở dấu phẩy. Ô màu nhạt ghi chỗ cần nghe.</p>
+<p class="sub">Bấm <b>Trước</b> rồi <b>Sau</b>. Nếu bản <b>Sau</b> vẫn chưa đúng, bấm <b>Còn lỗi?</b> rồi chọn <b>Đọc sai</b>, <b>Thừa “ơ”</b> hoặc <b>Khác</b>. Không nghe thấy gì: gạt tắt chế độ im lặng và tăng âm lượng.</p>
 <div id="list"></div>
 <button id="copy">📋 Sao chép kết quả</button>
-<div id="out">Chưa đánh dấu gì: cả 3 bản Sau đều ổn.</div>
+<div id="out">Chưa đánh dấu gì: cả 12 bản Sau đều ổn.</div>
 <script>
 (function () {
-  var W = [["老婆", "lǎo pó"], ["爱护", "ài hù"], ["以来", "yǐ lái"]];
-  var KINDS = ["Ngược", "Thừa “ơ”", "Khác"];
+  var W = [
+    ["他不好意思地摸了摸脑袋。", "Nữ", "地 đọc <b>de</b>, không phải dì"],
+    ["三位评委都说她唱得很好。", "Nữ", "得 đọc <b>de</b>, không phải dé"],
+    ["太晚了，我们得走了。", "Nữ", "得 đọc <b>děi</b> (phải), không phải dé"],
+    ["这里太吵了，我睡不着。", "Nữ", "着 đọc <b>zháo</b>, không phải zhe"],
+    ["他每个月挣的钱不多，可是很努力。", "Nữ", "挣 đọc <b>zhèng</b>, không phải zhēng"],
+    ["妈妈已经把床铺好了。", "Nữ", "铺 đọc <b>pū</b>, không phải pù"],
+    ["这次比赛他没入围。", "Nam", "没 đọc <b>méi</b>, không phải mò"],
+    ["我舅舅是我妈妈的哥哥。", "Nam", "的哥哥 đọc <b>de gēge</b>, không phải dī gē"],
+    ["这是一次长途旅行，要带的东西很多。", "Nam", "长 đọc <b>cháng</b>, không phải zhǎng"],
+    ["请对比一下这两张照片。", "Nam", "照片 đọc <b>zhàopiàn</b>, không phải zhàopiān"],
+    ["不得了", "Nam", "了 đọc <b>liǎo</b>, không phải le"],
+    ["我鼻子一酸，流下了热泪……", "Nam", "không còn “ơ” thừa ở dấu phẩy sau 一酸"]
+  ];
+  var KINDS = ["Đọc sai", "Thừa “ơ”", "Khác"];
   var marks = {}, cur = null, list = document.getElementById('list'), out = document.getElementById('out');
   var audio = new Audio(); audio.preload = 'auto';
   function stop() { if (cur) cur.classList.remove('on'); cur = null; }
   audio.addEventListener('ended', stop); audio.addEventListener('error', stop);
   W.forEach(function (w, i) {
-    var n = '0' + (i + 1), card = document.createElement('div'); card.className = 'card'; marks[w[0]] = {};
-    card.innerHTML = '<div class="hd"><span class="zh">' + w[0] + '</span><span class="py">' + w[1] + '</span></div>' +
+    var n = (i < 9 ? '0' : '') + (i + 1), card = document.createElement('div'); card.className = 'card'; marks[i] = {};
+    card.innerHTML = '<div class="hd"><span class="zh">' + w[0] + '</span><span class="who">' + w[1] + '</span></div>' +
+      '<div class="hint">Nghe: ' + w[2] + '</div>' +
       '<div class="row"><button class="play old" data-f="t' + n + '">Trước</button><button class="play" data-f="s' + n + '">Sau</button></div>' +
       '<button class="err">Còn lỗi?</button><div class="kinds"></div>';
     [].forEach.call(card.querySelectorAll('.play'), function (b) {
@@ -65,8 +80,8 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;-webkit-tap-highl
     KINDS.forEach(function (k) {
       var b = document.createElement('button'); b.textContent = k;
       b.onclick = function () {
-        marks[w[0]][k] = !marks[w[0]][k]; b.classList.toggle('on', marks[w[0]][k]);
-        var any = KINDS.some(function (x) { return marks[w[0]][x]; });
+        marks[i][k] = !marks[i][k]; b.classList.toggle('on', marks[i][k]);
+        var any = KINDS.some(function (x) { return marks[i][x]; });
         err.classList.toggle('on', any); err.textContent = any ? '⚠️ Còn lỗi' : 'Còn lỗi?'; show();
       };
       box.appendChild(b);
@@ -74,11 +89,11 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;-webkit-tap-highl
     list.appendChild(card);
   });
   function text() {
-    var bad = W.map(function (w) {
-      var k = KINDS.filter(function (x) { return marks[w[0]][x]; });
-      return k.length ? w[0] + ': ' + k.join(', ') : null;
+    var bad = W.map(function (w, i) {
+      var k = KINDS.filter(function (x) { return marks[i][x]; });
+      return k.length ? (i + 1) + '. ' + w[0] + ' (' + w[1] + '): ' + k.join(', ') : null;
     }).filter(Boolean);
-    return 'Nghe kiểm giọng nam lần 2 (phiếu #16)\n' + (bad.length ? 'Bản Sau còn lỗi:\n' + bad.join('\n') : 'Cả 3 bản Sau đều ổn.') + '\n' + navigator.userAgent;
+    return 'Nghe kiểm cách đọc lần 3 (phiếu #19)\n' + (bad.length ? 'Bản Sau còn lỗi:\n' + bad.join('\n') : 'Cả 12 bản Sau đều ổn.') + '\n' + navigator.userAgent;
   }
   function show() { out.textContent = text(); }
   var cp = document.getElementById('copy');
