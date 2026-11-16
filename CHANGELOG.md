@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-16
+- Added "Mean, median, mode and spread" (`math/statistics-explorer.html`), a dot-plot explorer in Fun Academy colours, under the new Statistics topic in Math illustrations.
+- Matrix house explorer: new activities (Two in a row, Undo, Find the matrix, Describe it, Slide), "Show area", and a "Where this comes from" dropdown for each.
+
 ## 2026-10-24
 - Added a "Math illustrations" section, `math/`, listed on the home page as one card. It groups illustrations by topic from `math/illustrations.json`.
 - Added "Matrix house explorer" (drag the two arrows of a 2×2 matrix and watch a house transform): `math/matrix-house-explorer.html`. The earlier address `tools/matrix-house-explorer.html` forwards there.

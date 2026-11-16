@@ -1,3 +1,4 @@
 [
-  {"title":"Matrix house explorer","topic":"Matrices","description":"Drag two arrows and watch a house move. Column 1 of a 2×2 matrix is where (1, 0) goes; column 2 is where (0, 1) goes.","path":"matrix-house-explorer.html","date":"2026-10-24"}
+  {"title":"Matrix house explorer","topic":"Matrices","description":"Drag two arrows and watch a house move. Column 1 of a 2×2 matrix is where (1, 0) goes; column 2 is where (0, 1) goes.","path":"matrix-house-explorer.html","date":"2026-10-24"},
+  {"title":"Mean, median, mode and spread","topic":"Statistics","description":"Drag dots on a number line and watch the mean, median, mode, range and standard deviation change. Type a list, use a frequency table, or pick a ready-made data set.","path":"statistics-explorer.html","date":"2026-11-16"}
 ]
