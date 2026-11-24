@@ -655,7 +655,8 @@ let homeTab = 'path';
 const CHAPTERS = [
   { n: 1, zh: '爱的细节', vi: 'Những điều nhỏ nhặt trong tình yêu', loaded: true, PATH: PATH1, BOOK, TESTBANK },
   { n: 2, zh: '留串钥匙给父母', vi: 'Để lại chùm chìa khoá cho ba mẹ' },
-  { n: 3 }, { n: 4 }
+  { n: 3, zh: '人生有选择，一切可改变', vi: 'Đời người có lựa chọn, mọi thứ có thể đổi thay' },
+  { n: 4 }
 ];
 CHAPTERS.forEach(c => { c.ready = c.n === 1 || !!CH_SRC[c.n]; });
 const CHN = n => CHAPTERS.find(c => c.n === +n);
