@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2026-11-24
+- Added "18 Năm Nuôi Con" (`nuoi-con/`), a 15-minute parenting game (v4.6), listed under the new Parents level.
 - Added "Mixture problems" (`math/mixture-lab.html`) under the new Mixtures topic in Math illustrations: mix two solutions, how much to add, add water, boil off water.
 
 ## 2026-11-16
