@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mixture problems</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE: calm keynote slide, almost no words
+   IDEA: a lab bench seen from the front
+   PICTURE: beakers tip and pour (or boil) into one big beaker; salt shown as white cubes
+   COLOUR and TYPE: one blue water, darker = saltier; FA purple ink, yellow button; Nunito
+   LAYOUT: menu, one sentence, the stage, three control columns, then step-by-step working */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#140c1b);--ink:light-dark(#361D46,#f1eaf6);--mut:light-dark(#9787a3,#a897b6);
+--line:light-dark(#ebe4f0,#33253f);--soft:light-dark(#f6f2f9,#21162a);--num:light-dark(#1565a8,#7cc0f5);--ye:#FCB515;--gr:#3fa57e}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 Nunito,system-ui,sans-serif;overflow-x:clip}
+button{font-family:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.top{max-width:1000px;margin:auto;padding:18px 20px 0;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+select,.ghost{font:800 16px Nunito,sans-serif;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:12px;min-height:44px;cursor:pointer}
+select{padding:0 14px}.ghost{padding:0 16px}.ghost:disabled{opacity:.4}
+.home{font-size:14px;font-weight:800;text-decoration:none;color:var(--mut);display:block;width:100%}
+.q{max-width:840px;margin:26px auto 0;padding:0 20px;text-align:center;font-size:clamp(21px,3vw,31px);line-height:1.32;font-weight:700;text-wrap:balance}
+.q b{font-weight:900;color:var(--num)}
+.stage{max-width:880px;margin:6px auto 0;padding:0 12px}
+svg{width:100%;height:auto;display:block}
+.glass{fill:light-dark(rgba(54,29,70,.03),rgba(255,255,255,.04));stroke:var(--ink);stroke-width:5;stroke-linejoin:round;stroke-linecap:round}
+.ctl{max-width:880px;margin:0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:4px 12px 10px;text-align:center;align-items:start}
+.big{font-size:clamp(20px,3vw,30px);font-weight:900;line-height:1.2}
+.lab{font-size:14px;color:var(--mut);font-weight:800}
+.stp{margin-bottom:12px}
+.stp .pm{display:flex;justify-content:center;gap:8px;margin-top:4px}
+.stp button{width:52px;height:44px;border-radius:12px;border:2px solid var(--line);background:var(--soft);color:var(--ink);font-size:26px;font-weight:900;line-height:1;cursor:pointer}
+.stp button:active{background:var(--line)}.stp button:disabled{opacity:.35}
+.fixed{margin-bottom:12px;padding-bottom:48px}
+.go{background:var(--ye);color:#361D46;border:0;border-radius:99px;font:900 clamp(17px,2.4vw,21px) Nunito,sans-serif;min-height:54px;padding:0 28px;cursor:pointer;margin:4px 3px 0}
+.back{background:var(--soft);color:var(--ink);border:2px solid var(--line);border-radius:99px;font:900 17px Nunito,sans-serif;min-height:54px;padding:0 22px;cursor:pointer;margin:4px 3px 0}
+.res{font-size:clamp(34px,5.5vw,56px);font-weight:900;line-height:1.1;color:var(--num)}
+.res.q2{color:var(--mut)}.res.ok{color:var(--gr)}
+.sw{display:inline-block;width:18px;height:18px;border-radius:5px;vertical-align:-3px;margin-right:6px;border:2px solid var(--line)}
+.work{max-width:640px;margin:10px auto 60px;padding:0 20px;text-align:center}
+.work ol{list-style:none;padding:0;margin:14px 0 0;text-align:left}
+.work li{background:var(--soft);border-radius:16px;padding:12px 18px;margin-bottom:10px;animation:up .45s ease both}
+.work li .lab{display:block}.work li .m{font-size:clamp(19px,2.6vw,24px);font-weight:900;white-space:nowrap;overflow-x:auto}
+.work li .m i{color:var(--num);font-style:italic}
+@keyframes up{from{opacity:0;transform:translateY(8px)}}
+:focus-visible{outline:3px solid #58B592;outline-offset:2px}
+@media(max-width:560px){.lab{font-size:12px}.go,.back{padding:0 16px;font-size:16px}.stp button{width:44px}}
+@media(prefers-reduced-motion:reduce){.work li{animation:none}}
+</style></head><body>
+<div class="top">
+  <a class="home" href="./">← Math illustrations</a>
+  <select id="mode" aria-label="Problem type"></select>
+  <button class="ghost" id="newb" hidden>New numbers</button>
+</div>
+<p class="q" id="q"></p>
+<div class="stage"><svg id="sv" viewBox="0 0 1000 545" role="img" aria-label="Beakers of salt water"></svg></div>
+<div class="ctl"><div id="cA"></div><div id="cC"></div><div id="cB"></div></div>
+<section class="work">
+  <button class="ghost" id="hb">How to calculate</button>
+  <ol id="sl"></ol>
+  <button class="go" id="ns" hidden>Next step ▸</button>
+</section>
+<script>
+{
+const NS='http://www.w3.org/2000/svg',PL=22,PLC=11,CL=350;
+const BEAK={A:{x:170,y:40,dx:60,px:160,dir:1},B:{x:670,y:40,dx:-60,px:0,dir:-1}};
+const MODES=[['mix','Mix two solutions'],['add','How much to add?'],['water','Add water'],['boil','Boil off water']];
+const P={mix:{A:{V:4,p:20},B:{V:6,p:50}},add:{A:{V:1,p:30},B:{V:4,p:70},G:50},water:{A:{V:2,p:0},B:{V:6,p:40}},boil:{V:6,p:20,E:2}};
+const c0=[214,236,251],c1=[10,58,112];
+const col=p=>{const t=Math.pow(Math.max(0,Math.min(1,p/100)),.85);return`rgb(${c0.map((a,i)=>Math.round(a+(c1[i]-a)*t)).join(',')})`};
+const $=id=>document.getElementById(id);
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const ease=k=>k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2,cl01=v=>Math.max(0,Math.min(1,v));
+const f=n=>String(Math.round(n*1000)/1000),d2=p=>(p/100).toFixed(2);
+let M='mix',A,B,S,cb=525,cubes=[],cells=[],state='idle',raf=0,t0=0,stirred=false,result=0,frames=[],specs=[],shown=0;
+
+/* ---------- scene ---------- */
+const glassPath='M0 0 V208 Q0 220 12 220 H148 Q160 220 160 208 V0 M-10 0 H12 M148 0 H170';
+const cPath=()=>`M345 ${cb-225} V${cb-14} Q345 ${cb} 359 ${cb} H641 Q655 ${cb} 655 ${cb-14} V${cb-225} M333 ${cb-225} H357 M643 ${cb-225} H667`;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function cube(){const el=document.createElementNS(NS,'rect');el.setAttribute('width',10);el.setAttribute('height',10);el.setAttribute('rx',2.5);
+  el.setAttribute('fill','#fff');el.setAttribute('stroke','#0b2e52');el.setAttribute('stroke-width',2);el.dataset.a='x y';$('cubes').appendChild(el);return el}
+function grid(vol){const rows=Math.max(1,Math.floor(PLC*vol/15)),g=[];for(let r=0;r<rows;r++)for(let c=0;c<20;c++)g.push({x:CL+15*c+7.5,y:cb-15*r-8,used:false});return g}
+function build(){
+  cancelAnimationFrame(raf);state='idle';stirred=false;cubes=[];
+  const boil=M=='boil';cb=boil?395:525;const sv=$('sv');
+  if(boil){
+    S=P.boil;
+    sv.innerHTML=`<g id="stm" opacity="0" data-a="opacity transform">${[440,500,560].map(x=>`<path d="M${x} ${cb-240} q14 -16 0 -32 q-14 -16 0 -32" fill="none" stroke="var(--mut)" stroke-width="5" stroke-linecap="round"/>`).join('')}</g>
+     <g id="fl" opacity="0" data-a="opacity">${[440,500,560].map((x,i)=>`<path d="M${x} ${cb+58} q-22 -20 0 -${i==1?52:42} q22 22 0 ${i==1?52:42}z" fill="${i==1?'#FCB515':'#f08a24'}"/>`).join('')}</g>
+     <rect x="395" y="${cb+60}" width="210" height="14" rx="7" fill="var(--ink)"/>
+     <rect id="lC" x="${CL}" width="300" data-a="y height" fill="${col(S.p)}"/><path class="glass" d="${cPath()}"/><g id="cubes"></g>`;
+    const lc=$('lC');lc.setAttribute('y',cb-PLC*S.V);lc.setAttribute('height',PLC*S.V);
+    const n=Math.round(S.V*S.p/10);
+    shuffle(grid(S.V)).slice(0,n).forEach(g=>{const c={el:cube(),x:g.x+(Math.random()-.5)*3,y:g.y,st:'c'};cubes.push(c);pos(c)});
+    cells=grid(S.V-S.E);result=S.p*S.V/(S.V-S.E);
+  }else{
+    A=P[M].A;B=P[M].B;
+    sv.innerHTML=`<rect id="lC" x="${CL}" y="${cb}" width="300" height="0" fill="${col(0)}" data-a="y height fill"/><path class="glass" d="${cPath()}"/>
+     <rect id="sA" width="13" rx="6" opacity="0" data-a="x y height opacity fill"/><rect id="sB" width="13" rx="6" opacity="0" data-a="x y height opacity fill"/>
+     ${['A','B'].map(k=>`<g id="g${k}" data-a="transform"><rect id="l${k}" x="6" width="148" rx="4" data-a="y height"/><path class="glass" d="${glassPath}"/></g>`).join('')}<g id="cubes"></g>`;
+    for(const k of['A','B']){
+      const s=k=='A'?A:B,n=Math.round(s.V*s.p/10),rows=Math.max(1,Math.floor(PL*s.V/15)),pool=[];
+      for(let r=0;r<rows;r++)for(let c=0;c<10;c++)pool.push([c,r]);
+      shuffle(pool).slice(0,n).forEach(([c,r])=>cubes.push({el:cube(),k,lx:6+15*c+7.5+(Math.random()-.5)*3,ly:220-15*r-8.5+(Math.random()-.5)*3,st:'in'}));
+    }
+    cells=grid(A.V+B.V);result=(A.V*A.p+B.V*B.p)/(A.V+B.V);
+    drawPour(0,{a:0,u:0},{a:0,u:0});
+  }
+  specs=[];document.querySelectorAll('#sv [data-a]').forEach(e=>e.dataset.a.split(' ').forEach(a=>specs.push([e,a])));
+  frames=[snap()];shown=0;words();
+}
+const snap=()=>specs.map(([e,a])=>e.getAttribute(a));
+const apply=s=>specs.forEach(([e,a],i)=>s[i]==null?e.removeAttribute(a):e.setAttribute(a,s[i]));
+const pos=c=>{c.el.setAttribute('x',c.x-5);c.el.setAttribute('y',c.y-5)};
+function world(k,a,lx,ly){const b=BEAK[k],ang=32*a*b.dir*Math.PI/180,X=b.x+b.dx*a,rx=lx-b.px;
+  return[X+b.px+rx*Math.cos(ang)-ly*Math.sin(ang),b.y+rx*Math.sin(ang)+ly*Math.cos(ang)]}
+function pick(vol){const top=cb-PLC*vol,free=cells.filter(c=>!c.used&&c.y-8>=top);
+  let c=free.length?free[Math.floor(Math.random()*free.length)]:cells.filter(c=>!c.used).sort((a,b)=>b.y-a.y)[0];c=c||cells[0];c.used=true;return c}
+function moveCubes(t){for(const c of cubes){
+  if(c.st=='fly'){const s=Math.min(1,(t-c.t0)/c.dur),q=1-s,m=c.ctrl||[(c.from[0]+c.to.x)/2,(c.from[1]+c.to.y)/2];
+    c.x=q*q*c.from[0]+2*q*s*m[0]+s*s*c.to.x;c.y=q*q*c.from[1]+2*q*s*m[1]+s*s*c.to.y;if(s>=1)c.st='c'}
+  if(c.st=='stir'){const s=ease(Math.min(1,(t-c.t0)/1.1));c.x=c.from[0]+(c.to.x-c.from[0])*s;c.y=c.from[1]+(c.to.y-c.from[1])*s;if(s>=1)c.st='done'}
+  pos(c)}}
+function stir(t){stirred=true;cells.forEach(c=>c.used=false);const fresh=shuffle(cells.slice());cubes.forEach((c,i)=>{c.st='stir';c.t0=t;c.from=[c.x,c.y];c.to=fresh[i]})}
+
+/* ---------- pouring ---------- */
+function phase(t,s){const k=t-s;if(k<0)return{a:0,u:0};if(k<.5)return{a:ease(k/.5),u:0};if(k<2.3)return{a:1,u:(k-.5)/1.8};if(k<2.8)return{a:1-ease((k-2.3)/.5),u:1};return{a:0,u:1}}
+function drawPour(t,pa,pb){
+  const vol=A.V*pa.u+B.V*pb.u,salt=A.V*pa.u*A.p+B.V*pb.u*B.p;
+  for(const[k,s,p]of[['A',A,pa],['B',B,pb]]){
+    const b=BEAK[k];$('g'+k).setAttribute('transform',`translate(${b.x+b.dx*p.a},${b.y}) rotate(${32*p.a*b.dir} ${b.px} 0)`);
+    const h=PL*s.V*(1-p.u),l=$('l'+k);l.setAttribute('y',220-h);l.setAttribute('height',Math.max(0,h));l.setAttribute('fill',col(s.p));
+    const st=$('s'+k),[x,y]=world(k,p.a,b.px,0);
+    if(p.a>.98&&p.u>0&&p.u<1){st.setAttribute('x',x-6.5);st.setAttribute('y',y);st.setAttribute('height',Math.max(0,cb-PLC*vol-y+4));st.setAttribute('fill',col(s.p));st.setAttribute('opacity',1)}else st.setAttribute('opacity',0);
+  }
+  const lc=$('lC');lc.setAttribute('y',cb-PLC*vol);lc.setAttribute('height',PLC*vol);lc.setAttribute('fill',col(vol?salt/vol:0));
+  for(const c of cubes){if(c.st!='in')continue;const p=c.k=='A'?pa:pb,s=c.k=='A'?A:B,h=PL*s.V*(1-p.u);
+    if(p.u>0&&(220-c.ly+5>h||p.u>=1)){c.st='fly';c.t0=t;c.dur=.65;c.from=world(c.k,p.a,c.lx,c.ly);const L=world(c.k,p.a,BEAK[c.k].px,0);c.ctrl=[L[0],L[1]-40];c.to=pick(vol+.6)}
+    else{[c.x,c.y]=world(c.k,p.a,c.lx,c.ly)}}
+  moveCubes(t);
+}
+function pourLoop(now){
+  const t=(now-t0)/1000;drawPour(t,phase(t,0),phase(t,3));frames.push(snap());
+  if(t>5.8&&!stirred&&cubes.every(c=>c.st=='c'))stir(t);
+  if(t>5.8&&(stirred||!cubes.length)&&cubes.every(c=>c.st=='done')){done();return}
+  raf=requestAnimationFrame(pourLoop)}
+
+/* ---------- boiling ---------- */
+function boilLoop(now){
+  const t=(now-t0)/1000,u=cl01((t-.5)/2.7),vol=S.V-S.E*u,top=cb-PLC*vol;
+  $('lC').setAttribute('y',top);$('lC').setAttribute('height',PLC*vol);
+  $('fl').setAttribute('opacity',t<3.4?cl01(t/.4):cl01(1-(t-3.4)/.4));
+  $('stm').setAttribute('opacity',u>0&&u<1?.8:0);$('stm').setAttribute('transform',`translate(0,${-((t*45)%30)})`);
+  for(const c of cubes)if(c.st=='c'&&c.y-5<top){c.st='fly';c.t0=t;c.dur=.35;c.ctrl=null;c.from=[c.x,c.y];c.to=pick(vol-.2)}
+  moveCubes(t);frames.push(snap());
+  if(t>3.6&&!stirred&&cubes.every(c=>c.st=='c'))stir(t);
+  if(t>3.9&&(stirred||!cubes.length)&&cubes.every(c=>c.st=='done')){done();return}
+  raf=requestAnimationFrame(boilLoop)}
+
+function go(){
+  state='run';words();
+  if(M=='boil'){cubes.forEach(c=>c.st='c');}
+  t0=performance.now()-(reduce?20000:0);raf=requestAnimationFrame(M=='boil'?boilLoop:pourLoop)}
+function done(){state=M=='add'?'shown':'done';words()}
+function back(){
+  state='rew';words();let i=frames.length-1;
+  const end=()=>{apply(frames[0]);frames=[frames[0]];stirred=false;cells.forEach(c=>c.used=false);
+    cubes.forEach(c=>{c.st=M=='boil'?'c':'in';const x=+c.el.getAttribute('x')+5,y=+c.el.getAttribute('y')+5;c.x=x;c.y=y});state='idle';words()};
+  if(reduce){end();return}
+  const step=()=>{i-=3;if(i<=0){end();return}apply(frames[i]);raf=requestAnimationFrame(step)};raf=requestAnimationFrame(step)}
+
+/* ---------- words, controls, steps ---------- */
+const LIM={aV:[1,10,1],aP:[0,100,10],bV:[1,10,1],bP:[0,100,10],V:[2,10,1],p:[10,90,10],E:[1,9,1]};
+const prop=k=>k[1]=='P'?'p':'V';
+function get(k){if(M=='boil')return S[k];return(k[0]=='a'?A:B)[prop(k)]}
+function set(k,v){if(M=='boil'){S[k]=v;S.E=Math.max(1,Math.min(S.E,S.V-1,Math.floor(S.V-S.V*S.p/100)));return}(k[0]=='a'?A:B)[prop(k)]=v}
+function lim(k){const l=LIM[k].slice();if(M=='water'&&k=='bP')l[0]=10;if(M=='boil'&&k=='E')l[1]=Math.max(1,Math.min(S.V-1,Math.floor(S.V-S.V*S.p/100)));return l}
+const stp=(k,unit)=>{const v=get(k),[mn,mx]=lim(k),dis=state!='idle';
+  return`<div class="stp"><div class="big">${v}${unit}</div><div class="pm"><button data-k="${k}" data-d="-1" aria-label="less" ${dis||v<=mn?'disabled':''}>−</button><button data-k="${k}" data-d="1" aria-label="more" ${dis||v>=mx?'disabled':''}>+</button></div></div>`};
+const fix=(v)=>`<div class="fixed"><div class="big">${v}</div></div>`;
+function words(){
+  const g=P.add.G;let q,ca,cbb;
+  if(M=='mix'){q=`Mix <b>${A.V} L</b> of <b>${A.p}%</b> salt water with <b>${B.V} L</b> of <b>${B.p}%</b> salt water. What percent salt is the mix?`;ca=stp('aV',' L')+stp('aP','%');cbb=stp('bV',' L')+stp('bP','%')}
+  if(M=='add'){q=`How many liters of <b>${A.p}%</b> salt water must be added to <b>${B.V} L</b> of <b>${B.p}%</b> salt water to make <b>${g}%</b> salt water?`;ca=stp('aV',' L')+fix(A.p+'%');cbb=fix(B.V+' L')+fix(B.p+'%')}
+  if(M=='water'){q=`Add <b>${A.V} L</b> of water to <b>${B.V} L</b> of <b>${B.p}%</b> salt water. What percent salt is the mix?`;ca=stp('aV',' L')+fix('water');cbb=stp('bV',' L')+stp('bP','%')}
+  if(M=='boil'){q=`Boil <b>${S.E} L</b> of water out of <b>${S.V} L</b> of <b>${S.p}%</b> salt water. What percent salt is left?`;ca=stp('V',' L')+stp('p','%');cbb=`<div class="lab">boil off</div>`+stp('E',' L')}
+  $('q').innerHTML=q;$('cA').innerHTML=ca;$('cB').innerHTML=cbb;
+  const vol=M=='boil'?S.V-S.E:A.V+B.V,ok=Math.abs(result-g)<1e-9,verb=M=='boil'?'Boil ▸':'Pour ▸',bk=`<button class="back" id="bk">◂ Back</button>`;
+  let mid='';
+  if(state=='idle')mid=`<button class="go" id="go">${verb}</button>`;
+  else if(state=='run'||state=='rew')mid=`<div class="res q2">…</div>`;
+  else if(state=='done')mid=`<div class="big">${vol} L</div><div class="res q2">? %</div>${bk}<button class="go" id="go">Show %</button>`;
+  else mid=`<div class="big">${vol} L</div><div class="res${M=='add'?(ok?' ok':' q2'):''}">${f(Math.round(result*10)/10)}%${M=='add'&&ok?' ✓':''}</div>`
+    +(M=='add'?`<div class="lab">${ok?'Goal reached!':result>g?'Too salty':'Not salty enough'}</div>`:'')+bk;
+  if(M=='add')mid+=`<div class="lab" style="margin-top:8px"><span class="sw" style="background:${col(g)}"></span>Goal ${g}%</div>`;
+  $('cC').innerHTML=mid;
+  document.querySelectorAll('.stp button').forEach(b=>b.onclick=()=>{const k=b.dataset.k,[mn,mx,st]=lim(k);set(k,Math.max(mn,Math.min(mx,get(k)+st*b.dataset.d)));build()});
+  if($('go'))$('go').onclick=()=>{if(state=='done'){state='shown';words()}else go()};
+  if($('bk'))$('bk').onclick=back;
+  stepsUI();
+}
+function stepList(){
+  if(M=='boil'){const s=S.V*S.p/100,L=S.V-S.E,r=s/L;return[
+    ['Salt at the start',`${S.V} × ${d2(S.p)} = ${f(s)} L`],['Boiling removes only water, so the salt stays',`${f(s)} L of salt`],
+    ['Liquid left',`${S.V} − ${S.E} = ${L} L`],['Percent salt',`${f(s)} ÷ ${L} = ${f(r)} = ${f(Math.round(r*1000)/10)}%`]]}
+  if(M=='add'){const g=P.add.G,a=A.p/100,b=B.p/100,G=g/100,k=B.V*b,c=G*B.V,co=G-a,x=(k-c)/co;return[
+    [`Let <i>x</i> = liters of ${A.p}% salt water we add`,''],[`Salt in what we add`,`${d2(A.p)} × <i>x</i> = ${f(a)}<i>x</i>`],
+    [`Salt already in the ${B.V} L`,`${B.V} × ${d2(B.p)} = ${f(k)} L`],[`Salt in the total mix: (<i>x</i> + ${B.V}) L at ${g}%`,`${d2(g)}(<i>x</i> + ${B.V})`],
+    ['Salt in = salt in the mix',`${f(a)}<i>x</i> + ${f(k)} = ${f(G)}(<i>x</i> + ${B.V})`],['Solve for <i>x</i>',`<i>x</i> = ${f(x)} L`]]}
+  const sA=A.V*A.p/100,sB=B.V*B.p/100,s=sA+sB,V=A.V+B.V,r=s/V,first=M=='water'?['Water adds no salt',`${A.V} × 0 = 0 L`]:['Salt in the left beaker',`${A.V} × ${d2(A.p)} = ${f(sA)} L`];
+  return[first,[M=='water'?'Salt in the salt water':'Salt in the right beaker',`${B.V} × ${d2(B.p)} = ${f(sB)} L`],['Total salt',`${f(sA)} + ${f(sB)} = ${f(s)} L`],
+    ['Total liquid',`${A.V} + ${B.V} = ${V} L`],['Percent salt',`${f(s)} ÷ ${V} = ${f(r)} = ${f(Math.round(r*1000)/10)}%`]]}
+function stepsUI(){
+  const L=stepList();
+  $('sl').innerHTML=L.slice(0,shown).map(([a,b])=>`<li><span class="lab">${a}</span>${b?`<span class="m">${b}</span>`:''}</li>`).join('');
+  $('hb').hidden=shown>0;$('ns').hidden=!shown||shown>=L.length;
+}
+$('hb').onclick=()=>{shown=1;stepsUI()};
+$('ns').onclick=()=>{shown++;stepsUI();const li=$('sl').lastElementChild;if(li)li.scrollIntoView({block:'nearest',behavior:reduce?'auto':'smooth'})};
+function newNumbers(){
+  const p=P.add;
+  for(let i=0;i<800;i++){const pA=[10,20,30,40][Math.floor(Math.random()*4)],pB=[60,70,80,90][Math.floor(Math.random()*4)],g=10*(Math.floor(Math.random()*8)+1),VB=1+Math.floor(Math.random()*6);
+    if(!(pA<g&&g<pB))continue;const x=VB*(pB-g)/(g-pA);
+    if(Number.isInteger(x)&&x>=1&&x<=10&&!(pB==p.B.p&&VB==p.B.V&&g==p.G&&pA==p.A.p)){p.A={V:1,p:pA};p.B={V:VB,p:pB};p.G=g;build();return}}}
+$('mode').innerHTML=MODES.map(([k,n],i)=>`<option value="${k}">${i+1} · ${n}</option>`).join('');
+$('mode').onchange=e=>{cancelAnimationFrame(raf);M=e.target.value;$('newb').hidden=M!='add';build()};
+$('newb').onclick=newNumbers;
+build();
+}
+</script></body></html>

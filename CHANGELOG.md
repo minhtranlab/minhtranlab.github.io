@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-24
+- Added "Mixture problems" (`math/mixture-lab.html`) under the new Mixtures topic in Math illustrations: mix two solutions, how much to add, add water, boil off water.
+
 ## 2026-11-16
 - Added "Mean, median, mode and spread" (`math/statistics-explorer.html`), a dot-plot explorer in Fun Academy colours, under the new Statistics topic in Math illustrations.
 - Matrix house explorer: new activities (Two in a row, Undo, Find the matrix, Describe it, Slide), "Show area", and a "Where this comes from" dropdown for each.
