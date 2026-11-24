@@ -72,7 +72,7 @@ async def main():
         async def newpage(w, hgt):
             pg = await (await b.new_context(viewport={'width': w, 'height': hgt}, has_touch=True, is_mobile=w < 800)).new_page()
             pg.on('pageerror', lambda e: errs.append(str(e)))
-            await pg.goto(BASE); await pg.wait_for_timeout(500); await pg.evaluate('loadCh(2)'); return pg   # Bài 2 too (phiếu #9)
+            await pg.goto(BASE); await pg.wait_for_timeout(500); await pg.evaluate('Promise.all(CHAPTERS.filter(c=>c.ready&&c.n>1).map(c=>loadCh(c.n)))'); return pg   # Bài 2, 3… too (phiếu #9)
         async def run(pg, item, wrong=False, auto=1):
             q = item['q']
             await pg.evaluate(f'st.auto={auto}'); await pg.evaluate(START, [q]); await pg.wait_for_timeout(480)
@@ -177,7 +177,7 @@ async def main():
         #     on every one; auto off on one echo and one read. Before: Tiếp locked but visible, no Chinese text yet on echo; after: answer block
         #     with Pinyin, read aloud (nothing when auto is off), male clip, Tiếp open + visible, no auto-advance, no "Đúng!", nothing scored.
         sys_ = await pg.evaluate("SESSIONS.filter(s=>!s.rev&&!s.mix&&!s.test).flatMap(s=>(s.base||s.screens).map((c,i)=>[s.id,i,c.t,c.mode]).filter(x=>x[2]==='say'))")
-        chk(len(sys_) == 22, f'say screens found: {len(sys_)}')
+        chk(len(sys_) >= 22 and len(sys_) == len({x[0] for x in sys_}), f'say screens found: {len(sys_)}, one per study unit (t_say.py checks that every unit has one)')
         runs = [(pg, 'phone', x, 1, 'did') for x in sys_] + [(pg2, 'pad', x, 1, 'skip') for x in sys_]
         runs += [(pg, 'phone', next(x for x in sys_ if x[3] == m), 0, 'did') for m in ('echo', 'read')]
         for pgx, lab, (sid_, i, _, mode), auto, how in runs:

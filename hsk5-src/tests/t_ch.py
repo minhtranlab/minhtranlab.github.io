@@ -46,7 +46,8 @@ async def main():
         h = await pg.evaluate("[document.querySelector('.brand').textContent, document.querySelector('.sub').textContent, document.querySelectorAll('.path .nd:not(.rev)').length, document.querySelectorAll('.path .nd.done').length, [...document.querySelectorAll('.chb')].map(b=>b.textContent).join('|'), [...document.querySelectorAll('.path .nl')].slice(0,3).map(e=>e.textContent).join(' / '), document.querySelectorAll('.path .nd.lock:not(.rev)').length, document.querySelectorAll('.path .nd.comic .nem').length]")
         chk(h[0] == '爱的细节' and h[1].startswith('HSK5 · Bài 1 ·'), f'home heading Bài 1: {h[:2]}')
         chk(h[2] == 22 and h[3] == 13 and h[6] == 0 and h[7] == 4, f'Bài 1 new path: 22 stages, the 13 done before still done, none locked, 4 🎬 ({h[2]}, {h[3]}, locked {h[6]}, 🎬 {h[7]})')
-        chk(h[4] == 'Bài 1|Bài 2', f'chapter switch shows Bài 1 | Bài 2 ({h[4]})')
+        rd = await pg.evaluate("CHAPTERS.filter(c=>c.ready).map(c=>'Bài '+c.n).join('|')")
+        chk(h[4] == rd and rd.startswith('Bài 1|Bài 2'), f'chapter switch shows every ready chapter {rd} ({h[4]})')
         order = await pg.evaluate('STUDY(1).map(s=>s.id)')
         chk(order == [1, 2, 3, 'o1', 'g1', 4, 'o2', 'g2', 5, 6, 'o3', 7, 8, 'o4', 'g3', 9, 10, 11, 'o5', 'g4', 't1', 'rd'], f'Bài 1 path order (phiếu #5) {order}')
         chk(await pg.evaluate("PATH1.filter(e=>e.kind==='comic').map(e=>e.ids.join(',')).join(' | ')") == '0,1,2,3,4,5,6,7,8 | 9,10,11 | 12,13,14,15,16,17,18,19,20 | 21,22,23,24,25,26,27,28,29', 'Ghép truyện g1–g4 cover sentences 0–8, 9–11, 12–20, 21–29')
@@ -54,7 +55,7 @@ async def main():
         chk(all(1 <= n <= 2 for n in pg_), f'each Ghép truyện is at most 2 pages {pg_}')
         cur = await pg.evaluate("(()=>{const n=document.querySelector('.path .nd.cur');return n?n.getAttribute('aria-label'):''})()")
         chk(cur.startswith('Ôn tập'), f'the pulsing "current" node is the first new stage after the furthest one done, not tập 1 ({cur})')
-        chk(not any('ch2.js' in u for u in pg.reqs), 'Bài 2 bundle NOT downloaded while only Bài 1 is used')
+        chk(not any('ch2.js' in u or 'ch3.js' in u for u in pg.reqs), 'Bài 2 / Bài 3 bundles NOT downloaded while only Bài 1 is used')
         sum1 = await pg.evaluate('JSON.stringify(summary())')
         chk(json.loads(sum1)['units'] == 11 and json.loads(sum1)['words'] == 38, f'summary for the Sheet unchanged {sum1}')
         chk(await pg.evaluate("SESSIONS.find(s=>s.id===3).screens.every(c=>c.t!=='comic') && SESSIONS.find(s=>s.id===11).screens.every(c=>c.t!=='read')"), 'no comic in tập 3, no 30-sentence read in tập 11')
@@ -101,7 +102,7 @@ async def main():
 
         # 2) a new learner: Bài 2 opens right away (Bài 1 not done), lazily loaded, unlocks by its PATH
         ctx, pg = await fresh(b)
-        chk(not any('ch2.js' in u for u in pg.reqs), 'fresh start: Bài 2 not downloaded yet')
+        chk(not any('ch2.js' in u or 'ch3.js' in u for u in pg.reqs), 'fresh start: Bài 2 / Bài 3 not downloaded yet')
         await pg.click('.chb:nth-child(2)'); await pg.wait_for_timeout(900)
         chk(any('ch2.js?v=' in u for u in pg.reqs), 'opening Bài 2 downloads hsk5/ch2.js (versioned)')
         h = await pg.evaluate("[document.querySelector('.brand').textContent, document.querySelector('.sub').textContent, [...document.querySelectorAll('.path .nd:not(.rev)')].map(n=>(n.classList.contains('lock')?'L':'o')+(n.classList.contains('soon')?'s':'')+(n.classList.contains('comic')?'c':'')).join(' ')]")

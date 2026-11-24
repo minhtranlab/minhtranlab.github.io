@@ -23,7 +23,8 @@ def load_gloss(path, ch=1):
 # ===== chapters (phiếu #9). Chapter 1 is inlined into index.html; every later chapter is its own bundle hsk5/ch<N>.js, loaded when it is opened.
 # A chapter folder holds the content files (shape of Chapter 1, assigned into window.CH<N>) and its own glossary.txt (its lines win when merged).
 CH1_FILES = ['content_words.js','content_words2.js','content_learn.js','content_learn2.js','content_story.js','content_story2.js','content_path.js','content_bank.js','content_bank2.js','content_test.js','content_ety.js','content_ety2.js','kit.js','kit2.js']
-CHAPTER_DIRS = {2: ('ch2', ['words.js', 'learn.js', 'ety.js', 'story.js', 'bank.js', 'test.js', 'kit.js'])}
+CHAPTER_DIRS = {2: ('ch2', ['words.js', 'learn.js', 'ety.js', 'story.js', 'bank.js', 'test.js', 'kit.js']),
+                3: ('ch3', ['words.js', 'learn.js', 'ety.js', 'story.js', 'bank.js', 'test.js', 'kit.js'])}
 D1 = load_gloss('glossary.txt')
 D = dict(D1)                                 # merged dictionary (shipped as DICT); later chapters' lines win
 for n, (dr, _) in sorted(CHAPTER_DIRS.items()): D.update(load_gloss(os.path.join(dr, 'glossary.txt'), n))

@@ -4,7 +4,7 @@ Fake learner: the 38 Bài 1 words learned over 3 weeks (most revised 1–2 times
   - hold >= 3 Bài 2 words and the word missed yesterday, and every "learning" word that is due before any solid overdue word (max 4 learning)
   - show "Lượt này: x từ mới học, y từ cũ" on its first screen and on the last one
 With no learning words at all: 6 solid words, all due, the most overdue ones.
-Mixed reviews of the study path still ask every word of their own units (Bài 1 m1–m6, Bài 2 2-m1), 20 times each.
+Mixed reviews of the study path still ask every word of their own units (Bài 1 m1–m6; a short one with max, e.g. 2-m1 / 3-m1: as many as fit), 20 times each.
 A word is due right after its unit is done (Bài 2 tập 1 played: the home badge counts its words at once and the next round asks them).
 Run from hsk5-src/tests with serve.py on :8765. Prints REV OK 0 failures."""
 import asyncio, json, sys
@@ -32,7 +32,7 @@ async def main():
         b = await p.chromium.launch(executable_path='/opt/pw-browsers/chromium', args=['--no-sandbox', '--autoplay-policy=no-user-gesture-required'])
         pg = await (await b.new_context(viewport={'width': 390, 'height': 844}, has_touch=True)).new_page(); errs = []
         pg.on('pageerror', lambda e: errs.append(str(e)))
-        await pg.goto(BASE); await pg.wait_for_timeout(500); await pg.evaluate('loadCh(2)')
+        await pg.goto(BASE); await pg.wait_for_timeout(500); await pg.evaluate('Promise.all(CHAPTERS.filter(c=>c.ready&&c.n>1).map(c=>loadCh(c.n)))')
 
         # 1) Bài 1 over 3 weeks + Bài 2 today + one word missed yesterday
         fw = await pg.evaluate(FAKE)
@@ -74,8 +74,8 @@ async def main():
         await pg.evaluate("Object.keys(MEAN).filter(k=>W[k]).forEach(k=>{st.wl[k]=st.wl[k]||{t:Date.now(),box:0,due:0,last:0,rev:0,n:0}})")
         miss = await pg.evaluate('''()=>{const out=[];SESSIONS.filter(s=>s.mix).forEach(s=>{const own=s.after.flatMap(id=>SESSIONS.find(x=>x.id===id).words);
           for(let n=0;n<20;n++){const asked=new Set(buildMix(s).flatMap(c=>c.w||[]));const m=own.filter(w=>!asked.has(w));if(m.length&&!s.max)out.push(s.id+':'+m.join(','));
-          if(s.max){const o=own.filter(w=>asked.has(w)).length;if(o<own.length-1)out.push(s.id+' only '+o+'/'+own.length);}}});return out}''')
-        chk(not miss, f'mixed reviews ask the words of their own units (Bài 1 all of them; 2-m1 its short form, at most one left out) {miss[:4]}')
+          if(s.max){const o=own.filter(w=>asked.has(w)).length,cap=Math.min(5,own.length)+Math.max(0,s.max-1-(s.ch1||0));if(o<Math.min(own.length-1,cap))out.push(s.id+' only '+o+'/'+own.length+' (room for '+cap+')');}}});return out}''')
+        chk(not miss, f'mixed reviews ask the words of their own units (Bài 1 all of them; a short one with max: as many as it has room for, i.e. the match + max-1-ch1 questions, at most one left out) {miss[:4]}')
 
         # 4) a unit just done: its words are due at once and the next round asks them
         pg = await (await b.new_context(viewport={'width': 390, 'height': 844}, has_touch=True)).new_page(); pg.on('pageerror', lambda e: errs.append(str(e)))   # a new learner

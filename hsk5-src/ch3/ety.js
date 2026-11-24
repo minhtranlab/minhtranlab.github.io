@@ -1,0 +1,100 @@
+/* ===== Bài 3: Hán Việt + chiết tự + a memory hook for each word (same shape as Bài 1 ETY) ===== */
+var CH3 = window.CH3 || (window.CH3 = {});
+(function () {
+  CH3.ETY = {
+    /* ---- tập 1 ---- */
+    '工人': { parts: [['工', 'công', 'Hình cây thước thợ: việc làm, người thợ. Như “công nhân”, “nhân công”.'], ['人', 'nhân', 'Người.']],
+      hook: 'Người (人) làm công việc (工) = công nhân. Hán–Việt y hệt tiếng Việt.' },
+    '稳定': { parts: [['稳', 'ổn', '禾 (cây lúa) + 急 (chỉ âm): lúa chất thành đống chắc chắn, không đổ. Vững vàng. Như “ổn thoả”.'], ['定', 'định', '宀 (mái nhà) + 正 (ngay ngắn): ở yên dưới mái nhà. Yên, cố định.']],
+      hook: 'Đống lúa (禾) chất vững + ngồi yên dưới mái nhà (宀) = ổn định: không lên xuống thất thường.' },
+    '待遇': { parts: [['待', 'đãi', '彳 (bước đi) + 寺 (chỉ âm): chờ đợi; đối đãi, tiếp đãi. Như “tiếp đãi”.'], ['遇', 'ngộ', '辶 (đi) + 禺 (chỉ âm): gặp. Như “tao ngộ”.']],
+      hook: 'Cách công ty “đãi” (待) bạn và những gì bạn “gặp” (遇) được ở đó: lương, thưởng, chế độ = đãi ngộ.' },
+    '发愁': { parts: [['发', 'phát', 'Phát ra, nổi lên.'], ['愁', 'sầu', '秋 (mùa thu, chỉ âm) + 心 (tim): lòng buồn như trời thu. Như “ưu sầu”.']],
+      hook: 'Nỗi sầu (愁) nổi lên (发) trong lòng = lo âu. Trái tim (心) mang trời thu (秋).' },
+    /* ---- tập 2 ---- */
+    '平静': { parts: [['平', 'bình', 'Phẳng, bằng. Như “bình yên”.'], ['静', 'tĩnh', '青 (xanh) + 争 (tranh giành): hết tranh giành thì yên. Như “yên tĩnh”.']],
+      hook: 'Phẳng (平) và lặng (静): mặt biển không gợn sóng, lòng không gợn lo.' },
+    '帆船': { parts: [['帆', 'phàm', '巾 (tấm vải) + 凡 (chỉ âm): tấm vải căng gió = cánh buồm.'], ['船', 'thuyền', '舟 (con thuyền) + phần bên phải chỉ âm. Như “thuyền bè”.']],
+      hook: 'Tấm vải (巾) căng gió trên con thuyền (舟) = thuyền buồm.' },
+    '撞': { parts: [['撞', 'chàng', '扌 (tay) + 童 (đứa trẻ, chỉ âm): va mạnh vào.']],
+      hook: 'Như đứa trẻ (童) chạy ào không nhìn đường, đâm sầm vào cửa. Tay (扌) đẩy mạnh: 撞开 = đâm bật ra.' },
+    '艘': { parts: [['艘', 'sưu', '舟 (thuyền) + 叟 (chỉ âm sōu).']],
+      hook: 'Có bộ 舟 (thuyền): lượng từ chỉ dành cho tàu thuyền. Xe là 辆, thuyền là 艘.' },
+    '航行': { parts: [['航', 'hàng', '舟 (thuyền) + 亢 (chỉ âm): đi thuyền. Như “hàng hải”, “hàng không”.'], ['行', 'hành', 'Đi. Như “hành trình”.']],
+      hook: 'Thuyền (舟) đi (行) = hàng hành: tàu thuyền chạy trên biển. “Hàng hải” cũng là chữ 航 này.' },
+    /* ---- tập 3 ---- */
+    '积蓄': { parts: [['积', 'tích', '禾 (lúa) + 只 (chỉ âm): gom lúa thành đống. Như “tích luỹ”.'], ['蓄', 'súc', '艹 (cỏ) + 畜 (chỉ âm): tích trữ, cất để dành.']],
+      hook: 'Gom góp (积) rồi cất trữ (蓄) = tiền để dành, của dành dụm.' },
+    '二手': { parts: [['二', 'nhị', 'Hai.'], ['手', 'thủ', 'Tay.']],
+      hook: 'Qua “tay thứ hai” (二手) = đồ đã có người dùng. Tiếng Anh cũng nói second-hand.' },
+    '彩虹': { parts: [['彩', 'thái', '采 (hái, chỉ âm) + 彡 (mấy nét vẽ màu): nhiều màu sắc. Như “sắc thái”.'], ['虹', 'hồng', '虫 (con vật) + 工 (chỉ âm). Người xưa tưởng cầu vồng là một con rồng uống nước, nên chữ có bộ 虫.']],
+      hook: 'Con rồng (虫) nhiều màu (彩) vắt ngang trời sau mưa = cầu vồng.' },
+    '包括': { parts: [['包', 'bao', 'Hình cái bọc ôm lấy bên trong: bao bọc. Như “bao gồm”.'], ['括', 'quát', '扌 (tay) + 舌 (chỉ âm): gom lại, buộc lại. Như “khái quát”.']],
+      hook: 'Bao (包) lại và gom (括) hết vào = bao gồm, kể cả.' },
+    '疯': { parts: [['疯', 'phong', '疒 (bệnh) + 风 (gió, chỉ âm): “bệnh gió”, đầu óc loạn như gió thổi.']],
+      hook: 'Bệnh (疒) như gió (风) thổi loạn trong đầu = điên. Ai làm chuyện quá liều, người ta bảo: 你疯了！' },
+    /* ---- tập 4 ---- */
+    '辞职': { parts: [['辞', 'từ', '舌 (lưỡi) + 辛 (cay đắng): dùng lời mà từ biệt, từ chối. Như “từ biệt”.'], ['职', 'chức', '耳 (tai) + 只 (chỉ âm): việc phải nghe lệnh mà làm; chức vụ. Như “chức vụ”.']],
+      hook: 'Từ (辞) bỏ chức (职) = thôi việc. Tiếng Việt nói “từ chức”, tiếng Trung thì ai thôi việc cũng nói 辞职.' },
+    '驾驶': { parts: [['驾', 'giá', '加 (thêm, chỉ âm) + 马 (ngựa): đóng ngựa vào xe mà đánh xe. Như “giá ngự”.'], ['驶', 'sử', '马 (ngựa) + 史 (chỉ âm): cho ngựa chạy nhanh; xe, thuyền chạy.']],
+      hook: 'Cả hai chữ đều có 马 (ngựa): xưa là đánh xe ngựa; nay lái xe, lái thuyền, lái máy bay đều là 驾驶.' },
+    '轮流': { parts: [['轮', 'luân', '车 (xe) + 仑 (chỉ âm): bánh xe; xoay vòng. Như “luân phiên”.'], ['流', 'lưu', '氵 (nước): nước chảy. Như “lưu thông”.']],
+      hook: 'Bánh xe (轮) xoay, dòng nước (流) trôi: ai cũng lần lượt tới lượt mình = luân phiên.' },
+    /* ---- tập 5 ---- */
+    '钓': { parts: [['钓', 'điếu', '钅 (kim loại) + 勺 (cái muỗng, chỉ âm): lưỡi câu bằng sắt cong như cái muỗng.']],
+      hook: 'Móc sắt (钅) cong như cái muỗng (勺) = lưỡi câu. 钓鱼 = câu cá; Hán–Việt “điếu ngư”.' },
+    '顿': { parts: [['顿', 'đốn', '屯 (chỉ âm) + 页 (cái đầu): cúi đầu; dừng lại một lúc. Một chặng, một bữa.']],
+      hook: 'Một bữa ăn là một lần dừng lại (顿) cúi đầu (页) xuống bát cơm. 一顿饭 = một bữa cơm.' },
+    '海鲜': { parts: [['海', 'hải', '氵 (nước) + 每 (chỉ âm): biển.'], ['鲜', 'tiên', '鱼 (cá) + 羊 (dê): hai món tươi ngon của người xưa; tươi. Như 新鲜 (tươi).']],
+      hook: 'Đồ tươi (鲜) từ biển (海) = hải sản. Chữ 鲜 có cả 鱼 (cá) lẫn 羊 (dê): vừa tươi vừa ngon.' },
+    /* ---- tập 6 ---- */
+    '傍晚': { parts: [['傍', 'bàng', '亻 (người) + 旁 (bên cạnh, chỉ âm): sát bên, gần tới.'], ['晚', 'vãn', '日 (mặt trời) + 免 (chỉ âm): trời muộn, buổi tối.']],
+      hook: 'Sát bên (傍) buổi tối (晚) = chạng vạng: mặt trời sắp lặn, trời chưa tối hẳn.' },
+    '舒适': { parts: [['舒', 'thư', '舍 (nhà) + 予: duỗi ra, thư thả. Như “thư giãn”.'], ['适', 'thích', '辶 (đi) + 舌 (chỉ âm): vừa vặn, hợp. Như “thích hợp”.']],
+      hook: 'Thư thả (舒) và vừa vặn (适) = dễ chịu. Nhớ: 舒适 văn viết, cho căn phòng, môi trường; 舒服 khẩu ngữ, cho cảm giác của người.' },
+    '干活儿': { parts: [['干', 'cán', 'Làm (干 trong 干活儿 đọc gàn).'], ['活', 'hoạt', '氵 + 舌: sống động; ở đây 活儿 = việc làm.'], ['儿', 'nhi', 'Hậu tố r-hoá: 活儿 đọc huór.']],
+      hook: 'Làm (干) việc (活儿): khẩu ngữ, việc tay chân hằng ngày.' },
+    /* ---- tập 7 ---- */
+    '盼望': { parts: [['盼', 'phán', '目 (mắt) + 分 (chỉ âm): mở to mắt mà trông.'], ['望', 'vọng', 'Nhìn ra xa, mong. Như “hy vọng” (希望).']],
+      hook: 'Mở to mắt (目) mà ngóng (望) = mong mỏi tha thiết. Mạnh hơn 希望.' },
+    '陆地': { parts: [['陆', 'lục', '阝 (gò đất) + phần bên phải là mấy gò đất chồng lên nhau: đất cao, đất liền. Như “lục địa”.'], ['地', 'địa', '土 (đất): đất.']],
+      hook: 'Gò đất (阝) nối liền nhau trên mặt đất (地) = đất liền. Ở trên biển lâu ngày, ai cũng mong thấy 陆地.' },
+    '各自': { parts: [['各', 'các', '夂 (bàn chân đi tới) + 口 (cửa): mỗi người tới một cửa; “mỗi, từng”. Như “các nơi”.'], ['自', 'tự', 'Hình cái mũi: tự mình. Như 自学 (tự học).']],
+      hook: 'Mỗi người (各) tự mình (自) = ai nấy. 他们在各自的房间 = ai ở phòng nấy.' },
+    /* ---- tập 8 ---- */
+    '勿': { parts: [['勿', 'vật', 'Hình lá cờ có tua, phất lên ra hiệu dừng: chớ, đừng.']],
+      hook: 'Như lá cờ phất lên báo dừng: 勿 = đừng. Hay gặp trên biển báo: 请勿… = xin đừng…' },
+    '时刻': { parts: [['时', 'thời', '日 (mặt trời) + 寸: giờ, lúc.'], ['刻', 'khắc', '亥 (chỉ âm) + 刂 (con dao): khắc vạch; 15 phút. Như “thời khắc”.']],
+      hook: 'Vạch khắc (刻) trên dòng thời gian (时) = thời khắc, một lúc nhất định. 时时刻刻 = lúc nào cũng.' },
+    '着火': { parts: [['着', 'trước', 'Ở đây đọc zháo: bén vào, dính vào.'], ['火', 'hoả', 'Lửa.']],
+      hook: 'Lửa (火) bén vào (着) = bốc cháy. Nhớ đọc zháohuǒ, không đọc zhe.' },
+    '漏': { parts: [['漏', 'lậu', '氵 (nước) + 尸 (mái nhà) + 雨 (mưa): mưa lọt qua mái, nước rỉ xuống.']],
+      hook: 'Nước (氵) mưa (雨) lọt qua mái nhà (尸) = dột, rò. Chữ 漏 có đủ cả mái nhà lẫn mưa.' },
+    /* ---- tập 9 ---- */
+    '雷': { parts: [['雷', 'lôi', '雨 (mưa) + 田: sấm. Như “lôi đình” (sấm sét).']],
+      hook: 'Trên là mưa (雨), dưới là ruộng (田): mưa giông trên đồng thì có sấm.' },
+    '随时': { parts: [['随', 'tuỳ', '阝 + phần có 辶 (đi): đi theo. Như “tuỳ ý”.'], ['时', 'thời', 'Lúc, giờ.']],
+      hook: 'Theo (随) mọi lúc (时) = bất cứ lúc nào. Như “tuỳ thời”: tuỳ lúc.' },
+    '闪电': { parts: [['闪', 'thiểm', '门 (cửa) + 人 (người): người loé qua khung cửa; loé lên.'], ['电', 'điện', 'Điện.']],
+      hook: 'Người (人) loé qua khung cửa (门) nhanh như điện (电) = tia chớp.' },
+    '击': { parts: [['击', 'kích', 'Bản phồn thể có bộ 手 (tay) ở dưới: tay đánh mạnh. Như “công kích”, “tấn công”.']],
+      hook: 'Một cú đánh mạnh bằng tay = 击. Tia chớp “đánh” trúng thuyền: 被闪电击到.' },
+    '拥抱': { parts: [['拥', 'ủng', '扌 (tay) + 用 (chỉ âm): ôm, vây quanh. Như “ủng hộ”.'], ['抱', 'bão', '扌 (tay) + 包 (bọc): dùng tay bọc lấy.']],
+      hook: 'Hai chữ đều có 扌 (tay): tay bọc (包) lấy người kia = ôm chặt.' },
+    /* ---- tập 10 ---- */
+    '海里': { parts: [['海', 'hải', 'Biển.'], ['里', 'lý', 'Dặm (đơn vị đo đường); cũng là “trong”.']],
+      hook: 'Dặm (里) đo trên biển (海) = hải lý. Sau con số (4000多海里) là hải lý; sau 在 (在海里) là “trong biển”.' },
+    '人生': { parts: [['人', 'nhân', 'Người.'], ['生', 'sinh', 'Hình cây non mọc lên khỏi mặt đất: sống, sinh ra.']],
+      hook: 'Người (人) sống (生) = đời người. Như “nhân sinh quan”.' },
+    '台阶': { parts: [['台', 'đài', 'Cái bệ, chỗ cao.'], ['阶', 'giai', '阝 (gò đất) + 介 (chỉ âm): bậc đất; bậc thềm. Như “giai đoạn”.']],
+      hook: 'Những bậc (阶) dẫn lên chỗ cao (台) = bậc thềm. Mỗi bậc lại cao thêm một chút, như đường đời.' },
+    '未来': { parts: [['未', 'vị', 'Hình cây có cành non chưa lớn hết: chưa. Như “vị thành niên”.'], ['来', 'lai', 'Đến.']],
+      hook: 'Chưa (未) đến (来) = tương lai. Hán–Việt “vị lai”.' },
+    /* ---- tập 11 ---- */
+    '太太': { parts: [['太', 'thái', '大 (to) thêm một chấm: rất, quá. Như “thái quá”.']],
+      hook: 'Người “lớn” (太) trong nhà: bà chủ nhà, vợ. Lặp lại thành 太太, chữ sau đọc nhẹ.' },
+    '时代': { parts: [['时', 'thời', 'Thời gian, lúc.'], ['代', 'đại', '亻 (người) + 弋: thay thế nhau; đời. Như “thế hệ”, “thời đại”.']],
+      hook: 'Từng lớp người (代) nối nhau theo dòng thời gian (时) = thời đại.' }
+
+  };
+})();

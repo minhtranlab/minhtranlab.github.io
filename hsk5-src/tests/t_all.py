@@ -56,7 +56,7 @@ async def main():
         pg = await ctx.new_page(); errs = []
         pg.on('pageerror', lambda e: errs.append(str(e))); pg.on('console', lambda m: errs.append(m.text) if m.type == 'error' else None)
         await pg.goto('http://127.0.0.1:8765/index.html'); await pg.wait_for_timeout(500)
-        await pg.evaluate('loadCh(2)')   # phiếu #9: play Bài 1 and every stage of Bài 2 that exists
+        await pg.evaluate('Promise.all(CHAPTERS.filter(c=>c.ready&&c.n>1).map(c=>loadCh(c.n)))')   # phiếu #9: play Bài 1 and every stage of Bài 2, 3…, 3… that exists
         await pg.screenshot(path='a_home.png')
         miss = await pg.evaluate('''()=>{const m=[];const chk=(z,v)=>{const k=akey(z);if(!k)return;const key=v==='m'?'M|'+k:k;if(!AUD[key])m.push(key)};
           const scan=s=>s.screens.forEach(c=>{(c.lines||[]).forEach(l=>chk(l.zh,l.v));if(c.t==='pick')chk(c.zh,'f');if(c.t==='hear'&&c.s)chk(c.s,'f');if(c.t==='order'||c.t==='type')chk(c.zh,'f');if(c.t==='mc')chk(c.full,'f');if(c.t==='tf')chk(c.zh,'f');if(c.t==='spot')chk(c.full,'f');if(c.t==='album')(c.say||[]).forEach(x=>chk(x.zh,'m'));if(c.t==='say'){const B=bookOf(s),b=c.i!=null?B[c.i]:c;if(!b)m.push('say:'+s.id);else chk(b.zh,c.v||(c.i!=null?'m':'f'))}});

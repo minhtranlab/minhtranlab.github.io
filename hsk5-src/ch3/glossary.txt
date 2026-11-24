@@ -1,0 +1,216 @@
+# Bài 3 《人生有选择，一切可改变》: word|nghĩa|Hán Việt|cờ[|story][|py:pinyin]
+# t = từ mới của Bài 3 (story = từ * của sách, ngoài đề cương HSK5: chỉ dạy nhận mặt chữ); s = từ hỗ trợ / chỉ chạm xem nghĩa (cả chữ dùng trong chiết tự);
+# không cờ = từ HSK1–4 mà glossary.txt / ch2/glossary.txt chưa có. Dòng ở đây thắng khi gộp.
+# ---- 41 từ mới ----
+人生|đời người|nhân sinh|t
+工人|công nhân|công nhân|t
+稳定|ổn định|ổn định|t
+待遇|sự đãi ngộ (lương, thưởng, chế độ)|đãi ngộ|t
+发愁|lo âu, buồn rầu|phát sầu|t
+平静|yên ả, yên ổn, bình tĩnh|bình tĩnh|t
+帆船|thuyền buồm|phàm thuyền|t|story
+撞|đụng, đâm vào|chàng|t
+艘|chiếc (lượng từ cho tàu, thuyền)|sưu|t|story
+航行|đi (tàu, thuyền); giong buồm|hàng hành|t|story
+积蓄|tiền để dành; dành dụm|tích súc|t|story
+二手|đã qua sử dụng, cũ|nhị thủ|t|story
+彩虹|cầu vồng|thái hồng|t
+包括|bao gồm, kể cả|bao quát|t
+疯|phát điên, hoá điên|phong|t
+辞职|từ chức, thôi việc|từ chức|t
+驾驶|điều khiển, lái (tàu, xe)|giá sử|t
+轮流|luân phiên, thay phiên|luân lưu|t
+钓|câu (cá)|điếu|t
+顿|bữa (lượng từ)|đốn|t
+海鲜|hải sản|hải tiên|t
+傍晚|lúc chạng vạng, chiều tà|bàng vãn|t
+舒适|dễ chịu, thoải mái|thư thích|t
+干活儿|làm việc|cán hoạt nhi|t|py:gànhuór
+盼望|trông mong, mong mỏi|phán vọng|t
+陆地|đất liền|lục địa|t
+各自|từng người, riêng mình|các tự|t
+勿|chớ, đừng|vật|t
+时刻|thời khắc, lúc|thời khắc|t
+着火|bốc cháy, cháy|trước hoả|t|py:zháohuǒ
+漏|rò, rỉ, dột|lậu|t
+雷|sấm|lôi|t
+随时|bất cứ lúc nào|tuỳ thời|t
+闪电|chớp, tia chớp|thiểm điện|t
+击|đánh|kích|t
+拥抱|ôm, ôm chặt|ủng bão|t
+海里|hải lý (đơn vị đo đường biển)|hải lý|t|story|py:hǎilǐ
+台阶|bậc thềm|đài giai|t
+未来|tương lai|vị lai|t
+太太|vợ; bà (gọi phụ nữ đã có chồng)|thái thái|t|py:tàitai
+时代|thời đại|thời đại|t
+# ---- tên riêng, từ hỗ trợ của bài đọc (chỉ giải nghĩa) ----
+翟峰|anh Phong (tên người; sách ghi Trác Phong)|Trác Phong|s|py:Zhái Fēng
+澳洲|nước Úc|Úc châu|s|py:Àozhōu
+新西兰|New Zealand (Tân Tây Lan)|Tân Tây Lan|s|py:Xīnxīlán
+铁路|đường sắt|thiết lộ|s
+迷上|mê, say mê (cái gì)|mê thượng|s
+世界之门|cánh cửa ra thế giới|thế giới chi môn|s
+无边无际|mênh mông, không bờ bến|vô biên vô tế|s
+卖房卖车|bán nhà bán xe|mại phòng mại xa|s
+彩虹号|chiếc “Cầu Vồng” (tên thuyền)|thái hồng hiệu|s
+自学|tự học|tự học|s
+航海|đi biển, hàng hải|hàng hải|s
+休学|tạm nghỉ học|hưu học|s
+出海|ra khơi|xuất hải|s
+驾船|lái thuyền|giá thuyền|s
+海面|mặt biển|hải diện|s
+下海|xuống biển|hạ hải|s
+美味|ngon lành|mỹ vị|s
+已久|đã lâu|dĩ cửu|s
+夜晚|buổi tối, ban đêm|dạ vãn|s
+老话|câu nói xưa|lão thoại|s
+上山|lên núi|thượng sơn|s
+一路上|suốt dọc đường|nhất lộ thượng|s|py:yílùshàng
+险情|tình huống nguy hiểm|hiểm tình|s
+大大小小|lớn lớn nhỏ nhỏ, đủ cỡ|đại đại tiểu tiểu|s
+交加|cùng ập đến (雷电交加 = sấm chớp đùng đùng)|giao gia|s
+一家三口|cả nhà ba người|nhất gia tam khẩu|s|py:yìjiāsānkǒu
+船身|thân thuyền|thuyền thân|s
+通向|dẫn tới|thông hướng|s
+下一站|chặng tới, điểm dừng tới|hạ nhất trạm|s|py:xiàyízhàn
+南下|đi về phương nam|nam hạ|s
+之时|lúc, khi (văn viết)|chi thời|s
+辞|từ (bỏ), thôi|từ|s
+职|chức, chức vụ|chức|s
+活儿|việc, công việc (khẩu ngữ)|hoạt nhi|s|py:huór
+# ---- chữ dùng trong chiết tự (ety.js) ----
+舟|thuyền (bộ thủ)|chu|s
+愁|sầu, buồn lo|sầu|s
+帆|cánh buồm|phàm|s
+遇|gặp|ngộ|s
+秋|mùa thu|thu|s
+静|yên lặng|tĩnh|s
+巾|khăn, tấm vải|cân|s
+童|đứa trẻ|đồng|s
+航|đi thuyền|hàng|s
+行|đi|hành|s
+积|tích, gom|tích|s
+蓄|cất trữ|súc|s
+彩|màu sắc|thái|s
+括|gom lại|quát|s
+稳|vững|ổn|s
+定|yên, định|định|s
+禺|(chữ chỉ âm)|ngu|s|py:yú
+青|xanh|thanh|s
+凡|(chữ chỉ âm)|phàm|s
+叟|ông già (chữ chỉ âm)|tẩu|s
+亢|(chữ chỉ âm)|kháng|s
+艹|bộ thảo (cỏ)|thảo|s|py:cǎo
+畜|súc vật (chữ chỉ âm)|súc|s
+采|hái|thái|s
+彡|nét vẽ (bộ thủ)|sam|s|py:shān
+虹|cầu vồng|hồng|s
+舌|cái lưỡi|thiệt|s
+# ---- từ HSK1–4 mà glossary chung chưa có ----
+船|thuyền|thuyền
+小船|chiếc thuyền nhỏ|tiểu thuyền
+海|biển|hải
+大海|biển cả|đại hải
+所有|tất cả|sở hữu
+道|(lượng từ) dải, vệt, tia: 一道彩虹|đạo
+道路|con đường|đạo lộ
+收入|thu nhập|thu nhập
+心情|tâm trạng|tâm tình
+棵|cây (lượng từ cho cây)|khoả
+慢慢|từ từ, dần dần|mạn mạn
+倒|ngã, đổ|đảo|py:dǎo
+出现|xuất hiện, hiện ra|xuất hiện
+份|phần; (lượng từ cho công việc)|phần
+低|thấp|đê
+游泳|bơi|du vịnh
+改变|thay đổi|cải biến
+差不多|xêm xêm, gần như nhau|sai bất đa|py:chàbuduō
+便宜|rẻ|tiện nghi|py:piányi
+那边|đằng kia, bên kia|na biên
+担心|lo lắng|đảm tâm
+选择|lựa chọn|tuyển trạch
+由于|do, vì|do ư
+于是|thế là, vì vậy|ư thị
+画画儿|vẽ tranh|hoạ hoạ nhi|py:huàhuàr
+或者|hoặc|hoặc giả
+经历|trải qua|kinh lịch
+紧紧|chặt, khít|khẩn khẩn
+北风|gió bấc (gió bắc)|bắc phong
+辛苦|vất vả|tân khổ
+向|về phía|hướng
+骑车|đạp xe|kỵ xa
+四|bốn|tứ
+通过|thông qua, qua|thông quá
+知识|kiến thức|tri thức|py:zhīshi
+下午|buổi chiều|hạ ngọ
+鱼|cá|ngư
+交流|giao lưu, trò chuyện|giao lưu
+美好|tốt đẹp|mỹ hảo
+希望|hy vọng, mong|hy vọng
+之后|sau khi|chi hậu
+世界|thế giới|thế giới
+到底|rốt cuộc|đáo để
+样子|dáng vẻ, hình dạng|dạng tử|py:yàngzi
+变|biến đổi, trở nên|biến
+女儿|con gái|nữ nhi|py:nǚ'ér
+聊天儿|trò chuyện|liêu thiên nhi|py:liáotiānr
+关系|quan hệ|quan hệ|py:guānxi
+边|bên, cạnh|biên
+旁边|bên cạnh|bàng biên
+河|sông|hà
+河边|bờ sông|hà biên
+海边|bờ biển, ven biển|hải biên
+踢|đá|thích
+球|quả bóng|cầu
+图书馆|thư viện|đồ thư quán
+突然|bỗng nhiên, đột nhiên|đột nhiên
+一下午|cả buổi chiều|nhất hạ ngọ|py:yíxiàwǔ
+山|núi|sơn
+下山|xuống núi; (mặt trời) lặn|hạ sơn|s
+咖啡|cà phê|gia phê
+店|tiệm, quán|điếm
+掉|rơi, mất|điệu
+贵|đắt|quý
+舒舒服服|thoải mái, dễ chịu (舒服 lặp lại)|thư thư phục phục|py:shūshūfúfú
+照看|trông nom|chiếu khán
+成功|thành công|thành công
+永远|mãi mãi|vĩnh viễn
+马|ngựa|mã
+散步|đi dạo|tản bộ
+公园|công viên|công viên
+羊|con dê|dương
+各|mỗi, các|các|s
+驾|đánh xe, lái|giá|s
+闪|loé|thiểm|s
+勺|cái muỗng|thược|s
+傍|sát bên|bàng|s
+适|vừa, hợp|thích|s
+望|nhìn, mong|vọng|s
+随|theo|tuỳ|s
+辛|cay đắng|tân|s
+耳|tai|nhĩ|s
+驶|chạy (xe, thuyền)|sử|s
+史|(chữ chỉ âm) lịch sử|sử|s
+屯|(chữ chỉ âm)|truân|s|py:tún
+免|(chữ chỉ âm)|miễn|s
+舍|nhà, quán|xá|s|py:shè
+予|cho|dư|s|py:yǔ
+活|sống; việc|hoạt|s
+盼|trông|phán|s
+陆|đất liền|lục|s
+夂|bộ truy (bàn chân)|truy|s|py:zhǐ
+亥|(chữ chỉ âm)|hợi|s
+刂|bộ đao (con dao)|đao|s|py:dāo
+拥|ôm|ủng|s
+鲜|tươi|tiên|s
+舒|thư thả, duỗi ra|thư|s
+千|nghìn|thiên
+慢|chậm|mạn
+危险|nguy hiểm|nguy hiểm
+总|luôn, lúc nào cũng|tổng
+支持|ủng hộ|chi trì
+阶|bậc|giai|s
+未|chưa|vị|s
+介|(chữ chỉ âm)|giới|s
+弋|(chữ chỉ âm)|dặc|s
+一共|tổng cộng|nhất cộng|py:yígòng

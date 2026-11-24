@@ -160,9 +160,9 @@ async def main():
     async with async_playwright() as p:
         # every say screen points to a book sentence that has its male clip; echo early, read from about tập 6
         b = await p.chromium.launch(executable_path='/opt/pw-browsers/chromium', args=common)
-        pg = await (await b.new_context()).new_page(); await pg.goto(BASE); await pg.wait_for_timeout(400); await pg.evaluate('loadCh(2)'); await pg.wait_for_timeout(600)
+        pg = await (await b.new_context()).new_page(); await pg.goto(BASE); await pg.wait_for_timeout(400); await pg.evaluate('Promise.all(CHAPTERS.filter(c=>c.ready&&c.n>1).map(c=>loadCh(c.n)))'); await pg.wait_for_timeout(600)
         L = await pg.evaluate("SESSIONS.filter(S=>isLearn(S)).map(S=>{const c=S.screens.filter(c=>c.t==='say');const B=bookOf(S);return [String(S.id),c.length,c.map(x=>x.mode+':'+(B[x.i]?(AUD['M|'+akey(B[x.i].zh)]?'clip':'NOCLIP'):'NOBOOK')).join(',')]})")
-        chk(len(L) == 22 and all(x[1] == 1 and x[2].endswith(':clip') for x in L), f'one say screen in each of the 22 study units, each on a book sentence with a male clip {[x for x in L if x[1] != 1 or not x[2].endswith(":clip")]}')
+        chk(len(L) >= 22 and all(x[1] == 1 and x[2].endswith(':clip') for x in L), f'one say screen in each of the {len(L)} study units (Bài 1, 2, 3…), each on a book sentence with a male clip {[x for x in L if x[1] != 1 or not x[2].endswith(":clip")]}')
         m1 = [x[2].split(':')[0] for x in L if '-' not in x[0]]
         chk(m1[:5] == ['echo'] * 5 and 'read' in m1[5:], f'Bài 1: echo in tập 1–5, read mixed in from tập 6 {m1}')
         chk(await pg.evaluate("SESSIONS.filter(S=>S.mix||S.test||S.rev).every(S=>(S.screens||[]).every(c=>c.t!=='say')) && !RT.has('say')"), 'no say screen in reviews/tests; never retried')

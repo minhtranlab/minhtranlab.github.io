@@ -68,6 +68,20 @@ TEXTBOOK = {   # word -> reading shown (syllables joined; spaces ignored). Reaso
     '一只': 'yìzhī',        # lượng từ con vật
     '种地': 'zhòngdì', '地里': 'dìli',
     '干干净净': 'gāngānjìngjìng',
+    # Bài 3 (phiếu #22)
+    '为': 'wèi',            # vì, cho (为生活发愁); wéi chỉ nằm trong từ (认为, 成为, 评为)
+    '翟峰': 'zháifēng',     # họ 翟 đọc Zhái (sách: Zhái Fēng); pypinyin đọc dí
+    '倒': 'dǎo',            # ngã, đổ (撞倒); dào (rót, ngược) chưa dùng
+    '太太': 'tàitai', '知识': 'zhīshi', '差不多': 'chàbuduō', '关系': 'guānxi',   # thanh nhẹ (sách / giáo trình HSK)
+    '那边': 'nàbiān',       # giáo trình HSK ghi đủ thanh
+    '女儿': "nǚ'ér",        # 儿 ở đây là “con”, không phải r-hoá
+    '聊天儿': 'liáotiānr', '画画儿': 'huàhuàr', '活儿': 'huór', '干活儿': 'gànhuór',
+    '着火': 'zháohuǒ',      # 着 đọc zháo (bốc cháy)
+    '海里': 'hǎilǐ',        # hải lý (4000多海里)
+    '都': 'dōu',            # đều; dū (thủ đô) chỉ trong từ (首都); pypinyin dính 人生都 → dū
+    '舍': 'shè',            # chiết tự 舒: nhà, quán (宿舍); shě (bỏ) chưa dùng
+    '舒舒服服': 'shūshūfúfú',   # lặp AABB của 舒服: đọc đủ thanh
+    '一共': 'yígòng',       # 一 trước thanh 4
 }
 NUM = set('一二两三四五六七八九十百千万几这那每哪半')
 CONTEXT = {   # one-syllable word -> (what comes before / after it that means another reading) — such a place needs its own word
