@@ -49,7 +49,7 @@ def male_clean(k):
         clean[t] = (A.load(os.path.join(os.path.dirname(SRC), 'hsk5', man['M|' + t])), 24000, {'from': 'existing M|'}); return clean[t]
     tts, sid = eng('m'); j = J.get('M|' + t)
     if len(t) <= 4: clean[t] = V.make_word(tts, sid, t, female_dur(t), 'M|' + t)
-    else: clean[t] = V.make_sentence(tts, sid, j['t'] if j else t + '。', j['sp'] if j else 0.88, 'M|' + t)
+    else: clean[t] = V.make_sentence(tts, sid, R.job_text('M|' + t, j), j['sp'] if j else 0.88, 'M|' + t)   # numbers spelled (#27)
     return clean[t]
 for k in todo:
     kind = 'm' if k.startswith(('M|', 'MS|')) else 'f'
@@ -65,7 +65,7 @@ for k in todo:
         else: raw = info['raw'] if 'raw' in info else V.encode(y, sr_)
     else:
         tts, sid = eng('f')
-        t, sp = (j['t'], j['sp']) if j else (han, 0.88)
+        t, sp = (R.engine_text(j['t']), j['sp']) if j else (han, 0.88)                             # numbers spelled (#27)
         if len(re.findall(r'[一-鿿]', t)) < 2 and not t.endswith('。'): t += '。'
         with tempfile.TemporaryDirectory() as td:
             wv, mp = td + '/a.wav', td + '/a.mp3'

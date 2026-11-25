@@ -10,6 +10,7 @@
              MID     it hears an extra syllable at a comma INSIDE the sentence (…一酸着，流下…) — phiếu #19
   all clips  READ    the engine read a character unlike the pinyin on screen (地 dì for de, 着 zhe for zháo…): the reading
                      stored for the clip in tools/clip_readings.json vs the screen (readcheck.py) — phiếu #19, female too
+             DIGIT   the text sent to the engine still has a number in digits (readcheck.normalize_digits could not spell it)
              STALE   the engine would now read the clip differently (lexicon_extra.txt changed since it was made): remake
   words      TONE    a syllable's pitch moves against its tone (以来 said "yí lǎi") — see tone_check, phiếu #25
   words      GAP     >= 150 ms of near-silence (< -40 dB) between two syllables of the word (slow clips 220 ms)
@@ -235,7 +236,11 @@ def check(key, y, sr, female=None, normal=None, asr=True, order=True, say=None):
     (for MS|). Returns (flags list, numbers dict)."""
     text = key.split('|')[-1]; n = len(text); r = measure(y, sr); f = []
     slow = key.startswith('MS|')
-    if order and is_word(key) and n >= 2:                 # phiếu #16: every word clip, slow ones too (DTW/ASR do not mind tempo)
+    derived = slow and normal and 1.32 <= r['dur'] / normal <= 1.62   # = its M| clip × atempo 0.68
+    # phiếu #27: a stretched copy cannot change the syllable order, so it inherits the order verdict of its M| clip
+    # (main() adds SLOW when the M| clip is flagged). Checking it again only re-rolled weak references: MS|以来 got
+    # ORDER from one DTW vote 0.11 apart while its M| clip had +++ — synth.py then "could not clean" it.
+    if order and is_word(key) and n >= 2 and not derived:
         bad, oi = order_check(y, sr, text, asr=asr); r.update(oi)
         if bad: f.append('ORDER')
     if is_word(key):                                      # phiếu #25: pitch of each syllable vs its tone
@@ -257,7 +262,7 @@ def check(key, y, sr, female=None, normal=None, asr=True, order=True, say=None):
             d, got = asr_double(y, sr, text); r['asr'] = got
             if d: f.append('DOUBLE')
     elif asr:
-        r.update(asr_check(y, sr, text, say))
+        r.update(asr_check(y, sr, han(say) or text if say else text, say))   # say = engine text: numbers spelled (#27)
         if r['extra']: f.append('ASR+')
         if r['mid']: f.append('MID')
     if slow and normal: f.append('SLOW')                # not made from its M| clip (old Kokoro speed-0.6 clips)
@@ -276,9 +281,10 @@ def read_flags(texts):
         st = stored.get(k); fl = []; mis = []
         if st is None: fl.append('STALE')                          # made before readings were recorded and never checked
         else:
-            mis = R.compare(k.split('|')[-1], st, t)
+            mis = R.compare(t, st, t)
             if mis: fl.append('READ')
             if R.flat(st) != R.flat(now[k]): fl.append('STALE')
+        if re.search(r'[0-9０-９]', t): fl.append('DIGIT')               # phiếu #27: a number not spelled for the engine
         if fl: out[k] = (fl, mis)
     return out
 

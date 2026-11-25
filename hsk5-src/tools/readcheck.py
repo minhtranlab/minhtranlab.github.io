@@ -219,14 +219,58 @@ def tone_ok(want, got, ch):
     if {wt, gt} == {2, 3}: return True                               # 3rd-tone change (lexicons write it either way)
     return False
 
+# ---------------------------------------------------------------- numbers (phiếu #27)
+# The engines read Arabic numbers with their own rules (2012年 er4 ling2 yi1 er4, but Kokoro 11月 shí yí yuè), and readcheck
+# could not see them (no Han character on screen). The text SENT to the engine now spells every number in Han characters;
+# the text on screen keeps its digits. Years (4 digits + 年) digit by digit with 零; before 月/日/号/点/岁… and elsewhere the
+# cardinal number (十一, 二十四, 四千, 两千零一十二). A number it cannot spell (decimals, %, very long) is left as it is and
+# the audit flags DIGIT. Inside numbers 一 keeps its 1st tone (十一 shíyī): compare() checks those positions strictly.
+_D = '零一二三四五六七八九'
+_STRICT = {}                                   # normalised text -> Han positions that belong to a spelled number
+
+def cardinal(n):
+    """0..99999999 -> Chinese cardinal (两 before 千/万 at the start: 两千, 两万; 十一 not 一十一)."""
+    if n == 0: return '零'
+    def under_wan(x, lead):
+        out, zero = '', False
+        for val, unit in ((1000, '千'), (100, '百'), (10, '十'), (1, '')):
+            d = x // val % 10
+            if d == 0:
+                zero = bool(out); continue
+            if zero: out += '零'; zero = False
+            ch = _D[d]
+            if d == 2 and unit in ('千', '百') and not out and lead: ch = '两' if unit == '千' else '二'
+            if d == 1 and unit == '十' and not out and lead: ch = ''
+            out += ch + unit
+        return out
+    if n < 10000: return under_wan(n, True)
+    hi, lo = divmod(n, 10000)
+    h = under_wan(hi, True); h = ('两' + h[1:]) if h == '二' else h
+    return h + '万' + (('零' if lo < 1000 else '') + under_wan(lo, False) if lo else '')
+
+def normalize_digits(text):
+    """-> (text with numbers spelled in Han characters, set of Han positions that are number characters)."""
+    t = text.translate(str.maketrans('０１２３４５６７８９', '0123456789')); out = ''; strict = set(); i = 0
+    while i < len(t):
+        m = re.match(r'\d+', t[i:])
+        if not m: out += t[i]; i += 1; continue
+        num = m.group(0); nxt = t[i + len(num):i + len(num) + 1]
+        if num.startswith('0') and len(num) > 1 or len(num) > 8 or (nxt and nxt in '.%．％'): out += num; i += len(num); continue
+        sp = ''.join(_D[int(c)] for c in num) if (len(num) == 4 and nxt == '年') else cardinal(int(num))
+        start = len(han(out)); strict.update(range(start, start + len(sp))); out += sp; i += len(num)
+    _STRICT[out] = strict
+    return out, strict
+
+def engine_text(text): return normalize_digits(text)[0]
+
 def job_text(key, job=None):
-    """The text synth.py gives the engine for clip `key` before ENGINE_SUBS (a male word is said 'X，X，X。': each copy is
-    looked up alone, so 'X。' reads the same)."""
+    """The text synth.py gives the engine for clip `key` (numbers spelled out: engine_text). A male word is said 'X，X，X。':
+    each copy is looked up alone, so 'X。' reads the same."""
     w = key.split('|')[-1]
     if key.startswith(('M|', 'MS|')):
-        return w + '。' if len(w) <= 4 else (job['t'] if job else w + '。')
+        return engine_text(w + '。' if len(w) <= 4 else (job['t'] if job else w + '。'))
     t = job['t'] if job else w
-    return t + '。' if len(han(t)) < 2 and not t.endswith('。') else t
+    return engine_text(t + '。' if len(han(t)) < 2 and not t.endswith('。') else t)
 
 def compare(text, readings, sent=None):
     """-> list of (character position, character, screen 'syl+tone', engine 'syl+tone'). `text` = clip text as on screen,
@@ -239,6 +283,7 @@ def compare(text, readings, sent=None):
             ss = ss[:-1] + [(ss[-1][0][:-1], ss[-1][1]), ('r', 5)]
         if len(ss) == len(hz): got += ss; chars += list(hz)
         else: got += (ss + [('?', 0)] * len(hz))[:len(hz)]; chars += list(hz)   # a word the lexicon spells oddly
+    strict = _STRICT.get(sent or text, set())
     sent = han(sent or text); text = han(text)
     if not readings: return []                                       # nothing logged (啊 alone): cannot check
     if len(sent) != len(text): return [(-1, text, 'text', sent)]
@@ -250,7 +295,9 @@ def compare(text, readings, sent=None):
             i, j = blk.a + d, blk.b + d; seen += 1
             c, w, g = text[i], scr[i], got[j]
             if w[0] == 'r' and c == '儿': continue
-            if w[0] != g[0] or not tone_ok(w, g, c): bad.append((i, c, fmt(w), fmt(g)))
+            num = i in strict                                    # number characters: exact tone (十一 shíyī, not shíyí)
+            if w[0] != g[0] or not (tone_ok(w, g, c) if not num else (w[1] == g[1] or {w[1], g[1]} == {2, 3} and c not in '一不')):
+                bad.append((i, c, fmt(w), fmt(g)))
     if seen < len(sent): bad.append((-1, text, 'text', ''.join(chars)))   # characters the engine did not read
     return bad
 
@@ -272,7 +319,7 @@ def check_all(texts=None, lex=None):
         ks = [k for k in texts if kind_of(k) == kind]
         rd = engine_readings(kind, [texts[k] for k in ks], lex)
         for k in ks:
-            b = compare(k.split('|')[-1], rd[texts[k]], texts[k])
+            b = compare(texts[k], rd[texts[k]], texts[k])     # texts[k]: screen text with numbers spelled (#27)
             if b: out[k] = b
     return out
 
@@ -287,11 +334,11 @@ def propose(key, text, readings, bad):
     """Lexicon entries {word: [py…]} that make the engine read `key` like the screen."""
     sys.path.insert(0, SRC)
     import build as B
-    scr_text = han(key.split('|')[-1]); scr = screen_syllables(scr_text)
+    scr_text = han(text); scr = screen_syllables(text)                 # text = engine text (numbers spelled, #27)
     eng = [han(w) for w, _ in readings]
     if ''.join(eng) != scr_text: return {}                               # numbers spelled out: fix by hand
     esp = spans([len(w) for w in eng])
-    dsp = spans([len(w) for run in re.findall(r'[一-鿿]+', key.split('|')[-1]) for w, _ in B.seg(run)])
+    dsp = spans([len(w) for run in re.findall(r'[一-鿿]+', text) for w, _ in B.seg(run)])
     flat = [y for _, ss in readings for y in ss]
     out = {}
     for i, *_ in bad:
@@ -307,7 +354,8 @@ def propose(key, text, readings, bad):
         py = []
         for j in range(a, b):
             syl, t = scr[j]
-            if scr_text[j] in '一不' and (b - a > 1) and j < len(flat): t = flat[j][1]   # keep the engine's 一/不 tone change
+            if scr_text[j] in '一不' and (b - a > 1) and j < len(flat) and j not in _STRICT.get(text, ()):
+                t = flat[j][1]                                           # keep the engine's 一/不 tone change (not in numbers)
             py.append(f'{syl}{t}')
         out[w] = py
     return out
@@ -341,8 +389,10 @@ HEADER = """# Project lexicon (phiếu #19): readings the voice engines must use
 if __name__ == '__main__':
     if '--fix' in sys.argv: bad = fix_lexicon()
     else: bad = check_all()
+    dig = [k for k, t in clip_texts().items() if re.search(r'[0-9０-９]', t)]
+    for k in dig: print(f'DIGIT {k}: a number the engine text still has in digits')
     for k, b in bad.items(): print(f'{k[:40]:40s}', ' | '.join(f'{c}: reads {g}, screen {w}' for _, c, w, g in b))
-    print(f'READ: {len(bad)} clips misread (lexicon {lex_hash()})')
+    print(f'READ: {len(bad)} clips misread, DIGIT: {len(dig)} (lexicon {lex_hash()})')
 
 
 # ---------------------------------------------------------------- what each clip says (recorded when it is made)

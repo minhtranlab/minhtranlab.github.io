@@ -1863,7 +1863,7 @@ SC.importantWork = () => R(0, 0, 400, 300, '#e9f1fb') + R(0, 232, 400, 68, '#cdb
   person(300, 140, { s: 1, hs: 'short', shirt: C.teal, collar: C.white, m: 'smile', gl: 'round' }) + R(232, 192, 130, 46, '#cfd6e2', 6) + R(242, 200, 56, 34, '#8fb4ee', 4);
 Object.assign(SCENE_LABEL, { discuss: 'Hai người đang bàn cách giải quyết một vấn đề', phoneWipe: 'Một người lau chiếc điện thoại mới cho sạch', shockMeet: 'Hai người gặp nhau, một người ngạc nhiên', easyTest: 'Bài toán rất dễ mà người ta vẫn bối rối', importantWork: 'Tài liệu nghiên cứu quan trọng có gắn ngôi sao' });
 
-const CH_SRC = {"2": "ch2.js?v=2e86886afd90", "3": "ch3.js?v=11a3ff96a230"}; const WORD_CH = {"一辈子": 2, "农村": 2, "屋": 2, "断": 2, "以来": 2, "姥姥": 2, "舅舅": 2, "姑姑": 2, "坚决": 2, "打工": 2, "挣": 2, "县": 2, "套": 2, "装修": 2, "不得了": 2, "串": 2, "醉": 2, "强烈": 2, "夜": 2, "锁": 2, "临": 2, "悄悄": 2, "晒": 2, "被子": 2, "长途": 2, "冻": 2, "想象": 2, "灰尘": 2, "亮": 2, "微笑": 2, "温暖": 2, "立刻": 2, "扑": 2, "卧室": 2, "铺": 2, "飘": 2, "阵": 2, "感受": 2, "流泪": 2, "工人": 3, "稳定": 3, "待遇": 3, "发愁": 3, "平静": 3, "帆船": 3, "撞": 3, "艘": 3, "航行": 3, "积蓄": 3, "二手": 3, "彩虹": 3, "包括": 3, "疯": 3, "辞职": 3, "驾驶": 3, "轮流": 3, "钓": 3, "顿": 3, "海鲜": 3, "傍晚": 3, "舒适": 3, "干活儿": 3, "盼望": 3, "陆地": 3, "各自": 3, "勿": 3, "时刻": 3, "着火": 3, "漏": 3, "雷": 3, "随时": 3, "闪电": 3, "击": 3, "拥抱": 3, "海里": 3, "人生": 3, "台阶": 3, "未来": 3, "太太": 3, "时代": 3};
+const CH_SRC = {"2": "ch2.js?v=2e86886afd90", "3": "ch3.js?v=c33cad17366e"}; const WORD_CH = {"一辈子": 2, "农村": 2, "屋": 2, "断": 2, "以来": 2, "姥姥": 2, "舅舅": 2, "姑姑": 2, "坚决": 2, "打工": 2, "挣": 2, "县": 2, "套": 2, "装修": 2, "不得了": 2, "串": 2, "醉": 2, "强烈": 2, "夜": 2, "锁": 2, "临": 2, "悄悄": 2, "晒": 2, "被子": 2, "长途": 2, "冻": 2, "想象": 2, "灰尘": 2, "亮": 2, "微笑": 2, "温暖": 2, "立刻": 2, "扑": 2, "卧室": 2, "铺": 2, "飘": 2, "阵": 2, "感受": 2, "流泪": 2, "工人": 3, "稳定": 3, "待遇": 3, "发愁": 3, "平静": 3, "帆船": 3, "撞": 3, "艘": 3, "航行": 3, "积蓄": 3, "二手": 3, "彩虹": 3, "包括": 3, "疯": 3, "辞职": 3, "驾驶": 3, "轮流": 3, "钓": 3, "顿": 3, "海鲜": 3, "傍晚": 3, "舒适": 3, "干活儿": 3, "盼望": 3, "陆地": 3, "各自": 3, "勿": 3, "时刻": 3, "着火": 3, "漏": 3, "雷": 3, "随时": 3, "闪电": 3, "击": 3, "拥抱": 3, "海里": 3, "人生": 3, "台阶": 3, "未来": 3, "太太": 3, "时代": 3};
 </script>
 <!--CH_INLINE-->
 <script>
@@ -1883,7 +1883,7 @@ Object.keys(st.stk).forEach(wrec);           // saves from before the revision p
 let curMiss = new Set(), curLook = new Set();
 function onLook(k) { if (curLook.has(k)) return; curLook.add(k); st.look[k] = (st.look[k] || 0) + 1; save(); }
 /* ===== self-update: build.py stamps APP_V and writes version.json; a new deploy shows a banner at home (never inside a lesson) ===== */
-const APP_V = '69bc47850d09';
+const APP_V = '15d716057eab';
 const UPD = { last: 0, newV: '', n: 0 };
 function checkUpdate(force) {
   if (!/^https?:/.test(location.protocol)) return;
