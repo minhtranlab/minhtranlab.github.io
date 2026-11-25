@@ -379,6 +379,16 @@ body.cm-holding.ins #stage{padding-bottom:calc(var(--fh) + 80px)}
 .dl{display:flex;gap:8px;align-items:baseline;margin:3px 0}.dl+.dl{margin-top:6px}.dwho{flex:none;font:700 12px/1.6 var(--body);letter-spacing:0;padding:1px 9px;border-radius:99px;background:var(--chip);color:var(--mut);transform:translateY(-3px)}.dwho.f{color:#c2417a}.dwho.m{color:#2f6fb5}
 .ln.dlg .pyl{margin:0}.reveal .rz.dlg .dl{align-items:baseline}
 .fb .whyn{margin-bottom:6px;color:var(--ink)}
+.journey{display:flex;flex-direction:column;gap:6px}.chsec{position:relative;content-visibility:auto}   /* off-screen chapters are not painted (20 chapters stay smooth); size given by contain-intrinsic-size */
+.chband{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 14px;margin:6px 0 2px;border:2px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);box-shadow:0 calc(-1 * env(safe-area-inset-top,0px) - 14px) 0 0 var(--bg),0 4px 0 var(--line)}
+.chband .cbt{flex:1;min-width:0;display:flex;flex-direction:column}.chband .cbt b{font:700 16px/1.3 var(--disp)}.chband .cbz{font-family:var(--han);font-weight:600}.chband .cbt small{font:500 13px/1.3 var(--body);color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chband .cbp{flex:none;display:flex;flex-direction:column;align-items:flex-end;font:700 14px var(--body);color:var(--teal)}.chband .cbp small{font:600 12px var(--body);color:var(--mut)}.chband .cbv{flex:none;color:var(--mut)}
+.chband.soonb{position:static;border-style:dashed;box-shadow:none;background:transparent;color:var(--mut)}
+.herebtn{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30;min-height:46px;padding:0 18px;border:0;border-radius:99px;background:var(--acc);color:#fff;font:700 15px var(--body);box-shadow:0 6px 18px rgba(0,0,0,.18)}.herebtn[hidden]{display:none}
+body.hasupd .herebtn{bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+.chlist{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.35);display:flex;align-items:flex-start;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px 16px}
+.chl{width:min(520px,100%);max-height:calc(100dvh - 40px);overflow-y:auto;background:var(--bg);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.chli{display:flex;flex-direction:column;align-items:flex-start;text-align:left;width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink)}.chli b{font:700 16px var(--disp)}.chli small{color:var(--mut);font-size:13px}.chli.here{border-color:var(--acc)}.chli.off{border-style:dashed;color:var(--mut);background:transparent}
 .soon{margin:26px 0 8px}.soonc{display:flex;gap:14px;align-items:center;width:100%;text-align:left;padding:14px 16px;margin:8px 0;border-radius:16px;border:2px dashed var(--line);background:transparent;color:var(--mut)}.soonc b{display:block;font:700 17px var(--disp);color:var(--ink);opacity:.55}.soonc small{display:block;font-size:13px}.soonk{font-size:22px;opacity:.7}
 </style></head>
 <body>
@@ -652,15 +662,18 @@ let homeTab = 'path';
    for every chapter); its BOOK, TESTBANK and PATH stay with the chapter. The study path of a chapter is its PATH (kind learn | mix | comic | test
    | reader); a stage with no content yet is a locked "Sắp ra mắt" node. Bài 1 keeps its ids (1–11, m1–m6, t1, rd), so old progress needs no
    migration; chapter N uses 'N-1', 'N-m1', 'N-g1', 'N-t'. Each chapter unlocks on its own (Bài 2 does not wait for Bài 1). */
-const CHAPTERS = [
-  { n: 1, zh: '爱的细节', vi: 'Những điều nhỏ nhặt trong tình yêu', loaded: true, PATH: PATH1, BOOK, TESTBANK },
-  { n: 2, zh: '留串钥匙给父母', vi: 'Để lại chùm chìa khoá cho ba mẹ' },
-  { n: 3, zh: '人生有选择，一切可改变', vi: 'Đời người có lựa chọn, mọi thứ có thể đổi thay' },
-  { n: 4 }
-];
+/* phiếu #26: every built chapter (CH_SRC) is listed from CH_META (written by build.py: its PATH, and its title when the content sets
+   CH<N>.TITLE = {zh, vi}), so a new chapter needs no line here; CH_TITLE is only the fallback for bundles without TITLE.
+   One more entry after the last built chapter = the locked "Bài N · Sắp ra mắt" band at the end of the journey. */
+const CH_TITLE = {
+  2: { zh: '留串钥匙给父母', vi: 'Để lại chùm chìa khoá cho ba mẹ' },
+  3: { zh: '人生有选择，一切可改变', vi: 'Đời người có lựa chọn, mọi thứ có thể đổi thay' }
+};
+const CHAPTERS = [{ n: 1, zh: '爱的细节', vi: 'Những điều nhỏ nhặt trong tình yêu', loaded: true, PATH: PATH1, BOOK, TESTBANK }];
+Object.keys(CH_SRC).map(Number).sort((a, b) => a - b).forEach(n => { const m = (typeof CH_META !== 'undefined' && CH_META[n]) || {}, t = CH_TITLE[n] || {}; CHAPTERS.push({ n, zh: m.zh || t.zh || '', vi: m.vi || t.vi || '', PATH: m.PATH || [], meta: 1 }); });
+CHAPTERS.push({ n: CHAPTERS[CHAPTERS.length - 1].n + 1 });
 CHAPTERS.forEach(c => { c.ready = c.n === 1 || !!CH_SRC[c.n]; });
 const CHN = n => CHAPTERS.find(c => c.n === +n);
-const viewCh = () => { const c = CHN(st.ch || 1); return c && c.ready ? c : CHAPTERS[0]; };
 const chOfId = id => { const m = /^(\d+)-/.exec(String(id)); return m ? +m[1] : 1; };
 function chOf(S) { return !S ? 1 : S.ch != null ? S.ch : chOfId(S.id); }
 function bookOf(S) { const c = CHN(chOf(S)); return (c && c.BOOK) || BOOK; }
@@ -700,6 +713,7 @@ function regChapter(n, D, aud) {
   Object.assign(LEARN, D.LEARN || {}); Object.assign(ETY, D.ETY || {}); Object.assign(QB, D.QB || {}); Object.assign(MEAN, D.MEAN || {});
   (D.SESSIONS || []).forEach(S => { S.ch = n; SESSIONS.push(S); });
   Object.assign(c, { PATH: D.PATH || [], BOOK: D.BOOK || [], TESTBANK: D.TESTBANK || { tf: [], spot: [] }, loaded: true });
+  if (D.TITLE) { if (D.TITLE.zh) c.zh = D.TITLE.zh; if (D.TITLE.vi) c.vi = D.TITLE.vi; }
   if (CHW[n] && CHW[n].res) CHW[n].res(c);
 }
 function loadCh(n) {
@@ -715,8 +729,8 @@ function loadCh(n) {
   return o.p;
 }
 /* chapters to load at start: the one on screen, and every chapter the learner has progress in (so Ôn tập tổng hợp sees all their words) */
-const chStarted = n => n === (st.ch || 1) || Object.keys(st.sess).some(k => chOfId(k) === n) || Object.keys(st.wl).some(w => wordCh(w) === n);
-function bootLoad() { CHAPTERS.filter(c => c.ready && !c.loaded && chStarted(c.n)).forEach(c => loadCh(c.n).then(() => { if (!inScreen && !document.querySelector('.wcov,.mback')) home(); }).catch(() => { })); }
+const chStarted = n => n === (st.ch || 1) || Object.entries(st.sess).some(([k, v]) => chOfId(k) === n && v && (v.done || v.i)) || Object.keys(st.wl).some(w => wordCh(w) === n);   /* a stage with real progress (an empty record made by SS() does not count) */
+function bootLoad() { CHAPTERS.filter(c => c.ready && !c.loaded && chStarted(c.n)).forEach(c => loadCh(c.n).then(() => { if (!inScreen && !document.querySelector('.wcov,.mback,.chlist')) home(undefined, { keep: 1 }); }).catch(() => { })); }
 /* phiếu #5: Bài 1's path changed (Ôn tập + 🎬 Ghép truyện placed by the story; reviews o1–o5 instead of m1–m6). A save made on the old path
    keeps open every stage up to the furthest one it could open there: walk PATH1_OLD as a strict chain (a stage is open when the one before
    it was open AND done). A learner of the new path never plays m1–m6, so the chain stops at m1 and opens nothing extra. Nothing is stored:
@@ -730,25 +744,21 @@ function legacyOpen1() {
   return open;
 }
 const legacyIdx = list => { if (!list.length || chOfId(list[0].e.id) !== 1) return -1; const o = legacyOpen1(); return o == null ? -1 : list.findIndex(x => String(x.e.id) === String(o)); };
-const unlocked = (list, i) => !!st.openAll || i === 0 || (list[i].S && SS(list[i].S.id).done) || (!!list[i - 1].S && !!SS(list[i - 1].S.id).done) || i <= legacyIdx(list);
-function home(tab) {
+const itemId = x => x.id != null ? x.id : x.e.id;
+const unlocked = (list, i) => !!st.openAll || i === 0 || stageDone(itemId(list[i])) || stageDone(itemId(list[i - 1])) || i <= legacyIdx(list);   /* by stage id, so a chapter drawn before its bundle is loaded unlocks the same way */
+function home(tab, opt = {}) {
   if (tab) homeTab = tab;
+  const keepY = opt.keep && $('#home') ? $('#home').scrollTop : null; if (homeIO) { homeIO.disconnect(); homeIO = null; }
   runLeave(); tickFlush(); inScreen = false; save(); document.body.classList.add('hb'); document.body.classList.remove('ins');
   EP++; stopAudio(); cur = null; sheetEl.classList.remove('open');
-  const VC = viewCh(); window.CUR_CH = VC.n;
+  const CR = curStage(); window.CUR_CH = CR ? CR.n : 1;
   const got = STUDY().flatMap(s => s.words).filter(w => st.stk[w]).length, total = STUDY().reduce((n, s) => n + s.words.length, 0);
   app.innerHTML = '';
   const el = h('div', ''); el.id = 'home';
   const gm = goalMin(), sec = todaySec(), pr = Math.min(1, sec / (gm * 60)), C = 2 * Math.PI * 19;
-  el.innerHTML = `<div class="hd"><div><h1 class="brand">${VC.zh}</h1><p class="sub">HSK5 · Bài ${VC.n} · ${VC.vi}</p></div><button class="goal${pr >= 1 ? ' hit' : ''}" aria-label="Mục tiêu ${gm} phút mỗi ngày"><svg viewBox="0 0 48 48" width="52" height="52"><circle cx="24" cy="24" r="19" class="gb"/><circle cx="24" cy="24" r="19" class="gf" stroke-dasharray="${(C * pr).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 24 24)"/></svg><b>${pr >= 1 ? '✓' : Math.floor(sec / 60)}</b><small>/${gm}p</small></button></div>`;
+  el.innerHTML = `<div class="hd"><div><h1 class="brand">HSK5</h1><p class="sub">${CR ? 'Đang học Bài ' + CR.n + ' · ' + CHN(CR.n).vi : 'Học tiếng Trung qua từng câu chuyện'}</p></div><button class="goal${pr >= 1 ? ' hit' : ''}" aria-label="Mục tiêu ${gm} phút mỗi ngày"><svg viewBox="0 0 48 48" width="52" height="52"><circle cx="24" cy="24" r="19" class="gb"/><circle cx="24" cy="24" r="19" class="gf" stroke-dasharray="${(C * pr).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 24 24)"/></svg><b>${pr >= 1 ? '✓' : Math.floor(sec / 60)}</b><small>/${gm}p</small></button></div>`;
   $('.goal', el).onclick = openGoal;
   if (API) { const [ac, at] = acctLabel(), ap = h('button', 'acct ' + ac, at); ap.onclick = openAcct; el.appendChild(ap); }
-  const RC = CHAPTERS.filter(c => c.ready);
-  if (RC.length > 1) {   /* switch chapter: "Bài 1", "Bài 2" … */
-    const cs = h('div', 'chs'); cs.setAttribute('role', 'tablist');
-    RC.forEach(c => { const b = h('button', 'chb' + (c.n === VC.n ? ' on' : ''), 'Bài ' + c.n); b.setAttribute('aria-label', 'Bài ' + c.n + ': ' + c.vi); b.onclick = () => { if (c.n === VC.n) return; st.ch = c.n; save(); homeTab = 'path'; home(); }; cs.appendChild(b); });
-    el.appendChild(cs);
-  }
   const tabs = h('div', 'tabs');
   [['path', 'Hành trình'], ['words', 'Từ vựng'], ['log', 'Nhật ký']].forEach(([k, t]) => { const b = h('button', 'tab' + (homeTab === k ? ' on' : ''), t); b.onclick = () => home(k); tabs.appendChild(b); });
   el.appendChild(tabs);
@@ -765,57 +775,116 @@ function home(tab) {
   if (!canSave) el.appendChild(h('p', 'sub', 'Trình duyệt không cho lưu: tiến độ sẽ mất khi đóng trang.'));
   app.appendChild(el);
   if (API && !ACC.code && !ACC.asked && !document.querySelector('.wcov')) { ACC.asked = 1; saveAcc(); setTimeout(openAcct, 350); }
-  if (curNode) requestAnimationFrame(() => { try { curNode.scrollIntoView({ block: 'center' }); } catch (e) { } });
+  if (keepY != null) el.scrollTop = keepY;
+  else if (curNode) requestAnimationFrame(() => { try { curNode.scrollIntoView({ block: 'center' }); } catch (e) { } });
+  if (curNode) hereBtn(el, curNode);
   showUpd(); bootLoad();
 }
-/* ---- the journey: round levels that unlock one after another ---- */
-function pathView(el) {
-  const VC = viewCh();
-  if (!VC.loaded) {   /* first visit of a later chapter: fetch its bundle, then draw */
-    el.appendChild(h('p', 'sub chload', 'Đang tải Bài ' + VC.n + '…'));
-    loadCh(VC.n).then(() => { if (!inScreen) home(); }).catch(() => { toast('Chưa tải được Bài ' + VC.n + '. Kiểm tra mạng rồi thử lại.'); if (!inScreen) { st.ch = 1; home(); } });
-    return null;
+/* ---- the journey (phiếu #26): ONE winding path through every chapter in order. Each chapter starts with a band "Bài N · <title>" +
+   progress (x/y chặng) + its end-of-chapter test result; the band of the chapter on screen sticks to the top (safe-area) and a tap on it
+   lists the chapters to jump to. The page opens with the stage being learnt in the middle; a "📍 Đang học" button brings it back.
+   A chapter whose bundle is not loaded yet is drawn from CH_META (ids, kinds, titles); its bundle is fetched when one of its stages is opened.
+   Unlocking is unchanged: each chapter on its own, in PATH order (every chapter with content is open at once). ---- */
+let homeIO = null;
+const stageDone = id => !!(st.sess[id] && st.sess[id].done);
+function chItems(c) { return (c.PATH || []).map(e => { const S = c.loaded ? chSess(c, e) : null; return { e, S, id: e.id, soon: c.loaded ? !S : !!e.soon }; }); }
+function chProgress(c) {
+  const L = (c.PATH || []).filter(e => e.kind !== 'reader'), t = L.find(e => e.kind === 'test');
+  const rec = t ? (String(t.id) === 't1' ? st.test : (st.tests || {})[t.id]) : null;
+  return { done: L.filter(e => stageDone(e.id)).length, all: L.length, test: rec && rec.n ? rec.best + '/' + rec.n : '' };
+}
+/* the stage being learnt: in the chapter played last (st.ch), the next stage after the furthest one done; a finished chapter hands over to
+   the next chapter that has an open stage left */
+function curStage() {
+  const R = CHAPTERS.filter(c => c.ready), first = R.findIndex(c => c.n === (st.ch || 1)), order = first < 0 ? R : R.slice(first).concat(R.slice(0, first));
+  for (const c of order) {
+    const it = chItems(c), lastDone = it.map(x => stageDone(x.id)).lastIndexOf(true);
+    let k = it.findIndex((x, i) => i > lastDone && !x.soon && !stageDone(x.id)); if (k < 0) k = it.findIndex(x => !x.soon && !stageDone(x.id));
+    if (k >= 0) return { n: c.n, i: k, id: it[k].id };
   }
-  const list = pathOf(VC.n), ROW = 150, TOP = 24, lastDone = list.map(o => !!(o.S && SS(o.S.id).done)).lastIndexOf(true);
-  let cur = list.findIndex((o, i) => i > lastDone && o.S && !SS(o.S.id).done); if (cur < 0) cur = list.findIndex(o => o.S && !SS(o.S.id).done);   /* the next stage after the furthest one done (phiếu #5: old saves have open, undone stages behind it) */
+  return null;
+}
+function openStage(c, o) {
+  if (c.loaded) { const S = o.S || chSess(c, o.e); return S ? play(S.id) : toast('Chặng này đang được xây dựng, sắp ra mắt nhé'); }
+  toast('Đang tải Bài ' + c.n + '…');
+  loadCh(c.n).then(() => { const S = chSess(c, o.e); if (S) play(S.id); else { toast('Chặng này đang được xây dựng, sắp ra mắt nhé'); home(undefined, { keep: 1 }); } })
+    .catch(() => toast('Chưa tải được Bài ' + c.n + '. Kiểm tra mạng rồi thử lại.'));
+}
+function chBand(c) {
+  const p = chProgress(c), b = h('button', 'chband');
+  b.innerHTML = `<span class="cbt"><b>Bài ${c.n} · <span class="cbz">${c.zh}</span></b><small>${c.vi}</small></span><span class="cbp">${p.done}/${p.all} chặng${p.test ? `<small>Kiểm tra ${p.test}</small>` : ''}</span><span class="cbv" aria-hidden="true">▾</span>`;
+  b.setAttribute('aria-label', `Bài ${c.n}: ${c.vi}. ${p.done} trên ${p.all} chặng. Chạm để chọn bài khác`);
+  b.onclick = openChList; return b;
+}
+/* the list of chapters (tap on a band): jump to a chapter, or back to the stage being learnt */
+function openChList() {
+  const R = CHAPTERS.filter(c => c.ready), nx = CHAPTERS.find(c => !c.ready), back = h('div', 'mback chlist'), box = h('div', 'chl', '<div class="h2">Chọn bài</div>');
+  const close = () => back.remove(); back.onclick = e => { if (e.target === back) close(); };
+  const go = sel => { close(); const t = $(sel); if (t) t.scrollIntoView({ block: sel.startsWith('#chs-') ? 'start' : 'center' }); };
+  if ($('.nd.cur')) { const b = h('button', 'chli here', '<b>📍 Chặng đang học</b>'); b.onclick = () => go('.nd.cur'); box.appendChild(b); }
+  R.forEach(c => { const p = chProgress(c), b = h('button', 'chli', `<b>Bài ${c.n} · ${c.zh}</b><small>${c.vi} · ${p.done}/${p.all} chặng${p.test ? ' · Kiểm tra ' + p.test : ''}</small>`); b.onclick = () => go('#chs-' + c.n); box.appendChild(b); });
+  if (nx) box.appendChild(h('div', 'chli off', `<b>Bài ${nx.n} · Sắp ra mắt</b>`));
+  const x = h('button', 'ghost', 'Đóng'); x.onclick = close; box.appendChild(x);
+  back.appendChild(box); document.body.appendChild(back);
+}
+/* "📍 Đang học": shown while the stage being learnt is out of sight */
+function hereBtn(el, node) {
+  const b = h('button', 'herebtn', '📍 Đang học'); b.hidden = true; el.appendChild(b);
+  b.onclick = () => { try { node.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { node.scrollIntoView(); } };
+  if (!window.IntersectionObserver) return;
+  homeIO = new IntersectionObserver(es => { es.forEach(x => { b.hidden = x.isIntersecting; }); }, { root: el, rootMargin: '-60px 0px -60px 0px' });
+  homeIO.observe(node);
+}
+function pathView(el) {
+  const CR = curStage(), R = CHAPTERS.filter(c => c.ready), nx = CHAPTERS.find(c => !c.ready), J = h('div', 'journey');
+  let node = null;
+  R.forEach(c => {
+    const sec = h('section', 'chsec'); sec.id = 'chs-' + c.n; sec.appendChild(chBand(c));
+    const r = chPath(c, CR && CR.n === c.n ? CR.i : -1); sec.appendChild(r.wrap); if (r.node) node = r.node;
+    sec.style.containIntrinsicSize = 'auto ' + (parseInt(r.wrap.style.height, 10) + 76) + 'px';
+    J.appendChild(sec);
+  });
+  if (nx) J.appendChild(h('div', 'chband soonb', `<span class="cbt"><b>🔒 Bài ${nx.n} · Sắp ra mắt</b><small>Bài mới sẽ tự nối vào đây khi sẵn sàng.</small></span>`));
+  el.appendChild(J);
+  /* Ôn tập tổng hợp: at the top of the chapter being learnt, as before */
+  const home0 = $('#chs-' + (CR ? CR.n : 1) + ' .path', J);
+  if (home0) {
+    const TOP = 24, rs = revStatus(), rb = h('button', 'nd rev' + (rs.learned ? '' : ' lock'));
+    rb.style.cssText = `left:18px;top:${TOP + 3}px;width:78px;height:78px`;
+    rb.setAttribute('aria-label', 'Ôn tập tổng hợp');
+    rb.innerHTML = `<span class="nc"><span class="ncs">${scene('cup')}</span></span>${rs.due ? `<span class="nbd">${rs.due}</span>` : ''}${rs.learned ? '' : '<span class="nlk">🔒</span>'}`;
+    rb.onclick = () => rs.learned ? play(REV.id) : toast('Học xong một tập rồi quay lại ôn nhé');
+    const rl = h('div', 'nl c', 'Ôn tập tổng hợp'); rl.style.cssText = `left:57px;top:${TOP + 85}px`;
+    home0.append(rb, rl);
+  }
+  return node;
+}
+/* one chapter's stretch of the path (same drawing as before phiếu #26) */
+function chPath(c, cur) {
+  const list = chItems(c), ROW = 150, TOP = 24;
   const wrap = h('div', 'path'); wrap.style.height = (list.length * ROW + TOP + 10) + 'px';
   const X = i => 50 + 25 * Math.sin(i * 1.05), Y = i => TOP + i * ROW;
   const KIND = o => o.e.kind === 'learn' || o.e.kind === 'reader' ? 'study' : o.e.kind;
   const SZ = o => KIND(o) === 'test' ? 92 : KIND(o) === 'mix' ? 64 : KIND(o) === 'comic' ? 72 : 82, CY = i => Y(i) + SZ(list[i]) / 2;
-  const isDone = o => !!(o.S && SS(o.S.id).done);
-  list.forEach((o, i) => { if (i < list.length - 1) for (let k = 0; k < 4; k++) { const t = .3 + k * .13, d = h('i', 'dot' + (isDone(o) ? ' on' : '')); d.style.left = (X(i) + (X(i + 1) - X(i)) * t) + '%'; d.style.top = (CY(i) + (CY(i + 1) - CY(i)) * t) + 'px'; wrap.appendChild(d); } });
+  list.forEach((o, i) => { if (i < list.length - 1) for (let k = 0; k < 4; k++) { const t = .3 + k * .13, d = h('i', 'dot' + (stageDone(o.id) ? ' on' : '')); d.style.left = (X(i) + (X(i + 1) - X(i)) * t) + '%'; d.style.top = (CY(i) + (CY(i + 1) - CY(i)) * t) + 'px'; wrap.appendChild(d); } });
   let num = 0, node = null;
   list.forEach((o, i) => {
-    const s = o.S, e = o.e, kind = KIND(o), soon = !s, x = s ? SS(s.id) : { i: 0, done: 0 }, open = !soon && unlocked(list, i), isCur = i === cur;
+    const s = o.S, e = o.e, kind = KIND(o), soon = o.soon, x = st.sess[o.id] || { i: 0, done: 0 }, open = !soon && unlocked(list, i), isCur = i === cur;
     if (e.kind === 'learn') num++;
     const sz = SZ(o), title = s ? s.title : e.title || '';
     const b = h('button', `nd ${kind}${x.done ? ' done' : ''}${isCur ? ' cur' : ''}${open ? '' : ' lock'}${soon ? ' soon' : ''}`);
+    b.dataset.id = o.id;
     b.style.cssText = `left:calc(${X(i)}% - ${sz / 2}px);top:${Y(i)}px;width:${sz}px;height:${sz}px`;
-    b.setAttribute('aria-label', (e.kind === 'learn' ? 'Tập ' + unitNo(e.id) + ': ' : '') + title + (soon ? ' (sắp ra mắt)' : open ? '' : ' (chưa mở khóa)'));
-    const thumb = s ? s.thumb : kind === 'mix' ? 'cup' : kind === 'test' ? 'trophy' : 'cup';
-    b.innerHTML = `<span class="nc"><span class="ncs">${kind === 'comic' && soon ? '' : scene(thumb)}</span></span>${e.kind === 'learn' ? `<span class="nb">${num}</span>` : ''}${kind === 'comic' ? '<span class="nem" aria-hidden="true">🎬</span>' : ''}${x.done ? '<span class="nk">✓</span>' : ''}${open ? '' : '<span class="nlk">🔒</span>'}`;
-    b.onclick = () => soon ? toast('Chặng này đang được xây dựng, sắp ra mắt nhé') : open ? play(s.id) : toast('Hoàn thành màn trước để mở khóa nhé');
+    b.setAttribute('aria-label', (c.n > 1 ? 'Bài ' + c.n + ', ' : '') + (e.kind === 'learn' ? 'Tập ' + unitNo(e.id) + ': ' : '') + title + (soon ? ' (sắp ra mắt)' : open ? '' : ' (chưa mở khóa)'));
+    const thumb = s ? s.thumb : kind === 'mix' ? 'cup' : kind === 'test' ? 'trophy' : '';
+    b.innerHTML = `<span class="nc"><span class="ncs">${thumb ? scene(thumb) : ''}</span></span>${e.kind === 'learn' ? `<span class="nb">${num}</span>` : ''}${kind === 'comic' ? '<span class="nem" aria-hidden="true">🎬</span>' : ''}${x.done ? '<span class="nk">✓</span>' : ''}${open ? '' : '<span class="nlk">🔒</span>'}`;
+    b.onclick = () => soon ? toast('Chặng này đang được xây dựng, sắp ra mắt nhé') : open ? openStage(c, o) : toast('Hoàn thành màn trước để mở khóa nhé');
     wrap.appendChild(b);
-    const lb = h('div', 'nl', title + (soon ? '<small class="soonl">Sắp ra mắt</small>' : isCur ? `<small>${x.i && kind === 'study' ? 'Tiếp tục · màn ' + (x.i + 1) + '/' + s.screens.length : 'Bắt đầu'}</small>` : ''));
+    const lb = h('div', 'nl', title + (soon ? '<small class="soonl">Sắp ra mắt</small>' : isCur ? `<small>${x.i && kind === 'study' && s ? 'Tiếp tục · màn ' + (x.i + 1) + '/' + s.screens.length : 'Bắt đầu'}</small>` : ''));
     const right = i === 0 || X(i) < 46, room = right ? 100 - X(i) : X(i); lb.classList.add(right ? 'r' : 'l'); lb.style.cssText = `left:calc(${X(i)}% ${right ? '+' : '-'} ${sz / 2 + 12}px);top:${CY(i)}px;width:min(150px,calc(${room}% - ${sz / 2 + 16}px))`; wrap.appendChild(lb);
     if (isCur) node = b;
   });
-  el.appendChild(wrap);
-  const others = CHAPTERS.filter(c => c.n !== VC.n), up = h('div', 'soon', `<div class="h2">${others.some(c => c.ready) ? 'Các bài khác' : 'Các bài tiếp theo'}</div><p class="sub">${others.some(c => c.ready) ? 'Mỗi bài có đường học riêng, học bài nào trước cũng được.' : 'Đang được xây dựng. Khi sẵn sàng, bài mới sẽ tự mở ở đây.'}</p>`);
-  others.forEach(c => {
-    if (c.ready) { const b = h('button', 'soonc open', `<span class="soonk">${c.n > VC.n ? '✨' : '📖'}</span><span><b>Bài ${c.n} · ${c.zh}</b><small>${c.vi}</small></span>`); b.onclick = () => { st.ch = c.n; save(); homeTab = 'path'; home(); window.scrollTo(0, 0); }; up.appendChild(b); }
-    else { const b = h('button', 'soonc', `<span class="soonk">🔒</span><span><b>Bài ${c.n}</b><small>Sắp ra mắt</small></span>`); b.onclick = () => toast('Bài ' + c.n + ' đang được xây dựng'); up.appendChild(b); }
-  });
-  el.appendChild(up);
-  const rs = revStatus(), rb = h('button', 'nd rev' + (rs.learned ? '' : ' lock'));
-  rb.style.cssText = `left:18px;top:${TOP + 3}px;width:78px;height:78px`;
-  rb.setAttribute('aria-label', 'Ôn tập tổng hợp');
-  rb.innerHTML = `<span class="nc"><span class="ncs">${scene('cup')}</span></span>${rs.due ? `<span class="nbd">${rs.due}</span>` : ''}${rs.learned ? '' : '<span class="nlk">🔒</span>'}`;
-  rb.onclick = () => rs.learned ? play(REV.id) : toast('Học xong một tập rồi quay lại ôn nhé');
-  const rl = h('div', 'nl c', 'Ôn tập tổng hợp');
-  rl.style.cssText = `left:57px;top:${TOP + 85}px`;
-  wrap.append(rb, rl);
-  return node;
+  return { wrap, node };
 }
 /* ---- log: streak, minutes, answers ---- */
 function logView(el) {
@@ -984,7 +1053,7 @@ function fbList() {
 /* ================= session player ================= */
 let sid = 0;
 function play(id) {
-  sid = id; const s = SESSIONS.find(x => x.id === id), x = SS(id); if (chOf(s) >= 1) window.CUR_CH = chOf(s);
+  sid = id; const s = SESSIONS.find(x => x.id === id), x = SS(id); if (chOf(s) >= 1) { window.CUR_CH = chOf(s); st.ch = chOf(s); }
   if (s.mix || s.test) { s.screens = s.test ? buildTest(s) : buildMix(s); x.i = 0; x.done = 0; Object.keys(st.res).filter(k => k.startsWith(id + ':')).forEach(k => delete st.res[k]); st.rv = { miss: {} }; save(); }
   else if (s.rev) { s.screens = buildRevision(REV.fixed); s.info = revInfo(buildRevision.words || []); REV.fixed = null; x.i = 0; x.done = 0; Object.keys(st.res).filter(k => k.startsWith(id + ':')).forEach(k => delete st.res[k]); st.rv = { miss: {} }; save(); if (!s.screens.length) { toast('Học xong một tập rồi quay lại ôn nhé'); return; } }
   else { s.base = s.base || s.screens.slice(); s.screens = s.base.slice(); if (x.b != null) x.i = x.b; if (x.i >= s.screens.length) x.i = 0; }

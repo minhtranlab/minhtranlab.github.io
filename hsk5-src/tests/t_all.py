@@ -87,6 +87,11 @@ async def main():
             print(sid, n, 'screens', ''.join(x[0] for x in types), 'retries', retries)
         await pg.screenshot(path='a_home_end.png', full_page=True)
         print('plays', len(await pg.evaluate('__plays')), 'errors', errs)
+        # phiếu #26: the home page after everything is played = one journey, a band per chapter, no chapter buttons, every stage done
+        await pg.evaluate('home()'); await pg.wait_for_timeout(400)
+        j = await pg.evaluate("[document.querySelectorAll('.chb').length, [...document.querySelectorAll('.journey > section > .chband b')].map(b=>b.textContent.split(' ·')[0]).join('|'), CHAPTERS.filter(c=>c.ready).map(c=>'Bài '+c.n).join('|'), [...document.querySelectorAll('.journey > section > .chband')].map(b=>{const m=b.textContent.match(/(\\d+)\\/(\\d+) chặng/);return m&&m[1]===m[2]}).every(Boolean)]")
+        print('journey:', 'OK' if j[0] == 0 and j[1] == j[2] and j[3] else 'FAIL', j)
+        if not (j[0] == 0 and j[1] == j[2] and j[3]): errs.append('journey ' + json.dumps(j, ensure_ascii=False))
         print(await pg.evaluate('JSON.stringify({stk:Object.keys(st.stk).length,done:Object.entries(st.sess).map(([k,x])=>k+":"+x.done).join(" "),wl:Object.keys(st.wl).length})'))
         import os
         if os.environ.get('DUMP_STATE'): open(os.environ['DUMP_STATE'], 'w').write(await pg.evaluate("localStorage.getItem('hsk5_story_v4')")); print('state dumped to', os.environ['DUMP_STATE'])

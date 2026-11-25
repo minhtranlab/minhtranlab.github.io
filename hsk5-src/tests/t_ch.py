@@ -43,11 +43,13 @@ async def main():
         st = await pg.evaluate('JSON.parse(localStorage.getItem("hsk5_story_v4"))')
         chk(st['sess'] == FIX['sess'], 'old Bài 1 progress (st.sess) kept as is')
         chk(st['stk'] == FIX['stk'] and st['wl'] == FIX['wl'] and st['test'] == FIX['test'] and st['log'] == FIX['log'] and st['res'] == FIX['res'], 'stickers, revision records, test score, log, results kept')
-        h = await pg.evaluate("[document.querySelector('.brand').textContent, document.querySelector('.sub').textContent, document.querySelectorAll('.path .nd:not(.rev)').length, document.querySelectorAll('.path .nd.done').length, [...document.querySelectorAll('.chb')].map(b=>b.textContent).join('|'), [...document.querySelectorAll('.path .nl')].slice(0,3).map(e=>e.textContent).join(' / '), document.querySelectorAll('.path .nd.lock:not(.rev)').length, document.querySelectorAll('.path .nd.comic .nem').length]")
-        chk(h[0] == '爱的细节' and h[1].startswith('HSK5 · Bài 1 ·'), f'home heading Bài 1: {h[:2]}')
+        P1 = '#chs-1 .path'
+        h = await pg.evaluate(f"[document.querySelector('.brand').textContent, document.querySelector('.sub').textContent, document.querySelectorAll('{P1} .nd:not(.rev)').length, document.querySelectorAll('{P1} .nd.done').length, document.querySelectorAll('.chb').length, '', document.querySelectorAll('{P1} .nd.lock:not(.rev)').length, document.querySelectorAll('{P1} .nd.comic .nem').length]")
+        chk(h[0] == 'HSK5' and h[1].startswith('Đang học Bài 1 ·'), f'home heading: HSK5, the chapter being learnt: {h[:2]}')
         chk(h[2] == 22 and h[3] == 13 and h[6] == 0 and h[7] == 4, f'Bài 1 new path: 22 stages, the 13 done before still done, none locked, 4 🎬 ({h[2]}, {h[3]}, locked {h[6]}, 🎬 {h[7]})')
         rd = await pg.evaluate("CHAPTERS.filter(c=>c.ready).map(c=>'Bài '+c.n).join('|')")
-        chk(h[4] == rd and rd.startswith('Bài 1|Bài 2'), f'chapter switch shows every ready chapter {rd} ({h[4]})')
+        bands = await pg.evaluate("[...document.querySelectorAll('.journey > section > .chband')].map(b=>b.querySelector('b').textContent.split(' ·')[0]).join('|')")
+        chk(h[4] == 0 and bands == rd and rd.startswith('Bài 1|Bài 2|Bài 3'), f'phiếu #26: no "Bài 1 | Bài 2" buttons; one journey with a band per chapter in order ({bands})')
         order = await pg.evaluate('STUDY(1).map(s=>s.id)')
         chk(order == [1, 2, 3, 'o1', 'g1', 4, 'o2', 'g2', 5, 6, 'o3', 7, 8, 'o4', 'g3', 9, 10, 11, 'o5', 'g4', 't1', 'rd'], f'Bài 1 path order (phiếu #5) {order}')
         chk(await pg.evaluate("PATH1.filter(e=>e.kind==='comic').map(e=>e.ids.join(',')).join(' | ')") == '0,1,2,3,4,5,6,7,8 | 9,10,11 | 12,13,14,15,16,17,18,19,20 | 21,22,23,24,25,26,27,28,29', 'Ghép truyện g1–g4 cover sentences 0–8, 9–11, 12–20, 21–29')
@@ -62,7 +64,7 @@ async def main():
         # old progress coming back from the Google Sheet (server copy without new fields) merges without loss
         mg = await pg.evaluate('''(R)=>{const L=JSON.parse(JSON.stringify(st));L.sess['2-1']={i:0,done:1,b:0};L.tests={'2-t':{best:3,n:5}};mergeInto(L,R,null);
           return [Object.keys(L.sess).length, L.sess['2-1'].done, L.tests['2-t'].best, L.sess[11].done, L.test.best]}''', FIX)
-        chk(mg == [29, 1, 3, 1, FIX['test']['best']], f'merge with an old server copy keeps Bài 1 and Bài 2 progress (19 old + 9 new stages of the path + 2-1) {mg}')
+        chk(mg == [20, 1, 3, 1, FIX['test']['best']], f'merge with an old server copy keeps Bài 1 and Bài 2 progress (19 old + 2-1; since phiếu #26 drawing the journey no longer makes empty records) {mg}')
         await ctx.close()
 
         # 1b) migration of a PARTLY done old save (done to tập 5 + m1, m2 on the old path; tập 6 was open there) -> new path opens up to tập 6
@@ -100,25 +102,79 @@ async def main():
         chk(nb == 'Hoàn thành Bài 1 ✓' and await pg.evaluate("document.getElementById('toast').textContent") == 'Xong cả Bài 1!', f'end of Bài 1: button/toast ({nb})')
         await ctx.close()
 
+        # 1d) phiếu #26: ONE journey through every chapter — opens on the stage being learnt (centered), the band of the chapter on screen
+        #     sticks to the top, a tap on a band lists the chapters to jump to, "📍 Đang học" brings the stage back; same after a session
+        CENTER = "(()=>{const n=document.querySelector('.nd.cur'),H=document.querySelector('#home');if(!n)return 9999;const r=n.getBoundingClientRect(),h=H.getBoundingClientRect();return Math.round(Math.abs((r.top+r.height/2)-(h.top+h.height/2)))})()"
+        HERE = "(()=>{const b=document.querySelector('.herebtn');return !!b&&!b.hidden})()"
+        stj = json.loads(json.dumps(FIX)); stj['sess']['2-1'] = {'i': 0, 'done': 1, 'b': 0}; stj['ch'] = 2
+        for lab, vp in (('phone', (390, 844)), ('pad', (820, 1180))):
+            ctx, pg = await fresh(b, stj, vp)
+            await pg.wait_for_timeout(600)
+            r = await pg.evaluate("[(document.querySelector('.nd.cur')||{dataset:{}}).dataset.id, document.querySelector('.sub').textContent]")
+            chk(r[0] == '2-2' and r[1].startswith('Đang học Bài 2'), f'[{lab}] opens on the stage being learnt: Bài 2 tập 2 {r}')
+            d = await pg.evaluate(CENTER); chk(d <= 80, f'[{lab}] that stage is in the middle of the screen (off by {d} px)')
+            chk(not await pg.evaluate(HERE), f'[{lab}] "📍 Đang học" hidden while the stage is on screen')
+            bt = await pg.evaluate("[...document.querySelectorAll('.chband')].map(b=>b.textContent)")   # textContent: off-screen chapters are not rendered (content-visibility), innerText would be empty
+            chk('Kiểm tra 13/16' in bt[0] and '/21 chặng' in bt[0] and '1/20 chặng' in bt[1] and bt[-1].startswith('🔒 Bài 4 · Sắp ra mắt'), f'[{lab}] bands: progress, test result, a locked "Sắp ra mắt" band at the end {bt}')
+            chk(await pg.evaluate("!document.querySelector('#chs-3 .nd[data-id=\"3-1\"]').classList.contains('lock') && !CHN(3).loaded"), f'[{lab}] Bài 3 open at once, drawn without loading its bundle')
+            await pg.screenshot(path=f'n_journey_{lab}.png')
+            # scroll up into Bài 1: its band sticks to the top; the button appears
+            await pg.evaluate("(()=>{const H=document.querySelector('#home');H.scrollTop=document.querySelector('#chs-1').offsetTop+1200})()"); await pg.wait_for_timeout(400)
+            r = await pg.evaluate("(()=>{const b=document.querySelector('#chs-1 .chband').getBoundingClientRect(),h=document.querySelector('#home').getBoundingClientRect();return Math.round(b.top-h.top)})()")
+            chk(0 <= r <= 20, f'[{lab}] scrolled into Bài 1: its band sticks to the top ({r} px)')
+            chk(await pg.evaluate(HERE), f'[{lab}] far from the stage being learnt: "📍 Đang học" shown')
+            # tap the band: the list of chapters; jump to Bài 3
+            await pg.click('#chs-1 .chband'); await pg.wait_for_selector('.chlist', timeout=3000)
+            rows = await pg.evaluate("[...document.querySelectorAll('.chlist .chli')].map(e=>e.innerText.split('\\n')[0])")
+            chk(rows == ['📍 Chặng đang học', 'Bài 1 · 爱的细节', 'Bài 2 · 留串钥匙给父母', 'Bài 3 · 人生有选择，一切可改变', 'Bài 4 · Sắp ra mắt'], f'[{lab}] tap on a band: list of chapters {rows}')
+            await pg.click('.chlist .chli:nth-child(5)'); await pg.wait_for_timeout(500)
+            r = await pg.evaluate("[!document.querySelector('.chlist'), (()=>{const b=document.querySelector('#chs-3 .chband').getBoundingClientRect(),h=document.querySelector('#home').getBoundingClientRect();return Math.round(b.top-h.top)})()]")
+            chk(r[0] and 0 <= r[1] <= 30, f'[{lab}] "Bài 3" in the list jumps to the start of Bài 3 {r}')
+            await pg.click('.herebtn'); await pg.wait_for_timeout(1200)
+            d = await pg.evaluate(CENTER); chk(d <= 80 and not await pg.evaluate(HERE), f'[{lab}] "📍 Đang học" scrolls back to the stage (off by {d} px) and hides')
+            if lab == 'phone':
+                # after a session the journey opens on the NEXT stage, centered
+                await play_through(pg, '2-2'); await pg.wait_for_timeout(400)
+                r = await pg.evaluate("(document.querySelector('.nd.cur')||{dataset:{}}).dataset.id"); d = await pg.evaluate(CENTER)
+                chk(r == '2-m1' and d <= 80, f'back home after Bài 2 tập 2: centered on the next stage {r} (off by {d} px)')
+                # 20 chapters (simulated from Bài 3's PATH): drawn fast, scrolls as smoothly as with 3
+                FR = """new Promise(r=>{const H=document.querySelector('#home');H.scrollTop=0;const ts=[];let last=performance.now(),k=0;
+                  const step=()=>{const now=performance.now();ts.push(now-last);last=now;H.scrollTop+=60;if(++k<120)requestAnimationFrame(step);else{ts.shift();r(ts.reduce((a,b)=>a+b,0)/ts.length)}};requestAnimationFrame(step)})"""
+                base = await pg.evaluate(FR)
+                t20 = await pg.evaluate('''()=>{const base=CHAPTERS[2];CHAPTERS.pop();
+                  for(let n=4;n<=20;n++){CH_SRC[n]='ch'+n+'.js';CHAPTERS.push({n,zh:base.zh,vi:'Bài giả lập '+n,ready:true,meta:1,PATH:base.PATH.map(e=>Object.assign({},e,{id:String(e.id).replace(/^3-/,n+'-'),units:e.units&&e.units.map(u=>String(u).replace(/^3-/,n+'-'))}))});}
+                  CHAPTERS.push({n:21});const t0=performance.now();home();return performance.now()-t0}''')
+                n20 = await pg.evaluate("[document.querySelectorAll('.journey > section').length, document.querySelectorAll('.nd').length]")
+                f20 = await pg.evaluate(FR)
+                chk(n20[0] == 20 and t20 < 400, f'20 chapters: {n20[0]} sections / {n20[1]} nodes drawn in {t20:.0f} ms')
+                chk(f20 <= max(25, base * 1.6), f'20 chapters: scrolling {f20:.1f} ms per frame (3 chapters: {base:.1f} ms)')
+                chk(not any('ch4.js' in u or 'ch20.js' in u for u in pg.reqs), '20 chapters: no bundle of the simulated chapters requested just to draw them')
+            chk(not pg.errs, f'[{lab}] no page errors {pg.errs[:3]}')
+            await ctx.close()
+
         # 2) a new learner: Bài 2 opens right away (Bài 1 not done), lazily loaded, unlocks by its PATH
         ctx, pg = await fresh(b)
         chk(not any('ch2.js' in u or 'ch3.js' in u for u in pg.reqs), 'fresh start: Bài 2 / Bài 3 not downloaded yet')
-        await pg.click('.chb:nth-child(2)'); await pg.wait_for_timeout(900)
-        chk(any('ch2.js?v=' in u for u in pg.reqs), 'opening Bài 2 downloads hsk5/ch2.js (versioned)')
-        h = await pg.evaluate("[document.querySelector('.brand').textContent, document.querySelector('.sub').textContent, [...document.querySelectorAll('.path .nd:not(.rev)')].map(n=>(n.classList.contains('lock')?'L':'o')+(n.classList.contains('soon')?'s':'')+(n.classList.contains('comic')?'c':'')).join(' ')]")
-        chk(h[0] == '留串钥匙给父母' and h[1].startswith('HSK5 · Bài 2 ·'), f'Bài 2 heading {h[:2]}')
+        pre = await pg.evaluate("[...document.querySelectorAll('#chs-2 .path .nd:not(.rev)')].map(n=>n.classList.contains('lock')?'L':'o').join('')")
+        chk(pre.startswith('oL') and len(pre) == await pg.evaluate("CH_META[2].PATH.length"), f'Bài 2 drawn from CH_META before its bundle is loaded: first stage open ({pre[:6]}…)')
+        await pg.evaluate("document.querySelector('#chs-2 .nd[data-id=\"2-1\"]').scrollIntoView({block:'center'})"); await pg.wait_for_timeout(200)
+        await pg.click('#chs-2 .nd[data-id="2-1"]'); await pg.wait_for_function("typeof sid!=='undefined'&&sid==='2-1'", timeout=8000)
+        chk(any('ch2.js?v=' in u for u in pg.reqs), 'tapping Bài 2 tập 1 downloads hsk5/ch2.js (versioned) and opens it')
+        await pg.evaluate('home()'); await pg.wait_for_timeout(300)
+        h = await pg.evaluate("[document.querySelector('#chs-2 .chband b').textContent, document.querySelector('#chs-2 .chband').textContent, [...document.querySelectorAll('#chs-2 .path .nd:not(.rev)')].map(n=>(n.classList.contains('lock')?'L':'o')+(n.classList.contains('soon')?'s':'')+(n.classList.contains('comic')?'c':'')).join(' ')]")
+        chk(h[0] == 'Bài 2 · 留串钥匙给父母' and '0/20 chặng' in h[1], f'Bài 2 band {h[:2]}')
         # expected nodes from the content (phiếu #12: more stages arrive over time): first open, the rest locked; "s" = no content yet; "c" = 🎬
         exp = await pg.evaluate("pathOf(2).map((o,i)=>(i?'L':'o')+(o.S?'':'s')+(o.e.kind==='comic'?'c':'')).join(' ')")
         nsoon = exp.count('s')
         chk(h[2] == exp and exp.startswith('o L L'), f'Bài 2 path: tập 1 open, the rest locked, {nsoon} stages "Sắp ra mắt", 3 🎬 ({h[2]} / {exp})')
-        soon = await pg.evaluate("[...document.querySelectorAll('.path .nl small.soonl')].length")
+        soon = await pg.evaluate("[...document.querySelectorAll('#chs-2 .path .nl small.soonl')].length")
         chk(soon == nsoon, f'"Sắp ra mắt" under {nsoon} stages ({soon})')
-        chk(await pg.evaluate("document.querySelectorAll('.path .nd.comic .nem').length") == 3, '🎬 on the 3 Ghép truyện stages')
+        chk(await pg.evaluate("document.querySelectorAll('#chs-2 .path .nd.comic .nem').length") == 3, '🎬 on the 3 Ghép truyện stages')
         ck = await pg.evaluate("clipsFor(SESSIONS.find(s=>s.id==='2-1')).filter(k=>!AUD[k])")
         chk(not ck, f'every clip of Bài 2 tập 1 is in the manifest {ck[:5]}')
         last, toast = await play_through(pg, '2-1')
         chk(last == ('album', 'Xong tập 1 ✓') and toast == 'Xong tập 1!', f'end of Bài 2 tập 1: {last} / {toast}')
-        h = await pg.evaluate("[...document.querySelectorAll('.path .nd:not(.rev)')].slice(0,3).map(n=>n.classList.contains('lock')?'L':'o').join('')")
+        h = await pg.evaluate("[...document.querySelectorAll('#chs-2 .path .nd:not(.rev)')].slice(0,3).map(n=>n.classList.contains('lock')?'L':'o').join('')")
         chk(h == 'ooL', f'after tập 1: tập 2 open, Ôn tập still locked ({h})')
         chk(await pg.evaluate("Object.keys(st.stk).filter(w=>WORD_CH[w]===2).length") == 4, 'Bài 2 stickers collected')
         # whyNot: a wrong listening answer says why that option is wrong
@@ -128,7 +184,7 @@ async def main():
         await pg.evaluate('home()')
         last, toast = await play_through(pg, '2-2', wrongfirst=True)
         chk(toast == 'Xong tập 2!', f'end of Bài 2 tập 2 toast {toast}')
-        h = await pg.evaluate("[...document.querySelectorAll('.path .nd:not(.rev)')].slice(0,4).map(n=>n.classList.contains('lock')?'L':'o').join('')")
+        h = await pg.evaluate("[...document.querySelectorAll('#chs-2 .path .nd:not(.rev)')].slice(0,4).map(n=>n.classList.contains('lock')?'L':'o').join('')")
         chk(h == 'oooL', f'after tập 2: Ôn tập open, next stage stays "Sắp ra mắt" ({h})')
         # mixed review 2-m1 without any Bài 1 word learned: only Bài 2 words, short
         await pg.evaluate("play('2-m1')"); await pg.wait_for_timeout(200)
@@ -140,7 +196,8 @@ async def main():
         chk(rv > 0, f'Ôn tập tổng hợp asks Bài 2 words ({rv})')
         # reload: the app remembers Bài 2 and loads it by itself
         await pg.reload(); await pg.wait_for_timeout(1000)
-        chk(await pg.evaluate("[document.querySelector('.brand').textContent, CHN(2).loaded]") == ['留串钥匙给父母', True], 'reload: back on Bài 2, bundle loaded at start')
+        r = await pg.evaluate("[document.querySelector('.sub').textContent, CHN(2).loaded, (document.querySelector('.nd.cur')||{dataset:{}}).dataset.id]")
+        chk(r[0].startswith('Đang học Bài 2') and r[1] and r[2] == '2-m1', f'reload: the journey opens on Bài 2 (its next stage 2-m1), bundle loaded at start {r}')
         chk(not pg.errs, f'no page errors {pg.errs[:3]}')
         await ctx.close()
 
@@ -172,7 +229,7 @@ async def main():
         c = await pg.evaluate("(()=>{const S=SESSIONS.find(s=>s.id==='2-gx');return S?[S.comic,S.screens.map(x=>x.t).join(','),S.screens[0].ids.join(',')]:null})()")
         chk(c == [1, 'comic,wrap', '0,1'], f'comic stage made from PATH: {c}')
         nreal = await pg.evaluate("pathOf(2).filter(o=>o.e.kind==='comic'&&o.e.id!=='2-gx'&&o.S).length")
-        chk(await pg.evaluate("document.querySelectorAll('.path .nd.comic:not(.soon)').length") == nreal + 1, 'its node is a 🎬 node, not "Sắp ra mắt"')
+        chk(await pg.evaluate("document.querySelectorAll('.path .nd.comic[data-id=\"2-gx\"]:not(.soon)').length") == 1, 'its node is a 🎬 node, not "Sắp ra mắt"')
         last, toast = await play_through(pg, '2-gx')
         chk(toast == 'Ghép xong truyện!', f'comic stage end toast {toast}')
         chk(not pg.errs, f'no page errors {pg.errs[:3]}')
@@ -228,8 +285,8 @@ async def main():
         ctx = await b.new_context(viewport={'width': 390, 'height': 844}); pg = await ctx.new_page(); errs = []
         pg.on('pageerror', lambda e: errs.append(str(e)))
         await pg.goto('file://' + out); await pg.wait_for_timeout(1500)
-        await pg.evaluate("st.ch=2;home()"); await pg.wait_for_timeout(300)
-        s = await pg.evaluate("[CHN(2).loaded, document.querySelector('.brand').textContent, AUD['我爷爷一辈子都在农村种地']?AUD['我爷爷一辈子都在农村种地'].slice(0,15):'']")
+        await pg.evaluate("home()"); await pg.wait_for_timeout(300)
+        s = await pg.evaluate("[CHN(2).loaded, document.querySelector('#chs-2 .chband b .cbz').textContent, AUD['我爷爷一辈子都在农村种地']?AUD['我爷爷一辈子都在农村种地'].slice(0,15):'']")
         chk(s[0] and s[1] == '留串钥匙给父母' and s[2] == 'data:audio/mpeg', f'standalone: Bài 2 inline with embedded audio {s}')
         chk(not errs, f'standalone: no page errors {errs[:3]}')
         await ctx.close(); await b.close()

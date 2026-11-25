@@ -107,6 +107,18 @@ def chapter_strings(n):
         js += '\nconst out=[];const walk=v=>{if(typeof v==="string")out.push(v);else if(Array.isArray(v))v.forEach(walk);else if(v&&typeof v==="object")Object.values(v).forEach(walk)};walk(CH%d);process.stdout.write(JSON.stringify(out));' % n
         _CHS[n] = json.loads(subprocess.run(['node'], input=js, capture_output=True, text=True, check=True).stdout)   # stdin: a whole chapter is longer than one command-line argument may be (phiếu #12)
     return _CHS[n]
+def chapter_meta(n):
+    """what the home page needs to DRAW chapter n before its bundle is loaded (phiếu #26): its title (CH<n>.TITLE = {zh, vi} when the content
+    sets it) and its PATH stages {id, kind, title, units?, ids?}; a learn stage with no SESSIONS entry yet is marked soon:1"""
+    dr, fs = CHAPTER_DIRS[n]
+    js = 'var window = globalThis;\n' + ''.join(open(os.path.join(dr, f), encoding='utf-8').read() + '\n' for f in fs if f != 'kit.js')
+    js += ('\nconst C=CH%d, ids=new Set((C.SESSIONS||[]).map(s=>String(s.id)));process.stdout.write(JSON.stringify({TITLE:C.TITLE||null,'
+           'PATH:(C.PATH||[]).map(e=>{const o={id:e.id,kind:e.kind,title:e.title||""};if(e.units)o.units=e.units;if(e.ids)o.ids=e.ids;'
+           'if(e.kind==="learn"&&!ids.has(String(e.id)))o.soon=1;return o})}));') % n
+    m = json.loads(subprocess.run(['node'], input=js, capture_output=True, text=True, check=True).stdout)
+    out = {'PATH': m['PATH']}
+    if m.get('TITLE'): out.update({k: m['TITLE'][k] for k in ('zh', 'vi') if m['TITLE'].get(k)})
+    return out
 def _chapter_keys(n):
     need = set()
     for t in chapter_strings(n):
@@ -155,6 +167,7 @@ if __name__ == '__main__':
         open(os.path.join(SITE, f'ch{n}.js'), 'w', encoding='utf-8').write(b); ch_src[n] = f'ch{n}.js?v={v}'
         print(f'wrote hsk5/ch{n}.js: %.0f KB' % (len(b.encode()) / 1e3))
     ch_js = 'const CH_SRC = ' + json.dumps({str(k): v for k, v in ch_src.items()}) + '; const WORD_CH = ' + json.dumps(WCH, ensure_ascii=False) + ';'
+    ch_js += ' const CH_META = ' + json.dumps({str(n): chapter_meta(n) for n in CHC}, ensure_ascii=False, separators=(',', ':')) + ';'   # path drawn before any bundle is loaded
     def assemble(audio_obj, config_tag='<script src="config.js"></script>', inline_ch=None):
         audio_js = 'const AUDIO_DATA = ' + json.dumps(audio_obj, ensure_ascii=False) + ';'
         page = src.replace('/*COMMON_CSS*/', css).replace('/*DICT_JS*/', dict_js).replace('/*COMMON_JS*/', js).replace('/*CONTENT_JS*/', content + '\n' + ch_js).replace('/*AUDIO_JS*/', audio_js).replace('/*CONFIG_TAG*/', config_tag)
