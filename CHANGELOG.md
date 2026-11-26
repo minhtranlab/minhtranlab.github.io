@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-26
+- Moved "Math illustrations" from `math/` to `illustrations/` (MSB Brain request, ticket #11): `/math/` becomes the Math Skill Bank app. Home card, README and the `tools/matrix-house-explorer.html` forward now point to `illustrations/`.
+
 ## 2026-11-24
 - Added "18 Năm Nuôi Con" (`nuoi-con/`), a 15-minute parenting game (v4.6), listed under the new Parents level.
 - Added "Mixture problems" (`math/mixture-lab.html`) under the new Mixtures topic in Math illustrations: mix two solutions, how much to add, add water, boil off water.
