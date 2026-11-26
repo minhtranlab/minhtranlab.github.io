@@ -2,6 +2,7 @@
 
 ## 2026-11-26
 - Moved "Math illustrations" from `math/` to `illustrations/` (MSB Brain request, ticket #11): `/math/` becomes the Math Skill Bank app. Home card, README and the `tools/matrix-house-explorer.html` forward now point to `illustrations/`.
+- "18 Năm Nuôi Con" moved to `nuoicon/` (v4.7: child strengths and weak spots, single dad or mom, family ease label). The old address `nuoi-con/` forwards there.
 
 ## 2026-11-24
 - Added "18 Năm Nuôi Con" (`nuoi-con/`), a 15-minute parenting game (v4.6), listed under the new Parents level.
