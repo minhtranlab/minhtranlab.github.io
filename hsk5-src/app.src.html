@@ -174,6 +174,14 @@ body.hb{background:linear-gradient(180deg,var(--g1) 0,var(--g2) 45%,var(--g3) 10
 .cmp{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 0}.cmp[hidden]{display:none}.cmpl{color:var(--mut);font-size:14px}
 .retry{align-self:flex-start;background:var(--accsoft);color:var(--acc2);font-weight:600;font-size:14px;padding:4px 12px;border-radius:99px}
 .hd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.topbar{position:sticky;top:0;z-index:20;display:flex;flex-direction:column;gap:5px;padding:calc(4px + env(safe-area-inset-top,0px)) 0 7px;background:var(--bg);border-bottom:1px solid transparent;transition:box-shadow .15s,border-color .15s}
+.topbar.tbsc{border-bottom-color:var(--line);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.tbr{display:flex;align-items:center;gap:8px;min-height:40px}.tbt{flex:1;min-width:0}.topbar .brand{font:700 19px/1.1 var(--disp)}.topbar .sub{font-size:12.5px;margin:1px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar .goal{width:38px;height:38px}.topbar .goal svg{width:38px;height:38px}.topbar .goal b{width:38px;height:38px;font-size:14px}.topbar .goal small{display:none}
+.setb{position:relative;flex:none;width:40px;height:40px;border-radius:12px;border:0;background:var(--chip);font-size:20px;line-height:1}.setb.warn::after{content:'';position:absolute;top:5px;right:5px;width:9px;height:9px;border-radius:50%;background:#f59e0b}
+.topbar .tabs{gap:6px}.topbar .tab{min-height:36px;padding:0 4px;border-radius:12px;font-size:14px;white-space:nowrap}
+.setl{display:flex;flex-direction:column;gap:8px}.setl .ghost,.setl .acct{width:100%;text-align:left;min-height:46px;margin:0;font-size:15px}
+.setsheet{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.35);display:flex;align-items:flex-start;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px 16px}
 .goal{position:relative;flex:none;width:52px;height:64px;padding:0;border:0;background:none;color:var(--ink);display:flex;flex-direction:column;align-items:center}
 .goal svg{display:block}.goal .gb{fill:var(--card);stroke:var(--line);stroke-width:5}.goal .gf{fill:none;stroke:var(--acc);stroke-width:5;stroke-linecap:round}
 .goal.hit .gf{stroke:var(--ok)}
@@ -244,7 +252,7 @@ body.hasupd #home{padding-bottom:90px}
 #next[disabled]{background:var(--line);color:var(--mut)}
 button:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
 /* home */
-#home{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding:calc(14px + env(safe-area-inset-top,0px)) 0 24px}
+#home{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:14px;padding:0 0 24px;scroll-padding-top:var(--tbh,0px)}
 .brand{font:700 30px/1.15 var(--disp);margin:0}.sub{color:var(--mut);margin:2px 0 0;font-size:15px}
 .hero,.sc{display:flex;gap:14px;align-items:center;background:var(--card);border-radius:22px;padding:12px;box-shadow:0 1px 0 var(--line);border:0;text-align:left;color:var(--ink);width:100%}
 .hero{background:var(--acc);color:#fff}.hero .sub{color:#ffe9dc}.hero .artbox{box-shadow:none}
@@ -380,7 +388,7 @@ body.cm-holding.ins #stage{padding-bottom:calc(var(--fh) + 80px)}
 .ln.dlg .pyl{margin:0}.reveal .rz.dlg .dl{align-items:baseline}
 .fb .whyn{margin-bottom:6px;color:var(--ink)}
 .journey{display:flex;flex-direction:column;gap:6px}.chsec{position:relative;content-visibility:auto}   /* off-screen chapters are not painted (20 chapters stay smooth); size given by contain-intrinsic-size */
-.chband{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 14px;margin:6px 0 2px;border:2px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);box-shadow:0 calc(-1 * env(safe-area-inset-top,0px) - 14px) 0 0 var(--bg),0 4px 0 var(--line)}
+.chband{position:sticky;top:var(--tbh,0px);z-index:6;display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 14px;margin:6px 0 2px;border:2px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);box-shadow:0 -8px 0 0 var(--bg),0 4px 0 var(--line)}
 .chband .cbt{flex:1;min-width:0;display:flex;flex-direction:column}.chband .cbt b{font:700 16px/1.3 var(--disp)}.chband .cbz{font-family:var(--han);font-weight:600}.chband .cbt small{font:500 13px/1.3 var(--body);color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chband .cbp{flex:none;display:flex;flex-direction:column;align-items:flex-end;font:700 14px var(--body);color:var(--teal)}.chband .cbp small{font:600 12px var(--body);color:var(--mut)}.chband .cbv{flex:none;color:var(--mut)}
 .chband.soonb{position:static;border-style:dashed;box-shadow:none;background:transparent;color:var(--mut)}
@@ -525,7 +533,7 @@ function acctLabel() {
   if (ACC.dirty) return ['', '☁ Chờ lưu…'];
   return ['ok', '☁ Đã lưu · ' + ACC.code];
 }
-function paintAcc() { const b = document.querySelector('.acct'); if (!b) return; const [c, t] = acctLabel(); b.className = 'acct ' + c; b.textContent = t; }
+function paintAcc() { const [c, t] = API ? acctLabel() : ['', '']; const g = document.querySelector('.setb'); if (g) g.classList.toggle('warn', c === 'warn'); const b = document.querySelector('.acct'); if (!b) return; b.className = 'acct ' + c; b.textContent = t; }
 function openAcct() {
   if (!API) return;
   if (ACC.code) {
@@ -756,29 +764,46 @@ function home(tab, opt = {}) {
   app.innerHTML = '';
   const el = h('div', ''); el.id = 'home';
   const gm = goalMin(), sec = todaySec(), pr = Math.min(1, sec / (gm * 60)), C = 2 * Math.PI * 19;
-  el.innerHTML = `<div class="hd"><div><h1 class="brand">HSK5</h1><p class="sub">${CR ? 'Đang học Bài ' + CR.n + ' · ' + CHN(CR.n).vi : 'Học tiếng Trung qua từng câu chuyện'}</p></div><button class="goal${pr >= 1 ? ' hit' : ''}" aria-label="Mục tiêu ${gm} phút mỗi ngày"><svg viewBox="0 0 48 48" width="52" height="52"><circle cx="24" cy="24" r="19" class="gb"/><circle cx="24" cy="24" r="19" class="gf" stroke-dasharray="${(C * pr).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 24 24)"/></svg><b>${pr >= 1 ? '✓' : Math.floor(sec / 60)}</b><small>/${gm}p</small></button></div>`;
-  $('.goal', el).onclick = openGoal;
-  if (API) { const [ac, at] = acctLabel(), ap = h('button', 'acct ' + ac, at); ap.onclick = openAcct; el.appendChild(ap); }
+  /* phiếu #30: one compact bar that STAYS at the top while scrolling (all three tabs): "HSK5" + the chapter being learnt + goal ring + ⚙️,
+     then the tabs. Settings (Pinyin, Tự đọc to, Thử âm thanh, Góp ý, Mở hết các màn, Xóa tiến độ, the ☁ account) live in a sheet behind ⚙️. */
+  const tb = h('div', 'topbar');
+  tb.innerHTML = `<div class="tbr"><div class="tbt"><h1 class="brand">HSK5</h1><p class="sub">${CR ? 'Đang học Bài ' + CR.n + ' · ' + CHN(CR.n).vi : 'Học tiếng Trung qua từng câu chuyện'}</p></div><button class="goal${pr >= 1 ? ' hit' : ''}" aria-label="Mục tiêu ${gm} phút mỗi ngày: hôm nay ${Math.floor(sec / 60)} phút"><svg viewBox="0 0 48 48" width="40" height="40"><circle cx="24" cy="24" r="19" class="gb"/><circle cx="24" cy="24" r="19" class="gf" stroke-dasharray="${(C * pr).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 24 24)"/></svg><b>${pr >= 1 ? '✓' : Math.floor(sec / 60)}</b><small>/${gm}p</small></button><button class="setb" aria-label="Cài đặt">⚙️</button></div>`;
+  $('.goal', tb).onclick = openGoal; $('.setb', tb).onclick = openSettings;
   const tabs = h('div', 'tabs');
   [['path', 'Hành trình'], ['words', 'Từ vựng'], ['log', 'Nhật ký']].forEach(([k, t]) => { const b = h('button', 'tab' + (homeTab === k ? ' on' : ''), t); b.onclick = () => home(k); tabs.appendChild(b); });
-  el.appendChild(tabs);
+  tb.appendChild(tabs); el.appendChild(tb);
+  el.addEventListener('scroll', () => tb.classList.toggle('tbsc', el.scrollTop > 4), { passive: true });
   let curNode = null;
   if (homeTab === 'path') curNode = pathView(el); else if (homeTab === 'words') wordsView(el, got, total); else logView(el);
-  const row = h('div', 'row');
-  const bp = h('button', 'ghost', st.py ? 'Pinyin: bật' : 'Pinyin: tắt'); bp.onclick = () => { setPy(!st.py); save(); bp.textContent = st.py ? 'Pinyin: bật' : 'Pinyin: tắt'; };
-  const ba = h('button', 'ghost', st.auto ? 'Tự đọc to: bật' : 'Tự đọc to: tắt'); ba.onclick = () => { st.auto = st.auto ? 0 : 1; save(); ba.textContent = st.auto ? 'Tự đọc to: bật' : 'Tự đọc to: tắt'; };
-  const bt = h('button', 'ghost', '🔊 Thử âm thanh'); bt.onclick = () => { speak('电台', false, true).then(ok => toast(ok ? 'Nghe thấy tiếng là ổn rồi' : 'Chưa có tiếng: tăng âm lượng, tắt chế độ im lặng rồi thử lại')); };
-  const bo = h('button', 'ghost', st.openAll ? 'Mở hết các màn: bật' : 'Mở hết các màn: tắt'); bo.onclick = () => { st.openAll = st.openAll ? 0 : 1; save(); home(); };
-  let arm = 0; const br = h('button', 'ghost', 'Xóa tiến độ'); br.onclick = () => { if (!arm) { arm = 1; br.classList.add('arm'); br.textContent = 'Bấm lần nữa để xóa'; setTimeout(() => { arm = 0; br.classList.remove('arm'); br.textContent = 'Xóa tiến độ'; }, 3000); return; } st.sess = {}; st.stk = {}; st.res = {}; st.wl = {}; st.look = {}; st.pred = {}; st.test = null; st.tests = {}; st.log = { d: {} }; st.rs = Date.now(); save(); home(); };
-  const bf = h('button', 'ghost', '💬 Góp ý' + ((st.fb || []).length ? ' (' + st.fb.length + ')' : '')); bf.onclick = () => openFb(null);
-  row.append(bp, ba, bt, bf, bo, br); el.appendChild(row);
-  if (!canSave) el.appendChild(h('p', 'sub', 'Trình duyệt không cho lưu: tiến độ sẽ mất khi đóng trang.'));
   app.appendChild(el);
+  /* the bar's height: chapter bands stick right under it, centering / jumps / "📍 Đang học" keep clear of it (scroll-padding-top) */
+  const tbh = () => { el.style.setProperty('--tbh', tb.offsetHeight + 'px'); }; tbh();
+  if (window.ResizeObserver) { homeRO && homeRO.disconnect(); homeRO = new ResizeObserver(tbh); homeRO.observe(tb); }
+  paintAcc();
   if (API && !ACC.code && !ACC.asked && !document.querySelector('.wcov')) { ACC.asked = 1; saveAcc(); setTimeout(openAcct, 350); }
   if (keepY != null) el.scrollTop = keepY;
   else if (curNode) requestAnimationFrame(() => { try { curNode.scrollIntoView({ block: 'center' }); } catch (e) { } });
   if (curNode) hereBtn(el, curNode);
   showUpd(); bootLoad();
+}
+/* ---- Cài đặt (phiếu #30): the buttons that used to sit at the end of the home page ---- */
+let homeRO = null;
+function openSettings() {
+  const back = h('div', 'mback setsheet'), box = h('div', 'chl', '<div class="h2">Cài đặt</div>'), close = () => back.remove();
+  back.onclick = e => { if (e.target === back) close(); };
+  const row = h('div', 'setl');
+  if (API) { const [ac, at] = acctLabel(), ap = h('button', 'acct ' + ac, at); ap.onclick = () => { close(); openAcct(); }; row.appendChild(ap); }
+  const bp = h('button', 'ghost', st.py ? 'Pinyin: bật' : 'Pinyin: tắt'); bp.onclick = () => { setPy(!st.py); save(); bp.textContent = st.py ? 'Pinyin: bật' : 'Pinyin: tắt'; };
+  const ba = h('button', 'ghost', st.auto ? 'Tự đọc to: bật' : 'Tự đọc to: tắt'); ba.onclick = () => { st.auto = st.auto ? 0 : 1; save(); ba.textContent = st.auto ? 'Tự đọc to: bật' : 'Tự đọc to: tắt'; };
+  const bt = h('button', 'ghost', '🔊 Thử âm thanh'); bt.onclick = () => { speak('电台', false, true).then(ok => toast(ok ? 'Nghe thấy tiếng là ổn rồi' : 'Chưa có tiếng: tăng âm lượng, tắt chế độ im lặng rồi thử lại')); };
+  const bf = h('button', 'ghost', '💬 Góp ý' + ((st.fb || []).length ? ' (' + st.fb.length + ')' : '')); bf.onclick = () => { close(); openFb(null); };
+  const bo = h('button', 'ghost', st.openAll ? 'Mở hết các màn: bật' : 'Mở hết các màn: tắt'); bo.onclick = () => { st.openAll = st.openAll ? 0 : 1; save(); bo.textContent = st.openAll ? 'Mở hết các màn: bật' : 'Mở hết các màn: tắt'; close(); home(undefined, { keep: 1 }); };
+  let arm = 0; const br = h('button', 'ghost', 'Xóa tiến độ'); br.onclick = () => { if (!arm) { arm = 1; br.classList.add('arm'); br.textContent = 'Bấm lần nữa để xóa'; setTimeout(() => { arm = 0; br.classList.remove('arm'); br.textContent = 'Xóa tiến độ'; }, 3000); return; } st.sess = {}; st.stk = {}; st.res = {}; st.wl = {}; st.look = {}; st.pred = {}; st.test = null; st.tests = {}; st.log = { d: {} }; st.rs = Date.now(); save(); close(); home(); };
+  row.append(bp, ba, bt, bf, bo, br); box.appendChild(row);
+  if (!canSave) box.appendChild(h('p', 'sub', 'Trình duyệt không cho lưu: tiến độ sẽ mất khi đóng trang.'));
+  const x = h('button', 'ghost', 'Đóng'); x.onclick = close; box.appendChild(x);
+  back.appendChild(box); document.body.appendChild(back);
+  const onKey = e => { if (e.key === 'Escape') { close(); removeEventListener('keydown', onKey); } }; addEventListener('keydown', onKey);
 }
 /* ---- the journey (phiếu #26): ONE winding path through every chapter in order. Each chapter starts with a band "Bài N · <title>" +
    progress (x/y chặng) + its end-of-chapter test result; the band of the chapter on screen sticks to the top (safe-area) and a tap on it
@@ -832,7 +857,7 @@ function hereBtn(el, node) {
   const b = h('button', 'herebtn', '📍 Đang học'); b.hidden = true; el.appendChild(b);
   b.onclick = () => { try { node.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { node.scrollIntoView(); } };
   if (!window.IntersectionObserver) return;
-  homeIO = new IntersectionObserver(es => { es.forEach(x => { b.hidden = x.isIntersecting; }); }, { root: el, rootMargin: '-60px 0px -60px 0px' });
+  homeIO = new IntersectionObserver(es => { es.forEach(x => { b.hidden = x.isIntersecting; }); }, { root: el, rootMargin: `-${(($('.topbar', el) || {}).offsetHeight || 0) + 40}px 0px -60px 0px` });
   homeIO.observe(node);
 }
 function pathView(el) {

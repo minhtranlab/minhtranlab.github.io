@@ -9,7 +9,11 @@ async def newctx(b, api=True):
     if api: await ctx.route('**/config.js', lambda r: r.fulfill(body=f"window.HSK5={{api:'{API}'}};", content_type='application/javascript'))
     pg=await ctx.new_page(); errs=[]; pg.on('pageerror', lambda e: errs.append(str(e)))
     await pg.goto('http://127.0.0.1:8765/index.html'); await pg.wait_for_timeout(700); return ctx,pg,errs
-async def pill(pg): return await pg.evaluate("document.querySelector('.acct')&&document.querySelector('.acct').textContent")
+async def pill(pg):   # phiếu #30: the account button lives in ⚙️ Cài đặt — open it, read the button, close it
+    if not await pg.query_selector('.setb'): return None
+    await pg.evaluate("document.querySelector('.setsheet')||document.querySelector('.setb').click()")
+    t = await pg.evaluate("(document.querySelector('.setsheet .acct')||{}).textContent||null")
+    await pg.evaluate("document.querySelectorAll('.setsheet').forEach(e=>e.remove())"); return t
 async def main():
     async with async_playwright() as p:
         b=await p.chromium.launch(executable_path='/opt/pw-browsers/chromium',args=['--no-sandbox'])

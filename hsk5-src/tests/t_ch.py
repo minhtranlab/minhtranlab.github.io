@@ -104,7 +104,9 @@ async def main():
 
         # 1d) phiếu #26: ONE journey through every chapter — opens on the stage being learnt (centered), the band of the chapter on screen
         #     sticks to the top, a tap on a band lists the chapters to jump to, "📍 Đang học" brings the stage back; same after a session
-        CENTER = "(()=>{const n=document.querySelector('.nd.cur'),H=document.querySelector('#home');if(!n)return 9999;const r=n.getBoundingClientRect(),h=H.getBoundingClientRect();return Math.round(Math.abs((r.top+r.height/2)-(h.top+h.height/2)))})()"
+        # phiếu #30: the menu bar (.topbar) stays on top — "the middle" is the middle of what is visible BELOW it, bands stick right under it
+        CENTER = "(()=>{const n=document.querySelector('.nd.cur'),H=document.querySelector('#home'),T=document.querySelector('.topbar');if(!n)return 9999;const r=n.getBoundingClientRect(),h=H.getBoundingClientRect(),t=T.getBoundingClientRect().bottom;return Math.round(Math.abs((r.top+r.height/2)-(t+h.bottom)/2))})()"
+        BAND = "(n)=>Math.round(document.querySelector('#chs-'+n+' .chband').getBoundingClientRect().top-document.querySelector('.topbar').getBoundingClientRect().bottom)"
         HERE = "(()=>{const b=document.querySelector('.herebtn');return !!b&&!b.hidden})()"
         stj = json.loads(json.dumps(FIX)); stj['sess']['2-1'] = {'i': 0, 'done': 1, 'b': 0}; stj['ch'] = 2
         for lab, vp in (('phone', (390, 844)), ('pad', (820, 1180))):
@@ -120,16 +122,16 @@ async def main():
             await pg.screenshot(path=f'n_journey_{lab}.png')
             # scroll up into Bài 1: its band sticks to the top; the button appears
             await pg.evaluate("(()=>{const H=document.querySelector('#home');H.scrollTop=document.querySelector('#chs-1').offsetTop+1200})()"); await pg.wait_for_timeout(400)
-            r = await pg.evaluate("(()=>{const b=document.querySelector('#chs-1 .chband').getBoundingClientRect(),h=document.querySelector('#home').getBoundingClientRect();return Math.round(b.top-h.top)})()")
-            chk(0 <= r <= 20, f'[{lab}] scrolled into Bài 1: its band sticks to the top ({r} px)')
+            r = await pg.evaluate(BAND, 1)
+            chk(-1 <= r <= 2, f'[{lab}] scrolled into Bài 1: its band sticks right under the menu bar ({r} px)')
             chk(await pg.evaluate(HERE), f'[{lab}] far from the stage being learnt: "📍 Đang học" shown')
             # tap the band: the list of chapters; jump to Bài 3
             await pg.click('#chs-1 .chband'); await pg.wait_for_selector('.chlist', timeout=3000)
             rows = await pg.evaluate("[...document.querySelectorAll('.chlist .chli')].map(e=>e.innerText.split('\\n')[0])")
             chk(rows == ['📍 Chặng đang học', 'Bài 1 · 爱的细节', 'Bài 2 · 留串钥匙给父母', 'Bài 3 · 人生有选择，一切可改变', 'Bài 4 · Sắp ra mắt'], f'[{lab}] tap on a band: list of chapters {rows}')
             await pg.click('.chlist .chli:nth-child(5)'); await pg.wait_for_timeout(500)
-            r = await pg.evaluate("[!document.querySelector('.chlist'), (()=>{const b=document.querySelector('#chs-3 .chband').getBoundingClientRect(),h=document.querySelector('#home').getBoundingClientRect();return Math.round(b.top-h.top)})()]")
-            chk(r[0] and 0 <= r[1] <= 30, f'[{lab}] "Bài 3" in the list jumps to the start of Bài 3 {r}')
+            r = [await pg.evaluate("!document.querySelector('.chlist')"), await pg.evaluate(BAND, 3)]
+            chk(r[0] and -1 <= r[1] <= 30, f'[{lab}] "Bài 3" in the list jumps to the start of Bài 3, its band under the menu bar {r}')
             await pg.click('.herebtn'); await pg.wait_for_timeout(1200)
             d = await pg.evaluate(CENTER); chk(d <= 80 and not await pg.evaluate(HERE), f'[{lab}] "📍 Đang học" scrolls back to the stage (off by {d} px) and hides')
             if lab == 'phone':
@@ -149,6 +151,60 @@ async def main():
                 chk(n20[0] == 20 and t20 < 400, f'20 chapters: {n20[0]} sections / {n20[1]} nodes drawn in {t20:.0f} ms')
                 chk(f20 <= max(25, base * 1.6), f'20 chapters: scrolling {f20:.1f} ms per frame (3 chapters: {base:.1f} ms)')
                 chk(not any('ch4.js' in u or 'ch20.js' in u for u in pg.reqs), '20 chapters: no bundle of the simulated chapters requested just to draw them')
+            chk(not pg.errs, f'[{lab}] no page errors {pg.errs[:3]}')
+            await ctx.close()
+
+        # 1e) phiếu #30: ONE compact menu bar (HSK5 + goal ring + ⚙️, then the tabs) stays on top while scrolling, on all 3 tabs;
+        #     the Bài N band sticks right under it; ⚙️ opens "Cài đặt" with the buttons that used to sit at the end of the page
+        TB = "(()=>{const T=document.querySelector('.topbar'),H=document.querySelector('#home'),t=T.getBoundingClientRect(),h=H.getBoundingClientRect(),tabs=[...T.querySelectorAll('.tab')].map(e=>{const r=e.getBoundingClientRect();return r.top>=h.top-1&&r.bottom<=t.bottom+1&&document.elementFromPoint(r.left+r.width/2,r.top+r.height/2)===e});return {top:Math.round(t.top-h.top),hgt:Math.round(t.height),tabs,setb:!!T.querySelector('.setb'),goal:!!T.querySelector('.goal'),scrolled:H.scrollTop,hs:H.scrollWidth-H.clientWidth}})()"
+        for lab, vp in (('phone', (390, 844)), ('pad', (820, 1180))):
+            ctx, pg = await fresh(b, stj, vp); await pg.wait_for_timeout(500)
+            await pg.evaluate("document.querySelector('#home').scrollTop=0"); await pg.wait_for_timeout(300)
+            t = await pg.evaluate(TB)
+            chk(t['top'] == 0 and t['hgt'] <= 100 and all(t['tabs']) and len(t['tabs']) == 3 and t['setb'] and t['goal'] and t['hs'] <= 0, f'[{lab}] top of the page: one bar HSK5 + goal + ⚙️ + 3 tabs, {t["hgt"]} px high {t}')
+            chk(not await pg.evaluate("[...document.querySelectorAll('#home button')].some(b=>/^(Pinyin|Tự đọc to|Mở hết các màn|Xóa tiến độ)/.test(b.textContent))"), f'[{lab}] no settings buttons left on the page itself')
+            await pg.screenshot(path=f'n_topbar_{lab}_top.png')
+            await pg.evaluate("(()=>{const H=document.querySelector('#home');H.scrollTop=document.querySelector('#chs-3').offsetTop+300})()"); await pg.wait_for_timeout(400)
+            t = await pg.evaluate(TB); r = await pg.evaluate(BAND, 3)
+            chk(t['top'] == 0 and all(t['tabs']) and t['scrolled'] > 1000 and await pg.evaluate("document.querySelector('.topbar').classList.contains('tbsc')"), f'[{lab}] scrolled to Bài 3: the bar and its tabs still on screen and tappable {t}')
+            chk(-1 <= r <= 2, f'[{lab}] scrolled to Bài 3: the "Bài 3" band right under the bar, not covered ({r} px)')
+            cov = await pg.evaluate("(()=>{const b=document.querySelector('#chs-3 .chband'),r=b.getBoundingClientRect();return b.contains(document.elementFromPoint(r.left+r.width/2,r.top+r.height/2))})()")
+            chk(cov, f'[{lab}] the Bài 3 band is tappable (nothing on top of it)')
+            await pg.screenshot(path=f'n_topbar_{lab}_b3.png')
+            # the other tabs: the bar stays too
+            for k, name in (('words', 'Từ vựng'), ('log', 'Nhật ký')):
+                await pg.click(f'.topbar .tab:has-text("{name}")'); await pg.wait_for_timeout(300)
+                await pg.evaluate("(()=>{const H=document.querySelector('#home');H.scrollTop=H.scrollHeight})()"); await pg.wait_for_timeout(250)
+                t = await pg.evaluate(TB); on = await pg.evaluate("document.querySelector('.topbar .tab.on').textContent")
+                chk(on == name and t['top'] == 0 and all(t['tabs']), f'[{lab}] tab {name}: the bar stays on top (scrolled {t["scrolled"]} px) {t}')
+            await pg.click('.topbar .tab:has-text("Hành trình")'); await pg.wait_for_timeout(400)
+            if lab == 'phone':
+                # ⚙️ → Cài đặt: every button works
+                py0, au0 = await pg.evaluate("[!!st.py, !!st.auto]")
+                await pg.click('.topbar .setb'); await pg.wait_for_selector('.setsheet', timeout=2000)
+                names = await pg.evaluate("[...document.querySelectorAll('.setsheet .setl button')].map(b=>b.textContent.split(':')[0].replace(/ \\(\\d+\\)$/,''))")
+                chk(names == ['Pinyin', 'Tự đọc to', '🔊 Thử âm thanh', '💬 Góp ý', 'Mở hết các màn', 'Xóa tiến độ'], f'⚙️ opens Cài đặt with {names}')
+                await pg.screenshot(path='n_settings_phone.png')
+                await pg.click('.setsheet button:has-text("Pinyin")'); await pg.click('.setsheet button:has-text("Tự đọc to")')
+                r = await pg.evaluate("[!!st.py, !!st.auto, document.querySelector('.setsheet .setl').innerText]")
+                chk(r[0] != py0 and r[1] != au0 and ('bật' if r[0] else 'tắt') in r[2].split('\n')[0], f'Pinyin / Tự đọc to switch and show their state {r}')
+                await pg.click('.setsheet button:has-text("Thử âm thanh")'); await pg.wait_for_timeout(1500)
+                chk(len(await pg.evaluate("document.getElementById('toast').textContent")) > 5, 'Thử âm thanh says whether sound came out')
+                await pg.click('.setsheet button:has-text("Góp ý")'); await pg.wait_for_timeout(300)
+                chk(not await pg.query_selector('.setsheet') and 'Góp ý' in await pg.evaluate("document.body.innerText"), 'Góp ý closes Cài đặt and opens the feedback form')
+                await pg.keyboard.press('Escape'); await pg.evaluate("document.querySelectorAll('.mback').forEach(e=>e.remove())")
+                await pg.click('.topbar .setb'); await pg.click('.setsheet button:has-text("Mở hết các màn")'); await pg.wait_for_timeout(400)
+                r = await pg.evaluate("[!!st.openAll, !document.querySelector('.setsheet'), document.querySelectorAll('#chs-2 .path .nd.lock').length]")
+                chk(r[0] and r[1] and r[2] == 0, f'Mở hết các màn: on, sheet closed, no locked stage in Bài 2 {r}')
+                await pg.click('.topbar .setb'); await pg.click('.setsheet button:has-text("Mở hết các màn")'); await pg.wait_for_timeout(400)
+                await pg.click('.topbar .setb'); await pg.click('.setsheet button:has-text("Xóa tiến độ")')
+                r = await pg.evaluate("[Object.keys(st.sess).length, document.querySelector('.setsheet button.arm')&&document.querySelector('.setsheet button.arm').textContent]")
+                chk(r[0] > 0 and r[1] == 'Bấm lần nữa để xóa', f'Xóa tiến độ: first tap only asks again {r}')
+                await pg.click('.setsheet button.arm'); await pg.wait_for_timeout(400)
+                r = await pg.evaluate("[Object.keys(st.sess).length, !document.querySelector('.setsheet'), !!document.querySelector('.topbar')]")
+                chk(r[0] == 0 and r[1] and r[2], f'Xóa tiến độ: second tap clears progress and closes {r}')
+                await pg.click('.topbar .setb'); await pg.click('.setsheet button:has-text("Đóng")')
+                chk(not await pg.query_selector('.setsheet'), 'Đóng closes Cài đặt')
             chk(not pg.errs, f'[{lab}] no page errors {pg.errs[:3]}')
             await ctx.close()
 
